@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="antialiased">
@@ -40,20 +41,21 @@
                 </h2>
             </div>
 
-            <div class="reveal delay-200 mt-8 mb-8 max-w-4xl mx-auto border-2 border-brutal-red shadow-red-strong rounded-lg overflow-hidden aspect-video relative">
+            <div class="reveal delay-200 mt-8 mb-8 max-w-4xl mx-auto border-2 border-brutal-red shadow-red-strong rounded-lg overflow-hidden aspect-video transform hover:scale-[1.01] transition duration-500">
+                <div class="relative w-full h-full rounded-lg overflow-hidden border-2 border-brutal-red shadow-red-strong">
+                    <!-- Vídeo -->
+                    <video id="meuVideo" class="w-full h-full" autoplay muted loop playsinline>
+                        <source src="assets/M.mp4" type="video/mp4">
+                        Seu navegador não suporta o vídeo.
+                    </video>
 
-    <video id="meuVideo" class="w-full h-full" autoplay muted loop playsinline>
-        <source src="assets/M.mp4" type="video/mp4">
-        Seu navegador não suporta o vídeo.
-    </video>
-
-    <button id="botaoVolume" 
-            class="absolute bottom-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center transition-opacity hover:opacity-100 opacity-75 backdrop-blur-sm">
-
-        <i id="iconeVolume" class="fas fa-volume-mute"></i>
-    </button>
-
-</div>
+                    <!-- Botão de Volume -->
+                    <button id="botaoVolume" 
+                            class="absolute bottom-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center transition-opacity hover:opacity-100 opacity-75 backdrop-blur-sm">
+                        <i id="iconeVolume" class="fas fa-volume-mute"></i>
+                    </button>
+                </div>
+            </div>
             <br> <br>
             
             <section class="py-16 px-4 bg-gray-950 border-t border-brutal-red">
@@ -123,20 +125,20 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="reveal delay-100 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Diagnóstico Bruto</h4>
+                        <p class="text-gray-400">Dá o soco de realidade sobre sua falha. Zero desculpas.</p>
+                    </div>
+                    <div class="reveal delay-200 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
                         <h4 class="text-xl font-bold mb-2 uppercase mt-2">Estrategista Diário</h4>
                         <p class="text-gray-400">Converte tarefas opressoras em um plano de missão claro.</p>
                     </div>
-                    <div class="reveal delay-200 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                    <div class="reveal delay-300 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
                         <h4 class="text-xl font-bold mb-2 uppercase mt-2">Gerente de Energia</h4>
                         <p class="text-gray-400">Ajuda a recuperar o foco e a energia. Diretrizes de ação imediatas.</p>
                     </div>
-                    <div class="reveal delay-300 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                    <div class="reveal delay-400 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
                         <h4 class="text-xl font-bold mb-2 uppercase mt-2">Mestre da Disciplina</h4>
                         <p class="text-gray-400">Falhou hoje? A IA gera um micro-desafio punitivo para amanhã.</p>
-                    </div>
-                    <div class="reveal delay-400 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
-                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Auditor de Hábitos</h4>
-                        <p class="text-gray-400">Relatório semanal brutalmente honesto sobre sua performance.</p>
                     </div>
                 </div>
             </section>
@@ -156,58 +158,103 @@
                 </ul>
             </section>
 
-           <section id="planos" class="pt-16">
-    <div class="reveal">
-        <h3 class="text-3xl md:text-5xl font-black uppercase mb-4 text-center">
-            OFERTA DE <span class="brutal-red">LANÇAMENTO</span>
-        </h3>
-        <p class="text-lg text-gray-300 mb-10 text-center">
-            O preço normal será R$ 29,90/mês. Aproveite o acesso vitalício.
-        </p>
-    </div>
+            <section id="planos" class="pt-16">
+                <div class="reveal">
+                    <h3 class="text-3xl md:text-5xl font-black uppercase mb-4 text-center">
+                        ESCOLHA SEU <span class="brutal-red">ARSENAL</span>
+                    </h3>
+                    <p class="text-lg text-gray-300 mb-10 text-center">
+                        O preço normal será R$ 29,90/mês. Aproveite a oferta vitalícia de lançamento.
+                    </p>
+                </div>
 
-    <div class="reveal delay-100 mb-10 p-4 border border-brutal-red bg-gray-950 rounded-lg shadow-inner shadow-brutal-red/50 max-w-lg mx-auto hover:scale-105 transition duration-500">
-        <p class="text-lg font-bold uppercase mb-2 text-center">A OFERTA VITALÍCIA EXPIRA EM:</p>
-        <div id="countdown" class="text-4xl md:text-5xl font-black brutal-red flex justify-center space-x-4">
-            </div>
-    </div>
+                <!-- O Timer de Escassez (Mantido) -->
+                <div class="reveal delay-100 mb-10 p-4 border border-brutal-red bg-gray-950 rounded-lg shadow-inner shadow-brutal-red/50 max-w-lg mx-auto hover:scale-105 transition duration-500">
+                    <p class="text-lg font-bold uppercase mb-2 text-center">A OFERTA VITALÍCIA EXPIRA EM:</p>
+                    <div id="countdown" class="text-4xl md:text-5xl font-black brutal-red flex justify-center space-x-4">
+                        </div>
+                </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-4xl mx-auto">
-        
-        <div class="reveal delay-100 p-8 bg-OffBlack border border-gray-800 rounded-xl shadow-lg flex flex-col hover:shadow-2xl hover:border-gray-600 transition duration-300 h-full">
-            <h4 class="text-2xl font-bold uppercase brutal-red">PLANO MENSAL</h4>
-            <p class="text-gray-400 mb-4">(Preço Normal)</p>
-            <p class="text-4xl font-black mb-4">R$ 29<span class="text-xl">,90/mês</span></p>
-            
-            <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
-                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
-            </ul>
-            <a href="#" class="w-full bg-gray-700 text-white font-bold py-3 text-center rounded-lg transition uppercase tracking-wider cursor-not-allowed opacity-50">
-                (Indisponível no Lançamento)
-            </a>
+                <!-- Grade de 3 Planos (Ancoragem) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start max-w-6xl mx-auto">
+                    
+                    <!-- PLANO 1: MENSAL (O ÂNCORA DO FUTURO) -->
+                    <div class="reveal delay-100 p-8 bg-OffBlack border border-gray-800 rounded-xl shadow-lg flex flex-col hover:shadow-2xl hover:border-gray-600 transition duration-300 h-full">
+                        <h4 class="text-2xl font-bold uppercase brutal-red">PLANO MENSAL</h4>
+                        <p class="text-gray-400 mb-4">(Preço Normal)</p>
+                        <p class="text-4xl font-black mb-4">R$ 29<span class="text-xl">,90/mês</span></p>
+                        <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
+                            <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
+                        </ul>
+                        <a href="#" class="w-full bg-gray-700 text-white font-bold py-3 text-center rounded-lg transition uppercase tracking-wider cursor-not-allowed opacity-50">
+                            (Indisponível no Lançamento)
+                        </a>
+                    </div>
+
+                    <!-- PLANO 2: VITALÍCIO (O HERÓI / SUA OFERTA) -->
+                    <div class="reveal delay-200 p-8 bg-OffBlack rounded-xl shadow-red-strong flex flex-col popular-plan relative hover:shadow-[0_20px_25px_-5px_rgba(204,0,0,0.4)] transition duration-300 h-full">
+                        <span class="absolute top-0 -mt-3 left-1/2 -translate-x-1/2 bg-brutal-red text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow-md">OFERTA DE LANÇAMENTO</span>
+                        <h4 class="text-2xl font-bold uppercase brutal-red">ACESSO VITALÍCIO</h4>
+                        <p class="text-gray-400 mb-4">Pague uma vez. Use para sempre.</p>
+                        
+                        <!-- BLOCO DE PREÇO (COM ANCORAGEM) -->
+                        <div class="my-4">
+                            <div class="flex items-baseline justify-center space-x-3 mb-1">
+                                <!-- Preço Novo (Hero) -->
+                                <span class="text-5xl font-black brutal-red">R$ 37<span class="text-2xl">,00</span></span>
+                                <!-- Preço Antigo (Ancoragem) -->
+                                <span class="text-2xl font-bold text-gray-500 line-through">R$ 397</span>
+                            </div>
+                            <p class="text-gray-400 mb-4 text-sm">Pagamento Único (Economize 90%)</p>
+                        </div>
+                        
+                        <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
+                            <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
+                        </ul>
+                        <a href="https://pay.kiwify.com.br/YzOIskc" target="_blank" rel="noopener noreferrer" class="w-full bg-brutal-red text-white font-black py-4 text-center rounded-lg hover:bg-red-800 transition uppercase tracking-wider shadow-red-strong hover-lift">
+                            Quero o Acesso Vitalício
+                        </a>
+                    </div>
+
+                    <!-- PLANO 3: ANUAL (A ISCA / O "DECOY") -->
+                    <div class="reveal delay-300 p-8 bg-OffBlack border border-gray-800 rounded-xl shadow-lg flex flex-col hover:shadow-2xl hover:border-gray-600 transition duration-300 h-full">
+                        <h4 class="text-2xl font-bold uppercase brutal-red">PLANO ANUAL</h4>
+                        <p class="text-gray-400 mb-4">(Opção Padrão)</p>
+                        <p class="text-4xl font-black mb-4">R$ 197<span class="text-xl">,00/ano</span></p>
+                        <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
+                            <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
+                            <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
+                        </ul>
+                        <!-- Este botão não tem o link da Kiwify, pois é a ISCA -->
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="w-full bg-gray-700 text-white font-bold py-3 text-center rounded-lg hover:bg-gray-600 transition uppercase tracking-wider hover-lift">
+                            Assinar Anual
+                        </a>
+                    </div>
+                </div>
+            </section>
         </div>
+    </main>
 
-        <div class="reveal delay-200 p-8 bg-OffBlack rounded-xl shadow-red-strong flex flex-col popular-plan relative hover:shadow-[0_20px_25px_-5px_rgba(204,0,0,0.4)] transition duration-300 h-full">
-            <span class="absolute top-0 -mt-3 left-1/2 -translate-x-1/2 bg-brutal-red text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow-md">OFERTA DE LANÇAMENTO</span>
-            <h4 class="text-2xl font-bold uppercase brutal-red">ACESSO VITALÍCIO</h4>
-            <p class="text-gray-400 mb-4">Pague uma vez. Use para sempre.</p>
-            
-            <p class="text-4xl font-black mb-1">R$ 37<span class="text-xl">,00</span></p>
-            <p class="text-gray-400 mb-4 text-sm">Pagamento Único</p>
-            
-            <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
-                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
-            </ul>
-            <a href="[SEU_LINK_CHECKOUT_37]" target="_blank" rel="noopener noreferrer" class="w-full bg-brutal-red text-white font-black py-4 text-center rounded-lg hover:bg-red-800 transition uppercase tracking-wider shadow-red-strong hover-lift">
-                Quero o Acesso Vitalício
+    <footer class="py-12 bg-OffBlack border-t-4 border-brutal-red px-4 text-center mt-16 reveal">
+        <div class="max-w-xl mx-auto">
+            <h3 class="text-4xl font-black uppercase leading-tight brutal-red mb-4">
+                A DISCIPLINA É A LIBERDADE.
+            </h3>
+            <!-- ✅ BOTÃO DO FOOTER COM LINK REAL -->
+            <a href="https://pay.kiwify.com.br/YzOIskc" 
+               class="w-full bg-brutal-red text-white font-black py-5 text-xl rounded-xl shadow-red-strong hover:bg-red-800 transition duration-300 transform hover:scale-105 uppercase tracking-wider inline-flex items-center justify-center">
+                ESCOLHER MEU PLANO AGORA
             </a>
+            <p class="text-sm mt-8 text-gray-500 font-semibold">
+                Garantia de 7 dias.
+            </p>
         </div>
-    </div>
-</section>
+    </footer>
 
     <script src="js/script.js"></script>
 </body>
