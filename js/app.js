@@ -182,39 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.placeholder = "Digite sua mensagem aqui...";; // ✅ Atualiza o placeholder
         
         
-        if (!isInitialLoad || (isInitialLoad && !isMobile)) {
-            chatInput.focus();
-        }
-
-        // ✅ --- NOVA LÓGICA DE BLOQUEIO DE FERRAMENTA ---
-        if (toolInfo.isLocked) {
-            // Se a ferramenta for PAGA:
-            
-            // 1. Esconde o input de texto
-            textInputWrapper.classList.add('hidden');
-            
-            // 2. Mostra o bloco de upgrade
-            upgradeBlock.classList.remove('hidden');
-            
-            // 3. Personaliza a mensagem de upgrade
-            upgradeTitle.textContent = `DESBLOQUEIE O ${toolInfo.title.toUpperCase()}`;
-            
-        } else {
-            // Se a ferramenta for GRATUITA:
-            
-            // 1. Mostra o input de texto
-            textInputWrapper.classList.remove('hidden');
-            
-            // 2. Esconde o bloco de upgrade
-            upgradeBlock.classList.add('hidden');
-        }
+        
         // --- FIM DA LÓGICA DE BLOQUEIO ---
 
-    } // <-- FIM DA FUNÇÃO setActiveTool
-
-    // --- sendMessage (COM TIMEOUT DE 20 SEGUNDOS) ---
- // --- sendMessage (COM TIMEOUT DE 20 SEGUNDOS - VERSÃO PRO CORRIGIDA) ---
-// --- sendMessage (VERSÃO CORRIGIDA E ROBUSTA PARA PRO) ---
+    } 
 async function sendMessage() {
     const message = chatInput.value.trim();
     if (message === '') return;
