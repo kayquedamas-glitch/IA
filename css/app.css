@@ -77,8 +77,8 @@ body {
     border-radius: 15px;
     margin-bottom: 15px;
     max-width: 80%;
-    max-height: 400px;
-    overflow-y: auto;
+    /* max-height: 400px;  <--- REMOVIDO */
+    /* overflow-y: auto;   <--- REMOVIDO */
     white-space: pre-wrap;
     word-wrap: break-word;
     
