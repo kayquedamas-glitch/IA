@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    
+    <title>Synapse - Coach IA de Disciplina</title> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="antialiased">
+
+<nav class="w-full py-3 md:py-6 px-4 md:px-8 flex justify-between items-center border-b border-gray-800 bg-[#0c0c0c]/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
+    <div class="flex items-center space-x-2">
+        <span class="text-lg md:text-xl font-black brutal-red tracking-wider hover:opacity-80 transition-opacity cursor-pointer">Synapse</span>
+    </div>
+    
+    <div class="flex items-center space-x-2 md:space-x-4">
+        <a href="index.html" class="text-gray-300 hover:text-white font-semibold py-2 px-3 md:px-4 rounded-lg transition hover:bg-gray-800 text-xs md:text-base">
+            Testar Demo
+        </a>
+        <a href="#planos" class="hidden md:inline-block bg-gradient-to-r from-[#8a0000] to-[#cc0000]
+          text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 hover:shadow-red-strong transition duration-300 uppercase text-sm">
+            Ver Planos
+        </a>
+    </div>
+</nav>
+
+    <header class="pt-28 md:pt-24 pb-12 bg-OffBlack text-center px-4 overflow-hidden">
+        <div class="max-w-4xl mx-auto">
+            
+            <div class="reveal">
+                <h1 class="text-3xl md:text-6xl font-black uppercase leading-tight">
+                    <span class="brutal-red">SUA MENTE FOI SEQUESTRADA.</span><br> ESTE É O SEU PLANO DE RESGATE.
+                </h1>
+                <h2 class="mt-4 text-lg md:text-2xl font-semibold text-gray-300 reveal delay-100">
+                    Pare de falhar sozinho. Use o <span class="brutal-red font-bold">Coach IA Synapse</span> para analisar suas fraquezas.
+                </h2>
+            </div>
+
+            <div class="reveal delay-200 mt-8 mb-8 max-w-4xl mx-auto border-2 border-brutal-red shadow-red-strong rounded-lg overflow-hidden aspect-video relative">
+
+    <video id="meuVideo" class="w-full h-full" autoplay muted loop playsinline>
+        <source src="assets/M.mp4" type="video/mp4">
+        Seu navegador não suporta o vídeo.
+    </video>
+
+    <button id="botaoVolume" 
+            class="absolute bottom-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center transition-opacity hover:opacity-100 opacity-75 backdrop-blur-sm">
+
+        <i id="iconeVolume" class="fas fa-volume-mute"></i>
+    </button>
+
+</div>
+            <br> <br>
+            
+            <section class="py-16 px-4 bg-gray-950 border-t border-brutal-red">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h3 class="reveal text-3xl md:text-4xl font-bold uppercase mb-10 brutal-red">
+                        O QUE ESTÃO DIZENDO SOBRE O MÉTODO
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="reveal delay-100 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg hover:border-brutal-red/50 transition duration-300 hover:-translate-y-1">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <img src="assets/img2.jpg" alt="Foto de participante" class="w-16 h-16 rounded-full object-cover border-2 border-brutal-red">
+                                <div class="text-left">
+                                    <p class="font-bold text-lg">Marina L.</p>
+                                    <div class="flex text-yellow-400">★★★★★</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 text-left italic">
+                                “Eu estava me sentindo presa em ciclos de procrastinação. No começo achei que era só um desafio, mas a rotina de análise diária mudou meu foco.”
+                            </p>
+                        </div>
+                        <div class="reveal delay-200 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg hover:border-brutal-red/50 transition duration-300 hover:-translate-y-1">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <img src="assets/img1.png" alt="Foto de participante" class="w-16 h-16 rounded-full object-cover border-2 border-brutal-red">
+                                <div class="text-left">
+                                    <p class="font-bold text-lg">Lucas D.</p>
+                                    <div class="flex text-yellow-400">★★★★☆</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 text-left italic">
+                                “Achei que seria só mais um curso. Mas o 'Auditor' semanal é brutal. Ver meus hábitos ruins listados pela IA me deu um soco de realidade.”
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </header>
+
+    <main class="py-16 px-4 bg-gray-900 border-t border-brutal-red">
+        <div class="max-w-4xl mx-auto">
+
+            <section class="mb-16 reveal">
+                <h3 class="text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">VOCÊ ESTÁ NO "MODO ZUMBI"?</h3>
+                <p class="text-lg text-gray-300 mb-6 text-center md:text-left">
+                    Seja honesto. Sua atenção está fraturada. Seu foco está morto. Seu cérebro está viciado em dopamina barata.
+                </p>
+                <ul class="space-y-4 text-lg font-medium">
+                    <li class="reveal delay-100 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
+                        <p class="ml-1">Você pega o celular "só para ver a hora" e 20 minutos se passam rolando um feed infinito.</p>
+                    </li>
+                    <li class="reveal delay-200 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
+                        <p class="ml-1">Você não consegue focar em uma tarefa por mais de 15 minutos sem sentir a "coceira" de checar notificações.</p>
+                    </li>
+                    <li class="reveal delay-300 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
+                        <p class="ml-1">Seu histórico de busca às 2 da manhã te envergonha.</p>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mb-16">
+                <div class="reveal">
+                    <h3 class="text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">A SOLUÇÃO: SEU ARSENAL IA (SYNAPSE)</h3>
+                    <p class="text-lg text-gray-300 mb-10 text-center md:text-left">
+                        Chega de "dicas de produtividade" fracas. Você precisa de um **SISTEMA**. Apresentamos as 4 ferramentas de IA que vão forçar seu foco.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="reveal delay-100 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Estrategista Diário</h4>
+                        <p class="text-gray-400">Converte tarefas opressoras em um plano de missão claro.</p>
+                    </div>
+                    <div class="reveal delay-200 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Gerente de Energia</h4>
+                        <p class="text-gray-400">Ajuda a recuperar o foco e a energia. Diretrizes de ação imediatas.</p>
+                    </div>
+                    <div class="reveal delay-300 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Mestre da Disciplina</h4>
+                        <p class="text-gray-400">Falhou hoje? A IA gera um micro-desafio punitivo para amanhã.</p>
+                    </div>
+                    <div class="reveal delay-400 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
+                        <h4 class="text-xl font-bold mb-2 uppercase mt-2">Auditor de Hábitos</h4>
+                        <p class="text-gray-400">Relatório semanal brutalmente honesto sobre sua performance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-16">
+                <h3 class="reveal text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">O RESULTADO</h3>
+                <ul class="space-y-4 text-lg font-medium">
+                    <li class="reveal delay-100 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
+                        <p class="ml-1">CLAREZA MENTAL ABSURDA: Pense rápido, decida melhor.</p>
+                    </li>
+                    <li class="reveal delay-200 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
+                        <p class="ml-1">FOCO DE LASER: Trabalhar em uma única tarefa por horas.</p>
+                    </li>
+                    <li class="reveal delay-300 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
+                        <p class="ml-1">AUTOCONFIANÇA: Controle sobre seus impulsos.</p>
+                    </li>
+                </ul>
+            </section>
+
+           <section id="planos" class="pt-16">
+    <div class="reveal">
+        <h3 class="text-3xl md:text-5xl font-black uppercase mb-4 text-center">
+            OFERTA DE <span class="brutal-red">LANÇAMENTO</span>
+        </h3>
+        <p class="text-lg text-gray-300 mb-10 text-center">
+            O preço normal será R$ 29,90/mês. Aproveite o acesso vitalício.
+        </p>
+    </div>
+
+    <div class="reveal delay-100 mb-10 p-4 border border-brutal-red bg-gray-950 rounded-lg shadow-inner shadow-brutal-red/50 max-w-lg mx-auto hover:scale-105 transition duration-500">
+        <p class="text-lg font-bold uppercase mb-2 text-center">A OFERTA VITALÍCIA EXPIRA EM:</p>
+        <div id="countdown" class="text-4xl md:text-5xl font-black brutal-red flex justify-center space-x-4">
+            </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-4xl mx-auto">
+        
+        <div class="reveal delay-100 p-8 bg-OffBlack border border-gray-800 rounded-xl shadow-lg flex flex-col hover:shadow-2xl hover:border-gray-600 transition duration-300 h-full">
+            <h4 class="text-2xl font-bold uppercase brutal-red">PLANO MENSAL</h4>
+            <p class="text-gray-400 mb-4">(Preço Normal)</p>
+            <p class="text-4xl font-black mb-4">R$ 29<span class="text-xl">,90/mês</span></p>
+            
+            <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
+                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
+                <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
+                <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
+            </ul>
+            <a href="#" class="w-full bg-gray-700 text-white font-bold py-3 text-center rounded-lg transition uppercase tracking-wider cursor-not-allowed opacity-50">
+                (Indisponível no Lançamento)
+            </a>
+        </div>
+
+        <div class="reveal delay-200 p-8 bg-OffBlack rounded-xl shadow-red-strong flex flex-col popular-plan relative hover:shadow-[0_20px_25px_-5px_rgba(204,0,0,0.4)] transition duration-300 h-full">
+            <span class="absolute top-0 -mt-3 left-1/2 -translate-x-1/2 bg-brutal-red text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow-md">OFERTA DE LANÇAMENTO</span>
+            <h4 class="text-2xl font-bold uppercase brutal-red">ACESSO VITALÍCIO</h4>
+            <p class="text-gray-400 mb-4">Pague uma vez. Use para sempre.</p>
+            
+            <p class="text-4xl font-black mb-1">R$ 37<span class="text-xl">,00</span></p>
+            <p class="text-gray-400 mb-4 text-sm">Pagamento Único</p>
+            
+            <ul class="space-y-3 text-gray-300 mb-8 flex-grow">
+                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> a todas as 4 ferramentas</li>
+                <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações</li>
+                <li><span class="text-yellow-400 mr-2">✓</span> Suporte prioritário</li>
+            </ul>
+            <a href="[SEU_LINK_CHECKOUT_37]" target="_blank" rel="noopener noreferrer" class="w-full bg-brutal-red text-white font-black py-4 text-center rounded-lg hover:bg-red-800 transition uppercase tracking-wider shadow-red-strong hover-lift">
+                Quero o Acesso Vitalício
+            </a>
+        </div>
+    </div>
+</section>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
