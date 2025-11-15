@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. CONFIGURAÇÕES E VARIÁVEIS PRINCIPAIS ---
     
-    const MAX_USAGE = 10; // ✅ Limite da demo para 10 usos
+    const MAX_USAGE = 5; // ✅ Limite da demo para 10 usos
     const DEMO_DATE_KEY = 'demoLastResetDate';
     const DEMO_COUNT_KEY = 'demoUsageCount';
 
