@@ -21,34 +21,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DEFINIÇÕES DAS FERRAMENTAS ---
     const toolDefinitions = {
         'Diagnostico': {
-            title: "Diagnóstico Bruto",
-            subtitle: "Confesse. O que você está fazendo de errado *agora*?",
-            systemPrompt: "Você é o 'Diagnóstico Bruto da Synapse'. O usuário vai confessar uma procrastinação ou falha imediata (ex: 'Tô há 1 hora no TikTok', 'Não consigo começar o relatório'). Sua ÚNICA resposta deve ser um diagnóstico de UMA FRASE, brutal, direta e psicológica sobre a causa raiz. Sem 'olá', sem 'bom dia', sem conselhos. Apenas o diagnóstico. Comece com 'DIAGNÓSTICO:'. Ex: 'DIAGNÓSTICO: Você está trocando seu futuro por dopamina barata.' ou 'DIAGNÓSTICO: Você está paralisado pelo perfeccionismo.'",
-            isLocked: false // ✅ Ferramenta Gratuita (isca)
+            // --- MUDANÇA (IDEIA 4) ---
+            title: "Diagnóstico Synapse",
+            subtitle: "Qual é o seu estado mental? Comece por aqui.",
+            systemPrompt: "Você é o 'Diagnóstico Synapse', a IA de triagem. O usuário descreverá seu estado mental, problema ou sentimento (ex: 'ansioso', 'procrastinei', 'preciso de um plano'). Sua ÚNICA tarefa é analisar a intenção e encaminhar para a ferramenta correta. Responda em 2 partes: 1. **Diagnóstico:** (Uma breve análise, ex: 'Entendido. Você está com paralisia de análise.') 2. **Encaminhamento:** (Sugira a ferramenta ideal, ex: 'Recomendo usar o **Estrategista Diário** para criar um plano.' ou 'Recomendo o **Ferreiro de Hábitos** para reparar sua procrastinação.'). Ferramentas disponíveis: [Estrategista Diário], [Gerente de Energia], [Ferreiro de Hábitos], [Auditor de Hábitos].",
+            isLocked: false // Continua sendo a ferramenta gratuita
         },
         'Estrategista': {
             title: "Estrategista Diário",
             subtitle: "Transforme caos em clareza. Diga-me seu maior desafio para hoje e eu criarei um plano de batalha focado.",
             systemPrompt: "Você é o 'Estrategista Diário da Synapse'. Seu único objetivo é criar planos de ação táticos e brutais. O usuário dirá um desafio (ex: 'estudar para prova', 'limpar a casa'). Você deve responder com: 1. **MISSÃO:** (O objetivo claro). 2. **REGRAS DE ENGAJAMENTO:** (3-5 regras curtas para evitar distração). 3. **OBJETIVOS TÁTICOS:** (Um checklist de 3-5 passos acionáveis). Mantenha o tom direto, motivador e militar. Use markdown.",
-            isLocked: true // ✅ Ferramenta Paga
+            isLocked: true // Ferramenta Paga
         },
-        'Gerente': {
-            title: "Gerente de Energia",
-            subtitle: "Sentindo-se sobrecarregado ou sem foco? Descreva seu estado mental e eu darei 3 ações imediatas para recuperar o controle.",
-            systemPrompt: "Você é o 'Gerente da Synapse'. O usuário descreverá um estado negativo (ex: 'cansado', 'ansioso', 'sem foco'). Sua única resposta deve ser 3 AÇÕES IMEDIATAS para quebrar o padrão. As ações devem ser físicas ou mentais, simples e rápidas (ex: '1. Levante-se. Beba 500ml de água. 2. Respire fundo 10x. 3. Escreva 1 coisa que você pode fazer agora.'). Sem conversa fiada. Direto ao ponto.",
-            isLocked: true // ✅ Ferramenta Paga
-        },
-        'Mestre': {
-            title: "Mestre da Disciplina",
-            subtitle: "Confesse sua falha. Diga-me onde você procrastinou hoje e eu darei um 'castigo' justo para recalibrar sua disciplina amanhã.",
-            systemPrompt: "Você é o 'Mestre da Disciplina da Synapse'. O usuário confessará uma falha de disciplina (ex: 'fiquei 2h no TikTok', 'comi fast-food'). Sua resposta deve ser curta e ter duas partes: 1. **DIAGNÓSTICO BRUTAL:** (Uma frase curta sobre a causa raiz, ex: 'Você buscou dopamina fácil.'). 2. **PUNIÇÃO JUSTA:** (Uma tarefa simples, mas desconfortável, para o dia seguinte, ex: 'Amanhã, 10 minutos de meditação sem celular perto.' ou 'Amanhã, sua primeira hora de trabalho será sem música.'). O tom é severo, mas justo. Sem julgamento moral, apenas causa e efeito.",
-            isLocked: true // ✅ Ferramenta Paga
+        'Mestre': { // O ID 'Mestre' é mantido para não quebrar seu HTML (toolMestre)
+            // --- MUDANÇA (IDEIA 2) ---
+            title: "Ferreiro de Hábitos", // Nome mudou
+            subtitle: "Falhou? Não se culpe. Vamos 'reforjar' o seu dia agora.", // Subtítulo mudou
+            systemPrompt: "Você é o 'Ferreiro de Hábitos da Synapse'. O usuário confessará uma falha (ex: 'procrastinei 2h no TikTok'). Sua resposta NÃO é uma punição, é um 'Protocolo de Reparo Imediato'. Responda em 3 partes: 1. **Diagnóstico (Sem Culpa):** (Ex: 'Entendido. Você buscou dopamina de curto prazo. Acontece. Vamos reparar isso.'). 2. **Protocolo de Reparo Imediato:** (Dê 3 ações curtas para 'salvar' o dia. Ex: '1. Ação Física (1 min): Levante, 10 polichinelos. 2. Ação Mental (2 min): Escreva 1 motivo por que a tarefa original era importante. 3. Ação de Reparo (15 min): Faça 15 minutos da tarefa original.'). 3. **Prevenção:** (Uma dica para amanhã, ex: 'Para amanhã, comece com essa tarefa.'). Use markdown.",
+            isLocked: true // Continua Paga
         },
         'Auditor': {
             title: "Auditor de Hábitos",
             subtitle: "No fim da semana, cole seus registros diários aqui. Eu analisarei seus padrões e entregarei um relatório honesto sobre sua performance.",
             systemPrompt: "Você é o 'Auditor de Hábitos da Synapse'. O usuário colará um texto longo (provavelmente de vários dias) descrevendo suas ações, falhas e vitórias. Sua tarefa é analisar esse texto e gerar um 'RELATÓRIO DE PERFORMANCE SEMANAL' em 3 seções: 1. **VITÓRIAS:** (Onde o usuário mandou bem). 2. **GARGALOS:** (Onde o usuário falhou repetidamente). 3. **DIRETRIZ DA SEMANA:** (Uma única regra ou foco para a próxima semana). Seja analítico, direto e use os dados do usuário para embasar sua análise. Use markdown.",
-            isLocked: true // ✅ Ferramenta Paga
+            isLocked: true // Ferramenta Paga
         }
     };
     
@@ -160,32 +156,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- setActiveTool (ATUALIZADA) ---
-    function setActiveTool(toolName, isInitialLoad = false) { 
-        currentTool = toolName;
-        currentChatId = null; // Começa um novo chat, então o ID é nulo
-        const toolInfo = toolDefinitions[toolName];
-        
-        // Define o histórico inicial
-        conversationHistory = [
-            { 
-                role: "system", 
-                content: toolInfo.systemPrompt 
-            }
-        ];
+    // --- setActiveTool (ATUALIZADA) ---
+function setActiveTool(toolName, isInitialLoad = false) { 
+    currentTool = toolName;
+    currentChatId = null; // Reseta o ID do chat
+    const toolInfo = toolDefinitions[toolName];
+    
+    // Define o histórico inicial
+    conversationHistory = [
+        { 
+            role: "system", 
+            content: toolInfo.systemPrompt 
+        }
+    ];
 
-        document.querySelectorAll('.tool-item').forEach(item => {
-            item.classList.toggle('active', item.id === `tool${toolName}`);
-        });
+    // Atualiza o menu lateral
+    document.querySelectorAll('.tool-item').forEach(item => {
+        item.classList.toggle('active', item.id === `tool${toolName}`);
+    });
+    
+    // Atualiza os títulos
+    chatTitle.textContent = toolInfo.title.toUpperCase();
+    chatSubtitle.textContent = toolInfo.subtitle;
+    
+    // Limpa as mensagens (exceto no primeiro load)
+    if (!isInitialLoad) {
+        messagesContainer.innerHTML = '';
+    }
+    
+    // --- LÓGICA DE BLOQUEIO (A PARTE QUE FALTAVA) ---
+    if (toolInfo.isLocked) {
+        // Se a ferramenta for PAGA (bloqueada)
+        textInputWrapper.classList.add('hidden'); // Esconde o input
+        upgradeBlock.classList.remove('hidden'); // Mostra o bloco de upgrade
+        upgradeTitle.textContent = toolInfo.title.toUpperCase(); // Coloca o nome da ferramenta no bloco
         
-        chatTitle.textContent = toolInfo.title.toUpperCase();
-        chatSubtitle.textContent = toolInfo.subtitle;
-        chatInput.placeholder = "Digite sua mensagem aqui...";; // ✅ Atualiza o placeholder
+        // Atualiza a mensagem da demo para refletir o bloqueio
+        demoUsageMessage.textContent = "Esta é uma ferramenta premium. Selecione 'Diagnóstico Bruto' para testar.";
+        demoUsageMessage.classList.add('brutal-red');
         
+    } else {
+        // Se a ferramenta for GRATUITA (desbloqueada)
+        textInputWrapper.classList.remove('hidden'); // Mostra o input
+        upgradeBlock.classList.add('hidden'); // Esconde o bloco de upgrade
         
-        
-        // --- FIM DA LÓGICA DE BLOQUEIO ---
-
-    } 
+        // Verifica o limite GERAL da demo
+        checkDemoUsage(); 
+    }
+}
 async function sendMessage() {
     const message = chatInput.value.trim();
     if (message === '') return;
