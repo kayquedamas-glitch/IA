@@ -40,13 +40,12 @@ body {
 .chat-messages {
     flex-grow: 1; /* Ocupa todo o espaço disponível */
     overflow-y: auto; /* ESTA é a área que rola */
-    padding: 24px 20px; /* Padding padrão (mantido do original) */
+    /* padding: 24px 20px; <-- Removido para o container interno controlar */
     scroll-behavior: smooth;
     
-    /* Adicionado para que as bolhas fiquem alinhadas corretamente */
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; <-- ✅ CORREÇÃO: Removido */
 }
 .chat-input-container {
     border-top: 1px solid #333;
@@ -54,7 +53,6 @@ body {
     background-color: #1a1a1a;
     display: flex;
     align-items: center;
-    /* Garante que o input não cresça, permanecendo fixo embaixo */
     flex-shrink: 0; 
 }
 .chat-input {
@@ -77,13 +75,12 @@ body {
     border-radius: 15px;
     margin-bottom: 15px;
     max-width: 80%;
-    /* max-height: 400px;  <--- REMOVIDO */
-    /* overflow-y: auto;   <--- REMOVIDO */
+    max-height: 400px;
+    overflow-y: auto;
     white-space: pre-wrap;
     word-wrap: break-word;
     
-    /* Adicionado para funcionar com o 'align-items: center' do container */
-    width: 100%; 
+    /* width: 100%; <-- ✅ CORREÇÃO: Removido */
 }
 .chat-message-user {
     background-color: #333333;
@@ -138,10 +135,11 @@ body {
     NOVOS ESTILOS (Menu Sanduíche)
 =========================================
 */
-
-/* Escondidos no desktop por padrão */
 .open-sidebar-btn, .close-sidebar-btn, .sidebar-overlay {
     display: none;
+}
+#chatHeader {
+    display: none; /* Cabeçalho não existe no Desktop */
 }
 
 
@@ -151,46 +149,44 @@ body {
 */
 @media (max-width: 768px) {
     
-    /* Permite scroll do body no celular, SE necessário (embora 100dvh deva evitar) */
     body {
         overflow: auto;
     }
     
-    /* 1. Layout: Chat ocupa 100%, altura dinâmica p/ teclado */
     .app-layout {
-        grid-template-columns: 1fr; /* Coluna única (só o chat) */
-        height: 100dvh; /* Altura dinâmica p/ teclado */
-        overflow: auto; /* Permite scroll (embora a área de chat já role) */
+        grid-template-columns: 1fr;
+        height: 100dvh;
+        overflow: auto; 
     }
     .chat-area {
-        height: 100dvh; /* Garante que o chat ocupe a altura dinâmica */
+        height: 100dvh;
     }
 
-    /* 2. Configuração da Sidebar (Flutuante - Sem alteração) */
+    /* Mostra o cabeçalho no celular */
+    #chatHeader {
+        display: flex;
+    }
+
     .sidebar {
-        position: fixed; /* Flutua sobre o conteúdo */
+        position: fixed; 
         top: 0;
         left: 0;
-        height: 100dvh; /* Ocupa altura total */
-        width: 280px; /* Largura fixa */
-        z-index: 100; /* Fica por cima de tudo */
-        transform: translateX(-100%); /* Começa escondida à esquerda */
+        height: 100dvh; 
+        width: 280px; 
+        z-index: 100; 
+        transform: translateX(-100%); 
         transition: transform 0.3s ease-in-out;
     }
     .sidebar.open {
-        transform: translateX(0); /* Mostra a sidebar */
+        transform: translateX(0); 
     }
     
-    /* 3. Botão Sanduíche (Abrir) - AGORA SÓ PRECISA SER EXIBIDO */
     .open-sidebar-btn {
-        display: block; /* Mostra no celular */
-        /* Não precisa de position: fixed, top, left, z-index */
-        /* Tailwind cuida do resto no HTML */
+        display: block; 
     }
 
-    /* 4. Botão de Fechar (Dentro da Sidebar - Sem alteração) */
     .close-sidebar-btn {
-        display: block; /* Mostra no celular */
+        display: block; 
         background: none;
         border: none;
         color: #fff;
@@ -198,7 +194,6 @@ body {
         cursor: pointer;
     }
 
-    /* 5. Overlay (Fundo Escuro - Sem alteração) */
     .sidebar-overlay {
         position: fixed;
         top: 0;
@@ -206,7 +201,7 @@ body {
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.6);
-        z-index: 99; /* Fica entre a sidebar e o chat */
+        z-index: 99; 
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -217,35 +212,32 @@ body {
         visibility: visible;
     }
 
-    /* 6. Ajustes de UI */
-    
-    /* Esconde o botão "new chat" do desktop */
     .desktop-only-btn {
         display: none;
     }
     
-    /* REMOVIDO: Não precisamos mais dessa gambiarra */
-    /* .chat-messages { padding-top: 100px; } */
-    
-    /* Esconde o Histórico para economizar espaço */
     .sidebar .flex-grow {
          display: none;
     }
-
-    /* REMOVIDO: Não precisamos mais disso, o header é separado */
-    /* .chat-messages div[class*="max-w-3xl"] { ... } */
-    /* #chatTitle { ... } */
-    /* #chatSubtitle { ... } */
     
     .chat-input {
         font-size: 1rem;
     }
     
-    /* Ajusta o tamanho das bolhas de chat */
-        .chat-message-user, 
-.chat-message-ia {
-    max-width: 95%;
-    font-size: 0.875rem; /* <-- LINHA ALTERADA */
-    padding: 8px 12px;
+    .chat-message-user, 
+    .chat-message-ia {
+        max-width: 95%;
+        font-size: 0.875rem; 
+        padding: 8px 12px;
     }
+}
+
+/* ✅ =========================================
+    ESTILOS DAS FERRAMENTAS BLOQUEADAS
+========================================= */
+
+/* Deixa o texto e o ícone das ferramentas bloqueadas mais escuros */
+.tool-item.is-locked,
+.tool-item.is-locked > .fas {
+    color: #6b7280; /* Tom de cinza (text-gray-500) */
 }
