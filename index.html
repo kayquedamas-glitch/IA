@@ -2,6 +2,23 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
+    <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2212830292539690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2212830292539690&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>Synapse - Arsenal IA</title>
@@ -111,7 +128,9 @@
                 <div id="messagesContainer" class="p-5 w-full max-w-3xl mx-auto">
                     
                     <div class="w-full text-center mb-6 p-4 bg-[#1a1a1a] rounded-xl border border-gray-700">
-                        <p id="chatSubtitle" class="text-gray-300 text-lg"></p>
+                        <p id="chatSubtitle" class="text-gray-300 text-lg">
+    Para começar, me diga... <span id="typewriter-text" class="brutal-red font-bold"></span>
+</p>
                         <p id="demoUsageMessage" class="text-gray-500 text-xs mt-2"></p>
                     </div>
                     
