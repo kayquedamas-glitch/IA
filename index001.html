@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2212830292539690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2212830292539690&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>Synapse - Arsenal IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/app.css"> <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0CxDk9z4RZnuv4BV04TjP252mXuny_wE",
+            authDomain: "synapse-e14d0.firebaseapp.com",
+            projectId: "synapse-e14d0",
+            storageBucket: "synapse-e14d0.firebasestorage.app",
+            messagingSenderId: "945597083388",
+            appId: "1:945597083388:web:b3ab20432ed21696837179",
+            measurementId: "G-XFDQ7B4BTC"
+        };
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+</head>
+
+<body class="h-full">
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="app-layout">
+
+        <aside id="sidebar" class="sidebar p-4">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-2 text-2xl font-black brutal-red tracking-wider">
+                    <span>Synapse</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="newChatBtn"
+                        class="bg-[#333] text-white p-2 rounded-full hover:bg-[#555] transition desktop-only-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="closeSidebarBtn" class="close-sidebar-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="mb-8">
+                <h3 class="text-gray-400 text-xs uppercase font-bold mb-3">Ferramentas de IA</h3>
+                
+                <a id="toolDiagnostico" class="tool-item active"><i class="fas fa-heart-pulse fa-fw mr-3"></i>Diagnóstico Synapse</a>
+                
+                <a id="toolEstrategista" class="tool-item is-locked">
+                    <i class="fas fa-brain fa-fw mr-3"></i>
+                    <span>Estrategista Diário</span>
+                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                </a>
+                <a id="toolMestre" class="tool-item is-locked">
+                    <i class="fas fa-gavel fa-fw mr-3"></i>
+                    <span>Ferreiro de Hábitos</span>
+                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                </a>
+                <a id="toolAuditor" class="tool-item is-locked">
+                    <i class="fas fa-clipboard-check fa-fw mr-3"></i>
+                    <span>Auditor de Hábitos</span>
+                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                </a>
+            </nav>
+
+            <div class="flex-grow">
+                </div>
+
+            <div class="mt-auto pt-6">
+                <div id="demoLimitSidebar"
+                    class="p-3 bg-gray-900 border border-brutal-red/50 rounded-lg text-center mb-3">
+                    <p class="text-xs uppercase font-bold text-gray-400 mb-1">USO DA DEMO</p>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                        <div id="demoProgress" class="bg-brutal-red h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <p id="demoUsageText" class="text-sm text-gray-300 mt-1">0 / 5 usos</p>
+                </div>
+                <a href="pag.html"
+                    class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase flex items-center justify-center text-sm">
+                    <i class="fas fa-bolt mr-2"></i> Desbloquear Acesso Total
+                </a>
+            </div>
+        </aside>
+
+        <main class="chat-area">
+
+            <div id="chatHeader" class="p-3 border-b border-[#333] flex items-center bg-[#1a1a1a] shadow-md">
+                <button id="openSidebarBtn" class="open-sidebar-btn text-white text-xl p-2 mr-3">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex-grow">
+                    <h3 id="chatTitle" class="text-lg font-bold uppercase brutal-red"></h3>
+                </div>
+            </div>
+
+            <div class="chat-messages">
+                <div id="messagesContainer" class="p-5 w-full max-w-3xl mx-auto">
+                    
+                    <div class="w-full text-center mb-6 p-4 bg-[#1a1a1a] rounded-xl border border-gray-700">
+                        <p id="chatSubtitle" class="text-gray-300 text-lg">
+    Para começar, me diga... <span id="typewriter-text" class="brutal-red font-bold"></span>
+</p>
+                        <p id="demoUsageMessage" class="text-gray-500 text-xs mt-2"></p>
+                    </div>
+                    
+                    </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="w-full max-w-3xl mx-auto flex items-center bg-[#333] rounded-lg p-2">
+                    
+                    <div id="textInputWrapper" class="flex items-center w-full">
+                        <textarea id="chatInput" rows="1"
+                            class="w-full flex-grow bg-transparent border-none outline-none resize-none px-3 py-2 text-base"
+                            placeholder="Digite sua mensagem aqui..."></textarea>
+                        <button id="sendBtn"
+                            class="bg-brutal-red text-white p-3 rounded-lg hover:bg-red-800 transition ml-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <div id="loadingSpinner" class="hidden"></div>
+                        </button>
+                    </div>
+
+                    <div id="upgradeBlock" class="hidden w-full text-center p-3">
+                        <h4 id="upgradeTitle" class="font-bold brutal-red uppercase mb-2"></h4>
+                        <p class="text-gray-300 mb-4 text-sm">Esta ferramenta faz parte do Acesso Total. Desbloqueie para usar.</p>
+                        <a href="pag.html#planos"
+                            class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase text-sm flex items-center justify-center">
+                            Ver Planos
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+        
+    </div> <script src="js/app.js"></script>
+</body>
+</html>
