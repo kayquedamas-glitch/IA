@@ -415,7 +415,7 @@ window.sendQuickReply = function(text) {
     // Apenas foca o cursor para ele digitar.
     if (text.trim().toLowerCase().includes('outro')) {
         chatInput.focus();
-        chatInput.placeholder = "Digite aqui sua resposta específica...";
+        chatInput.placeholder = "Digite aqui sua resposta...";
         // Feedback visual (piscar borda vermelha)
         const originalBorder = chatInput.parentElement.style.border;
         chatInput.parentElement.style.border = "1px solid #CC0000";
