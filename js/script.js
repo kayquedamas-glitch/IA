@@ -7,36 +7,31 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (countdownElement) {
         function initializeCountdown() {
-            const now = new Date();
-            let expiry = new Date(now.getTime() + 24 * 60 * 60 * 1000); 
-            const offset = expiry.getTime() % (24 * 60 * 60 * 1000);  
-            expiry.setTime(expiry.getTime() - offset);
-            expiry = new Date(expiry.getTime() + 24 * 60 * 60 * 1000);
+    const countdownElement = document.getElementById('countdown');
+    
+    const updateCountdown = () => {
+        const now = new Date();
+        // Define o alvo para as 23:59:59 de HOJE
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        
+        const distance = endOfDay.getTime() - now.getTime();
 
-            const updateCountdown = () => {
-                const now = new Date().getTime();
-                const distance = expiry.getTime() - now;
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        countdownElement.innerHTML = `
+            <div class="flex flex-col items-center"><span class="text-4xl md:text-5xl font-black">${String(hours).padStart(2, '0')}</span><span class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">Horas</span></div>
+            <span class="text-2xl md:text-4xl text-gray-600 mx-2 mt-2">:</span>
+            <div class="flex flex-col items-center"><span class="text-4xl md:text-5xl font-black">${String(minutes).padStart(2, '0')}</span><span class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">Min</span></div>
+            <span class="text-2xl md:text-4xl text-gray-600 mx-2 mt-2">:</span>
+            <div class="flex flex-col items-center"><span class="text-4xl md:text-5xl font-black">${String(seconds).padStart(2, '0')}</span><span class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">Seg</span></div>
+        `;
+    };
 
-                if (distance < 0) {
-                    clearInterval(interval);
-                    countdownElement.innerHTML = `<span class="text-2xl">OFERTA EXPIRADA</span>`;
-                } else {
-                    countdownElement.innerHTML = `
-                        <div class="flex flex-col items-center"><span>${String(hours).padStart(2, '0')}</span><span class="text-base font-normal uppercase">Horas</span></div>
-                        :
-                        <div class="flex flex-col items-center"><span>${String(minutes).padStart(2, '0')}</span><span class="text-base font-normal uppercase">Minutos</span></div>
-                        :
-                        <div class="flex flex-col items-center"><span>${String(seconds).padStart(2, '0')}</span><span class="text-base font-normal uppercase">Segundos</span></div>
-                    `;
-                }
-            };
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
-        }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
         initializeCountdown();
     }
     // --- NOVA LÓGICA DE ANIMAÇÃO (OBSERVER) ---

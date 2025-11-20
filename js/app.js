@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     const db = firebase.firestore();
-    const MAX_USAGE = 15; 
+    const MAX_USAGE = 5; 
     const DEMO_DATE_KEY = 'demoLastResetDate';
     const DEMO_COUNT_KEY = 'demoUsageCount';
     const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
