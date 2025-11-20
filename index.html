@@ -2,7 +2,6 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
-    <link rel="icon" type="image/png" href="icon.png">
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -21,13 +20,16 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
     <title>Synapse - Arsenal IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/app.css"> <style>
+    <!-- TRUQUE ANTI-CACHE (?v=5) -->
+    <link rel="stylesheet" href="css/app.css"> 
+    
+    <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -52,32 +54,36 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
 </head>
 
 <body class="h-full">
-    <div id="limitModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4">
-    <div class="bg-[#111] border-2 border-brutal-red rounded-2xl max-w-md w-full p-8 text-center shadow-[0_0_40px_rgba(204,0,0,0.3)] relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#8a0000] to-[#cc0000]"></div>
-        
-        <i class="fas fa-lock text-5xl text-brutal-red mb-6"></i>
-        
-        <h2 class="text-3xl font-black uppercase text-white mb-2 tracking-tighter">
-            SISTEMA BLOQUEADO
-        </h2>
-        
-        <p class="text-gray-400 mb-8 text-lg">
-            Você atingiu o limite de diagnósticos gratuitos. Sua mente precisa de mais do que apenas conversas. Ela precisa de um plano.
-        </p>
 
-        <div class="space-y-4">
-            <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');" 
-               class="block w-full bg-brutal-red text-white font-black py-4 rounded-lg hover:bg-red-800 transition uppercase tracking-widest hover:scale-105 transform duration-200 shadow-red-strong">
-                DESBLOQUEAR AGORA
-            </a>
+    <!-- MODAL DE BLOQUEIO (10 INTERAÇÕES) -->
+    <div id="limitModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-[#111] border-2 border-brutal-red rounded-2xl max-w-md w-full p-8 text-center shadow-[0_0_40px_rgba(204,0,0,0.3)] relative overflow-hidden">
+            <!-- Efeito de fundo -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#8a0000] to-[#cc0000]"></div>
             
-            <p class="text-xs text-gray-600 uppercase font-bold tracking-widest mt-4">
-                Acesso Vitalício • Oferta Limitada
+            <i class="fas fa-lock text-5xl text-brutal-red mb-6"></i>
+            
+            <h2 class="text-3xl font-black uppercase text-white mb-2 tracking-tighter">
+                SISTEMA BLOQUEADO
+            </h2>
+            
+            <p class="text-gray-400 mb-8 text-lg">
+                Você atingiu o limite de interações gratuitas. <br>
+                <span class="text-white font-bold">Sua mente precisa de mais do que apenas conversas. Ela precisa de um plano.</span>
             </p>
+
+            <div class="space-y-4">
+                <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');" 
+                   class="block w-full bg-brutal-red text-white font-black py-4 rounded-lg hover:bg-red-800 transition uppercase tracking-widest hover:scale-105 transform duration-200 shadow-red-strong">
+                    DESBLOQUEAR AGORA
+                </a>
+                
+                <p class="text-xs text-gray-600 uppercase font-bold tracking-widest mt-4">
+                    Acesso Vitalício • Oferta Limitada
+                </p>
+            </div>
         </div>
     </div>
-</div>
 
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
@@ -85,18 +91,15 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
 
         <aside id="sidebar" class="sidebar p-4">
             <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center space-x-2 text-2xl font-black brutal-red tracking-wider">
-                    <span>Synapse</span>
+                <div class="flex items-center space-x-3">
+                     <!-- ÍCONE S BRUTALISTA (SVG) -->
+                        <path d="M4 4H20V9H9V11H20V20H4V15H15V13H4V4Z" />
+                    </svg>
+                    <span class="text-2xl font-black brutal-red tracking-wider">Synapse</span>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <button id="newChatBtn"
-                        class="bg-[#333] text-white p-2 rounded-full hover:bg-[#555] transition desktop-only-btn">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <button id="closeSidebarBtn" class="close-sidebar-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+                
+                <!-- BOTÕES REMOVIDOS DAQUI -->
+                
             </div>
 
             <nav class="mb-8">
@@ -133,7 +136,7 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
                     </div>
                     <p id="demoUsageText" class="text-sm text-gray-300 mt-1">0 / 10 interações</p>
                 </div>
-                <a href="pag.html"
+                <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');"
                     class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase flex items-center justify-center text-sm">
                     <i class="fas fa-bolt mr-2"></i> Desbloquear Acesso Total
                 </a>
@@ -156,7 +159,7 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
                     
                     <div class="w-full text-center mb-6 p-4 bg-[#1a1a1a] rounded-xl border border-gray-700">
                         <p id="chatSubtitle" class="text-gray-300 text-lg">
-    Para começar, me diga... <span id="typewriter-text" class="brutal-red font-bold"></span>
+    <span id="typewriter-text" class="brutal-red font-bold"></span>
 </p>
                         <p id="demoUsageMessage" class="text-gray-500 text-xs mt-2"></p>
                     </div>
@@ -191,6 +194,7 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
             </div>
         </main>
         
+    <!-- SCRIPT V5 -->
     </div> <script src="js/app.js"></script>
 </body>
 </html>

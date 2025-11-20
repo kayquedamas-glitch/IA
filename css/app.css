@@ -1,11 +1,10 @@
-/* css/app.css (VERSÃO COM MENU SANDUÍCHE) */
+/* css/app.css (VERSÃO V3 - ESPAÇAMENTO REAL + BOTÕES SLIM) */
 
-/* Estilos R72 Base */
+/* Estilos Base */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #111111;
     color: #ffffff;
-    /* Impede o scroll do body no desktop */
     overflow: hidden; 
 }
 .brutal-red { color: #CC0000; }
@@ -29,24 +28,37 @@ body {
     overflow-y: auto;
 }
 
-/* ÁREA DO CHAT (Layout de 3 partes) */
+/* ÁREA DO CHAT */
 .chat-area {
     display: flex;
-    flex-direction: column; /* Cabeçalho, Conteúdo, Input */
-    background-color: #111111;
+    flex-direction: column; 
+    background-color: #050505;
     height: 100vh;
     overflow: hidden;
 }
+
+/* Janela de Rolagem (Scroll) */
 .chat-messages {
-    flex-grow: 1; /* Ocupa todo o espaço disponível */
-    overflow-y: auto; /* ESTA é a área que rola */
-    /* padding: 24px 20px; <-- Removido para o container interno controlar */
+    flex-grow: 1; 
+    overflow-y: auto; 
     scroll-behavior: smooth;
-    
     display: flex;
     flex-direction: column;
-    /* align-items: center; <-- ✅ CORREÇÃO: Removido */
+    padding: 20px;
 }
+
+/* --- AQUI ESTÁ A CORREÇÃO DO ESPAÇAMENTO --- */
+/* Este é o container que segura as bolhas. Ele PRECISA do gap. */
+#messagesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px !important; /* Força 24px de distância entre mensagens */
+    width: 100%;
+    max-width: 48rem; /* max-w-3xl */
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .chat-input-container {
     border-top: 1px solid #333;
     padding: 15px 20px;
@@ -69,32 +81,45 @@ body {
     max-height: 150px;
 }
 
-/* Bolhas de Chat */
+/* =========================================
+   ESTILO DE BALÕES (WHATSAPP BRUTAL)
+========================================= */
+
 .chat-message-user, .chat-message-ia {
-    padding: 10px 15px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    max-width: 80%;
-    max-height: 400px;
-    overflow-y: auto;
+    padding: 12px 16px;
+    border-radius: 14px;
+    max-width: 85%;
+    overflow-y: visible; 
     white-space: pre-wrap;
     word-wrap: break-word;
-    
-    /* width: 100%; <-- ✅ CORREÇÃO: Removido */
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
+
+/* MENSAGEM DO USUÁRIO (DIREITA) */
 .chat-message-user {
-    background-color: #333333;
-    align-self: flex-end;
+    background-color: #4a0a0a; 
+    border: 1px solid #7a0000;
+    color: #fff;
+    align-self: flex-end; /* Joga pra direita */
+    border-bottom-right-radius: 2px;
+    margin-left: auto; 
 }
+
+/* MENSAGEM DA IA (ESQUERDA) */
 .chat-message-ia {
-    background-color: #0c0c0c;
-    border: 1px solid #333333;
-    align-self: flex-start;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: #e0e0e0;
+    align-self: flex-start; /* Joga pra esquerda */
+    border-bottom-left-radius: 2px;
+    margin-right: auto;
 }
-.chat-message-ia .brutal-red { color: #CC0000; } 
-.chat-message-ia .font-bold { font-weight: 700; }
-.chat-message-ia ul { list-style-type: disc; margin-left: 20px; }
-.chat-message-ia li { margin-bottom: 5px; }
+
+.chat-message-ia .brutal-red { color: #ff4d4d; font-weight: bold; } 
+.chat-message-ia strong { color: #fff; }
 
 /* Itens da Sidebar */
 .tool-item {
@@ -112,9 +137,60 @@ body {
     font-weight: bold;
     color: #ffffff;
 }
-.tool-item.active:hover { background-color: #CC0000; }
+.tool-item.is-locked { color: #6b7280; }
 
-/* Spinner */
+/* =========================================
+   BOTÕES SLIM (LINHA ÚNICA)
+========================================= */
+
+.quick-reply-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;            
+    margin-top: 8px;     
+    padding-bottom: 4px; 
+    
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+.quick-reply-container::-webkit-scrollbar { display: none; }
+
+/* Botão Slim */
+.cyber-btn {
+    background: rgba(30, 30, 30, 1);
+    border: 1px solid #CC0000;
+    color: #e5e5e5;
+    padding: 5px 12px; /* Bem compacto */
+    font-size: 0.7rem; 
+    line-height: 1.2;
+    border-radius: 6px; 
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif; 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    white-space: nowrap; 
+    flex-shrink: 0; 
+}
+
+.cyber-btn:hover {
+    background: #CC0000;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.cyber-btn.more-btn {
+    border: 1px dashed #666;
+    color: #aaa;
+}
+
 #loadingSpinner {
     border: 4px solid rgba(255, 255, 255, 0.3);
     border-top: 4px solid #CC0000;
@@ -125,82 +201,38 @@ body {
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #1a1a1a; }
-::-webkit-scrollbar-thumb { background: #444444; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #555555; }
-
 /* =========================================
-    NOVOS ESTILOS (Menu Sanduíche)
-=========================================
-*/
-.open-sidebar-btn, .close-sidebar-btn, .sidebar-overlay {
-    display: none;
-}
-#chatHeader {
-    display: none; /* Cabeçalho não existe no Desktop */
-}
-
-
-/* =========================================
-    MEDIA QUERY PARA CELULAR (max-width: 768px)
+    MEDIA QUERY PARA CELULAR
 =========================================
 */
 @media (max-width: 768px) {
+    body { overflow: hidden; position: fixed; width: 100%; height: 100%; }
+    .app-layout { grid-template-columns: 1fr; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+    .chat-area { height: 100%; display: flex; flex-direction: column; }
     
-    body {
-        overflow: hidden; /* Impede scroll no body */
-        position: fixed; /* Trava o body */
-        width: 100%;
-        height: 100%; /* Garante altura total */
-    }
-    
-    .app-layout {
-        grid-template-columns: 1fr;
-        height: 100%; /* Usa 100% da altura disponível */
-        overflow: hidden; 
-        display: flex;
-        flex-direction: column;
-    }
-
-    .chat-area {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
     .chat-messages {
         flex-grow: 1;
         overflow-y: auto;
-        /* Garante scroll suave no iOS */
         -webkit-overflow-scrolling: touch; 
+        padding: 16px;
+    }
+    
+    /* No mobile, o gap é aplicado aqui também por herança, mas reforçamos */
+    #messagesContainer {
+        gap: 24px !important;
     }
 
-    /* Input fixo na parte inferior */
     .chat-input-container {
-        /* 'sticky' ou 'fixed' podem ser usados, mas sticky dentro de flex costuma ser mais seguro */
         position: relative; 
         bottom: 0;
         background-color: #1a1a1a;
-        /* Padding seguro para iPhones modernos (sem botão home) */
         padding-bottom: env(safe-area-inset-bottom); 
         z-index: 10;
     }
 
-    /* Sidebar (Menu) */
-    .sidebar {
-        position: fixed; 
-        top: 0;
-        left: 0;
-        height: 100%; 
-        width: 280px; 
-        z-index: 100; 
-        transform: translateX(-100%); 
-        transition: transform 0.3s ease-in-out;
-    }
+    .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; z-index: 100; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+    .sidebar.open { transform: translateX(0); }
     
-    /* ... (Mantenha o resto dos estilos mobile como botão, overlay etc.) ... */
     #chatHeader { display: flex; }
     .open-sidebar-btn { display: block; }
     .close-sidebar-btn { display: block; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -208,56 +240,6 @@ body {
     .sidebar-overlay.open { display: block; opacity: 1; visibility: visible; }
     .desktop-only-btn { display: none; }
     .sidebar .flex-grow { display: none; }
-    .chat-input { font-size: 1rem; } /* Evita zoom no iOS */
-    .chat-message-user, .chat-message-ia { max-width: 95%; font-size: 0.875rem; padding: 8px 12px; }
-}
-
-/* ✅ =========================================
-    ESTILOS DAS FERRAMENTAS BLOQUEADAS
-========================================= */
-
-/* Deixa o texto e o ícone das ferramentas bloqueadas mais escuros */
-.tool-item.is-locked,
-.tool-item.is-locked > .fas {
-    color: #6b7280; /* Tom de cinza (text-gray-500) */
-}
-/* Botões de Interação "Cyberpunk" */
-.cyber-btn {
-    background: rgba(20, 20, 20, 0.8);
-    border: 1px solid #CC0000; /* Vermelho Brutal */
-    color: #e5e5e5;
-    padding: 8px 16px;
-    margin: 4px 4px 4px 0;
-    border-radius: 4px; /* Quadrado, estilo tech */
-    cursor: pointer;
-    font-family: 'Courier New', monospace; /* Fonte de código */
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-}
-
-.cyber-btn:hover {
-    background: #CC0000;
-    color: #000;
-    box-shadow: 0 0 15px rgba(204, 0, 0, 0.6); /* Brilho Neon */
-    transform: translateY(-1px);
-    font-weight: bold;
-}
-
-.cyber-btn:active {
-    transform: translateY(1px);
-}
-
-/* Animação de entrada */
-.cyber-btn {
-    animation: slideIn 0.3s ease-out forwards;
-    opacity: 0;
-    transform: translateY(10px);
-}
-@keyframes slideIn {
-    to { opacity: 1; transform: translateY(0); }
+    .chat-input { font-size: 1rem; } 
+    .chat-message-user, .chat-message-ia { max-width: 90%; font-size: 0.95rem; padding: 10px 14px; }
 }

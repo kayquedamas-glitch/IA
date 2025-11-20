@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     const db = firebase.firestore();
-    const MAX_USAGE = 5; 
+    const MAX_USAGE = 99; 
     const DEMO_DATE_KEY = 'demoLastResetDate';
     const DEMO_COUNT_KEY = 'demoUsageCount';
     const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
@@ -12,11 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolDefinitions = {
         'Diagnostico': {
             title: "Diagnóstico Synapse",
-            subtitle: "Iniciando sistema...", 
-            typewriterExamples: [
-                "Carregando módulo de análise...",
-                "Verificando padrões de vício...",
-                "Sistema pronto."
+            subtitle: "Para começar, me diga...", // Parte estática
+            typewriterExamples: [ // ✅ Parte animada
+                "o que está na sua mente?",
+                "seu maior vício.",
+                "seu impulso de procrastinar.",
+                "o que você está evitando."
             ],
             systemPrompt: `Você é o Synapse OS. Uma IA de análise comportamental.
 Tom: TÉCNICO, CURIOSO e LEVEMENTE PROVOCATIVO.
@@ -75,7 +76,7 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
         }
     };
     
-    // --- ESTADO DO CHAT ---
+// --- ESTADO DO CHAT ---
     let currentTool = 'Diagnostico'; 
     let conversationHistory = []; 
     let currentChatId = null; 
@@ -159,24 +160,58 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
         checkDemoUsage();
     }
     
-    // --- FUNÇÃO DE MENSAGENS ---
+    // --- FUNÇÃO DE MENSAGENS (CORRIGIDA: REMOVE ESPAÇO VAZIO) ---
     function addMessage(message, isUser, isError = false) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add(isUser ? 'chat-message-user' : 'chat-message-ia');
         if (isError) messageDiv.classList.add('brutal-red', 'font-bold');
         
-        let formattedMessage = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        
-        // Transforma <<Opção>> em Botão que chama sendQuickReply
-        formattedMessage = formattedMessage.replace(
-            /<<(.+?)>>/g, 
-            '<button class="cyber-btn" onclick="window.sendQuickReply(\'$1\')">$1</button>'
-        );
+        // 1. EXTRAIR BOTÕES PRIMEIRO (Antes de qualquer formatação)
+        const buttonRegex = /<<(.+?)>>/g;
+        const buttons = [];
+        let match;
 
+        while ((match = buttonRegex.exec(message)) !== null) {
+            buttons.push(match[1]);
+        }
+
+        // 2. LIMPEZA INTELIGENTE (A Mágica)
+        // Remove os códigos <<...>>
+        let cleanMessage = message.replace(buttonRegex, '');
+        // .trim() remove TODAS as quebras de linha e espaços inúteis do final
+        cleanMessage = cleanMessage.trim(); 
+
+        // 3. FORMATAÇÃO (Agora segura)
+        let formattedMessage = cleanMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '<em>$1</em>');
         formattedMessage = formattedMessage.replace(/\n/g, '<br>');
-        
+
+        // Insere o texto limpo e enxuto
         messageDiv.innerHTML = formattedMessage;
+
+        // 4. CRIAR CONTAINER DE BOTÕES (Se houver)
+        if (buttons.length > 0) {
+            const scrollContainer = document.createElement('div');
+            scrollContainer.className = 'quick-reply-container'; 
+
+            buttons.forEach(btnText => {
+                const btn = document.createElement('button');
+                btn.className = 'cyber-btn';
+                
+                if (btnText.trim().toLowerCase().includes('outro') || btnText.trim().toLowerCase().includes('ver mais')) {
+                     btn.classList.add('more-btn');
+                }
+
+                btn.innerText = btnText;
+                btn.onclick = () => window.sendQuickReply(btnText);
+                
+                scrollContainer.appendChild(btn);
+            });
+
+            // Adiciona os botões logo abaixo do texto (colados, graças ao trim)
+            messageDiv.appendChild(scrollContainer);
+        }
+        
         messagesContainer.appendChild(messageDiv);
         scrollingContainer.scrollTop = scrollingContainer.scrollHeight;
     }
@@ -220,14 +255,14 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
         }
     } 
 
-    // --- ENVIO DE MENSAGEM COM CORREÇÃO DE TECLADO ---
+    // --- ENVIO DE MENSAGEM (TECLADO FIXO) ---
     async function sendMessage() {
         const message = chatInput.value.trim();
         if (message === '') return;
         
-        // ✅ FORÇA O TECLADO A FECHAR NO MOBILE
+        // FECHA O TECLADO NO MOBILE AO ENVIAR
         if (window.innerWidth <= 768) {
-            chatInput.blur();
+            chatInput.blur(); 
         }
 
         if (!toolDefinitions[currentTool].isLocked) {
@@ -298,8 +333,7 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
             
             if (!toolDefinitions[currentTool].isLocked && (MAX_USAGE - parseInt(localStorage.getItem(DEMO_COUNT_KEY) || '0', 10)) > 0) {
                 chatInput.disabled = false;
-                
-                // ✅ SÓ ABRE TECLADO AUTOMATICAMENTE SE FOR DESKTOP
+                // SÓ ABRE TECLADO SE FOR DESKTOP
                 if (window.innerWidth > 768) {
                     chatInput.focus();
                 }
@@ -408,7 +442,7 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
 
     setActiveTool('Diagnostico', true); 
 
-    // --- CORREÇÃO DO SCROLL QUANDO TECLADO ABRE ---
+    // --- CORREÇÃO DE SCROLL (TECLADO) ---
     window.addEventListener('resize', () => {
         if (document.activeElement === chatInput) {
             setTimeout(() => {
@@ -419,16 +453,14 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
 
 });
 
-// ============================================================
-// FUNÇÃO GLOBAL DE RESPOSTA RÁPIDA
-// ============================================================
+// --- FUNÇÃO GLOBAL (MODO "OUTRO") ---
 window.sendQuickReply = function(text) {
     const chatInput = document.getElementById('chatInput');
     if(!chatInput) return;
 
     if (text.trim().toLowerCase().includes('outro')) {
         chatInput.focus();
-        chatInput.placeholder = "Digite aqui sua resposta específica...";
+        chatInput.placeholder = "Digite aqui...";
         const originalBorder = chatInput.parentElement.style.border;
         chatInput.parentElement.style.border = "1px solid #CC0000";
         setTimeout(() => {
