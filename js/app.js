@@ -1,8 +1,8 @@
-/* app.js (VERSÃO SYNAPSE OS - COM BOTÕES E MODO OUTRO) */
+/* app.js (VERSÃO FINAL - TECLADO FIXO) */
 document.addEventListener('DOMContentLoaded', () => {
     
     const db = firebase.firestore();
-    const MAX_USAGE = 5; // Limite aumentado para garantir diagnóstico completo
+    const MAX_USAGE = 5; 
     const DEMO_DATE_KEY = 'demoLastResetDate';
     const DEMO_COUNT_KEY = 'demoUsageCount';
     const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
@@ -12,15 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolDefinitions = {
         'Diagnostico': {
             title: "Diagnóstico Synapse",
-          subtitle: "Para começar, me diga...", // Parte estática
-            typewriterExamples: [ // ✅ Parte animada
-                "o que está na sua mente?",
-                "seu maior vício.",
-                "seu impulso de procrastinar.",
-                "o que você está evitando."
+            subtitle: "Iniciando sistema...", 
+            typewriterExamples: [
+                "Carregando módulo de análise...",
+                "Verificando padrões de vício...",
+                "Sistema pronto."
             ],
-
-            // PROMPT ATUALIZADO: GERA BOTÕES E SEMPRE INCLUI 'OUTRO'
             systemPrompt: `Você é o Synapse OS. Uma IA de análise comportamental.
 Tom: TÉCNICO, CURIOSO e LEVEMENTE PROVOCATIVO.
 
@@ -162,7 +159,7 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
         checkDemoUsage();
     }
     
-    // --- FUNÇÃO DE MENSAGENS (COM BOTÕES INTELIGENTES) ---
+    // --- FUNÇÃO DE MENSAGENS ---
     function addMessage(message, isUser, isError = false) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add(isUser ? 'chat-message-user' : 'chat-message-ia');
@@ -223,10 +220,16 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
         }
     } 
 
+    // --- ENVIO DE MENSAGEM COM CORREÇÃO DE TECLADO ---
     async function sendMessage() {
         const message = chatInput.value.trim();
         if (message === '') return;
         
+        // ✅ FORÇA O TECLADO A FECHAR NO MOBILE
+        if (window.innerWidth <= 768) {
+            chatInput.blur();
+        }
+
         if (!toolDefinitions[currentTool].isLocked) {
             incrementDemoUsage();
         }
@@ -278,7 +281,6 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
                     role: "assistant",
                     content: iaMessage
                 });
-                // await saveChatToFirestore(); 
             } else {
                 addMessage("Erro: Resposta vazia.", false, true);
             }
@@ -296,7 +298,11 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
             
             if (!toolDefinitions[currentTool].isLocked && (MAX_USAGE - parseInt(localStorage.getItem(DEMO_COUNT_KEY) || '0', 10)) > 0) {
                 chatInput.disabled = false;
-                chatInput.focus();
+                
+                // ✅ SÓ ABRE TECLADO AUTOMATICAMENTE SE FOR DESKTOP
+                if (window.innerWidth > 768) {
+                    chatInput.focus();
+                }
             }
         }
     }
@@ -402,21 +408,27 @@ Se o usuário escolher "Outro" e digitar algo, analise a resposta dele normalmen
 
     setActiveTool('Diagnostico', true); 
 
+    // --- CORREÇÃO DO SCROLL QUANDO TECLADO ABRE ---
+    window.addEventListener('resize', () => {
+        if (document.activeElement === chatInput) {
+            setTimeout(() => {
+                scrollingContainer.scrollTop = scrollingContainer.scrollHeight;
+            }, 100);
+        }
+    });
+
 });
 
 // ============================================================
-// FUNÇÃO GLOBAL DE RESPOSTA RÁPIDA (COM LÓGICA DE 'OUTRO')
+// FUNÇÃO GLOBAL DE RESPOSTA RÁPIDA
 // ============================================================
 window.sendQuickReply = function(text) {
     const chatInput = document.getElementById('chatInput');
     if(!chatInput) return;
 
-    // LÓGICA DO MODO 'OUTRO': Se o usuário clicar em 'Outro', não envia.
-    // Apenas foca o cursor para ele digitar.
     if (text.trim().toLowerCase().includes('outro')) {
         chatInput.focus();
-        chatInput.placeholder = "Digite aqui sua resposta...";
-        // Feedback visual (piscar borda vermelha)
+        chatInput.placeholder = "Digite aqui sua resposta específica...";
         const originalBorder = chatInput.parentElement.style.border;
         chatInput.parentElement.style.border = "1px solid #CC0000";
         setTimeout(() => {
@@ -425,7 +437,6 @@ window.sendQuickReply = function(text) {
         return; 
     }
 
-    // SE NÃO FOR 'OUTRO', ENVIA DIRETO
     chatInput.value = text;
     const sendBtn = document.getElementById('sendBtn');
     if(sendBtn) sendBtn.click();
