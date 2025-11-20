@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolDefinitions = {
         'Diagnostico': {
             title: "Diagnóstico Synapse",
-          subtitle: "Para começar, me diga:", // Parte estática
+          subtitle: "Para começar, me diga...", // Parte estática
             typewriterExamples: [ // ✅ Parte animada
                 "o que está na sua mente?",
                 "seu maior vício.",
