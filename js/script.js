@@ -2,14 +2,14 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- LÓGICA DE CONTAGEM REGRESSIVA (ATÉ MEIA-NOITE DO DIA ATUAL) ---
+    // --- 1. CONTAGEM REGRESSIVA ATÉ A MEIA-NOITE (URGÊNCIA REAL) ---
     const countdownElement = document.getElementById('countdown');
     
     if (countdownElement) {
         function initializeCountdown() {
             const updateCountdown = () => {
                 const now = new Date();
-                // Define o alvo para as 23:59:59 de HOJE
+                // Alvo: 23:59:59 de HOJE
                 const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
                 
                 const distance = endOfDay.getTime() - now.getTime();
@@ -19,10 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                 if (distance < 0) {
-                    // Se passar da meia-noite, reinicia para a próxima (loop eterno de urgência)
-                    // Ou exibe "EXPIRADO" se quiser ser rígido.
-                    // Aqui, vamos manter o loop diário:
-                     countdownElement.innerHTML = `<span class="text-2xl text-gray-500">Reiniciando oferta...</span>`;
+                     // Se virou o dia, mostra "00:00:00" ou reinicia
+                     countdownElement.innerHTML = `<span class="text-2xl text-gray-500">Oferta Expirada</span>`;
                 } else {
                     countdownElement.innerHTML = `
                         <div class="flex flex-col items-center"><span class="text-4xl md:text-5xl font-black">${String(hours).padStart(2, '0')}</span><span class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">Horas</span></div>
@@ -39,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeCountdown();
     }
 
-    // --- LÓGICA DE ANIMAÇÃO (REVEAL) ---
+    // --- 2. ANIMAÇÃO DE REVEAL (APARECER AO ROLAR) ---
     const observerOptions = {
         root: null,
         rootMargin: '0px',
@@ -58,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealElements = document.querySelectorAll('.reveal');
     revealElements.forEach(el => observer.observe(el));
     
-    // --- CONTROLE DE VOLUME DO VÍDEO ---
+    // --- 3. CONTROLE DE VOLUME DO VÍDEO ---
     const video = document.getElementById('meuVideo');
     const botaoVolume = document.getElementById('botaoVolume');
     const iconeVolume = document.getElementById('iconeVolume');
