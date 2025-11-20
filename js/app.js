@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     const db = firebase.firestore();
-    const MAX_USAGE =999; // Limite aumentado para garantir diagnóstico completo
+    const MAX_USAGE =5; // Limite aumentado para garantir diagnóstico completo
     const DEMO_DATE_KEY = 'demoLastResetDate';
     const DEMO_COUNT_KEY = 'demoUsageCount';
     const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
