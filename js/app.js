@@ -125,33 +125,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return storedCount;
     }
-    function checkDemoUsage() {
-        const count = initializeDemoUsage();
-        const remaining = MAX_USAGE - count;
-        if (demoLimitSidebar && demoUsageMessage && demoProgress && demoUsageText && sendBtn && chatInput) {
-            const percentage = (count / MAX_USAGE) * 100;
-            demoProgress.style.width = `${percentage}%`;
-            demoUsageText.textContent = `${count} / ${MAX_USAGE} usos`;
-            if (remaining <= 0) {
-                demoUsageMessage.textContent = "Limite de usos diários da demo atingido.";
-                demoUsageMessage.classList.add('brutal-red');
-                sendBtn.disabled = true;
-                chatInput.placeholder = "Limite de demo atingido.";
-                chatInput.disabled = true;
-            } else if (remaining <= 3) {
-                demoUsageMessage.textContent = `Atenção: Você tem ${remaining} ${remaining === 1 ? 'uso restante' : 'usos restantes'} na demo.`;
+    // Substitua a função checkDemoUsage antiga por esta:
+function checkDemoUsage() {
+    const count = initializeDemoUsage();
+    const remaining = MAX_USAGE - count;
+    
+    const limitModal = document.getElementById('limitModal'); // Pegando o modal
+
+    if (demoLimitSidebar && demoUsageMessage && demoProgress && demoUsageText && sendBtn && chatInput) {
+        const percentage = (count / MAX_USAGE) * 100;
+        demoProgress.style.width = `${percentage}%`;
+        demoUsageText.textContent = `${count} / ${MAX_USAGE} usos`;
+        
+        if (remaining <= 0) {
+            // --- AQUI ACONTECE A MÁGICA ---
+            // 1. Mostra o Modal Bonito
+            if(limitModal) limitModal.classList.remove('hidden');
+            
+            // 2. Bloqueia o fundo (garantia)
+            demoUsageMessage.textContent = "Limite atingido.";
+            sendBtn.disabled = true;
+            chatInput.placeholder = "Acesso Bloqueado.";
+            chatInput.disabled = true;
+        } else {
+            // Usuário ainda tem créditos
+            if(limitModal) limitModal.classList.add('hidden');
+            
+            if (remaining <= 3) {
+                demoUsageMessage.textContent = `Restam ${remaining} usos na demo.`;
                 demoUsageMessage.classList.remove('brutal-red');
-                sendBtn.disabled = false;
-                chatInput.disabled = false;
             } else {
-                demoUsageMessage.textContent = `Você está na versão de testes. ${remaining} usos restantes.`;
-                demoUsageMessage.classList.remove('brutal-red');
-                sendBtn.disabled = false;
-                chatInput.disabled = false;
+                demoUsageMessage.textContent = `Modo Demonstração Ativo.`;
             }
+            sendBtn.disabled = false;
+            chatInput.disabled = false;
         }
-        return remaining > 0;
     }
+    return remaining > 0;
+}
     function incrementDemoUsage() {
         let count = parseInt(localStorage.getItem(DEMO_COUNT_KEY) || '0', 10);
         count++;
