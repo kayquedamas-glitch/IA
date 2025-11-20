@@ -78,3 +78,86 @@ body {
         transition: none;
     }
 }
+.marquee-track {
+    display: flex;
+    gap: 2rem; /* Espaço entre cada avaliação */
+    width: max-content; /* Garante que a largura se ajuste ao conteúdo */
+    
+    /* A Mágica da Animação */
+    animation: scrollMarquee 40s linear infinite; /* 40s para uma leitura confortável */
+    
+    /* Garante fluidez no celular */
+    will-change: transform; 
+    transform: translate3d(0, 0, 0); /* Ativa aceleração de hardware */
+}
+
+/* Card de Avaliação (Estilo Dark) */
+.testimonial-card {
+    width: 300px; /* Largura fixa para manter o padrão visual */
+    background-color: #080808; /* Fundo quase preto */
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #222; /* Borda sutil cinza */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Sombra suave */
+    
+    /* Impede que o card encolha ou quebre o layout */
+    flex-shrink: 0; 
+    white-space: normal; /* Permite que o texto quebre linha dentro do card */
+}
+
+/* Avatar Circular (Letra ou Foto) */
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: #fff;
+    font-size: 1.1rem;
+    background-color: #222; /* Cor padrão se não tiver outra */
+}
+
+/* Estrelas Amarelas */
+.stars {
+    color: #FFD700; /* Amarelo Ouro */
+    font-size: 0.8rem;
+    margin-left: auto; /* Empurra para a direita */
+}
+
+/* INTERAÇÃO (PAUSAR AO PASSAR MOUSE OU TOCAR) 
+   Isso é vital para o usuário conseguir ler sem o texto fugir.
+*/
+.marquee-track:hover {
+    animation-play-state: paused;
+}
+.marquee-track:active {
+    animation-play-state: paused;
+}
+
+/* DEFINIÇÃO DA ANIMAÇÃO */
+@keyframes scrollMarquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        /* IMPORTANTE: O valor -50% assume que você duplicou o conteúdo 
+           no HTML (Bloco 1 + Bloco 1 Cópia).
+           Assim, quando o primeiro bloco termina, o segundo já está no lugar,
+           criando a ilusão de infinito.
+        */
+        transform: translateX(-50%);
+    }
+}
+
+/* AJUSTE PARA CELULARES PEQUENOS */
+@media (max-width: 768px) {
+    .testimonial-card {
+        width: 260px; /* Um pouco menor no mobile para caber mais */
+        padding: 16px;
+    }
+    .marquee-track {
+        gap: 1rem; /* Menos espaço entre cards no mobile */
+    }
+}
