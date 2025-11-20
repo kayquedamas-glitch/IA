@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolDefinitions = {
         'Diagnostico': {
             title: "Diagnóstico Synapse",
-            subtitle: "Iniciando sistema...", 
-            typewriterExamples: [
-                "Carregando módulo de análise...",
-                "Verificando padrões de vício...",
-                "Sistema pronto."
+          subtitle: "Para começar, me diga...", // Parte estática
+            typewriterExamples: [ // ✅ Parte animada
+                "o que está na sua mente?",
+                "seu maior vício.",
+                "seu impulso de procrastinar.",
+                "o que você está evitando."
             ],
+
             // PROMPT ATUALIZADO: GERA BOTÕES E SEMPRE INCLUI 'OUTRO'
             systemPrompt: `Você é o Synapse OS. Uma IA de análise comportamental.
 Tom: TÉCNICO, CURIOSO e LEVEMENTE PROVOCATIVO.
