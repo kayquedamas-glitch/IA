@@ -1,24 +1,25 @@
-/* css/app.css (VERSÃO V3 - ESPAÇAMENTO REAL + BOTÕES SLIM) */
-
-/* Estilos Base */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #111111;
     color: #ffffff;
-    overflow: hidden; 
+    overflow: hidden; /* Previne rolagem dupla no body */
 }
+
 .brutal-red { color: #CC0000; }
 .bg-brutal-red { background-color: #CC0000; }
 .border-brutal-red { border-color: #CC0000; }
 .shadow-red-strong { box-shadow: 0 10px 15px -3px rgba(204, 0, 0, 0.5), 0 4px 6px -2px rgba(204, 0, 0, 0.2); }
 
-/* Layout de App (Desktop) */
+/* =========================================
+   2. LAYOUT DA APLICAÇÃO (DESKTOP)
+========================================= */
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
     height: 100vh;
     overflow: hidden;
 }
+
 .sidebar {
     background-color: #1a1a1a;
     border-right: 1px solid #333;
@@ -26,9 +27,12 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow-y: auto;
+    transition: border-color 0.3s ease; /* Para o efeito de highlight */
 }
 
-/* ÁREA DO CHAT */
+/* =========================================
+   3. ÁREA DO CHAT
+========================================= */
 .chat-area {
     display: flex;
     flex-direction: column; 
@@ -37,7 +41,6 @@ body {
     overflow: hidden;
 }
 
-/* Janela de Rolagem (Scroll) */
 .chat-messages {
     flex-grow: 1; 
     overflow-y: auto; 
@@ -47,81 +50,65 @@ body {
     padding: 20px;
 }
 
-/* --- AQUI ESTÁ A CORREÇÃO DO ESPAÇAMENTO --- */
-/* Este é o container que segura as bolhas. Ele PRECISA do gap. */
+/* Container das mensagens com espaçamento correto */
 #messagesContainer {
     display: flex;
     flex-direction: column;
-    gap: 24px !important; /* Força 24px de distância entre mensagens */
+    gap: 24px !important; /* Força o respiro entre mensagens */
     width: 100%;
     max-width: 48rem; /* max-w-3xl */
     margin-left: auto;
     margin-right: auto;
-}
-
-.chat-input-container {
-    border-top: 1px solid #333;
-    padding: 15px 20px;
-    background-color: #1a1a1a;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0; 
-}
-.chat-input {
-    width: 100%;
-    flex-grow: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    resize: none;
-    padding: 8px 12px;
-    font-size: 1.125rem;
-    color: #ffffff;
-    overflow-y: auto;
-    max-height: 150px;
+    padding-bottom: 20px;
 }
 
 /* =========================================
-   ESTILO DE BALÕES (WHATSAPP BRUTAL)
+   4. BALÕES DE MENSAGEM
 ========================================= */
-
 .chat-message-user, .chat-message-ia {
-    padding: 12px 16px;
+    padding: 14px 18px;
     border-radius: 14px;
     max-width: 85%;
-    overflow-y: visible; 
     white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
     font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.6;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* MENSAGEM DO USUÁRIO (DIREITA) */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mensagem do Usuário (Direita) */
 .chat-message-user {
     background-color: #4a0a0a; 
     border: 1px solid #7a0000;
     color: #fff;
-    align-self: flex-end; /* Joga pra direita */
+    align-self: flex-end;
     border-bottom-right-radius: 2px;
     margin-left: auto; 
 }
 
-/* MENSAGEM DA IA (ESQUERDA) */
+/* Mensagem da IA (Esquerda) */
 .chat-message-ia {
     background-color: #1e1e1e;
     border: 1px solid #333;
     color: #e0e0e0;
-    align-self: flex-start; /* Joga pra esquerda */
+    align-self: flex-start;
     border-bottom-left-radius: 2px;
     margin-right: auto;
 }
 
 .chat-message-ia .brutal-red { color: #ff4d4d; font-weight: bold; } 
-.chat-message-ia strong { color: #fff; }
+.chat-message-ia strong { color: #fff; font-weight: 700; }
 
-/* Itens da Sidebar */
+/* =========================================
+   5. SIDEBAR & NAVEGAÇÃO
+========================================= */
 .tool-item {
     padding: 12px 15px;
     cursor: pointer;
@@ -130,116 +117,243 @@ body {
     align-items: center;
     border-radius: 8px;
     margin-bottom: 5px;
+    color: #aaa;
+    font-size: 0.9rem;
 }
-.tool-item:hover { background-color: #2a2a2a; }
+.tool-item:hover { background-color: #2a2a2a; color: #fff; }
 .tool-item.active {
     background-color: #CC0000;
-    font-weight: bold;
+    font-weight: 600;
     color: #ffffff;
+    box-shadow: 0 4px 10px rgba(204,0,0,0.3);
 }
-.tool-item.is-locked { color: #6b7280; }
+.tool-item.is-locked { opacity: 0.6; }
+.tool-item.is-locked:hover { opacity: 1; }
 
 /* =========================================
-   BOTÕES SLIM (LINHA ÚNICA)
+   6. BOTÕES DE RESPOSTA RÁPIDA (SLIM)
 ========================================= */
-
 .quick-reply-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 6px;            
-    margin-top: 8px;     
+    flex-wrap: wrap; /* Permite quebrar linha se necessário */
+    gap: 8px;            
+    margin-top: 12px;     
     padding-bottom: 4px; 
-    
-    overflow-x: auto; 
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
-
-    mask-image: linear-gradient(to right, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
-.quick-reply-container::-webkit-scrollbar { display: none; }
 
-/* Botão Slim */
 .cyber-btn {
     background: rgba(30, 30, 30, 1);
-    border: 1px solid #CC0000;
+    border: 1px solid #444;
     color: #e5e5e5;
-    padding: 5px 12px; /* Bem compacto */
-    font-size: 0.7rem; 
+    padding: 6px 14px;
+    font-size: 0.8rem; 
     line-height: 1.2;
-    border-radius: 6px; 
+    border-radius: 8px; 
     cursor: pointer;
     font-family: 'Poppins', sans-serif; 
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
     transition: all 0.2s ease;
-    white-space: nowrap; 
-    flex-shrink: 0; 
 }
 
 .cyber-btn:hover {
     background: #CC0000;
+    border-color: #CC0000;
     color: #fff;
     transform: translateY(-1px);
 }
 
 .cyber-btn.more-btn {
     border: 1px dashed #666;
-    color: #aaa;
+    color: #888;
+}
+
+/* =========================================
+   7. ÁREA DE INPUT
+========================================= */
+.chat-input-container {
+    border-top: 1px solid #222;
+    padding: 15px 20px;
+    background-color: #161616;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; 
+    min-height: 80px; /* Altura mínima para acomodar os botões grandes */
 }
 
 #loadingSpinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid #CC0000;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     animation: spin 1s linear infinite;
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* =========================================
-    MEDIA QUERY PARA CELULAR
-=========================================
-*/
+   8. NOVO: CARD DE RELATÓRIO (ARQUÉTIPO)
+========================================= */
+.report-card {
+    background: linear-gradient(180deg, #161616 0%, #0a0a0a 100%);
+    border: 1px solid #333;
+    border-top: 4px solid #CC0000;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+}
+
+.report-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+}
+
+.report-item.unlocked {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.report-item.locked {
+    opacity: 0.8; /* Mais visível para gerar desejo */
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   9. NOVO: BARRA DE AÇÃO (ACTION BAR)
+========================================= */
+.action-bar {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    padding: 0;
+}
+
+.btn-upgrade {
+    flex: 2;
+    background: #CC0000;
+    color: white;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);
+    transition: transform 0.2s, background 0.2s;
+    text-decoration: none;
+}
+.btn-upgrade:hover {
+    background: #b30000;
+    transform: translateY(-2px);
+}
+
+.btn-explore {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #aaa;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 14px;
+}
+.btn-explore:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* =========================================
+   10. RESPONSIVIDADE (MOBILE)
+========================================= */
 @media (max-width: 768px) {
     body { overflow: hidden; position: fixed; width: 100%; height: 100%; }
-    .app-layout { grid-template-columns: 1fr; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
-    .chat-area { height: 100%; display: flex; flex-direction: column; }
+    
+    .app-layout { 
+        grid-template-columns: 1fr; 
+        height: 100%; 
+        display: flex; 
+        flex-direction: column; 
+    }
+    
+    .chat-area { height: 100%; }
     
     .chat-messages {
-        flex-grow: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch; 
         padding: 16px;
+        padding-bottom: 100px; /* Espaço extra no final para não cortar conteúdo */
     }
     
-    /* No mobile, o gap é aplicado aqui também por herança, mas reforçamos */
-    #messagesContainer {
-        gap: 24px !important;
+    /* Garante que o card caiba na tela */
+    .report-card {
+        padding: 16px;
+        margin-top: 16px;
     }
-
+    
     .chat-input-container {
-        position: relative; 
+        position: fixed; /* Fixado embaixo */
         bottom: 0;
-        background-color: #1a1a1a;
-        padding-bottom: env(safe-area-inset-bottom); 
-        z-index: 10;
+        left: 0;
+        right: 0;
+        padding-bottom: max(15px, env(safe-area-inset-bottom));
+        z-index: 20;
+        border-top: 1px solid #222;
     }
 
-    .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; z-index: 100; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+    /* Menu Lateral Mobile */
+    .sidebar { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        height: 100%; 
+        width: 85%; 
+        max-width: 300px; 
+        z-index: 100; 
+        transform: translateX(-100%); 
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
     .sidebar.open { transform: translateX(0); }
     
-    #chatHeader { display: flex; }
+    .sidebar-overlay { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0, 0, 0, 0.8); 
+        backdrop-filter: blur(4px);
+        z-index: 99; 
+        opacity: 0; 
+        visibility: hidden; 
+        transition: opacity 0.3s; 
+    }
+    .sidebar-overlay.open { opacity: 1; visibility: visible; }
+    
     .open-sidebar-btn { display: block; }
-    .close-sidebar-btn { display: block; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 99; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-    .sidebar-overlay.open { display: block; opacity: 1; visibility: visible; }
-    .desktop-only-btn { display: none; }
-    .sidebar .flex-grow { display: none; }
-    .chat-input { font-size: 1rem; } 
-    .chat-message-user, .chat-message-ia { max-width: 90%; font-size: 0.95rem; padding: 10px 14px; }
+    
+    /* Ajustes de fonte */
+    .chat-message-user, .chat-message-ia { max-width: 90%; font-size: 0.95rem; padding: 12px 16px; }
 }

@@ -32,6 +32,10 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Animação suave do Modal */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -55,36 +59,6 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
 
 <body class="h-full">
 
-    <!-- MODAL DE BLOQUEIO (10 INTERAÇÕES) -->
-    <div id="limitModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4">
-        <div class="bg-[#111] border-2 border-brutal-red rounded-2xl max-w-md w-full p-8 text-center shadow-[0_0_40px_rgba(204,0,0,0.3)] relative overflow-hidden">
-            <!-- Efeito de fundo -->
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#8a0000] to-[#cc0000]"></div>
-            
-            <i class="fas fa-lock text-5xl text-brutal-red mb-6"></i>
-            
-            <h2 class="text-3xl font-black uppercase text-white mb-2 tracking-tighter">
-                SISTEMA BLOQUEADO
-            </h2>
-            
-            <p class="text-gray-400 mb-8 text-lg">
-                Você atingiu o limite de interações gratuitas. <br>
-                <span class="text-white font-bold">Sua mente precisa de mais do que apenas conversas. Ela precisa de um plano.</span>
-            </p>
-
-            <div class="space-y-4">
-                <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');" 
-                   class="block w-full bg-brutal-red text-white font-black py-4 rounded-lg hover:bg-red-800 transition uppercase tracking-widest hover:scale-105 transform duration-200 shadow-red-strong">
-                    DESBLOQUEAR AGORA
-                </a>
-                
-                <p class="text-xs text-gray-600 uppercase font-bold tracking-widest mt-4">
-                    Acesso Vitalício • Oferta Limitada
-                </p>
-            </div>
-        </div>
-    </div>
-
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
     <div class="app-layout">
@@ -92,14 +66,8 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
         <aside id="sidebar" class="sidebar p-4">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-3">
-                     <!-- ÍCONE S BRUTALISTA (SVG) -->
-                        <path d="M4 4H20V9H9V11H20V20H4V15H15V13H4V4Z" />
-                    </svg>
                     <span class="text-2xl font-black brutal-red tracking-wider">Synapse</span>
                 </div>
-                
-                <!-- BOTÕES REMOVIDOS DAQUI -->
-                
             </div>
 
             <nav class="mb-8">
@@ -124,22 +92,19 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
                 </a>
             </nav>
 
-            <div class="flex-grow">
+            <div class="flex-grow"></div>
+
+            <div class="mt-auto pt-6 space-y-3">
+                <!-- Área de Upgrade na Sidebar -->
+                <div class="p-4 bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl text-center">
+                    <p class="text-xs text-gray-400 mb-3">Liberar todas as funções</p>
+                    <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');"
+                        class="block w-full bg-brutal-red text-white font-bold py-2.5 px-4 rounded-lg hover:bg-red-800 transition uppercase text-xs shadow-red-strong">
+                        Desbloquear Agora
+                    </a>
                 </div>
 
-            <div class="mt-auto pt-6">
-                <div id="demoLimitSidebar"
-                    class="p-3 bg-gray-900 border border-brutal-red/50 rounded-lg text-center mb-3">
-                    <p class="text-xs uppercase font-bold text-gray-400 mb-1">USO DO TESTE</p>
-                    <div class="w-full bg-gray-700 rounded-full h-2.5">
-                        <div id="demoProgress" class="bg-brutal-red h-2.5 rounded-full" style="width: 0%"></div>
-                    </div>
-                    <p id="demoUsageText" class="text-sm text-gray-300 mt-1">0 / 10 interações</p>
-                </div>
-                <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');"
-                    class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase flex items-center justify-center text-sm">
-                    <i class="fas fa-bolt mr-2"></i> Desbloquear Acesso Total
-                </a>
+                
             </div>
         </aside>
 
@@ -159,34 +124,36 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
                     
                     <div class="w-full text-center mb-6 p-4 bg-[#1a1a1a] rounded-xl border border-gray-700">
                         <p id="chatSubtitle" class="text-gray-300 text-lg">
-    <span id="typewriter-text" class="brutal-red font-bold"></span>
-</p>
+                            <span id="typewriter-text" class="brutal-red font-bold"></span>
+                        </p>
                         <p id="demoUsageMessage" class="text-gray-500 text-xs mt-2"></p>
                     </div>
                     
-                    </div>
+                </div>
             </div>
 
             <div class="chat-input-container">
-                <div class="w-full max-w-3xl mx-auto flex items-center bg-[#333] rounded-lg p-2">
+                <div class="w-full max-w-3xl mx-auto flex items-center bg-[#333] rounded-lg p-2 relative overflow-hidden">
                     
-                    <div id="textInputWrapper" class="flex items-center w-full">
+                    <!-- Wrapper do Input Normal -->
+                    <div id="textInputWrapper" class="flex items-center w-full transition-all duration-300">
                         <textarea id="chatInput" rows="1"
                             class="w-full flex-grow bg-transparent border-none outline-none resize-none px-3 py-2 text-base"
                             placeholder="Digite sua mensagem..."></textarea>
                         <button id="sendBtn"
-                            class="bg-brutal-red text-white p-3 rounded-lg hover:bg-red-800 transition ml-2">
+                            class="bg-brutal-red text-white p-3 rounded-lg hover:bg-red-800 transition ml-2 shrink-0">
                             <i class="fas fa-paper-plane"></i>
                             <div id="loadingSpinner" class="hidden"></div>
                         </button>
                     </div>
 
+                    <!-- Bloco de Upgrade (Ferramentas Bloqueadas) -->
                     <div id="upgradeBlock" class="hidden w-full text-center p-3">
                         <h4 id="upgradeTitle" class="font-bold brutal-red uppercase mb-2"></h4>
-                        <p class="text-gray-300 mb-4 text-sm">Esta ferramenta faz parte do Acesso Total. Desbloqueie para usar.</p>
+                        <p class="text-gray-300 mb-4 text-sm">Ferramenta exclusiva PRO.</p>
                         <a href="pag.html#planos"
                             class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase text-sm flex items-center justify-center">
-                            Ver Planos
+                            Desbloquear
                         </a>
                     </div>
 
@@ -194,7 +161,6 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
             </div>
         </main>
         
-    <!-- SCRIPT V5 -->
     </div> <script src="js/app.js"></script>
 </body>
 </html>

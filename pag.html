@@ -1,336 +1,431 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <link rel="icon" type="image/png" href="icon.png">
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1912088396392621');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
-/></noscript>
-<meta charset="UTF-8">
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1912088396392621');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     
-    <title>Synapse - Coach IA de Disciplina</title> 
+    <title>Synapse - Protocolo de Controle Dopaminérgico</title> 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=9">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        h1, h2, h3, h4, .brand-font { font-family: 'Poppins', sans-serif; }
+        
+        .text-glow { text-shadow: 0 0 20px rgba(220, 38, 38, 0.5); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: sweep .3s ease-in-out; }
+        @keyframes sweep { 0% {opacity: 0; transform: translateY(-10px)} 100% {opacity: 1; transform: translateY(0)} }
+    </style>
 </head>
-<body class="antialiased">
+<body class="antialiased overflow-x-hidden selection:bg-red-600 selection:text-white pb-24 md:pb-0">
 
-<nav class="w-full py-3 md:py-6 px-4 md:px-8 flex justify-between items-center border-b border-gray-800 bg-[#0c0c0c]/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
-    <div class="flex items-center space-x-2">
-        <span class="text-lg md:text-xl font-black brutal-red tracking-wider hover:opacity-80 transition-opacity cursor-pointer">Synapse</span>
-    </div>
-    
-    <div class="flex items-center space-x-2 md:space-x-4">
-        <a href="index.html" class="text-gray-300 hover:text-white font-semibold py-2 px-3 md:px-4 rounded-lg transition hover:bg-gray-800 text-xs md:text-base">
-            Testar Synapse
-        </a>
-        <a href="#planos" class="hidden md:inline-block bg-gradient-to-r from-[#8a0000] to-[#cc0000]
-          text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 hover:shadow-red-strong transition duration-300 uppercase text-sm">
-            Ver Planos
-        </a>
-    </div>
-</nav>
-
-    <header class="pt-28 md:pt-24 pb-12 bg-OffBlack text-center px-4 overflow-hidden">
-        <div class="max-w-4xl mx-auto">
+    <!-- NAVBAR (ATUALIZADA: SEM LOGIN, COM BOTÃO TESTAR) -->
+    <nav class="w-full py-4 px-4 md:px-12 flex justify-between items-center border-b border-white/5 bg-[#050505]/90 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
+        
+        <!-- Logo -->
+     
+             <span class="text-2xl font-black brutal-red tracking-wider">Synapse</span>
+        </div>
+        
+        <!-- Ações (Visíveis no Mobile e Desktop) -->
+        <div class="flex items-center gap-3">
+            <!-- Botão para voltar ao Chat/Teste -->
+            <a href="index.html" class="text-gray-400 hover:text-white text-xs md:text-sm font-medium transition-colors border border-white/10 px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-2">
+                <i class="fas fa-robot"></i>
+                <span>Testar IA</span>
+            </a>
             
-            <div class="reveal">
-                <h1 class="text-3xl md:text-6xl font-black uppercase leading-tight">
-                    <span class="brutal-red">SUA MENTE FOI SEQUESTRADA.</span><br> ESTE É O SEU PLANO DE RESGATE.
+            <!-- Botão de Compra (Destaque) -->
+            <a href="#planos" class="bg-white text-black hover:bg-gray-200 font-bold py-2 px-4 md:px-6 rounded-lg transition duration-300 text-xs md:text-sm tracking-wide uppercase flex items-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                <span>Desbloquear</span>
+                <i class="fas fa-lock-open text-[10px]"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="pt-24 md:pt-32 pb-16 text-center px-4 overflow-hidden relative">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-red-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto z-10 relative">
+            <div class="reveal mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span class="text-[10px] md:text-xs font-mono text-red-400 tracking-widest uppercase">Alerta de Dopamina</span>
+                </div>
+                
+                <h1 class="text-4xl md:text-7xl font-black uppercase leading-[0.9] tracking-tighter mb-6">
+                    Sua mente foi <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-800 text-glow">Sequestrada.</span>
                 </h1>
-                <h2 class="mt-4 text-lg md:text-2xl font-semibold text-gray-300 reveal delay-100">
-                    Pare de falhar sozinho. Use o <span class="brutal-red font-bold">Coach IA Synapse</span> para analisar suas fraquezas.
-                </h2>
+                
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+                    Você não é preguiçoso, você está viciado. Use a Neurociência e IA para hackear seu sistema de recompensa e retomar o controle.
+                </p>
             </div>
 
-            <div class="reveal delay-200 mt-8 mb-8 max-w-4xl mx-auto border-2 border-brutal-red shadow-red-strong rounded-lg overflow-hidden aspect-video transform hover:scale-[1.01] transition duration-500">
-                <div class="relative w-full h-full rounded-lg overflow-hidden border-2 border-brutal-red shadow-red-strong">
-                    <video id="meuVideo" class="w-full h-full" autoplay muted loop playsinline>
+            <div class="reveal delay-200 mt-8 mb-12 max-w-4xl mx-auto relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-900 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                <div class="relative w-full rounded-xl overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl">
+                    <video id="meuVideo" class="w-full h-full object-cover opacity-90" autoplay muted loop playsinline>
                         <source src="assets/quadrado (Vídeo).mp4" type="video/mp4">
                         Seu navegador não suporta o vídeo.
                     </video>
-
-                    <button id="botaoVolume" 
-                            class="absolute bottom-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center transition-opacity hover:opacity-100 opacity-75 backdrop-blur-sm">
-                        <i id="iconeVolume" class="fas fa-volume-mute"></i>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+                    <button id="botaoVolume" class="absolute bottom-6 right-6 bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-full w-12 h-12 flex items-center justify-center transition-all backdrop-blur-md">
+                        <i id="iconeVolume" class="fas fa-volume-mute text-sm"></i>
                     </button>
                 </div>
             </div>
-            <br> <br>
-            
-            <section class="py-16 bg-gray-950 border-t border-brutal-red overflow-hidden relative">
-    
-    <div class="max-w-4xl mx-auto text-center mb-10 px-4">
-        <h3 class="reveal text-3xl md:text-4xl font-bold uppercase brutal-red">
-            QUEM JÁ HACKEOU A PRÓPRIA MENTE
-        </h3>
-        <p class="text-gray-400 mt-2">Junte-se aos que pararam de dar desculpas.</p>
-    </div>
-
-    <div class="relative w-full max-w-[100vw]">
-        <div class="absolute left-0 top-0 bottom-0 w-12 md:w-32 z-10 bg-gradient-to-r from-gray-950 to-transparent"></div>
-        <div class="absolute right-0 top-0 bottom-0 w-12 md:w-32 z-10 bg-gradient-to-l from-gray-950 to-transparent"></div>
-
-        <div class="marquee-track flex space-x-6 w-max">
-            
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-brutal-red flex items-center justify-center font-bold text-white">M</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Marina L.</p>
-                        <p class="text-xs text-gray-500">Designer</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "O 'Diagnóstico' me assustou. Ele descreveu exatamente o que eu sinto quando travo. A ferramenta paga me fez entregar um projeto atrasado em 2 dias."
-                </p>
-            </div>
-
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center font-bold text-white">R</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Rafael K.</p>
-                        <p class="text-xs text-gray-500">Estudante TDAH</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "Tenho TDAH e já tentei Notion, Agenda, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no meu ouvido, mas sem ser grosso."
-                </p>
-            </div>
-
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <img src="assets/img1.png" class="w-10 h-10 rounded-full border border-brutal-red object-cover">
-                    <div>
-                        <p class="font-bold text-white text-sm">Lucas D.</p>
-                        <p class="text-xs text-gray-500">Trader</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "A função do 'Ferreiro de Hábitos' é genial. Eu ia perder o dia todo depois de errar de manhã, mas o protocolo de resgate salvou minha tarde."
-                </p>
-            </div>
-
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-brutal-red flex items-center justify-center font-bold text-white">B</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Beatriz S.</p>
-                        <p class="text-xs text-gray-500">Advogada</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★☆</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "Direto ao ponto. Sem vídeo de 'bom dia', sem enrolação. Eu só colo meu problema e a IA me dá a ordem do que fazer. Perfeito pra quem não tem tempo."
-                </p>
-            </div>
-
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-brutal-red flex items-center justify-center font-bold text-white">M</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Marina L.</p>
-                        <p class="text-xs text-gray-500">Designer</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "O 'Diagnóstico' me assustou. Ele descreveu exatamente o que eu sinto quando travo. A ferramenta paga me fez entregar um projeto atrasado em 2 dias."
-                </p>
-            </div>
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center font-bold text-white">R</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Rafael K.</p>
-                        <p class="text-xs text-gray-500">Estudante TDAH</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "Tenho TDAH e já tentei Notion, Agenda, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no meu ouvido, mas sem ser grosso."
-                </p>
-            </div>
-            <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <img src="assets/img1.png" class="w-10 h-10 rounded-full border border-brutal-red object-cover">
-                    <div>
-                        <p class="font-bold text-white text-sm">Lucas D.</p>
-                        <p class="text-xs text-gray-500">Trader</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "A função do 'Ferreiro de Hábitos' é genial. Eu ia perder o dia todo depois de errar de manhã, mas o protocolo de resgate salvou minha tarde."
-                </p>
-            </div>
-             <div class="w-80 bg-OffBlack p-6 rounded-xl border border-gray-800 shadow-lg flex-shrink-0">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-brutal-red flex items-center justify-center font-bold text-white">B</div>
-                    <div>
-                        <p class="font-bold text-white text-sm">Beatriz S.</p>
-                        <p class="text-xs text-gray-500">Advogada</p>
-                    </div>
-                    <div class="ml-auto text-yellow-400 text-xs">★★★★☆</div>
-                </div>
-                <p class="text-gray-300 text-sm italic leading-relaxed">
-                    "Direto ao ponto. Sem vídeo de 'bom dia', sem enrolação. Eu só colo meu problema e a IA me dá a ordem do que fazer. Perfeito pra quem não tem tempo."
-                </p>
-            </div>
-
-        </div>
-    </div>
-</section>
         </div>
     </header>
 
-    <main class="py-16 px-4 bg-gray-900 border-t border-brutal-red">
+    <!-- PROVA SOCIAL (MARQUEE) -->
+    <section class="py-16 border-t border-white/5 bg-[#080808] overflow-hidden relative">
+        <div class="max-w-4xl mx-auto text-center mb-10 px-4">
+            <h3 class="reveal text-sm font-bold uppercase tracking-[0.2em] text-gray-500">Quem já hackeou o sistema</h3>
+        </div>
+        <div class="relative w-full">
+            <div class="absolute left-0 top-0 bottom-0 w-20 md:w-40 z-10 bg-gradient-to-r from-[#080808] to-transparent pointer-events-none"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-20 md:w-40 z-10 bg-gradient-to-l from-[#080808] to-transparent pointer-events-none"></div>
+
+            <div class="marquee-track flex space-x-6 w-max px-4">
+                <!-- CARD 1 -->
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-brutal-red">M</div>
+                        <div><p class="font-bold text-white text-sm">Marina L.</p><p class="text-xs text-gray-500 uppercase">Designer</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"O 'Diagnóstico' me assustou. Descreveu exatamente o que sinto. A ferramenta me fez entregar um projeto de 2 semanas em 2 dias."</p>
+                </div>
+                <!-- CARD 2 -->
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-gray-700">R</div>
+                        <div><p class="font-bold text-white text-sm">Rafael K.</p><p class="text-xs text-gray-500 uppercase">Estudante</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"Tenho TDAH e já tentei Notion, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no ouvido."</p>
+                </div>
+                <!-- CARD 3 -->
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-brutal-red">L</div>
+                        <div><p class="font-bold text-white text-sm">Lucas D.</p><p class="text-xs text-gray-500 uppercase">Trader</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"A função do 'Ferreiro de Hábitos' é genial. O protocolo de resgate salvou minha tarde depois de uma manhã procrastinando."</p>
+                </div>
+                <!-- DUPLICADOS PARA LOOP -->
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-brutal-red">M</div>
+                        <div><p class="font-bold text-white text-sm">Marina L.</p><p class="text-xs text-gray-500 uppercase">Designer</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"O 'Diagnóstico' me assustou. Descreveu exatamente o que sinto. A ferramenta me fez entregar um projeto de 2 semanas em 2 dias."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-gray-700">R</div>
+                        <div><p class="font-bold text-white text-sm">Rafael K.</p><p class="text-xs text-gray-500 uppercase">Estudante</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"Tenho TDAH e já tentei Notion, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no ouvido."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="py-24 px-4 bg-[#050505] relative">
         <div class="max-w-4xl mx-auto">
 
-            <section class="mb-16 reveal">
-                <h3 class="text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">VOCÊ ESTÁ NO "MODO ZUMBI"?</h3>
-                <p class="text-lg text-gray-300 mb-6 text-center md:text-left">
-                    Seja honesto. Sua atenção está fraturada. Seu foco está morto. Seu cérebro está viciado em dopamina barata.
-                </p>
-                <ul class="space-y-4 text-lg font-medium">
-                    <li class="reveal delay-100 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
-                        <p class="ml-1">Você pega o celular "só para ver a hora" e 20 minutos se passam rolando um feed infinito.</p>
-                    </li>
-                    <li class="reveal delay-200 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
-                        <p class="ml-1">Você não consegue focar em uma tarefa por mais de 15 minutos sem sentir a "coceira" de checar notificações.</p>
-                    </li>
-                    <li class="reveal delay-300 p-3 bg-gray-800 rounded-lg border-l-4 border-brutal-red flex items-start hover:bg-gray-750 transition">
-                        <p class="ml-1">Seu histórico de busca às 2 da manhã te envergonha.</p>
-                    </li>
-                </ul>
+            <!-- PROBLEMA (MODO ZUMBI) -->
+            <section class="mb-24 reveal">
+                <h3 class="text-2xl md:text-4xl font-bold uppercase mb-8 text-center tracking-tight">
+                    Você está no <span class="text-red-600">"Modo Zumbi"?</span>
+                </h3>
+                
+                <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-8 md:p-12 relative overflow-hidden">
+                    <!-- Efeito de fundo -->
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-red-600/5 rounded-full blur-3xl"></div>
+
+                    <p class="text-lg text-gray-300 mb-8 font-light text-center relative z-10">
+                        Seja honesto. Sua atenção está fraturada. Seu foco está morto.
+                    </p>
+                    
+                    <ul class="space-y-6 relative z-10">
+                        <li class="flex gap-4 items-start text-gray-400 group">
+                            <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]">
+                                <i class="fas fa-times text-red-500"></i>
+                            </div>
+                            <span class="group-hover:text-gray-200 transition">Você pega o celular "só para ver a hora" e perde 20 minutos rolando feed.</span>
+                        </li>
+                        <li class="flex gap-4 items-start text-gray-400 group">
+                            <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]">
+                                <i class="fas fa-times text-red-500"></i>
+                            </div>
+                            <span class="group-hover:text-gray-200 transition">Não consegue focar em uma tarefa por 15 minutos sem a "coceira" da notificação.</span>
+                        </li>
+                        <li class="flex gap-4 items-start text-gray-400 group">
+                            <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]">
+                                <i class="fas fa-times text-red-500"></i>
+                            </div>
+                            <span class="group-hover:text-gray-200 transition">Sente culpa no final do dia por ter planejado muito e feito pouco.</span>
+                        </li>
+                    </ul>
+                </div>
             </section>
 
-            <section class="mb-16">
-    <div class="reveal">
-        <h3 class="text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">O ARSENAL SYNAPSE</h3>
-        <p class="text-lg text-gray-300 mb-10 text-center md:text-left">
-            O Diagnóstico Gratuito encontra a causa raiz do problema. O Acesso PRO te dá as ferramentas de execução para resolvê-lo.
-        </p>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <div class="reveal delay-100 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20">
-            <h4 class="text-xl font-bold mb-2 uppercase mt-2">Diagnóstico Synapse</h4>
-            <p class="text-gray-400">Uma IA que te entrevista para descobrir a causa raiz da seu problema</p>
-        </div>
-
-        <div class="reveal delay-200 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
-            <h4 class="text-xl font-bold mb-2 uppercase mt-2">Plano Estratégico</h4>
-            <p class="text-gray-400">Dê à IA uma tarefa gigante (Ex: "TCC") e receba um plano de batalha tático e micro-detalhado.</p>
-        </div>
-
-        <div class="reveal delay-300 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
-            <h4 class="text-xl font-bold mb-2 uppercase mt-2">Ferreiro de Hábitos</h4>
-            <p class="text-gray-400">Procrastinou o dia todo? Receba um protocolo de reparo imediato para "resetar" seu dia e ainda sair com uma vitória.</p>
-        </div>
-
-        <div class="reveal delay-400 p-6 bg-OffBlack border border-brutal-red rounded-xl shadow-red-strong/20 hover:shadow-red-strong/50 transition duration-300 hover:-translate-y-2">
-            <h4 class="text-xl font-bold mb-2 uppercase mt-2">Analista de Performance</h4>
-            <p class="text-gray-400">Para "Padrões Ocultos". No fim da semana, a IA analisa seus dados e mostra os padrões invisíveis que estão sabotando seu sucesso.</p>
-        </div>
-    </div>
-</section>
-
-            <section class="mb-16">
-                <h3 class="reveal text-3xl md:text-4xl font-bold uppercase mb-6 text-center brutal-red border-b border-brutal-red/50 pb-2">O RESULTADO</h3>
-                <ul class="space-y-4 text-lg font-medium">
-                    <li class="reveal delay-100 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
-                        <p class="ml-1">CLAREZA MENTAL ABSURDA: Pense rápido, decida melhor.</p>
-                    </li>
-                    <li class="reveal delay-200 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
-                        <p class="ml-1">FOCO DE LASER: Trabalhar em uma única tarefa por horas.</p>
-                    </li>
-                    <li class="reveal delay-300 p-3 bg-OffBlack rounded-lg border-l-4 border-yellow-400 flex items-start hover:bg-gray-800 transition">
-                        <p class="ml-1">AUTOCONFIANÇA: Controle sobre seus impulsos.</p>
-                    </li>
-                </ul>
+            <!-- A CIÊNCIA POR TRÁS -->
+            <section class="mb-24 reveal">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <div class="inline-block text-red-500 text-xs font-bold uppercase tracking-widest mb-2">A Lógica</div>
+                        <h3 class="text-3xl font-bold text-white mb-6">Por que a "Força de Vontade" falha?</h3>
+                        <p class="text-gray-400 leading-relaxed mb-4">
+                            Seu cérebro tem um sistema de recompensa viciado em <strong>Dopamina Barata</strong>. Tentar "focar na força" é como tentar parar um trem com as mãos.
+                        </p>
+                        <p class="text-gray-400 leading-relaxed">
+                            O <strong>Synapse</strong> não te dá "motivação". Ele usa protocolos de Terapia Cognitivo-Comportamental (TCC) para <strong>hackear</strong> esse sistema.
+                        </p>
+                    </div>
+                    <div class="order-1 md:order-2 relative">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-red-600/20 to-transparent rounded-full blur-3xl"></div>
+                        <div class="bg-zinc-900 border border-white/10 p-6 rounded-2xl relative">
+                            <div class="flex items-center gap-4 mb-4 border-b border-white/5 pb-4">
+                                <i class="fas fa-brain text-red-500 text-2xl"></i>
+                                <span class="font-bold text-white">Neuro-Modulação</span>
+                            </div>
+                            <div class="space-y-3 text-sm text-gray-400">
+                                <div class="flex justify-between"><span>Dopamina Basal</span> <span class="text-red-400">Baixa (Tédio)</span></div>
+                                <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-red-600 h-full w-[20%]"></div>
+                                </div>
+                                <div class="flex justify-between mt-4"><span>Dopamina Synapse</span> <span class="text-green-400">Estável (Foco)</span></div>
+                                <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-green-500 h-full w-[80%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
-            <section id="planos" class="pt-16">
-    <div class="reveal">
-        <h3 class="text-3xl md:text-5xl font-black uppercase mb-4 text-center">
-            UMA OFERTA. <span class="brutal-red">ZERO ASSINATURAS.</span>
-        </h3>
-        <p class="text-lg text-gray-300 mb-10 text-center">
-            O preço normal será uma assinatura mensal. Mas no lançamento, estamos oferecendo Acesso Vitalício por um pagamento único.
-        </p>
-    </div>
+            <!-- SOLUÇÃO (ARSENAL) -->
+            <section class="mb-24">
+                <div class="reveal text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold uppercase mb-4 tracking-tight">O Arsenal <span class="text-white">Synapse</span></h3>
+                    <p class="text-gray-500 font-mono text-xs uppercase tracking-widest">4 Ferramentas de Intervenção</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="reveal delay-100 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                        <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                            <i class="fas fa-heart-pulse text-red-500 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mb-2 text-white">Diagnóstico Neuro-IA</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Entrevista profunda para descobrir se você trava por ansiedade, perfeccionismo ou fadiga.</p>
+                    </div>
+                    <div class="reveal delay-200 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                        <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                            <i class="fas fa-chess-board text-red-500 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mb-2 text-white">Estratégia Tática</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Transforma tarefas gigantes ("Escrever TCC") em micro-passos ridículos que seu cérebro não consegue recusar.</p>
+                    </div>
+                    <div class="reveal delay-300 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                        <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                            <i class="fas fa-hammer text-red-500 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mb-2 text-white">Ferreiro de Hábitos</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Protocolo de resgate. Procrastinou a manhã toda? A IA gera o plano exato para salvar a tarde sem culpa.</p>
+                    </div>
+                    <div class="reveal delay-400 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                        <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                            <i class="fas fa-chart-line text-red-500 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold mb-2 text-white">Analista de Padrões</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Detecta os gatilhos ocultos da sua semana. Você vai ver em dados reais o que está roubando sua vida.</p>
+                    </div>
+                </div>
+            </section>
 
-    <div class="reveal delay-100 mb-10 p-4 border border-brutal-red bg-gray-950 rounded-lg shadow-inner shadow-brutal-red/50 max-w-lg mx-auto hover:scale-105 transition duration-500">
-        <p class="text-lg font-bold uppercase mb-2 text-center">A OFERTA VITALÍCIA EXPIRA EM:</p>
-        <div id="countdown" class="text-4xl md:text-5xl font-black brutal-red flex justify-center space-x-4">
-            </div>
-    </div>
+            <!-- PARA QUEM É? (FILTRO) -->
+            <section class="mb-24 reveal">
+                <div class="bg-black border border-white/10 rounded-3xl p-8 md:p-12">
+                    <h3 class="text-2xl font-bold text-center mb-10">Isso é para você?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div>
+                            <h4 class="text-green-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> É PARA VOCÊ SE:</h4>
+                            <ul class="space-y-3 text-gray-400 text-sm">
+                                <li>• Sente que tem muito potencial mas não sai do lugar.</li>
+                                <li>• Tem sintomas de TDAH ou ansiedade.</li>
+                                <li>• Já comprou cursos e planners e abandonou tudo.</li>
+                                <li>• Precisa de alguém te cobrando.</li>
+                            </ul>
+                        </div>
+                        <div class="md:border-l border-white/10 md:pl-10">
+                            <h4 class="text-red-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-times-circle"></i> NÃO É PARA VOCÊ SE:</h4>
+                            <ul class="space-y-3 text-gray-400 text-sm">
+                                <li>• Procura uma pílula mágica sem esforço.</li>
+                                <li>• Não está disposto a seguir ordens simples.</li>
+                                <li>• Acha que disciplina é "dom" e não treino.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <div class="max-w-2xl mx-auto">
-        <div class="reveal delay-200 p-8 bg-OffBlack rounded-xl shadow-red-strong flex flex-col popular-plan relative hover:shadow-[0_20px_25px_-5px_rgba(204,0,0,0.4)] transition duration-300">
-            
-            <span class="absolute top-0 -mt-3 left-1/2 -translate-x-1/2 bg-brutal-red text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow-md">OFERTA DE LANÇAMENTO</span>
-            
-            <h4 class="text-2xl font-bold uppercase brutal-red text-center">ACESSO VITALÍCIO PRO</h4>
-            <p class="text-gray-400 mb-4 text-center">Pague uma vez. Use para sempre.</p>
-            
-            <div class="my-4 text-center">
-                <p class="text-gray-500 text-lg">De <span class="line-through">R$ 197,00</span></p>
-                <p class="text-gray-300 text-lg">Por apenas 1x de:</p>
-                <span class="text-6xl font-black brutal-red">R$ 37<span class="text-3xl">,00</span></span>
-            </div>
-            
-            <ul class="space-y-3 text-gray-300 mb-8 flex-grow mt-6">
-                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> ao **Plano Estratégico**</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> ao **Ferreiro de Hábitos**</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Acesso <span class="font-bold">ILIMITADO</span> ao **Analista de Performance**</li>
-                <li><span class="text-yellow-400 mr-2">✓</span> Todas as futuras atualizações de ferramentas PRO</li>
-            </ul>
-            
-            <a href="https://pay.kiwify.com.br/YzOIskc" 
-               onclick="fbq('track', 'InitiateCheckout');" 
-               target="_blank" 
-               rel="noopener noreferrer" 
-               class="w-full bg-brutal-red text-white font-black py-4 text-center rounded-lg hover:bg-red-800 transition uppercase tracking-wider shadow-red-strong hover-lift text-xl">
-                Quero o Acesso Vitalício
-            </a>
-        </div>
-    </div>
-</section>
+            <!-- OFERTA (PREÇO SÉRIO) -->
+            <section id="planos" class="pt-12 pb-24 scroll-mt-10"> 
+                <div class="reveal text-center mb-10"> 
+                    <h3 class="text-3xl md:text-5xl font-black uppercase leading-none">
+                        OFERTA <span class="brutal-red">VITALÍCIA</span>
+                    </h3>
+                    <p class="text-sm text-gray-400 mt-2">Zero mensalidades. Acesso total.</p>
+                </div>
+
+                <div class="max-w-sm mx-auto px-4">
+                    <div class="reveal delay-200 bg-[#080808] rounded-2xl border border-gray-800 shadow-[0_0_40px_rgba(204,0,0,0.15)] overflow-hidden relative flex flex-col">
+                        <div class="absolute top-0 right-0">
+                            <div class="bg-brutal-red text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg tracking-wider uppercase">
+                                90% OFF
+                            </div>
+                        </div>
+
+                        <div class="p-8 text-center">
+                            <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">Plano Pro</p>
+                            
+                            <div class="flex flex-col items-center justify-center mb-6">
+                                <p class="text-gray-600 text-xs line-through mb-1">De R$ 197,00</p>
+                                <div class="flex items-start justify-center text-white leading-none">
+                                    <span class="text-xl font-bold mr-1 text-gray-400 mt-2">R$</span>
+                                    <span class="text-7xl font-black text-[#CC0000] tracking-tighter">19</span>
+                                    <div class="flex flex-col items-start mt-1">
+                                        <span class="text-3xl font-bold text-gray-300">,90</span>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-2">Pagamento único • Acesso Imediato</p>
+                            </div>
+
+                            <div class="bg-gray-900/60 rounded-lg border border-gray-800 p-3 mb-8">
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Esta oferta expira em:</p>
+                                <div id="countdown" class="flex justify-center items-center gap-2 text-white scale-90 origin-center"></div>
+                            </div>
+                            
+                            <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" target="_blank" rel="noopener noreferrer" class="w-full block bg-brutal-red text-white font-black py-4 text-center rounded-xl hover:bg-red-800 transition-all duration-300 shadow-lg shadow-red-900/20 uppercase tracking-widest text-lg mb-6 hover:scale-[1.02]">
+                                DESBLOQUEAR AGORA
+                            </a>
+
+                            <div class="w-full border-t border-gray-800 pt-4">
+                                <ul class="space-y-2 text-gray-400 text-xs text-left mx-auto max-w-[220px]">
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check text-brutal-red text-[10px]"></i> Acesso às 4 Ferramentas PRO</li>
+                                    <li class="flex gap-2 items-center"><i class="fas fa-check text-brutal-red text-[10px]"></i> Atualizações Gratuitas</li>
+                                    <li class="flex gap-2 items-center"><i class="fas fa-shield-alt text-brutal-red text-[10px]"></i> Garantia de 7 Dias</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GARANTIA -->
+            <section class="mb-24 reveal">
+                <div class="max-w-2xl mx-auto bg-zinc-900/20 border border-white/5 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                    <div class="w-20 h-20 bg-black border border-white/10 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fas fa-shield-alt text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-white mb-2">Garantia Blindada de 7 Dias</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Use o Synapse por uma semana inteira. Se você não sentir sua produtividade aumentar drasticamente, nós devolvemos 100% do seu dinheiro. Sem perguntas.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section class="max-w-2xl mx-auto mb-24 px-4">
+                <h3 class="text-2xl font-bold text-center mb-8 uppercase tracking-tight">Perguntas Frequentes</h3>
+                <div class="space-y-4">
+                    <details class="group bg-zinc-900/30 border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-500/20">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer">
+                            <span class="font-semibold text-gray-200">É uma assinatura mensal?</span>
+                            <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                            Não. É um pagamento único de R$ 19,90. Você terá acesso vitalício à ferramenta e todas as atualizações futuras.
+                        </div>
+                    </details>
+                    <details class="group bg-zinc-900/30 border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-500/20">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer">
+                            <span class="font-semibold text-gray-200">Funciona para quem tem TDAH?</span>
+                            <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                            Sim. O Synapse foi desenhado pensando no cérebro neurodivergente. As respostas são curtas, diretas e estimulantes.
+                        </div>
+                    </details>
+                    <details class="group bg-zinc-900/30 border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-500/20">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer">
+                            <span class="font-semibold text-gray-200">Como recebo o acesso?</span>
+                            <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                            Imediatamente após o pagamento, você receberá um e-mail com seu link exclusivo de acesso. É automático.
+                        </div>
+                    </details>
+                </div>
+            </section>
+
         </div>
     </main>
 
-    <footer class="py-12 bg-OffBlack border-t-4 border-brutal-red px-4 text-center mt-16 reveal">
+    <footer class="py-10 bg-[#020202] border-t border-white/5 text-center px-4">
         <div class="max-w-xl mx-auto">
-            <h3 class="text-4xl font-black uppercase leading-tight brutal-red mb-4">
-                A DISCIPLINA É A LIBERDADE.
-            </h3>
-
-            <p class="text-sm mt-8 text-gray-500 font-semibold">
-                Garantia de 7 dias.
-            </p>
+            <h3 class="text-2xl font-black uppercase leading-tight brutal-red mb-4">Synapse</h3>
+            <p class="text-xs mt-4 text-gray-500 font-semibold">© 2025 Synapse AI. Todos os direitos reservados.</p>
+            <p class="text-[10px] text-gray-600 mt-2">Este site não faz parte do site do Facebook ou Facebook Inc.</p>
         </div>
     </footer>
+
+    <!-- STICKY CTA (MOBILE ONLY) -->
+    <div class="fixed bottom-4 left-4 right-4 z-50 md:hidden block animate-pulse-slow">
+        <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" target="_blank" class="w-full bg-brutal-red text-white font-bold py-4 rounded-xl shadow-2xl shadow-black flex items-center justify-center gap-2 text-lg border border-white/10">
+            DESBLOQUEAR AGORA <i class="fas fa-lock-open"></i>
+        </a>
+    </div>
 
     <script src="js/script.js"></script>
 </body>
