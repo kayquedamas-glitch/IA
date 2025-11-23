@@ -29,7 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/style.css?v=12">
+    <link rel="stylesheet" href="css/style.css?v=15">
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
@@ -57,7 +57,8 @@
                 <i class="fas fa-robot"></i>
                 <span>Testar IA</span>
             </a>
-            <a href="#planos" class="hidden md:flex bg-white text-black hover:bg-gray-200 font-bold py-2 px-4 md:px-6 rounded-lg transition duration-300 text-xs md:text-sm tracking-wide uppercase items-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+            <!-- Botão Estilo Telegram -->
+            <a href="#planos" class="hidden md:flex btn-telegram btn-telegram-sm">
                 <span>Desbloquear</span>
                 <i class="fas fa-lock-open text-[10px]"></i>
             </a>
@@ -72,16 +73,16 @@
             <div class="reveal mb-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/20 bg-red-500/5 mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                    <span class="text-[10px] md:text-xs font-mono text-red-400 tracking-widest uppercase">Alerta de Dopamina</span>
+                    <span class="text-[10px] md:text-xs font-mono text-red-400 tracking-widest uppercase">Gamificação Neural</span>
                 </div>
                 
                 <h1 class="text-4xl md:text-7xl font-black uppercase leading-[0.9] tracking-tighter mb-6">
-                    Sua mente foi <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-800 text-glow">Sequestrada.</span>
+                    Transforme sua vida em um <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-800 text-glow">Jogo Vencível.</span>
                 </h1>
                 
                 <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-                    Você não é preguiçoso, você está viciado. Use a Neurociência e IA para hackear seu sistema de recompensa e retomar o controle.
+                    Pare de depender da força de vontade. Use o <strong>Protocolo Synapse</strong> para gamificar sua rotina, trackear seu progresso e blindar sua mente contra vícios.
                 </p>
             </div>
 
@@ -101,51 +102,56 @@
         </div>
     </header>
 
-    <!-- PROVA SOCIAL (MARQUEE) -->
+    <!-- PROVA SOCIAL (CARROSSEL INFINITO) -->
     <section class="py-16 border-t border-white/5 bg-[#080808] overflow-hidden relative">
         <div class="max-w-4xl mx-auto text-center mb-10 px-4">
-            <h3 class="reveal text-sm font-bold uppercase tracking-[0.2em] text-gray-500">Quem já hackeou o sistema</h3>
+            <h3 class="reveal text-sm font-bold uppercase tracking-[0.2em] text-gray-500">Jornadas Recuperadas</h3>
         </div>
-        <div class="relative w-full">
-            <div class="absolute left-0 top-0 bottom-0 w-20 md:w-40 z-10 bg-gradient-to-r from-[#080808] to-transparent pointer-events-none"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-20 md:w-40 z-10 bg-gradient-to-l from-[#080808] to-transparent pointer-events-none"></div>
-
-            <div class="marquee-track flex space-x-6 w-max px-4">
-                <!-- CARD 1 -->
+        
+        <div class="marquee-wrapper">
+            <div class="marquee-track">
+                <!-- BLOCO 1 -->
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-3 mb-3">
                         <div class="avatar-circle bg-brutal-red">M</div>
                         <div><p class="font-bold text-white text-sm">Marina L.</p><p class="text-xs text-gray-500 uppercase">Designer</p></div>
                         <div class="stars">★★★★★</div>
                     </div>
-                    <p class="text-gray-300 text-sm italic">"O 'Diagnóstico' me assustou. Descreveu exatamente o que sinto. A ferramenta me fez entregar um projeto de 2 semanas em 2 dias."</p>
+                    <p class="text-gray-300 text-sm italic">"O 'Contador de Streak' mudou tudo. Eu não queria quebrar a corrente de dias limpos. Já estou há 14 dias sem recair!"</p>
                 </div>
-                <!-- CARD 2 -->
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-3 mb-3">
                         <div class="avatar-circle bg-gray-700">R</div>
                         <div><p class="font-bold text-white text-sm">Rafael K.</p><p class="text-xs text-gray-500 uppercase">Estudante</p></div>
                         <div class="stars">★★★★★</div>
                     </div>
-                    <p class="text-gray-300 text-sm italic">"Tenho TDAH e já tentei Notion, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no ouvido."</p>
+                    <p class="text-gray-300 text-sm italic">"A função de 'Check-in' diário dá uma dopamina boa. É satisfatório marcar que venci mais um dia."</p>
                 </div>
-                <!-- CARD 3 -->
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-3 mb-3">
                         <div class="avatar-circle bg-brutal-red">L</div>
                         <div><p class="font-bold text-white text-sm">Lucas D.</p><p class="text-xs text-gray-500 uppercase">Trader</p></div>
                         <div class="stars">★★★★★</div>
                     </div>
-                    <p class="text-gray-300 text-sm italic">"A função do 'Ferreiro de Hábitos' é genial. O protocolo de resgate salvou minha tarde depois de uma manhã procrastinando."</p>
+                    <p class="text-gray-300 text-sm italic">"A 'Blindagem Noturna' salvou minha rotina de sono. Eu sempre ficava no celular até as 3am, agora o protocolo me guia."</p>
                 </div>
-                <!-- DUPLICADOS PARA LOOP -->
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-gray-800">J</div>
+                        <div><p class="font-bold text-white text-sm">Júlia S.</p><p class="text-xs text-gray-500 uppercase">Advogada</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"O botão SOS é genial. Quando a ansiedade bate, a IA me acalma na hora. Vale cada centavo."</p>
+                </div>
+
+                <!-- BLOCO 2 (DUPLICADO) -->
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-3 mb-3">
                         <div class="avatar-circle bg-brutal-red">M</div>
                         <div><p class="font-bold text-white text-sm">Marina L.</p><p class="text-xs text-gray-500 uppercase">Designer</p></div>
                         <div class="stars">★★★★★</div>
                     </div>
-                    <p class="text-gray-300 text-sm italic">"O 'Diagnóstico' me assustou. Descreveu exatamente o que sinto. A ferramenta me fez entregar um projeto de 2 semanas em 2 dias."</p>
+                    <p class="text-gray-300 text-sm italic">"O 'Contador de Streak' mudou tudo. Eu não queria quebrar a corrente de dias limpos. Já estou há 14 dias sem recair!"</p>
                 </div>
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-3 mb-3">
@@ -153,7 +159,23 @@
                         <div><p class="font-bold text-white text-sm">Rafael K.</p><p class="text-xs text-gray-500 uppercase">Estudante</p></div>
                         <div class="stars">★★★★★</div>
                     </div>
-                    <p class="text-gray-300 text-sm italic">"Tenho TDAH e já tentei Notion, Pomodoro... nada durava. O Synapse funciona porque é como ter um chefe chato no ouvido."</p>
+                    <p class="text-gray-300 text-sm italic">"A função de 'Check-in' diário dá uma dopamina boa. É satisfatório marcar que venci mais um dia."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-brutal-red">L</div>
+                        <div><p class="font-bold text-white text-sm">Lucas D.</p><p class="text-xs text-gray-500 uppercase">Trader</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"A 'Blindagem Noturna' salvou minha rotina de sono. Eu sempre ficava no celular até as 3am, agora o protocolo me guia."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div class="avatar-circle bg-gray-800">J</div>
+                        <div><p class="font-bold text-white text-sm">Júlia S.</p><p class="text-xs text-gray-500 uppercase">Advogada</p></div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"O botão SOS é genial. Quando a ansiedade bate, a IA me acalma na hora. Vale cada centavo."</p>
                 </div>
             </div>
         </div>
@@ -163,130 +185,73 @@
     <main class="py-24 px-4 bg-[#050505] relative">
         <div class="max-w-4xl mx-auto">
 
-            <!-- PROBLEMA (MODO ZUMBI) -->
+            <!-- O PROBLEMA -->
             <section class="mb-24 reveal">
                 <h3 class="text-2xl md:text-4xl font-bold uppercase mb-8 text-center tracking-tight">
-                    Você está no <span class="text-red-600">"Modo Zumbi"?</span>
+                    Sua rotina está <span class="text-red-600">Quebrada?</span>
                 </h3>
                 
                 <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-8 md:p-12 relative overflow-hidden">
                     <div class="absolute -right-20 -top-20 w-64 h-64 bg-red-600/5 rounded-full blur-3xl"></div>
                     <p class="text-lg text-gray-300 mb-8 font-light text-center relative z-10">
-                        Seja honesto. Sua atenção está fraturada. Seu foco está morto.
+                        Não é falta de tempo. É falta de um sistema de recompensa alinhado.
                     </p>
                     <ul class="space-y-6 relative z-10">
                         <li class="flex gap-4 items-start text-gray-400 group">
                             <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]"><i class="fas fa-times text-red-500"></i></div>
-                            <span class="group-hover:text-gray-200 transition">Você pega o celular "só para ver a hora" e perde 20 minutos rolando feed.</span>
+                            <span class="group-hover:text-gray-200 transition">Você começa o dia bem, mas perde o controle depois do almoço.</span>
                         </li>
                         <li class="flex gap-4 items-start text-gray-400 group">
                             <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]"><i class="fas fa-times text-red-500"></i></div>
-                            <span class="group-hover:text-gray-200 transition">Não consegue focar em uma tarefa por 15 minutos sem a "coceira" da notificação.</span>
+                            <span class="group-hover:text-gray-200 transition">Sente culpa à noite por não ter feito o que planejou.</span>
                         </li>
                         <li class="flex gap-4 items-start text-gray-400 group">
                             <div class="w-8 h-8 rounded-lg bg-red-900/20 flex items-center justify-center shrink-0 mt-[-2px]"><i class="fas fa-times text-red-500"></i></div>
-                            <span class="group-hover:text-gray-200 transition">Sente culpa no final do dia por ter planejado muito e feito pouco.</span>
+                            <span class="group-hover:text-gray-200 transition">Tenta "força de vontade", mas o vício em telas/dopamina vence sempre.</span>
                         </li>
                     </ul>
                 </div>
             </section>
 
-            <!-- A CIÊNCIA POR TRÁS -->
-            <section class="mb-24 reveal">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div class="order-2 md:order-1">
-                        <div class="inline-block text-red-500 text-xs font-bold uppercase tracking-widest mb-2">A Lógica</div>
-                        <h3 class="text-3xl font-bold text-white mb-6">Por que a "Força de Vontade" falha?</h3>
-                        <p class="text-gray-400 leading-relaxed mb-4">
-                            Seu cérebro tem um sistema de recompensa viciado em <strong>Dopamina Barata</strong>. Tentar "focar na força" é como tentar parar um trem com as mãos.
-                        </p>
-                        <p class="text-gray-400 leading-relaxed">
-                            O <strong>Synapse</strong> não te dá "motivação". Ele usa protocolos de Terapia Cognitivo-Comportamental (TCC) para <strong>hackear</strong> esse sistema.
-                        </p>
-                    </div>
-                    <div class="order-1 md:order-2 relative">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-red-600/20 to-transparent rounded-full blur-3xl"></div>
-                        <div class="bg-zinc-900 border border-white/10 p-6 rounded-2xl relative">
-                            <div class="flex items-center gap-4 mb-4 border-b border-white/5 pb-4">
-                                <i class="fas fa-brain text-red-500 text-2xl"></i>
-                                <span class="font-bold text-white">Neuro-Modulação</span>
-                            </div>
-                            <div class="space-y-3 text-sm text-gray-400">
-                                <div class="flex justify-between"><span>Dopamina Basal</span> <span class="text-red-400">Baixa (Tédio)</span></div>
-                                <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-red-600 h-full w-[20%]"></div>
-                                </div>
-                                <div class="flex justify-between mt-4"><span>Dopamina Synapse</span> <span class="text-green-400">Estável (Foco)</span></div>
-                                <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-green-500 h-full w-[80%]"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SOLUÇÃO (ARSENAL) -->
+            <!-- A SOLUÇÃO: GAMIFICAÇÃO -->
             <section class="mb-24">
                 <div class="reveal text-center mb-12">
                     <h3 class="text-2xl md:text-4xl font-bold uppercase mb-4 tracking-tight">O Arsenal <span class="text-white">Synapse</span></h3>
-                    <p class="text-gray-500 font-mono text-xs uppercase tracking-widest">4 Ferramentas de Intervenção</p>
+                    <p class="text-gray-500 font-mono text-xs uppercase tracking-widest">Tecnologia + Comportamento</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="reveal delay-100 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                    <!-- Card 1 -->
+                    <div class="reveal delay-100 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-green-500/30 hover:bg-green-500/5 transition duration-500 group">
                         <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-heart-pulse text-red-500 text-xl"></i>
+                            <i class="fas fa-calendar-check text-green-500 text-xl"></i>
                         </div>
-                        <h4 class="text-lg font-bold mb-2 text-white">Diagnóstico Neuro-IA</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Entrevista profunda para descobrir se você trava por ansiedade, perfeccionismo ou fadiga.</p>
+                        <h4 class="text-lg font-bold mb-2 text-white">Rastreador de Hábito</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Visualize seu progresso. Mantenha o "Streak" (dias seguidos) e sinta orgulho da sua disciplina diária.</p>
                     </div>
+                    <!-- Card 2 -->
                     <div class="reveal delay-200 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
                         <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-chess-board text-red-500 text-xl"></i>
+                            <i class="fas fa-shield-alt text-red-500 text-xl"></i>
                         </div>
-                        <h4 class="text-lg font-bold mb-2 text-white">Estratégia Tática</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Transforma tarefas gigantes ("Escrever TCC") em micro-passos ridículos que seu cérebro não consegue recusar.</p>
+                        <h4 class="text-lg font-bold mb-2 text-white">Protocolo 24h</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Um plano passo-a-passo para blindar sua manhã, tarde e noite contra recaídas e procrastinação.</p>
                     </div>
-                    <div class="reveal delay-300 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                    <!-- Card 3 -->
+                    <div class="reveal delay-300 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-blue-500/30 hover:bg-blue-500/5 transition duration-500 group">
                         <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-hammer text-red-500 text-xl"></i>
+                            <i class="fas fa-chart-pie text-blue-500 text-xl"></i>
                         </div>
-                        <h4 class="text-lg font-bold mb-2 text-white">Ferreiro de Hábitos</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Protocolo de resgate. Procrastinou a manhã toda? A IA gera o plano exato para salvar a tarde sem culpa.</p>
+                        <h4 class="text-lg font-bold mb-2 text-white">Estatísticas Avançadas</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Descubra quais horários você é mais vulnerável e receba insights da IA para corrigir a rota.</p>
                     </div>
-                    <div class="reveal delay-400 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-red-500/30 hover:bg-red-500/5 transition duration-500 group">
+                    <!-- Card 4 -->
+                    <div class="reveal delay-400 p-8 bg-zinc-900/20 border border-white/5 rounded-2xl hover:border-yellow-500/30 hover:bg-yellow-500/5 transition duration-500 group">
                         <div class="w-12 h-12 rounded-xl bg-black border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-chart-line text-red-500 text-xl"></i>
+                            <i class="fas fa-brain text-yellow-500 text-xl"></i>
                         </div>
-                        <h4 class="text-lg font-bold mb-2 text-white">Analista de Padrões</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Detecta os gatilhos ocultos da sua semana. Você vai ver em dados reais o que está roubando sua vida.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PARA QUEM É? (FILTRO) -->
-            <section class="mb-24 reveal">
-                <div class="bg-black border border-white/10 rounded-3xl p-8 md:p-12">
-                    <h3 class="text-2xl font-bold text-center mb-10">Isso é para você?</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div>
-                            <h4 class="text-green-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> É PARA VOCÊ SE:</h4>
-                            <ul class="space-y-3 text-gray-400 text-sm">
-                                <li>• Sente que tem muito potencial mas não sai do lugar.</li>
-                                <li>• Tem sintomas de TDAH ou ansiedade.</li>
-                                <li>• Já comprou cursos e planners e abandonou tudo.</li>
-                                <li>• Precisa de alguém te cobrando.</li>
-                            </ul>
-                        </div>
-                        <div class="md:border-l border-white/10 md:pl-10">
-                            <h4 class="text-red-500 font-bold mb-4 flex items-center gap-2"><i class="fas fa-times-circle"></i> NÃO É PARA VOCÊ SE:</h4>
-                            <ul class="space-y-3 text-gray-400 text-sm">
-                                <li>• Procura uma pílula mágica sem esforço.</li>
-                                <li>• Não está disposto a seguir ordens simples.</li>
-                                <li>• Acha que disciplina é "dom" e não treino.</li>
-                            </ul>
-                        </div>
+                        <h4 class="text-lg font-bold mb-2 text-white">IA de Bolso</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Botão de Pânico (SOS) e um treinador pessoal disponível 24h para te tirar do buraco.</p>
                     </div>
                 </div>
             </section>
@@ -297,7 +262,7 @@
                     <h3 class="text-3xl md:text-5xl font-black uppercase leading-none">
                         OFERTA <span class="brutal-red">VITALÍCIA</span>
                     </h3>
-                    <p class="text-sm text-gray-400 mt-2">Zero mensalidades. Acesso total.</p>
+                    <p class="text-sm text-gray-400 mt-2">Desbloqueie todas as ferramentas PRO.</p>
                 </div>
 
                 <div class="max-w-sm mx-auto px-4">
@@ -327,14 +292,16 @@
                                 <p class="text-[11px] text-gray-500 mt-4 font-medium tracking-wide">Pagamento único • Pix ou Cartão</p>
                             </div>
 
-                            <!-- FAIXA DE OFERTA (TIMER + BOTÃO) - AJUSTADO PARA MOBILE -->
-                            <div class="bg-[#111] border border-white/10 p-1.5 rounded-2xl flex items-center justify-between gap-2 mb-8 shadow-inner shadow-black/50 group hover:border-red-500/30 transition-colors duration-300">
-                                <div class="pl-3 md:pl-4 flex flex-col items-start justify-center h-12">
+                            <!-- FAIXA DE OFERTA (TIMER + BOTÃO TELEGRAM) -->
+                            <div class="bg-[#111] border border-white/10 p-1 md:p-1.5 rounded-2xl flex items-center justify-between gap-2 mb-8 shadow-inner shadow-black/50 group hover:border-red-500/30 transition-colors duration-300">
+                                <div class="pl-3 md:pl-4 flex flex-col items-start justify-center h-10 md:h-12">
                                     <p class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Expira em:</p>
-                                    <div class="countdown-target font-mono font-bold text-white text-base md:text-lg leading-none tracking-widest tabular-nums text-glow">00:00:00</div>
+                                    <div class="countdown-target font-mono font-bold text-white text-sm md:text-lg leading-none tracking-widest tabular-nums text-glow">00:00:00</div>
                                 </div>
+                                
+                                <!-- Botão Telegram -->
                                 <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" target="_blank" 
-                                   class="h-12 px-4 md:px-6 bg-brutal-red hover:bg-red-600 text-white text-[10px] md:text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 whitespace-nowrap">
+                                   class="h-10 md:h-12 px-4 md:px-6 btn-telegram text-[10px] md:text-xs">
                                    Desbloquear <i class="fas fa-lock-open text-[10px]"></i>
                                 </a>
                             </div>
@@ -344,11 +311,11 @@
                                 <ul class="space-y-3 text-gray-400 text-xs text-left mx-auto max-w-[240px]">
                                     <li class="flex gap-3 items-center group">
                                         <div class="w-5 h-5 rounded-full bg-green-900/20 flex items-center justify-center shrink-0 border border-green-500/20 group-hover:border-green-500/50 transition"><i class="fas fa-check text-green-500 text-[9px]"></i></div>
-                                        <span class="group-hover:text-gray-200 transition">Diagnóstico + 3 Ferramentas</span>
+                                        <span class="group-hover:text-gray-200 transition">Protocolo 24h Completo</span>
                                     </li>
                                     <li class="flex gap-3 items-center group">
                                         <div class="w-5 h-5 rounded-full bg-green-900/20 flex items-center justify-center shrink-0 border border-green-500/20 group-hover:border-green-500/50 transition"><i class="fas fa-check text-green-500 text-[9px]"></i></div>
-                                        <span class="group-hover:text-gray-200 transition">Atualizações Vitalícias</span>
+                                        <span class="group-hover:text-gray-200 transition">Estatísticas de Recaída</span>
                                     </li>
                                     <li class="flex gap-3 items-center group">
                                         <div class="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center shrink-0 border border-white/10"><i class="fas fa-shield-alt text-gray-400 text-[9px]"></i></div>
@@ -370,7 +337,7 @@
                     <div>
                         <h4 class="text-xl font-bold text-white mb-2">Garantia Blindada de 7 Dias</h4>
                         <p class="text-gray-400 text-sm leading-relaxed">
-                            Use o Synapse por uma semana inteira. Se você não sentir sua produtividade aumentar drasticamente, nós devolvemos 100% do seu dinheiro. Sem perguntas.
+                            Use o Synapse por uma semana. Se você não sentir sua produtividade e controle aumentarem, nós devolvemos 100% do seu dinheiro.
                         </p>
                     </div>
                 </div>
@@ -386,7 +353,7 @@
                             <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
                         </summary>
                         <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
-                            Não. É um pagamento único de R$ 19,90. Você terá acesso vitalício à ferramenta e todas as atualizações futuras.
+                            Não. É um pagamento único de R$ 19,90. Você terá acesso vitalício ao app.
                         </div>
                     </details>
                     <details class="group bg-zinc-900/30 border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-500/20">
@@ -395,16 +362,7 @@
                             <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
                         </summary>
                         <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
-                            Sim. O Synapse foi desenhado pensando no cérebro neurodivergente. As respostas são curtas, diretas e estimulantes.
-                        </div>
-                    </details>
-                    <details class="group bg-zinc-900/30 border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-500/20">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer">
-                            <span class="font-semibold text-gray-200">Como recebo o acesso?</span>
-                            <span class="transition group-open:rotate-180 text-red-500"><i class="fas fa-chevron-down"></i></span>
-                        </summary>
-                        <div class="px-5 pb-5 text-gray-400 text-sm leading-relaxed">
-                            Imediatamente após o pagamento, você receberá um e-mail com seu link exclusivo de acesso. É automático.
+                            Sim. O design gamificado e os checklists rápidos foram pensados exatamente para cérebros que buscam dopamina.
                         </div>
                     </details>
                 </div>
@@ -421,14 +379,13 @@
         </div>
     </footer>
 
-    <!-- STICKY CTA (ID E HREF ATUALIZADOS) -->
+    <!-- STICKY CTA (COM BOTÃO TELEGRAM) -->
     <div id="stickyFooter" class="fixed bottom-4 left-4 right-4 z-50 md:hidden flex items-center justify-between bg-[#111] border border-red-900/50 p-3 rounded-xl shadow-2xl shadow-black/80 animate-pulse-slow transition-all duration-500 ease-in-out transform">
          <div class="flex flex-col">
             <span class="text-[10px] text-gray-400 uppercase tracking-wide">Expira em:</span>
             <span class="countdown-target font-mono font-bold text-white text-lg leading-none">00:00:00</span>
         </div>
-        <!-- Link agora âncora para #planos -->
-        <a href="#planos" class="bg-brutal-red text-white font-bold py-2.5 px-6 rounded-lg text-xs uppercase tracking-wider shadow-lg shadow-red-900/30">
+        <a href="#planos" class="btn-telegram px-6 py-2 text-xs">
             Desbloquear
         </a>
     </div>

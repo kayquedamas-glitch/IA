@@ -2,38 +2,36 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1912088396392621');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1912088396392621');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
     <title>Synapse - Arsenal IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <!-- TRUQUE ANTI-CACHE (?v=5) -->
     <link rel="stylesheet" href="css/app.css"> 
     
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Animação suave do Modal */
         .modal-enter { opacity: 0; transform: scale(0.95); }
         .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
     </style>
@@ -57,110 +55,202 @@ src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
     </script>
 </head>
 
-<body class="h-full">
+<body class="h-full bg-black text-white">
 
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
     <div class="app-layout">
 
+        <!-- SIDEBAR (Menu Lateral Desktop) -->
         <aside id="sidebar" class="sidebar p-4">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-3">
-                    <span class="text-2xl font-black brutal-red tracking-wider">Synapse</span>
+                    <div class="w-8 h-8 rounded bg-brutal-red flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-wide text-white">Synapse</span>
                 </div>
             </div>
 
-            <nav class="mb-8">
-                <h3 class="text-gray-400 text-xs uppercase font-bold mb-3">Ferramentas de IA</h3>
+            <nav class="mb-8 flex flex-col gap-2">
+                <h3 class="text-gray-500 text-[10px] uppercase font-bold mb-2 tracking-widest pl-2">Ferramentas</h3>
                 
-                <a id="toolDiagnostico" class="tool-item active"><i class="fas fa-heart-pulse fa-fw mr-3"></i>Diagnóstico Synapse</a>
+                <a id="toolDiagnostico" class="tool-item active">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Diagnóstico Synapse</span>
+                </a>
                 
                 <a id="toolEstrategista" class="tool-item is-locked">
-                    <i class="fas fa-brain fa-fw mr-3"></i>
-                    <span>Estrategista Diário</span>
-                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                    <i class="fas fa-chess-knight"></i>
+                    <span>Estrategista</span>
+                    <i class="fas fa-lock text-xs text-gray-600 ml-auto"></i> 
                 </a>
                 <a id="toolMestre" class="tool-item is-locked">
-                    <i class="fas fa-gavel fa-fw mr-3"></i>
+                    <i class="fas fa-hammer"></i>
                     <span>Ferreiro de Hábitos</span>
-                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                    <i class="fas fa-lock text-xs text-gray-600 ml-auto"></i> 
                 </a>
                 <a id="toolAuditor" class="tool-item is-locked">
-                    <i class="fas fa-clipboard-check fa-fw mr-3"></i>
-                    <span>Auditor de Hábitos</span>
-                    <i class="fas fa-lock text-gray-500 ml-auto"></i> 
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Auditor</span>
+                    <i class="fas fa-lock text-xs text-gray-600 ml-auto"></i> 
                 </a>
             </nav>
 
             <div class="flex-grow"></div>
-
-            <div class="mt-auto pt-6 space-y-3">
-                <!-- Área de Upgrade na Sidebar -->
-                <div class="p-4 bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-xl text-center">
-                    <p class="text-xs text-gray-400 mb-3">Liberar todas as funções</p>
+            
+            <div class="sidebar-upgrade-box mt-auto pt-6 space-y-3">
+                <div class="p-4 bg-gradient-to-b from-[#1a1a1a] to-black border border-[#333] rounded-xl text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
+                    <p class="text-xs text-gray-300 mb-3 font-medium">Desbloqueie seu Potencial</p>
                     <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');"
-                        class="block w-full bg-brutal-red text-white font-bold py-2.5 px-4 rounded-lg hover:bg-red-800 transition uppercase text-xs shadow-red-strong">
-                        Desbloquear Agora
+                        class="block w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-700 transition uppercase text-[10px] tracking-widest shadow-lg shadow-red-900/30">
+                        Acesso Vitalício
                     </a>
                 </div>
-
-                
             </div>
         </aside>
 
-        <main class="chat-area">
+        <main class="chat-area relative">
 
-            <div id="chatHeader" class="p-3 border-b border-[#333] flex items-center bg-[#1a1a1a] shadow-md">
-                <button id="openSidebarBtn" class="open-sidebar-btn text-white text-xl p-2 mr-3">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="flex-grow">
-                    <h3 id="chatTitle" class="text-lg font-bold uppercase brutal-red"></h3>
+            <!-- VIEW 1: CHAT IA -->
+            <div id="viewChat" class="view-section h-full flex flex-col">
+                
+                <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
+                    <button id="menuBtn" class="text-white text-xl p-2">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-white">Synapse AI</h3>
+                    <div class="w-8"></div>
                 </div>
-            </div>
 
-            <div class="chat-messages">
-                <div id="messagesContainer" class="p-5 w-full max-w-3xl mx-auto">
-                    
-                    <div class="w-full text-center mb-6 p-4 bg-[#1a1a1a] rounded-xl border border-gray-700">
-                        <p id="chatSubtitle" class="text-gray-300 text-lg">
-                            <span id="typewriter-text" class="brutal-red font-bold"></span>
-                        </p>
-                        <p id="demoUsageMessage" class="text-gray-500 text-xs mt-2"></p>
+                <div class="chat-messages flex-grow pt-16"> 
+                    <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col">
+                        <div class="w-full text-center mb-6 p-4">
+                            <p id="chatSubtitle" class="text-gray-400 text-sm">
+                                <span id="typewriter-text" class="text-brutal-red font-medium"></span>
+                                <span class="animate-pulse">|</span>
+                            </p>
+                        </div>
                     </div>
-                    
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="w-full max-w-2xl mx-auto">
+                        <div id="textInputWrapper">
+                            <textarea id="chatInput" rows="1" class="bg-transparent border-none outline-none text-white w-full px-2 resize-none" placeholder="Digite aqui..."></textarea>
+                            <button id="sendBtn"><i class="fas fa-arrow-up text-white text-xs"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="chat-input-container">
-                <div class="w-full max-w-3xl mx-auto flex items-center bg-[#333] rounded-lg p-2 relative overflow-hidden">
+            <!-- VIEW 2: JORNADA (NOVO LAYOUT) -->
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
+                <div class="max-w-md mx-auto">
                     
-                    <!-- Wrapper do Input Normal -->
-                    <div id="textInputWrapper" class="flex items-center w-full transition-all duration-300">
-                        <textarea id="chatInput" rows="1"
-                            class="w-full flex-grow bg-transparent border-none outline-none resize-none px-3 py-2 text-base"
-                            placeholder="Digite sua mensagem..."></textarea>
-                        <button id="sendBtn"
-                            class="bg-brutal-red text-white p-3 rounded-lg hover:bg-red-800 transition ml-2 shrink-0">
-                            <i class="fas fa-paper-plane"></i>
-                            <div id="loadingSpinner" class="hidden"></div>
+                    <!-- HEADER DO NÍVEL -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Seu Nível Atual</p>
+                            <h2 class="text-xl font-black text-white flex items-center gap-2">
+                                <i class="fas fa-chess-pawn text-brutal-red"></i> Iniciante
+                            </h2>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-green-500" id="streakDisplay">0</span>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias Seguidos</p>
+                        </div>
+                    </div>
+
+                    <!-- CARD DE CHECK-IN DIÁRIO -->
+                    <div class="bg-[#111] border border-[#222] rounded-2xl p-6 mb-8 relative overflow-hidden text-center shadow-lg">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-900"></div>
+                        
+                        <h3 class="text-white font-bold text-lg mb-2">Check-in Diário</h3>
+                        <p class="text-gray-400 text-xs mb-6 leading-relaxed">
+                            Manteve o controle hoje? Registre sua vitória para fortalecer sua neuroplasticidade.
+                        </p>
+
+                        <!-- BOTÃO DE REGISTRO (CHECK-IN) -->
+                        <button id="btnCheckIn" class="w-full py-4 rounded-xl bg-[#1a1a1a] border border-[#333] group hover:border-green-500/50 hover:bg-green-900/10 transition-all duration-300 flex items-center justify-center gap-3">
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-600 group-hover:border-green-500 flex items-center justify-center transition-colors" id="checkIconBox">
+                                <i class="fas fa-check text-green-500 opacity-0 transform scale-50 transition-all duration-300" id="checkIcon"></i>
+                            </div>
+                            <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors" id="checkText">Registrar "Dia Limpo"</span>
                         </button>
                     </div>
 
-                    <!-- Bloco de Upgrade (Ferramentas Bloqueadas) -->
-                    <div id="upgradeBlock" class="hidden w-full text-center p-3">
-                        <h4 id="upgradeTitle" class="font-bold brutal-red uppercase mb-2"></h4>
-                        <p class="text-gray-300 mb-4 text-sm">Ferramenta exclusiva PRO.</p>
-                        <a href="pag.html#planos"
-                            class="w-full bg-brutal-red text-white font-bold py-3 px-4 rounded-lg hover:bg-red-800 transition uppercase text-sm flex items-center justify-center">
-                            Desbloquear
-                        </a>
+                    <!-- CALENDÁRIO VISUAL (STREAK) -->
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-white">Seu Histórico</h3>
+                            <span class="text-[10px] text-gray-500 bg-[#111] px-2 py-1 rounded border border-[#222]">Últimos 7 Dias</span>
+                        </div>
+                        
+                        <div class="flex justify-between gap-2" id="calendarGrid">
+                            <!-- Dias simulados -->
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">T</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
+                            <!-- Hoje -->
+                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center text-xs font-bold shadow-lg shadow-white/10">D</div><div class="text-[9px] text-white font-bold">Hoje</div></div>
+                        </div>
+                    </div>
+
+                    <!-- ESTATÍSTICAS BLOQUEADAS (GATILHO DE VENDA) -->
+                    <div class="relative mt-8 pt-6 border-t border-[#222]">
+                        <div class="flex items-center justify-between mb-4 opacity-50">
+                            <h3 class="text-sm font-bold text-white">Estatísticas Avançadas</h3>
+                            <i class="fas fa-lock text-gray-500 text-xs"></i>
+                        </div>
+
+                        <!-- Mockup Borrado -->
+                        <div class="relative">
+                            <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                                <div class="bg-[#161616]/90 backdrop-blur-sm border border-red-900/30 p-5 rounded-xl shadow-2xl text-center max-w-[280px]">
+                                    <p class="text-gray-300 text-xs mb-3 font-medium">Descubra seus horários de risco e padrões de recaída.</p>
+                                    <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');" 
+                                       class="block w-full bg-brutal-red text-white font-bold py-2.5 rounded-lg uppercase text-[10px] tracking-widest shadow-lg hover:bg-red-700 transition">
+                                        Desbloquear Stats
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 filter blur-[4px] opacity-40 select-none pointer-events-none">
+                                <div class="bg-[#111] rounded-xl p-4 border border-[#222]">
+                                    <div class="text-xs text-gray-500 mb-2">Humor Médio</div>
+                                    <div class="h-2 w-full bg-gray-800 rounded-full"><div class="h-full w-[60%] bg-blue-500 rounded-full"></div></div>
+                                </div>
+                                <div class="bg-[#111] rounded-xl p-4 border border-[#222]">
+                                    <div class="text-xs text-gray-500 mb-2">Risco de Recaída</div>
+                                    <div class="h-2 w-full bg-gray-800 rounded-full"><div class="h-full w-[30%] bg-red-500 rounded-full"></div></div>
+                                </div>
+                                <div class="col-span-2 bg-[#111] rounded-xl p-4 border border-[#222] h-24 flex items-end gap-2">
+                                    <div class="w-full bg-gray-800 rounded-t h-[40%]"></div>
+                                    <div class="w-full bg-gray-800 rounded-t h-[70%]"></div>
+                                    <div class="w-full bg-gray-800 rounded-t h-[50%]"></div>
+                                    <div class="w-full bg-gray-800 rounded-t h-[90%]"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
+
         </main>
+
+        <!-- BOTTOM BAR -->
+        <nav class="bottom-nav md:hidden">
+            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')"><i class="fas fa-brain text-xl mb-1"></i><span class="text-[10px] font-medium">Chat</span></button>
+            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')"><i class="fas fa-calendar-check text-xl mb-1"></i><span class="text-[10px] font-medium">Jornada</span></button>
+        </nav>
         
-    </div> <script src="js/app.js"></script>
+    </div> 
+    <script src="js/app.js"></script>
 </body>
 </html>

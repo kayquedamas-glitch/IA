@@ -1,359 +1,139 @@
+/* app.css - VERSÃO FINAL DEFINITIVA */
+
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #111111;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #0a0a0a;
     color: #ffffff;
-    overflow: hidden; /* Previne rolagem dupla no body */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .brutal-red { color: #CC0000; }
 .bg-brutal-red { background-color: #CC0000; }
-.border-brutal-red { border-color: #CC0000; }
-.shadow-red-strong { box-shadow: 0 10px 15px -3px rgba(204, 0, 0, 0.5), 0 4px 6px -2px rgba(204, 0, 0, 0.2); }
 
-/* =========================================
-   2. LAYOUT DA APLICAÇÃO (DESKTOP)
-========================================= */
+/* LAYOUT */
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
-    height: 100vh;
+    height: 100dvh;
+    width: 100%;
     overflow: hidden;
 }
 
+/* SIDEBAR */
 .sidebar {
-    background-color: #1a1a1a;
-    border-right: 1px solid #333;
+    background-color: #111;
+    border-right: 1px solid #222;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     overflow-y: auto;
-    transition: border-color 0.3s ease; /* Para o efeito de highlight */
+    z-index: 100;
+    transition: transform 0.3s ease;
+    box-shadow: 5px 0 30px rgba(0,0,0,0.8);
 }
 
-/* =========================================
-   3. ÁREA DO CHAT
-========================================= */
+.sidebar nav { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+
+.tool-item {
+    display: flex; align-items: center; padding: 14px 16px; margin-bottom: 4px;
+    border-radius: 12px; color: #a3a3a3; font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; width: 100%;
+}
+.tool-item:hover { background-color: #1a1a1a; color: #fff; }
+.tool-item.active { background-color: #1f1f1f; color: #CC0000; font-weight: 600; border-left: 3px solid #CC0000; }
+.tool-item i { width: 24px; text-align: center; margin-right: 12px; font-size: 1.1rem; }
+.tool-item.is-locked { opacity: 0.6; justify-content: space-between; }
+.tool-item.is-locked span { flex-grow: 1; }
+
+.sidebar-upgrade-box { margin-top: auto; padding-top: 20px; border-top: 1px solid #222; }
+
+/* CHAT AREA */
 .chat-area {
-    display: flex;
-    flex-direction: column; 
-    background-color: #050505;
-    height: 100vh;
-    overflow: hidden;
+    display: flex; flex-direction: column; background-color: #000000;
+    background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 24px 24px;
+    height: 100%; position: relative; overflow: hidden;
 }
 
 .chat-messages {
-    flex-grow: 1; 
-    overflow-y: auto; 
-    scroll-behavior: smooth;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+    flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; display: flex; flex-direction: column;
+    padding: 0 16px; padding-bottom: 100px; -webkit-overflow-scrolling: touch;
 }
 
-/* Container das mensagens com espaçamento correto */
-#messagesContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 24px !important; /* Força o respiro entre mensagens */
-    width: 100%;
-    max-width: 48rem; /* max-w-3xl */
-    margin-left: auto;
-    margin-right: auto;
-    padding-bottom: 20px;
-}
+#messagesContainer { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 42rem; margin: 0 auto; padding-top: 10px; }
 
-/* =========================================
-   4. BALÕES DE MENSAGEM
-========================================= */
-.chat-message-user, .chat-message-ia {
-    padding: 14px 18px;
-    border-radius: 14px;
-    max-width: 85%;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    position: relative;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Mensagem do Usuário (Direita) */
+/* Balões de Mensagem */
 .chat-message-user {
-    background-color: #4a0a0a; 
-    border: 1px solid #7a0000;
-    color: #fff;
-    align-self: flex-end;
-    border-bottom-right-radius: 2px;
-    margin-left: auto; 
+    background-color: #CC0000; color: #fff; align-self: flex-end; border-radius: 18px 18px 4px 18px;
+    padding: 10px 14px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; position: relative; word-wrap: break-word; font-weight: 500; animation: fadeIn 0.2s;
 }
 
-/* Mensagem da IA (Esquerda) */
 .chat-message-ia {
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-    color: #e0e0e0;
-    align-self: flex-start;
-    border-bottom-left-radius: 2px;
-    margin-right: auto;
+    background-color: transparent; color: #F2F2F2; align-self: flex-start; padding: 0; margin-left: 2px;
+    max-width: 95%; font-size: 0.95rem; line-height: 1.5; position: relative; word-wrap: break-word; border: none; animation: fadeIn 0.2s;
 }
-
-.chat-message-ia .brutal-red { color: #ff4d4d; font-weight: bold; } 
 .chat-message-ia strong { color: #fff; font-weight: 700; }
 
-/* =========================================
-   5. SIDEBAR & NAVEGAÇÃO
-========================================= */
-.tool-item {
-    padding: 12px 15px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    color: #aaa;
-    font-size: 0.9rem;
-}
-.tool-item:hover { background-color: #2a2a2a; color: #fff; }
-.tool-item.active {
-    background-color: #CC0000;
-    font-weight: 600;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(204,0,0,0.3);
-}
-.tool-item.is-locked { opacity: 0.6; }
-.tool-item.is-locked:hover { opacity: 1; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* =========================================
-   6. BOTÕES DE RESPOSTA RÁPIDA (SLIM)
-========================================= */
+/* Botões de Resposta */
 .quick-reply-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; /* Permite quebrar linha se necessário */
-    gap: 8px;            
-    margin-top: 12px;     
-    padding-bottom: 4px; 
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 95%;
+    align-self: flex-start; margin-top: -4px; margin-bottom: 8px; animation: fadeIn 0.3s;
 }
-
 .cyber-btn {
-    background: rgba(30, 30, 30, 1);
-    border: 1px solid #444;
-    color: #e5e5e5;
-    padding: 6px 14px;
-    font-size: 0.8rem; 
-    line-height: 1.2;
-    border-radius: 8px; 
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif; 
-    font-weight: 500;
-    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0;
+    padding: 12px 8px; font-size: 0.85rem; font-weight: 500; border-radius: 12px; cursor: pointer; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background 0.1s; -webkit-appearance: none;
 }
+.cyber-btn:active { background-color: rgba(255, 255, 255, 0.2); transform: scale(0.98); }
+.cyber-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-.cyber-btn:hover {
-    background: #CC0000;
-    border-color: #CC0000;
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.cyber-btn.more-btn {
-    border: 1px dashed #666;
-    color: #888;
-}
-
-/* =========================================
-   7. ÁREA DE INPUT
-========================================= */
+/* Input Area */
 .chat-input-container {
-    border-top: 1px solid #222;
-    padding: 15px 20px;
-    background-color: #161616;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0; 
-    min-height: 80px; /* Altura mínima para acomodar os botões grandes */
+    position: absolute; bottom: 70px; left: 0; right: 0; background-color: transparent;
+    padding: 0 10px 10px 10px; z-index: 30; display: flex; align-items: center;
+}
+#textInputWrapper {
+    background-color: #1a1a1a; border-radius: 24px; border: 1px solid #333; padding: 8px 14px;
+    display: flex; align-items: center; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+#chatInput { font-size: 0.95rem; color: #fff; width: 100%; }
+#sendBtn {
+    width: 36px; height: 36px; border-radius: 50%; background-color: #CC0000;
+    display: flex; align-items: center; justify-content: center; margin-left: 8px; flex-shrink: 0;
 }
 
-#loadingSpinner {
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #fff;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
+/* Bottom Nav */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
 }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 100%; transition: color 0.2s; }
+.nav-btn.active { color: #CC0000; }
 
-/* =========================================
-   8. NOVO: CARD DE RELATÓRIO (ARQUÉTIPO)
-========================================= */
-.report-card {
-    background: linear-gradient(180deg, #161616 0%, #0a0a0a 100%);
-    border: 1px solid #333;
-    border-top: 4px solid #CC0000;
-    border-radius: 16px;
-    padding: 24px;
-    margin-top: 24px;
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    width: 100%;
-}
+/* Cards */
+.report-card { background: #121212; border: 1px solid #222; border-top: 3px solid #CC0000; border-radius: 16px; padding: 16px; margin-top: 10px; width: 100%; animation: slideUp 0.5s; }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.report-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
-.report-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 10px;
-    padding: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.2s;
-    margin-bottom: 8px;
-}
+/* ESTILOS DA JORNADA (NOVO) */
+.btn-checkin-active { background-color: rgba(34, 197, 94, 0.1) !important; border-color: rgba(34, 197, 94, 0.5) !important; }
+.calendar-day-done { background-color: #22c55e !important; color: #000 !important; border-color: #22c55e !important; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); transform: scale(1.1); }
+#btnCheckIn:active { transform: scale(0.98); }
+#viewProtocolo { background-image: radial-gradient(#111 1px, transparent 1px); background-size: 30px 30px; }
 
-.report-item.unlocked {
-    border-color: rgba(34, 197, 94, 0.3);
-    background: rgba(34, 197, 94, 0.05);
+@media (min-width: 769px) {
+    .bottom-nav { display: none; }
+    .sidebar { position: relative; transform: none; width: 100%; max-width: none; z-index: 1; }
+    .chat-input-container { bottom: 0; background-color: #000; padding: 15px; border-top: 1px solid #222; }
 }
-
-.report-item.locked {
-    opacity: 0.8; /* Mais visível para gerar desejo */
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================================
-   9. NOVO: BARRA DE AÇÃO (ACTION BAR)
-========================================= */
-.action-bar {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    padding: 0;
-}
-
-.btn-upgrade {
-    flex: 2;
-    background: #CC0000;
-    color: white;
-    font-weight: 800;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 14px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);
-    transition: transform 0.2s, background 0.2s;
-    text-decoration: none;
-}
-.btn-upgrade:hover {
-    background: #b30000;
-    transform: translateY(-2px);
-}
-
-.btn-explore {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #aaa;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    padding: 14px;
-}
-.btn-explore:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border-color: rgba(255,255,255,0.3);
-}
-
-/* =========================================
-   10. RESPONSIVIDADE (MOBILE)
-========================================= */
 @media (max-width: 768px) {
-    body { overflow: hidden; position: fixed; width: 100%; height: 100%; }
-    
-    .app-layout { 
-        grid-template-columns: 1fr; 
-        height: 100%; 
-        display: flex; 
-        flex-direction: column; 
-    }
-    
-    .chat-area { height: 100%; }
-    
-    .chat-messages {
-        padding: 16px;
-        padding-bottom: 100px; /* Espaço extra no final para não cortar conteúdo */
-    }
-    
-    /* Garante que o card caiba na tela */
-    .report-card {
-        padding: 16px;
-        margin-top: 16px;
-    }
-    
-    .chat-input-container {
-        position: fixed; /* Fixado embaixo */
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding-bottom: max(15px, env(safe-area-inset-bottom));
-        z-index: 20;
-        border-top: 1px solid #222;
-    }
-
-    /* Menu Lateral Mobile */
-    .sidebar { 
-        position: fixed; 
-        top: 0; 
-        left: 0; 
-        height: 100%; 
-        width: 85%; 
-        max-width: 300px; 
-        z-index: 100; 
-        transform: translateX(-100%); 
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-    }
+    .app-layout { display: flex; flex-direction: column; }
+    .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 85%; max-width: 320px; transform: translateX(-100%); display: flex !important; }
     .sidebar.open { transform: translateX(0); }
-    
-    .sidebar-overlay { 
-        position: fixed; 
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        height: 100%; 
-        background-color: rgba(0, 0, 0, 0.8); 
-        backdrop-filter: blur(4px);
-        z-index: 99; 
-        opacity: 0; 
-        visibility: hidden; 
-        transition: opacity 0.3s; 
-    }
-    .sidebar-overlay.open { opacity: 1; visibility: visible; }
-    
-    .open-sidebar-btn { display: block; }
-    
-    /* Ajustes de fonte */
-    .chat-message-user, .chat-message-ia { max-width: 90%; font-size: 0.95rem; padding: 12px 16px; }
+    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 90; visibility: hidden; opacity: 0; transition: opacity 0.3s; }
+    .sidebar-overlay.open { visibility: visible; opacity: 1; }
 }

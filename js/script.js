@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. CONTAGEM REGRESSIVA (FORMATO FAIXA) ---
+    // 1. CONTAGEM REGRESSIVA (FORMATO FAIXA)
     const countdownElements = document.querySelectorAll('.countdown-target');
     
     if (countdownElements.length > 0) {
@@ -33,13 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeCountdown();
     }
 
-    // --- 2. ANIMAÇÃO DE REVEAL ---
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
+    // 2. ANIMAÇÃO DE REVEAL
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -52,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealElements = document.querySelectorAll('.reveal');
     revealElements.forEach(el => observer.observe(el));
     
-    // --- 3. CONTROLE DE VOLUME DO VÍDEO ---
+    // 3. CONTROLE DE VOLUME VÍDEO
     const video = document.getElementById('meuVideo');
     const botaoVolume = document.getElementById('botaoVolume');
     const iconeVolume = document.getElementById('iconeVolume');
@@ -71,27 +66,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. CONTROLE DO STICKY FOOTER (NOVO: ESCONDER NO PLANO) ---
+    // 4. CONTROLE DO STICKY FOOTER (ESCONDER NO PLANO)
     const stickyFooter = document.getElementById('stickyFooter');
     const pricingSection = document.getElementById('planos');
 
     if (stickyFooter && pricingSection) {
-        // Observer para saber quando a seção de planos entra na tela
         const stickyObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // SE O PLANO ESTÁ VISÍVEL -> ESCONDE O FOOTER
                     stickyFooter.classList.add('translate-y-[200%]', 'opacity-0');
-                    // Remove animação para não atrapalhar
                     stickyFooter.classList.remove('animate-pulse-slow'); 
                 } else {
-                    // SE SAIU DO PLANO -> MOSTRA O FOOTER
                     stickyFooter.classList.remove('translate-y-[200%]', 'opacity-0');
                 }
             });
-        }, { 
-            threshold: 0.1 // Dispara quando 10% do card de preço aparecer
-        });
+        }, { threshold: 0.1 });
 
         stickyObserver.observe(pricingSection);
     }
