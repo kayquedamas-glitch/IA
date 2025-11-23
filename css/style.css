@@ -137,27 +137,34 @@ body {
 }
 
 /* DEFINIÇÃO DA ANIMAÇÃO */
-@keyframes scrollMarquee {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        /* IMPORTANTE: O valor -50% assume que você duplicou o conteúdo 
-           no HTML (Bloco 1 + Bloco 1 Cópia).
-           Assim, quando o primeiro bloco termina, o segundo já está no lugar,
-           criando a ilusão de infinito.
-        */
-        transform: translateX(-50%);
-    }
-}
-
-/* AJUSTE PARA CELULARES PEQUENOS */
 @media (max-width: 768px) {
-    .testimonial-card {
-        width: 260px; /* Um pouco menor no mobile para caber mais */
-        padding: 16px;
+    .app-layout { display: flex; flex-direction: column; }
+    
+    /* === AQUI: ESCONDE O BLOCO DE UPGRADE NO MOBILE === */
+    .sidebar-upgrade-box {
+        display: none !important;
     }
-    .marquee-track {
-        gap: 1rem; /* Menos espaço entre cards no mobile */
+    /* ================================================== */
+    
+    .sidebar {
+        position: fixed;
+        top: 0; left: 0; height: 100%; width: 80%;
+        max-width: 300px;
+        transform: translateX(-100%);
+    }
+    .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+    
+    .sidebar-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 40;
+        visibility: hidden; opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .sidebar-overlay.open { visibility: visible; opacity: 1; }
+
+    /* Fixa o input no fundo de forma segura */
+    .chat-input-container {
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
     }
 }
