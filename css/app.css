@@ -1,4 +1,4 @@
-/* app.css - VERSÃO FINAL DEFINITIVA */
+/* app.css - VERSÃO FINAL: BOTÕES 3D "TELEGRAM POP" */
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -13,7 +13,7 @@ body {
 .brutal-red { color: #CC0000; }
 .bg-brutal-red { background-color: #CC0000; }
 
-/* LAYOUT */
+/* --- LAYOUT GERAL --- */
 .app-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -22,7 +22,6 @@ body {
     overflow: hidden;
 }
 
-/* SIDEBAR */
 .sidebar {
     background-color: #111;
     border-right: 1px solid #222;
@@ -50,9 +49,10 @@ body {
 
 .sidebar-upgrade-box { margin-top: auto; padding-top: 20px; border-top: 1px solid #222; }
 
-/* CHAT AREA */
+/* --- CHAT AREA --- */
 .chat-area {
-    display: flex; flex-direction: column; background-color: #000000;
+    display: flex;
+    flex-direction: column; background-color: #000000;
     background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 24px 24px;
     height: 100%; position: relative; overflow: hidden;
 }
@@ -68,6 +68,7 @@ body {
 .chat-message-user {
     background-color: #CC0000; color: #fff; align-self: flex-end; border-radius: 18px 18px 4px 18px;
     padding: 10px 14px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; position: relative; word-wrap: break-word; font-weight: 500; animation: fadeIn 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .chat-message-ia {
@@ -78,20 +79,43 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Botões de Resposta */
+/* --- BOTÕES ESTILO TELEGRAM 3D (CHAT) --- */
 .quick-reply-container {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 95%;
-    align-self: flex-start; margin-top: -4px; margin-bottom: 8px; animation: fadeIn 0.3s;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 95%;
+    align-self: flex-start; margin-top: 4px; margin-bottom: 12px; animation: fadeIn 0.3s;
 }
+
 .cyber-btn {
-    background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); color: #e0e0e0;
-    padding: 12px 8px; font-size: 0.85rem; font-weight: 500; border-radius: 12px; cursor: pointer; text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background 0.1s; -webkit-appearance: none;
+    /* Visual Tecla Física 3D */
+    background-color: #1E1E1E; 
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 12px 8px; 
+    border-radius: 12px; 
+    border: none;
+    
+    /* O Efeito 3D */
+    border-bottom: 4px solid #000000; /* Sombra sólida escura */
+    transform: translateY(0);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    -webkit-appearance: none;
 }
-.cyber-btn:active { background-color: rgba(255, 255, 255, 0.2); transform: scale(0.98); }
+
+.cyber-btn:active { 
+    /* Efeito de Afundar */
+    transform: translateY(3px); 
+    border-bottom-width: 1px; /* Diminui a borda */
+    background-color: #252525;
+}
+
 .cyber-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-/* Input Area */
+/* --- INPUT AREA --- */
 .chat-input-container {
     position: absolute; bottom: 70px; left: 0; right: 0; background-color: transparent;
     padding: 0 10px 10px 10px; z-index: 30; display: flex; align-items: center;
@@ -104,9 +128,10 @@ body {
 #sendBtn {
     width: 36px; height: 36px; border-radius: 50%; background-color: #CC0000;
     display: flex; align-items: center; justify-content: center; margin-left: 8px; flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
-/* Bottom Nav */
+/* --- NAV INFERIOR --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px);
     border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 50; padding-bottom: env(safe-area-inset-bottom);
@@ -114,15 +139,39 @@ body {
 .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 100%; transition: color 0.2s; }
 .nav-btn.active { color: #CC0000; }
 
-/* Cards */
+/* --- CARDS & PROTOCOLO --- */
 .report-card { background: #121212; border: 1px solid #222; border-top: 3px solid #CC0000; border-radius: 16px; padding: 16px; margin-top: 10px; width: 100%; animation: slideUp 0.5s; }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .report-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
-/* ESTILOS DA JORNADA (NOVO) */
-.btn-checkin-active { background-color: rgba(34, 197, 94, 0.1) !important; border-color: rgba(34, 197, 94, 0.5) !important; }
+/* ESTILOS DA JORNADA (Botões de Ação 3D) */
+/* Botão de Check-in */
+#btnCheckIn {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-bottom: 4px solid #000; /* 3D */
+    transition: all 0.1s;
+}
+#btnCheckIn:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+.btn-checkin-active { 
+    background-color: rgba(34, 197, 94, 0.1) !important; 
+    border-color: rgba(34, 197, 94, 0.5) !important;
+    border-bottom-color: rgba(34, 197, 94, 0.2) !important;
+    border-bottom-width: 2px !important;
+    transform: translateY(2px);
+}
+
+/* Botão SOS 3D */
+#btnSOS {
+    background-color: rgba(127, 29, 29, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-bottom: 4px solid rgba(127, 29, 29, 0.5); /* 3D Vermelho Escuro */
+    transition: all 0.1s;
+}
+#btnSOS:active { transform: translateY(3px); border-bottom-width: 1px; }
+
 .calendar-day-done { background-color: #22c55e !important; color: #000 !important; border-color: #22c55e !important; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); transform: scale(1.1); }
-#btnCheckIn:active { transform: scale(0.98); }
 #viewProtocolo { background-image: radial-gradient(#111 1px, transparent 1px); background-size: 30px 30px; }
 
 @media (min-width: 769px) {
