@@ -59,7 +59,8 @@ Fase 3: O Dossiê (O Grande Final)
   "Ok. Prepare-se. Vou gerar seu Dossiê Completo agora. Ele contém as 2 Raízes do problema e o Nome do seu Sabotador."
 - E IMEDIATAMENTE no final desta mensagem, coloque APENAS a tag: [FIM_DA_SESSAO]
 - NÃO escreva mais nada depois da tag.
-- Termine a sessão aqui. NÃO FAÇA MAIS PERGUNTAS.`,
+- Termine a sessão aqui. NÃO FAÇA MAIS PERGUNTAS.
+- Não fale as raizes ou o nome do sabotador aqui. Deixe ele curioso e diga que para ter acesso tem que desbloquear nosso plano. Apenas gere a tag para o paywall.`,
             isLocked: false 
         },
         'Estrategista': { title: "Estrategista", isLocked: true },
