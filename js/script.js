@@ -84,4 +84,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         stickyObserver.observe(pricingSection);
     }
+    // 5. PERSONALIZAÇÃO DINÂMICA (HEADLINE VIA URL)
+    // Verifica se veio do Chat (parametro ?source=chat_sabotador)
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get('source') === 'chat_sabotador') {
+        const heroTitle = document.querySelector('header h1');
+        const heroSub = document.querySelector('header p'); // O texto pequeno abaixo do título
+        
+        if (heroTitle) {
+            // Altera o Título mantendo o design "Brutal Red"
+            heroTitle.innerHTML = `
+                Seu Dossiê está <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-800 text-glow">Pronto.</span>
+            `;
+        }
+
+        if (heroSub) {
+            // Altera o subtítulo para conectar com a promessa do sabotador
+            heroSub.innerHTML = `
+                Descubra agora qual <strong>Sabotador</strong> sequestrou sua mente.
+            `;
+        }
+    }
 });
