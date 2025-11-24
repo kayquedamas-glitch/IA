@@ -1,4 +1,4 @@
-/* app.js - VERSÃO: SABOTADOR & PAYWALL */
+/* app.js - VERSÃO: SABOTADOR & PAYWALL + LOCK SCREEN */
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('sendBtn');
     const viewChat = document.getElementById('viewChat');
     const viewProtocolo = document.getElementById('viewProtocolo');
+    const viewLocked = document.getElementById('viewLocked'); // Novo Elemento
     const tabChat = document.getElementById('tabChat');
     const tabProtocolo = document.getElementById('tabJornada') || document.getElementById('tabProtocolo');
     const menuBtn = document.getElementById('menuBtn');
@@ -43,7 +44,7 @@ REGRAS DE OURO (INTERFACE):
 4. SEUS BOTÕES DEVEM SER MINÚSCULOS (1 a 3 palavras).
 
 ROTEIRO DA CONVERSA:
-Fase 1: Investigação (5 a 7 perguntas)
+Fase 1: Investigação (3 a 5 perguntas)
 - Pergunte o que está travando a vida dele hoje.
 - Botões sugeridos: <<Preguiça>>, <<Medo>>, <<Cansaço>>, <<Vício>>, <<Outro>>
 - Vá aprofundando com perguntas curtas até sentir que entendeu o padrão.
@@ -82,8 +83,11 @@ Fase 3: O Dossiê (O Grande Final)
             tabProtocolo.classList.remove('active');
             tabProtocolo.style.color = '#666';
         }
+        
+        // Esconde tudo primeiro
         viewChat.classList.add('hidden');
         viewProtocolo.classList.add('hidden');
+        if(viewLocked) viewLocked.classList.add('hidden');
 
         if (tab === 'chat') {
             viewChat.classList.remove('hidden');
@@ -100,6 +104,36 @@ Fase 3: O Dossiê (O Grande Final)
 
     function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+
+    // --- FUNÇÃO PARA ABRIR A TELA DE BLOQUEIO ---
+    function showLockedScreen() {
+        // Esconde as outras telas
+        viewChat.classList.add('hidden');
+        viewProtocolo.classList.add('hidden');
+        
+        // Remove destaque dos botões inferiores
+        tabChat.classList.remove('active');
+        tabChat.style.color = '#666';
+        if(tabProtocolo) {
+            tabProtocolo.classList.remove('active');
+            tabProtocolo.style.color = '#666';
+        }
+
+        // Mostra a tela de bloqueio
+        if (viewLocked) {
+            viewLocked.classList.remove('hidden');
+            // Animaçãozinha de entrada suave
+            viewLocked.style.opacity = '0';
+            setTimeout(() => {
+                viewLocked.style.transition = 'opacity 0.3s ease';
+                viewLocked.style.opacity = '1';
+            }, 10);
+            
+        }
+        
+        // Fecha sidebar no mobile se estiver aberta
+        closeSidebar();
+    }
 
     // --- LÓGICA DO CHAT ---
     function addMessage(message, isUser, isError = false) {
@@ -302,12 +336,14 @@ Fase 3: O Dossiê (O Grande Final)
     if(menuBtn) menuBtn.addEventListener('click', openSidebar);
     if(overlay) overlay.addEventListener('click', closeSidebar);
     
-    // Configura os cliques nos itens da sidebar (incluindo os bloqueados para abrir modal se necessário)
+    // LÓGICA DO CLIQUE NAS FERRAMENTAS
     document.querySelectorAll('.tool-item').forEach(i => i.addEventListener('click', (e) => { 
-        // Se clicar em um bloqueado, podemos adicionar lógica de alerta aqui
+        // Se clicar em um bloqueado, ABRE A TELA DE VENDAS (Skin in the Game)
         if(e.currentTarget.classList.contains('is-locked')) {
-            alert("🔒 Esta ferramenta faz parte do Módulo Mestre.\nTermine seu Diagnóstico para liberar.");
+            showLockedScreen();
         } else {
+            // Se for o Diagnóstico (livre), volta pro chat
+            switchTab('chat');
             closeSidebar(); 
         }
     }));

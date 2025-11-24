@@ -2,7 +2,6 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
-    <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -18,8 +17,6 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
     /></noscript>
-    <!-- End Meta Pixel Code -->
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
     <title>Synapse - Arsenal IA</title>
@@ -34,6 +31,15 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .modal-enter { opacity: 0; transform: scale(0.95); }
         .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
+        
+        /* Animação para a tela de bloqueio */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -61,7 +67,6 @@
 
     <div class="app-layout">
 
-        <!-- SIDEBAR (Menu Lateral Desktop) -->
         <aside id="sidebar" class="sidebar p-4">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-3">
@@ -111,7 +116,6 @@
 
         <main class="chat-area relative">
 
-            <!-- VIEW 1: CHAT IA -->
             <div id="viewChat" class="view-section h-full flex flex-col">
                 
                 <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
@@ -143,11 +147,9 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: JORNADA (NOVO LAYOUT) -->
             <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
                 <div class="max-w-md mx-auto">
                     
-                    <!-- HEADER DO NÍVEL -->
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Seu Nível Atual</p>
@@ -161,7 +163,6 @@
                         </div>
                     </div>
 
-                    <!-- CARD DE CHECK-IN DIÁRIO -->
                     <div class="bg-[#111] border border-[#222] rounded-2xl p-6 mb-8 relative overflow-hidden text-center shadow-lg">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-900"></div>
                         
@@ -170,7 +171,6 @@
                             Manteve o controle hoje? Registre sua vitória para fortalecer sua neuroplasticidade.
                         </p>
 
-                        <!-- BOTÃO DE REGISTRO (CHECK-IN) -->
                         <button id="btnCheckIn" class="w-full py-4 rounded-xl bg-[#1a1a1a] border border-[#333] group hover:border-green-500/50 hover:bg-green-900/10 transition-all duration-300 flex items-center justify-center gap-3">
                             <div class="w-6 h-6 rounded-full border-2 border-gray-600 group-hover:border-green-500 flex items-center justify-center transition-colors" id="checkIconBox">
                                 <i class="fas fa-check text-green-500 opacity-0 transform scale-50 transition-all duration-300" id="checkIcon"></i>
@@ -179,7 +179,6 @@
                         </button>
                     </div>
 
-                    <!-- CALENDÁRIO VISUAL (STREAK) -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-bold text-white">Seu Histórico</h3>
@@ -187,31 +186,27 @@
                         </div>
                         
                         <div class="flex justify-between gap-2" id="calendarGrid">
-                            <!-- Dias simulados -->
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">T</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <!-- Hoje -->
                             <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center text-xs font-bold shadow-lg shadow-white/10">D</div><div class="text-[9px] text-white font-bold">Hoje</div></div>
                         </div>
                     </div>
 
-                    <!-- ESTATÍSTICAS BLOQUEADAS (GATILHO DE VENDA) -->
                     <div class="relative mt-8 pt-6 border-t border-[#222]">
                         <div class="flex items-center justify-between mb-4 opacity-50">
                             <h3 class="text-sm font-bold text-white">Estatísticas Avançadas</h3>
                             <i class="fas fa-lock text-gray-500 text-xs"></i>
                         </div>
 
-                        <!-- Mockup Borrado -->
                         <div class="relative">
                             <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
                                 <div class="bg-[#161616]/90 backdrop-blur-sm border border-red-900/30 p-5 rounded-xl shadow-2xl text-center max-w-[280px]">
                                     <p class="text-gray-300 text-xs mb-3 font-medium">Descubra seus horários de risco e padrões de recaída.</p>
-                                    <a href="pag.html" onclick="fbq('track', 'InitiateCheckout');" 
+                                    <a href="pag.html?source=app_locked" onclick="fbq('track', 'InitiateCheckout');" 
                                        class="block w-full bg-brutal-red text-white font-bold py-2.5 rounded-lg uppercase text-[10px] tracking-widest shadow-lg hover:bg-red-700 transition">
                                         Desbloquear Stats
                                     </a>
@@ -240,9 +235,46 @@
                 </div>
             </div>
 
+            <div id="viewLocked" class="view-section h-full hidden flex flex-col items-center justify-center p-6 text-center bg-[#050505] relative overflow-hidden">
+                
+                <div class="absolute inset-0 bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <div class="max-w-md relative z-10 animate-fade-in-up">
+                    <div class="w-20 h-20 rounded-2xl bg-[#111] border border-red-900/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(204,0,0,0.15)]">
+                        <i class="fas fa-lock text-3xl text-[#CC0000]"></i>
+                    </div>
+
+                    <h2 class="text-2xl md:text-3xl font-black uppercase text-white mb-4 tracking-tight">
+                        Por que você <span class="text-[#CC0000]">ainda</span> não mudou?
+                    </h2>
+
+                    <div class="space-y-4 text-gray-400 text-sm md:text-base leading-relaxed mb-8">
+                        <p>
+                            Vou te contar um segredo brutal: <strong>O cérebro humano ignora o que é de graça.</strong>
+                        </p>
+                        <p>
+                            Enquanto você não tiver "Pele em Risco" (dinheiro na mesa), sua mente vai continuar achando desculpas para procrastinar. É biológico.
+                        </p>
+                        <p class="text-white font-bold border-l-2 border-[#CC0000] pl-4 italic">
+                            "Você só tem disciplina quando a dor de desperdiçar seu dinheiro é maior que a dor de fazer o trabalho."
+                        </p>
+                        <p>
+                            Essa ferramenta é exclusiva para quem assumiu o compromisso real. Quer parar de brincar?
+                        </p>
+                    </div>
+
+                    <a href="pag.html?source=app_locked" class="group relative w-full py-4 bg-[#CC0000] rounded-xl text-white font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(204,0,0,0.4)] border-b-4 border-[#8a0000]">
+                        <span>Assumir o Compromisso</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    
+                    <p class="mt-4 text-[10px] text-gray-600 uppercase tracking-widest">Acesso Vitalício por preço de café.</p>
+                </div>
+            </div>
+
         </main>
 
-        <!-- BOTTOM BAR -->
         <nav class="bottom-nav md:hidden">
             <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')"><i class="fas fa-brain text-xl mb-1"></i><span class="text-[10px] font-medium">Chat</span></button>
             <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')"><i class="fas fa-calendar-check text-xl mb-1"></i><span class="text-[10px] font-medium">Jornada</span></button>
