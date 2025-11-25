@@ -239,6 +239,7 @@ Fase 3: O Dossiê (O Grande Final)
         conversationHistory.push({ role: "user", content: text });
 
         try {
+            // Tenta conectar na API Real
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -248,17 +249,70 @@ Fase 3: O Dossiê (O Grande Final)
                     temperature: 0.7 
                 })
             });
+
+            if (!response.ok) throw new Error("API Error");
+
             const data = await response.json();
-            const reply = data.choices?.[0]?.message?.content || "Erro de conexão.";
+            const reply = data.choices?.[0]?.message?.content;
             
+            if (!reply) throw new Error("Empty Response");
+
             addMessage(reply, false);
             conversationHistory.push({ role: "assistant", content: reply });
+
         } catch (e) {
-            console.error(e);
-            addMessage("Conexão instável. Tente novamente.", false, true);
+            console.warn("API Offline. Ativando Modo de Emergência (Simulação).");
+            
+            // --- MODO DE SEGURANÇA (Garante a Venda mesmo sem Internet) ---
+            setTimeout(() => {
+            const lastUserMsg = text.toLowerCase();
+            let fakeReply = "";
+
+            // --- 1. LÓGICA DA RESPOSTA DO USUÁRIO (A BIFURCAÇÃO) ---
+            
+            // CENÁRIO A: Ele disse "NÃO" (Gatilho da Dor)
+            if (lastUserMsg.includes('não') || lastUserMsg.includes('prefiro') || lastUserMsg.includes('medo')) {
+                // Chama a Tela de Bloqueio imediatamente e ENCERRA
+                showLockedScreen(); 
+                return; 
+            }
+
+            // CENÁRIO B: Ele disse "SIM" (Gatilho da Venda)
+            if (lastUserMsg.includes('sim') || lastUserMsg.includes('revelar') || lastUserMsg.includes('quero saber')) {
+                // Aqui entregamos a oferta
+                fakeReply = "Ok. Prepare-se. Analisei seus padrões e o resultado é chocante. Vou gerar seu Dossiê Completo agora. Ele revela exatamente como sua mente está te enganando. [FIM_DA_SESSAO]";
+            } 
+            
+            // --- 2. ROTEIRO DE PERGUNTAS (Se ele ainda não chegou no final) ---
+            
+            // Pergunta 1 (Investigação)
+            else if (conversationHistory.length <= 3) {
+                fakeReply = "Entendi perfeitamente. Muita gente sente isso. E me diz, o que você sente que é a maior consequência disso hoje? <<Perco Dinheiro>> <<Me Sinto Frustrado>> <<Estou Estagnado>> <<Outro>>";
+            } 
+            // Pergunta 2 (Aprofundamento)
+            else if (conversationHistory.length <= 5) {
+                fakeReply = "Certo. Isso é um sintoma clássico de desregulação dopaminérgica. Mas deixa eu te perguntar: você sente que isso acontece todo dia ou só às vezes? <<Todo Santo Dia>> <<Às Vezes>> <<Raramente>> <<Outro>>";
+            } 
+            // O GRANDE FINAL (A Pergunta de Sim ou Não)
+            else {
+                fakeReply = "Interessante. O quadro está ficando claro. Parece que existe um bloqueio invisível agindo contra você. Você tem coragem de descobrir quem é esse Sabotador agora? <<Sim, revelar agora>> <<Não, prefiro continuar assim>>";
+            }
+            
+            // Envia a mensagem para a tela
+            addMessage(fakeReply, false);
+            conversationHistory.push({ role: "assistant", content: fakeReply });
+            
+            // Só libera o teclado se NÃO for a mensagem de venda
+            if (!fakeReply.includes('[FIM_DA_SESSAO]')) {
+                chatInput.disabled = false;
+                chatInput.focus();
+            }
+
+        }, 500); // <--- MUDEI PARA 500ms (Mais rápido)
+            return; // Sai da função para não executar o finally padrão
         } finally {
-            // Só reabilita se não tiver acabado a sessão
-            if (!document.querySelector('.fa-unlock')) {
+            // Só executa se NÃO entrou no catch (sucesso da API real)
+            if (!document.querySelector('.fa-unlock') && !document.querySelector('.animate-pulse')) {
                 chatInput.disabled = false;
                 chatInput.focus();
             }
