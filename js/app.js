@@ -45,19 +45,15 @@ TOM: Acolhedor, Empático, Sábio e Não-Julgador.
 OBJETIVO: Fazer uma Anamnese (Triagem) e levar o usuário até o momento de revelar o "Sabotador".
 
 REGRAS DE OURO (INTERFACE):
-1. SUAS PERGUNTAS DEVEM SER CURTAS.
+1. NUNCA faça 2 perguntas de uma vez.
 2. Sempre termine suas perguntas oferecendo opções em botões no formato <<OPÇÃO>>.
 3. E OBRIGATORIAMENTE a última opção deve ser sempre: <<Outro>>.
 4. SEUS BOTÕES DEVEM SER MINÚSCULOS (1 a 3 palavras).
-5. NUNCA pergunte algo que já foi respondido.
-6. NUNCA ofereça mais de 5 opções por vez.
-7. NUNCA use mais de 1 frase por pergunta.
-8. NUNCA revele o nome do sabotador ou as raízes do problema.
-9. NUNCA ofereça planos ou soluções neste chat.
-10. NUNCA faça 2 perguntas de uma vez.
+5. SUAS PERGUNTAS DEVEM SER CURTAS.
+
 
 REGRAS DE OURO (BOTÕES):
-1. NUNCA repita os botões iniciais (Preguiça, Medo...) se não fizer sentido.
+1. NUNCA repita os botões iniciais se não fizer sentido.
 2. Gere botões que sejam RESPOSTAS lógicas para a pergunta que você fez.
    Ex: Se perguntar "Isso acontece de manhã?", botões devem ser: <<Sim, de manhã>> <<Não, à noite>>.
 3. Use palavras curtas dentro de << >>.
@@ -65,14 +61,16 @@ REGRAS DE OURO (BOTÕES):
 ROTEIRO DA CONVERSA:
 Fase 1: Investigação com perguntas(5 a 7 perguntas)
 - Pergunte o que está travando a vida dele hoje.
-- Botões sugeridos: <<Preguiça>>, <<Medo>>, <<Cansaço>>, <<Vício>>, <<Outro>>
 - Vá aprofundando com perguntas curtas e com botões mais sugeridos com o tipo de pergunta, até sentir que entendeu o padrão.
+- Faça perguntas curtas para entender o sintoma.
+- NÃO dê explicações, conselhos ou teorias agora. Apenas colete dados.
+- A cada resposta do usuário, faça uma nova pergunta de aprofundamento.
 
 Fase 2: O Diagnóstico do Sintoma (O "Pré-Fechamento")
 - Quando tiver dados suficientes, diga: "Entendi. O quadro é claro. Você sofre de [Nome do Problema Superficial]."
 - Explique brevemente (1 frase) por que isso acontece.
-- E termine com esta PERGUNTA EXATA: "Mas isso é só a ponta do iceberg. Existe um SABOTADOR na sua mente causando tudo isso. Você quer saber quem ele é?"
-- Botões: <<Sim, quero saber>>, <<Quem é?>>, <<Me conta>>.
+- E termine com esta PERGUNTA EXATA: "A análise está completa. O problema não é você, é esse padrão neuroquímico. Eu tenho o Protocolo exato para corrigir isso. Quer acessar a solução?"
+- Botões:  <<Sim, quero a solução>>, <<Corrigir agora>>.
 
 Fase 3: O Dossiê (O Grande Final)
 - Se o usuário disser "Sim" (ou algo parecido), responda:
@@ -142,7 +140,7 @@ Fase 3: O Dossiê (O Grande Final)
         
         // 5. Manda a mensagem inicial COM OS BOTÕES (CORRIGIDO)
         // Isso garante que os botões apareçam logo de cara
-        const welcomeText = "Olá! Estou aqui para ajudar. O que está travando a sua vida hoje? <<Preguiça>> <<Medo>> <<Cansaço>> <<Vício>> <<Outro>>";
+        const welcomeText = "Olá! Estou aqui para ajudar. O que está travando a sua vida hoje? <<Procrastinação>> <<Fadiga Mental>> <<Ansiedade>> <<Vício>> <<Outro>>";
         addMessage(welcomeText, false); 
         
         // 6. Inicia o efeito de digitação
@@ -238,7 +236,7 @@ Fase 3: O Dossiê (O Grande Final)
         sendMessage();
     }
 
-    async function sendMessage() {
+   async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
 
@@ -263,8 +261,8 @@ Fase 3: O Dossiê (O Grande Final)
             
             if(!reply) throw new Error("Vazio");
 
+            // Garante botões genéricos se a IA falhar em criar contexto
             let finalReply = reply;
-            // Garante botões se a IA esquecer (exceto no fim)
             if (!reply.includes('<<') && !reply.includes('[FIM_DA_SESSAO]')) {
                 finalReply += " <<Sim>> <<Não>> <<Talvez>>";
             }
@@ -273,23 +271,25 @@ Fase 3: O Dossiê (O Grande Final)
             conversationHistory.push({ role: "assistant", content: reply });
 
         } catch (e) {
-            // MODO SIMULAÇÃO (COM A MENSAGEM FINAL ATUALIZADA)
+            // MODO DE SEGURANÇA
             setTimeout(() => {
                 let fakeReply = "";
+                
                 if (conversationHistory.length <= 3) {
-                    fakeReply = "Entendi. E você sente que isso acontece com mais frequência em qual horário? <<Manhã>> <<Tarde>> <<Noite>>";
+                    fakeReply = "Entendi. E você sente que isso acontece com mais frequência em qual horário? <<Manhã>> <<Tarde>> <<Noite>> <<O dia todo>>";
                 } else if (conversationHistory.length <= 5) {
-                    fakeReply = "Certo. Isso indica um padrão de recompensa imediata. Mas me diz: isso afeta mais seu trabalho ou sua vida pessoal? <<Trabalho>> <<Pessoal>> <<Ambos>>";
+                    fakeReply = "Certo. Mas me diz: isso afeta mais seu trabalho ou sua vida pessoal? <<Trabalho>> <<Pessoal>> <<Ambos>>";
                 } else {
-                    // MENSAGEM FINAL DO MISTÉRIO (Sem repetir sintomas)
-                    fakeReply = "Cruzei todas as suas respostas e o padrão é inegável. Existe um **Sabotador Invisível** específico operando no seu sistema límbico. Eu já isolei a identidade dele e sei exatamente como desligá-lo. O Dossiê Completo está pronto. [FIM_DA_SESSAO]";
+                    fakeReply = "Análise concluída. O problema não é falta de vontade, é um padrão neuroquímico. Tenho o Protocolo para corrigir isso. Quer acessar? [FIM_DA_SESSAO]";
                 }
+                
                 addMessage(fakeReply, false);
                 conversationHistory.push({ role: "assistant", content: fakeReply });
                 
+                // REMOVIDO O chatInput.focus() DAQUI
                 if (!fakeReply.includes('[FIM_DA_SESSAO]')) {
                     chatInput.disabled = false;
-                    chatInput.focus();
+                    // chatInput.focus(); -> COMENTADO PARA NÃO ABRIR TECLADO
                 }
             }, 1000);
             return;
