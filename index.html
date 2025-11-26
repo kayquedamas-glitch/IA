@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
-
 <head>
     <script>
     !function(f,b,e,v,n,t,s)
@@ -29,9 +28,6 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .modal-enter { opacity: 0; transform: scale(0.95); }
-        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s ease-out; }
-        
         /* Animação para a tela de bloqueio */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -70,7 +66,6 @@
         <aside id="sidebar" class="sidebar p-4">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-3">
-                   
                     <span class="text-xl font-bold tracking-wide text-white">Synapse</span>
                 </div>
             </div>
@@ -117,11 +112,8 @@
         <main class="chat-area relative">
 
             <div id="viewChat" class="view-section h-full flex flex-col">
-                
                 <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
-                    <button id="menuBtn" class="text-white text-xl p-2">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <button id="menuBtn" class="text-white text-xl p-2"><i class="fas fa-bars"></i></button>
                     <h3 class="text-sm font-bold uppercase tracking-widest text-white">Synapse AI</h3>
                     <div class="w-8"></div>
                 </div>
@@ -150,84 +142,88 @@
             <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
                 <div class="max-w-md mx-auto">
                     
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center justify-between mb-8">
                         <div>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Seu Nível Atual</p>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Status Neuroquímico</p>
                             <h2 class="text-xl font-black text-white flex items-center gap-2">
-                                <i class="fas fa-chess-pawn text-brutal-red"></i> Iniciante
+                                <span class="bg-red-900/20 text-red-500 px-2 py-1 rounded text-xs border border-red-500/20">NÍVEL 1</span>
+                                <span>Iniciado</span>
                             </h2>
                         </div>
                         <div class="text-right">
-                            <span class="text-2xl font-black text-green-500" id="streakDisplay">0</span>
-                            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias Seguidos</p>
+                            <div class="flex items-center justify-end gap-1">
+                                <span class="text-2xl font-black text-white" id="streakDisplay">0</span>
+                                <i class="fas fa-fire text-red-500 animate-pulse"></i>
+                            </div>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias no Controle</p>
                         </div>
                     </div>
 
-                    <div class="bg-[#111] border border-[#222] rounded-2xl p-6 mb-8 relative overflow-hidden text-center shadow-lg">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-900"></div>
+                    <div class="bg-[#0A0A0A] border border-[#222] rounded-2xl p-5 mb-8 shadow-lg relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="far fa-calendar-alt text-gray-500"></i> Mês Atual
+                            </h3>
+                            <span class="text-[9px] bg-[#111] border border-[#333] px-2 py-1 rounded text-gray-400">Meta: 30 Dias</span>
+                        </div>
                         
-                        <h3 class="text-white font-bold text-lg mb-2">Check-in Diário</h3>
-                        <p class="text-gray-400 text-xs mb-6 leading-relaxed">
-                            Manteve o controle hoje? Registre sua vitória para fortalecer sua neuroplasticidade.
-                        </p>
-
-                        <button id="btnCheckIn" class="w-full py-4 rounded-xl bg-[#1a1a1a] border border-[#333] group hover:border-green-500/50 hover:bg-green-900/10 transition-all duration-300 flex items-center justify-center gap-3">
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-600 group-hover:border-green-500 flex items-center justify-center transition-colors" id="checkIconBox">
-                                <i class="fas fa-check text-green-500 opacity-0 transform scale-50 transition-all duration-300" id="checkIcon"></i>
+                        <div class="calendar-grid" id="realCalendarGrid">
+                            <div class="calendar-day-header">D</div><div class="calendar-day-header">S</div><div class="calendar-day-header">T</div>
+                            <div class="calendar-day-header">Q</div><div class="calendar-day-header">Q</div><div class="calendar-day-header">S</div>
+                            <div class="calendar-day-header">S</div>
                             </div>
-                            <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors" id="checkText">Registrar "Dia Limpo"</span>
+
+                        <button id="btnCheckIn" class="mt-6 w-full py-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-gray-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2">
+                            <i class="fas fa-check-circle"></i> Registrar Vitória de Hoje
                         </button>
                     </div>
 
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-sm font-bold text-white">Seu Histórico</h3>
-                            <span class="text-[10px] text-gray-500 bg-[#111] px-2 py-1 rounded border border-[#222]">Últimos 7 Dias</span>
+                            <h3 class="text-sm font-bold text-white">Protocolo Matinal</h3>
+                            <i class="fas fa-cog text-gray-600 text-xs"></i>
                         </div>
-                        
-                        <div class="flex justify-between gap-2" id="calendarGrid">
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">T</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">Q</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-gray-600 text-xs font-bold">S</div><div class="w-1 h-1 rounded-full bg-gray-800"></div></div>
-                            <div class="flex flex-col items-center gap-2"><div class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center text-xs font-bold shadow-lg shadow-white/10">D</div><div class="text-[9px] text-white font-bold">Hoje</div></div>
+
+                        <div class="habit-list">
+                            <div class="habit-item unlocked" onclick="toggleHabit(this)">
+                                <div class="flex items-center">
+                                    <div class="habit-checkbox"><i class="fas fa-check text-black text-[10px] opacity-0"></i></div>
+                                    <span class="text-sm text-gray-300">Hidratação (500ml)</span>
+                                </div>
+                            </div>
+                            <div class="habit-item unlocked" onclick="toggleHabit(this)">
+                                <div class="flex items-center">
+                                    <div class="habit-checkbox"><i class="fas fa-check text-black text-[10px] opacity-0"></i></div>
+                                    <span class="text-sm text-gray-300">Arrumar a Cama</span>
+                                </div>
+                            </div>
+                            <div class="habit-item locked" onclick="showLockedScreen()">
+                                <div class="flex items-center">
+                                    <div class="habit-checkbox border-red-900/50"><i class="fas fa-lock text-red-700 text-[10px]"></i></div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-500 font-medium">Banho de Contraste</span>
+                                        <span class="text-[9px] text-red-900 uppercase font-bold tracking-wider">Protocolo Espartano</span>
+                                    </div>
+                                </div>
+                                <i class="fas fa-lock text-gray-700 text-xs"></i>
+                            </div>
                         </div>
                     </div>
 
                     <div class="relative mt-8 pt-6 border-t border-[#222]">
                         <div class="flex items-center justify-between mb-4 opacity-50">
-                            <h3 class="text-sm font-bold text-white">Estatísticas Avançadas</h3>
+                            <h3 class="text-sm font-bold text-white">Neuro-Dados</h3>
                             <i class="fas fa-lock text-gray-500 text-xs"></i>
                         </div>
-
-                        <div class="relative">
-                            <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
-                                <div class="bg-[#161616]/90 backdrop-blur-sm border border-red-900/30 p-5 rounded-xl shadow-2xl text-center max-w-[280px]">
-                                    <p class="text-gray-300 text-xs mb-3 font-medium">Descubra seus horários de risco e padrões de recaída.</p>
-                                    <a href="pag.html?source=app_locked" onclick="fbq('track', 'InitiateCheckout');" 
-                                       class="block w-full bg-brutal-red text-white font-bold py-2.5 rounded-lg uppercase text-[10px] tracking-widest shadow-lg hover:bg-red-700 transition">
-                                        Desbloquear Stats
-                                    </a>
+                        <div class="relative" id="btnLockedStats">
+                             <div class="absolute inset-0 z-10 flex items-center justify-center">
+                                <div class="bg-black/80 backdrop-blur border border-red-900/40 px-4 py-2 rounded-lg">
+                                    <span class="text-[10px] text-red-500 font-bold uppercase tracking-widest flex gap-2 items-center"><i class="fas fa-lock"></i> Versão PRO</span>
                                 </div>
                             </div>
-
-                            <div class="grid grid-cols-2 gap-3 filter blur-[4px] opacity-40 select-none pointer-events-none">
-                                <div class="bg-[#111] rounded-xl p-4 border border-[#222]">
-                                    <div class="text-xs text-gray-500 mb-2">Humor Médio</div>
-                                    <div class="h-2 w-full bg-gray-800 rounded-full"><div class="h-full w-[60%] bg-blue-500 rounded-full"></div></div>
-                                </div>
-                                <div class="bg-[#111] rounded-xl p-4 border border-[#222]">
-                                    <div class="text-xs text-gray-500 mb-2">Risco de Recaída</div>
-                                    <div class="h-2 w-full bg-gray-800 rounded-full"><div class="h-full w-[30%] bg-red-500 rounded-full"></div></div>
-                                </div>
-                                <div class="col-span-2 bg-[#111] rounded-xl p-4 border border-[#222] h-24 flex items-end gap-2">
-                                    <div class="w-full bg-gray-800 rounded-t h-[40%]"></div>
-                                    <div class="w-full bg-gray-800 rounded-t h-[70%]"></div>
-                                    <div class="w-full bg-gray-800 rounded-t h-[50%]"></div>
-                                    <div class="w-full bg-gray-800 rounded-t h-[90%]"></div>
-                                </div>
+                            <div class="grid grid-cols-2 gap-3 filter blur-[4px] opacity-40 select-none">
+                                <div class="bg-[#111] h-20 rounded-xl"></div>
+                                <div class="bg-[#111] h-20 rounded-xl"></div>
                             </div>
                         </div>
                     </div>
@@ -236,7 +232,6 @@
             </div>
 
             <div id="viewLocked" class="view-section h-full hidden flex flex-col items-center justify-center p-6 text-center bg-[#050505] relative overflow-hidden">
-                
                 <div class="absolute inset-0 bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -250,18 +245,9 @@
                     </h2>
 
                     <div class="space-y-4 text-gray-400 text-sm md:text-base leading-relaxed mb-8">
-                        <p>
-                            Vou te contar um segredo brutal: <strong>O cérebro humano ignora o que é de graça.</strong>
-                        </p>
-                        <p>
-                            Enquanto você não tiver "Pele em Risco" (dinheiro na mesa), sua mente vai continuar achando desculpas para procrastinar. É biológico.
-                        </p>
-                        <p class="text-white font-bold border-l-2 border-[#CC0000] pl-4 italic">
-                            "Você só tem disciplina quando a dor de desperdiçar seu dinheiro é maior que a dor de fazer o trabalho."
-                        </p>
-                        <p>
-                            Essa ferramenta é exclusiva para quem assumiu o compromisso real. Quer parar de brincar?
-                        </p>
+                        <p>Vou te contar um segredo brutal: <strong>O cérebro humano ignora o que é de graça.</strong></p>
+                        <p>Enquanto você não tiver "Pele em Risco", sua mente vai continuar achando desculpas para procrastinar.</p>
+                        <p class="text-white font-bold border-l-2 border-[#CC0000] pl-4 italic">"Você só tem disciplina quando a dor de desperdiçar seu dinheiro é maior que a dor de fazer o trabalho."</p>
                     </div>
 
                     <a href="pag.html?source=app_locked" class="group relative w-full py-4 bg-[#CC0000] rounded-xl text-white font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(204,0,0,0.4)] border-b-4 border-[#8a0000]">
