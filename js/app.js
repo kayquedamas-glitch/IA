@@ -236,7 +236,7 @@ Fase 3: O Dossiê (O Grande Final)
         sendMessage();
     }
 
-   async function sendMessage() {
+  async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
 
@@ -261,7 +261,6 @@ Fase 3: O Dossiê (O Grande Final)
             
             if(!reply) throw new Error("Vazio");
 
-            // Garante botões genéricos se a IA falhar em criar contexto
             let finalReply = reply;
             if (!reply.includes('<<') && !reply.includes('[FIM_DA_SESSAO]')) {
                 finalReply += " <<Sim>> <<Não>> <<Talvez>>";
@@ -269,6 +268,13 @@ Fase 3: O Dossiê (O Grande Final)
 
             addMessage(finalReply, false);
             conversationHistory.push({ role: "assistant", content: reply });
+            
+            // --- ADIÇÃO: Liberar o input após a resposta da IA ---
+            const lastMsg = conversationHistory[conversationHistory.length - 1].content;
+            if (!lastMsg.includes('[FIM_DA_SESSAO]')) {
+                chatInput.disabled = false;
+                // REMOVIDO: chatInput.focus();  <-- ISSO QUE ABRE O TECLADO
+            }
 
         } catch (e) {
             // MODO DE SEGURANÇA
@@ -286,10 +292,9 @@ Fase 3: O Dossiê (O Grande Final)
                 addMessage(fakeReply, false);
                 conversationHistory.push({ role: "assistant", content: fakeReply });
                 
-                // REMOVIDO O chatInput.focus() DAQUI
                 if (!fakeReply.includes('[FIM_DA_SESSAO]')) {
                     chatInput.disabled = false;
-                    // chatInput.focus(); -> COMENTADO PARA NÃO ABRIR TECLADO
+                    // REMOVIDO: chatInput.focus(); <-- JÁ ESTAVA COMENTADO AQUI, MAS O IMPORTANTE É O DE CIMA
                 }
             }, 1000);
             return;
