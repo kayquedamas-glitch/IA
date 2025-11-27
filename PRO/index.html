@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+       <link rel="shortcut icon" href="assets/lOGO (3).png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
+    <title>Synapse PRO</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS LOCAL DA PASTA PRO -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Esconde até verificar login */
+        body { visibility: hidden; } 
+    </style>
+</head>
+
+<body class="h-full bg-black text-white font-inter overflow-hidden">
+
+    <!-- Autenticação -->
+    <script>
+        try {
+            const user = JSON.parse(localStorage.getItem('synapseUser'));
+            if (!user || !user.isPro) {
+                window.location.href = "login.html";
+            } else {
+                document.body.style.visibility = "visible";
+            }
+        } catch(e) { window.location.href = "login.html"; }
+    </script>
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="app-layout">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="sidebar p-4">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl font-bold tracking-wide text-white">Synapse <span class="text-xs text-red-500 align-top">PRO</span></span>
+                </div>
+            </div>
+
+            <nav class="mb-8 flex flex-col gap-2">
+                <p class="text-[#444] text-[10px] font-bold uppercase tracking-widest pl-2 mb-2">Agentes de IA</p>
+                
+                <!-- FERRAMENTAS DESBLOQUEADAS (SEM CADEADOS) -->
+                <div id="toolDiagnostico" class="tool-item active" onclick="selectTool('Diagnostico')">
+                    <i class="fas fa-brain text-red-500"></i><span>Diagnóstico</span>
+                </div>
+                
+                <div id="toolEstrategista" class="tool-item" onclick="selectTool('Estrategista')">
+                    <i class="fas fa-chess-knight"></i><span>Estrategista</span>
+                </div>
+
+                <div id="toolMestre" class="tool-item" onclick="selectTool('Mestre')">
+                    <i class="fas fa-hammer"></i><span>Ferreiro</span>
+                </div>
+
+                <div id="toolAuditor" class="tool-item" onclick="selectTool('Auditor')">
+                    <i class="fas fa-chart-pie"></i><span>Auditor</span>
+                </div>
+            </nav>
+
+            <div class="flex-grow"></div>
+            
+            <!-- PERFIL (EM VEZ DE VENDA) -->
+            <div class="mt-auto pt-4 border-t border-[#222]">
+                <div class="flex items-center gap-3 px-2 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-red-900 flex items-center justify-center font-bold text-xs text-white" id="userAvatar">U</div>
+                    <div>
+                        <p class="text-sm font-bold text-white truncate max-w-[120px]" id="userNameDisplay">Membro</p>
+                        <p class="text-[10px] text-green-500 font-mono">ONLINE</p>
+                    </div>
+                </div>
+                
+            </div>
+        </aside>
+
+        <main class="chat-area relative">
+
+            <!-- HEADER MOBILE -->
+            <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
+                <button id="menuBtn" class="text-white text-xl p-2" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h3 class="text-sm font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse PRO</h3>
+                <div class="w-8"></div>
+            </div>
+
+            <!-- VIEW 1: CHAT (Estrutura Idêntica ao Gratuito) -->
+            <div id="viewChat" class="view-section h-full flex flex-col">
+                <div class="chat-messages flex-grow pt-16"> 
+                    <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col">
+                        <!-- O JS VAI INJETAR O CABEÇALHO E MENSAGENS AQUI -->
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="w-full max-w-2xl mx-auto">
+                        <div id="textInputWrapper">
+                            <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none max-h-24 placeholder-gray-600" placeholder="Digite aqui..."></textarea>
+                            <button id="sendBtn"><i class="fas fa-arrow-up text-white text-xs"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: JORNADA (Funcional e Sem Bloqueios) -->
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
+                <div class="max-w-md mx-auto">
+                    
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Progresso</p>
+                            <h2 class="text-xl font-black text-white flex items-center gap-2">
+                                <span class="bg-green-900/20 text-green-500 px-2 py-1 rounded text-xs border border-green-500/20">NÍVEL 2</span>
+                            </h2>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-white" id="proStreakDisplay">0</span>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias Seguidos</p>
+                        </div>
+                    </div>
+
+                    <!-- CALENDÁRIO -->
+                    <div class="bg-[#111] border border-[#222] rounded-2xl p-6 mb-8 relative shadow-lg">
+                        <div class="flex justify-between mb-4 items-center">
+                             <span class="text-sm font-bold text-white flex gap-2 items-center"><i class="far fa-calendar-alt"></i> <span id="monthDisplay">Mês</span></span>
+                             <button onclick="clearHistory()" class="text-[9px] text-gray-600 hover:text-red-500">Resetar</button>
+                        </div>
+                        <div id="calendarGrid" class="calendar-grid"></div>
+                    </div>
+
+                    <!-- ROTINA -->
+                    <div class="mb-8">
+                        <h3 class="text-sm font-bold text-white mb-4">Protocolo Diário</h3>
+                        <div id="habitList" class="habit-list"></div>
+                        <button onclick="addNewHabitPrompt()" class="mt-4 w-full py-3 border border-dashed border-[#333] text-gray-500 text-xs rounded-lg hover:text-white hover:border-gray-500 transition">
+                            + Adicionar Hábito
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- NAV MOBILE -->
+        <nav class="bottom-nav md:hidden">
+            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')"><i class="fas fa-brain text-xl mb-1"></i><span class="text-[10px] font-medium">Chat</span></button>
+            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')"><i class="fas fa-calendar-check text-xl mb-1"></i><span class="text-[10px] font-medium">Jornada</span></button>
+        </nav>
+        
+    </div> 
+
+    <!-- SCRIPT PRO -->
+    <script src="script.js"></script>
+</body>
+</html>

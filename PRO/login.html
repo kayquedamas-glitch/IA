@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="shortcut icon" href="assets/lOGO (3).png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>Entrar - Synapse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        .input-field { background: #111; border: 1px solid #333; color: white; width: 100%; padding: 16px; border-radius: 10px; outline: none; transition: all 0.3s; font-size: 1rem; text-align: center; }
+        .input-field:focus { border-color: #CC0000; box-shadow: 0 0 15px rgba(204, 0, 0, 0.2); }
+        .btn-login { background: #CC0000; color: white; font-weight: bold; width: 100%; padding: 16px; border-radius: 10px; border-bottom: 4px solid #8a0000; cursor: pointer; transition: transform 0.1s; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+        .btn-login:active { transform: translateY(3px); border-bottom-width: 1px; }
+        .btn-login:disabled { background: #444; border-bottom-color: #222; cursor: not-allowed; color: #888; }
+        .error-msg { color: #ef4444; font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; font-weight: bold; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake-anim { animation: shake 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center px-6">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-10">
+            <!-- Título / Logo -->
+            <h1 class="text-4xl font-black tracking-tighter text-white mb-2">Synapse</h1>
+            <p class="text-gray-500 text-sm uppercase tracking-widest">Acesso Exclusivo</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-6">
+            <!-- Input Email Único -->
+            <div>
+                <label class="text-xs text-gray-500 font-bold mb-2 block text-center">DIGITE SEU E-MAIL DE COMPRA</label>
+                <input type="email" id="email" class="input-field" placeholder="exemplo@email.com" required>
+            </div>
+            
+            <!-- Botão -->
+            <div>
+                <button type="submit" id="btnSubmit" class="btn-login">
+                    VERIFICAR ACESSO <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Mensagem de Erro -->
+            <div id="errorMsg" class="error-msg">
+                <i class="fas fa-ban mr-1"></i> E-mail não encontrado na base de alunos.
+            </div>
+        </form>
+        
+        <div class="mt-8 text-center">
+            <p class="text-xs text-gray-600">
+                Problemas? <a href="#" class="hover:text-white underline transition">Fale com o suporte</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ====================================================
+        // CONFIGURAÇÃO SHEETDB
+        // ====================================================
+        const API_URL = 'https://sheetdb.io/api/v1/eplcagfbxnfje'; 
+        // ====================================================
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
+            const btn = document.getElementById('btnSubmit');
+            const errorMsg = document.getElementById('errorMsg');
+            const form = document.getElementById('loginForm');
+            
+            // UI: Bloqueia e mostra carregamento
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CONSULTANDO BASE...';
+            btn.disabled = true;
+            errorMsg.style.display = 'none';
+            
+            // 1. BACKDOOR (Acesso Rápido para Admin - SEM SENHA)
+            // Útil para você testar sem precisar cadastrar na planilha toda hora
+            if (emailInput === 'admin@synapse.com') {
+                setTimeout(() => salvarSessao("Administrador", emailInput, true), 800);
+                return;
+            }
+
+            try {
+                // 2. CONSULTA REAL NA PLANILHA
+                const response = await fetch(`${API_URL}/search?email=${emailInput}`);
+                
+                if (!response.ok) throw new Error("Erro na API");
+                
+                const data = await response.json();
+
+                // Se a lista retornada não estiver vazia, o email existe!
+                if (data.length > 0) {
+                    const nomeUsuario = data[0].nome || "Membro";
+                    salvarSessao(nomeUsuario, emailInput, false);
+                } else {
+                    throw new Error("Email não encontrado");
+                }
+
+            } catch (error) {
+                console.error(error);
+                
+                // UI: Erro
+                btn.innerHTML = 'VERIFICAR ACESSO <i class="fas fa-arrow-right ml-2"></i>';
+                btn.disabled = false;
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> E-mail não possui licença ativa.';
+                errorMsg.style.display = 'block';
+                
+                form.classList.add('shake-anim');
+                setTimeout(() => form.classList.remove('shake-anim'), 500);
+            }
+        });
+
+        function salvarSessao(nome, email, isAdmin) {
+            const btn = document.getElementById('btnSubmit');
+            
+            // Salva token no navegador
+            localStorage.setItem('synapseUser', JSON.stringify({ 
+                name: nome, 
+                email: email, 
+                token: 'valid_' + Date.now(),
+                isPro: true
+            }));
+
+            // UI: Sucesso
+            btn.style.backgroundColor = '#16a34a'; // Verde
+            btn.style.borderColor = '#15803d';
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO LIBERADO';
+            
+            // Redireciona
+            setTimeout(() => {
+                window.location.href = "index.html"; 
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

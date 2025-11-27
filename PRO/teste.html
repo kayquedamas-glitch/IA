@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso à Ferramenta</title>
+    <style>
+        /* Esconde a ferramenta inicialmente */
+        #ferramenta-secreta { display: none; }
+        #tela-login { text-align: center; margin-top: 50px; }
+        input { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="tela-login">
+        <h2>Área Exclusiva</h2>
+        <p>Digite seu e-mail de compra da Kiwify para acessar:</p>
+        <input type="email" id="emailInput" placeholder="seu@email.com">
+        <button onclick="verificarAcesso()">Entrar</button>
+        <p id="mensagem" style="color: red;"></p>
+    </div>
+
+    <div id="ferramenta-secreta">
+        <h1>Bem-vindo ao Synapse/Ferramenta!</h1>
+        <p>Aqui fica todo o conteúdo da sua ferramenta...</p>
+        </div>
+
+    <script>
+        // Substitua pelo SEU link do SheetDB
+        const API_URL = 'https://sheetdb.io/api/v1/eplcagfbxnfje'; 
+
+        async function verificarAcesso() {
+            const emailDigitado = document.getElementById('emailInput').value.toLowerCase().trim();
+            const msg = document.getElementById('mensagem');
+            msg.innerText = "Verificando...";
+
+            try {
+                // Busca na planilha se existe este email
+                // A busca é feita assim: URL/search?email=valor
+                const response = await fetch(`${API_URL}/search?email=${emailDigitado}`);
+                const dados = await response.json();
+
+                if (dados.length > 0) {
+                    // Achou o email!
+                    document.getElementById('tela-login').style.display = 'none';
+                    document.getElementById('ferramenta-secreta').style.display = 'block';
+                    
+                    // Salva no navegador para ele não precisar digitar de novo na proxima vez
+                    localStorage.setItem('acesso_liberado', 'true');
+                } else {
+                    msg.innerText = "E-mail não encontrado ou sem acesso.";
+                }
+            } catch (erro) {
+                console.error(erro);
+                msg.innerText = "Erro ao conectar. Tente novamente.";
+            }
+        }
+
+        // Verifica se já estava logado antes ao abrir a página
+        if (localStorage.getItem('acesso_liberado') === 'true') {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('ferramenta-secreta').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
