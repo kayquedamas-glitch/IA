@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CORREÇÃO: BOTÃO DA SIDEBAR VAI DIRETO PRO PREÇO ---
     const sidebarBtn = document.querySelector('.sidebar-upgrade-box a');
     if (sidebarBtn) {
-        sidebarBtn.href = "pag.html#planos"; 
+        sidebarBtn.href = "index.html#planos"; 
     }
 
     // --- DEFINIÇÃO DAS FERRAMENTAS E PROMPTS ---
@@ -109,7 +109,7 @@ Fase 3: O Dossiê (O Grande Final)
 
     // --- FUNÇÃO DE REDIRECIONAMENTO (OFERTA DIRETA) ---
     function redirectToSales() {
-        window.location.href = "pag.html#planos"; 
+        window.location.href = "index.html#planos"; 
     }
 
     // --- RESET DO CHAT (COM BOTÕES INICIAIS DE VOLTA) ---
@@ -205,7 +205,7 @@ Fase 3: O Dossiê (O Grande Final)
                         O mapeamento do seu padrão comportamental está pronto. O Dossiê Técnico e a estratégia de correção foram gerados.
                     </p>
                     
-                    <a href="pag.html#planos" class="block w-full py-3.5 bg-[#CC0000] hover:bg-red-700 text-white font-bold rounded-lg text-xs uppercase tracking-[0.15em] transition-all shadow-lg shadow-red-900/30 no-underline">
+                    <a href="index.html#planos" class="block w-full py-3.5 bg-[#CC0000] hover:bg-red-700 text-white font-bold rounded-lg text-xs uppercase tracking-[0.15em] transition-all shadow-lg shadow-red-900/30 no-underline">
                         ACESSAR MEU DOSSIÊ
                     </a>
                 </div>
