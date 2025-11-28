@@ -62,11 +62,15 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
         }
+        
+        /* Animação suave para o menu mobile */
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .mobile-nav-anim { animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden selection:bg-red-600 selection:text-white pb-24 md:pb-0">
 
- <!-- NAVBAR FLUTUANTE ESTILO "PILL" -->
+ <!-- NAVBAR FLUTUANTE DESKTOP (MD+) -->
 <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
     <div class="bg-[#0f0f0f]/80 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] transition-all hover:border-white/20">
         
@@ -83,7 +87,7 @@
             <!-- Divisor Vertical -->
             <div class="h-6 w-px bg-white/10"></div>
 
-            <!-- Links de Navegação -->
+            <!-- Links de Navegação (SEM O TESTAR FERRAMENTA AQUI) -->
             <ul class="flex items-center gap-5 text-sm font-medium text-gray-400">
                 <li><a href="#inicio" class="hover:text-white transition-colors">Início</a></li>
                 <li><a href="#metodo" class="hover:text-white transition-colors">O Método</a></li>
@@ -92,20 +96,20 @@
             </ul>
         </div>
 
-        <!-- LADO DIREITO: AÇÕES -->
+        <!-- LADO DIREITO: AÇÕES (TESTAR + LOGIN + CTA) -->
         <div class="flex items-center gap-4 pr-2">
             
-            <!-- Ícone Lua/Sol (Decorativo) -->
-            <button class="text-gray-500 hover:text-white transition">
-                <i class="fas fa-moon"></i>
-            </button>
+            <!-- NOVO BOTÃO TESTAR (DESTACADO E AO LADO DO LOGIN) -->
+            <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 bg-red-900/10 border border-red-500/30 rounded-full text-red-400 text-xs font-bold uppercase tracking-wide hover:bg-red-900/20 hover:border-red-500/60 hover:text-red-300 transition-all shadow-[0_0_15px_rgba(220,38,38,0.1)] group">
+                <i class="fas fa-flask group-hover:animate-pulse"></i> <span>Testar Ferramenta</span>
+            </a>
 
             <!-- Link Login -->
             <a href="PRO/login.html" class="text-sm font-bold text-white hover:text-gray-300 transition px-2">
                 Login
             </a>
 
-            <!-- Botão CTA (O Verde da imagem virou Vermelho Synapse) -->
+            <!-- Botão CTA (Principal) -->
             <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2">
                 Desbloquear
                 <i class="fas fa-arrow-right"></i>
@@ -115,8 +119,30 @@
     </div>
 </nav>
 
+<!-- MINI NAVBAR MOBILE (NOVA) -->
+<nav class="fixed top-4 left-4 right-4 z-40 md:hidden mobile-nav-anim">
+    <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between shadow-2xl">
+        <!-- Logo Simplificado -->
+        <a href="#" class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+            <i class="fas fa-brain"></i>
+        </a>
+        
+        <div class="flex items-center gap-4">
+             <!-- Botão Testar Mobile -->
+             <a href="index.html" class="text-[10px] font-bold text-red-400 flex items-center gap-1.5 border border-red-500/30 px-3 py-1.5 rounded-full bg-red-900/10 active:scale-95 transition">
+                <i class="fas fa-flask"></i> Testar
+             </a>
+             
+             <!-- Login Mobile -->
+             <a href="PRO/login.html" class="text-xs font-bold text-gray-300 hover:text-white transition">
+                Login
+             </a>
+        </div>
+    </div>
+</nav>
+
      <!-- HERO SECTION -->
-    <header class="pt-20 md:pt-32 pb-10 text-center px-4 overflow-hidden relative">
+    <header id="inicio" class="pt-24 md:pt-32 pb-10 text-center px-4 overflow-hidden relative">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-red-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
 
         <div class="max-w-5xl mx-auto z-10 relative">
@@ -168,7 +194,7 @@
     </header>
 
     <!-- SEÇÃO: POR QUE ESCOLHER -->
-    <section class="py-12 md:py-20 bg-[#080808] border-y border-white/5 relative overflow-hidden">
+    <section id="metodo" class="py-12 md:py-20 bg-[#080808] border-y border-white/5 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
         
         <div class="max-w-5xl mx-auto px-4 relative z-10">
@@ -253,7 +279,7 @@
     </section>
 
     <!-- O QUE VOCÊ DESBLOQUEIA -->
-    <section class="py-12 md:py-24">
+    <section id="ferramentas" class="py-12 md:py-24">
         <div class="max-w-5xl mx-auto px-4">
             <div class="reveal text-center mb-8 md:mb-12">
                 <h3 class="text-2xl md:text-4xl font-black uppercase mb-2 tracking-tight">
@@ -338,12 +364,15 @@
                     <li class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Gamificação de disciplina</li>
                     <li class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Design escuro para foco total</li>
                 </ul>
+                <a href="index.html" class="inline-flex mt-6 items-center gap-2 text-red-500 font-bold text-sm hover:text-red-400 transition-colors group">
+                    Testar Versão Web <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- AVALIAÇÕES (TEMA VERMELHO/BRUTAL & IMAGENS REAIS) -->
-    <section class="py-20 border-y border-white/5 bg-[#080808] relative overflow-hidden">
+    <section id="depoimentos" class="py-20 border-y border-white/5 bg-[#080808] relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
         <div class="max-w-5xl mx-auto px-4 relative z-10">
             <div class="reveal text-center mb-16">
