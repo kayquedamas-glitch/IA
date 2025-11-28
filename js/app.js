@@ -277,9 +277,9 @@ Fase 3: O Dossiê (O Grande Final)
                 let fakeReply = "";
                 
                 if (conversationHistory.length <= 3) {
-                    fakeReply = "Entendi. E você sente que isso acontece com mais frequência em qual horário? <<Manhã>> <<Tarde>> <<Noite>> <<O dia todo>>";
+                    fakeReply = "Minha conexão oscilou. Pode repetir?";
                 } else if (conversationHistory.length <= 5) {
-                    fakeReply = "Certo. Mas me diz: isso afeta mais seu trabalho ou sua vida pessoal? <<Trabalho>> <<Pessoal>> <<Ambos>>";
+                    fakeReply = "Minha conexão oscilou. Pode repetir?";
                 } else {
                     fakeReply = "Análise concluída. O problema não é falta de vontade, é um padrão neuroquímico. Tenho o Protocolo para corrigir isso. Quer acessar? [FIM_DA_SESSAO]";
                 }
