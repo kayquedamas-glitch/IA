@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
 <head>
-       <link rel="shortcut icon" href="assets/lOGO (3).png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/lOGO (3).png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
     <title>Synapse PRO</title>
@@ -10,30 +10,33 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
-    <!-- CSS LOCAL DA PASTA PRO -->
+    <!-- LUCIDE ICONS (Link Corrigido para Versão UMD/Browser) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <!-- EFEITO DE CONFETES -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <link rel="stylesheet" href="style.css">
     
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        /* Esconde até verificar login */
         body { visibility: hidden; } 
     </style>
 </head>
 
 <body class="h-full bg-black text-white font-inter overflow-hidden">
 
-    <!-- Autenticação -->
+    <!-- Auth Check -->
     <script>
         try {
             const user = JSON.parse(localStorage.getItem('synapseUser'));
-            if (!user || !user.isPro) {
-                window.location.href = "login.html";
-            } else {
-                document.body.style.visibility = "visible";
+            // Verificação simples para UX
+            if (!user && !localStorage.getItem('synapse_access') && !localStorage.getItem('synapse_session_v2')) {
+                 // window.location.href = "login.html"; 
             }
-        } catch(e) { window.location.href = "login.html"; }
+            document.body.style.visibility = "visible";
+        } catch(e) { document.body.style.visibility = "visible"; }
     </script>
 
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
@@ -41,110 +44,150 @@
     <div class="app-layout">
 
         <!-- SIDEBAR -->
-        <aside id="sidebar" class="sidebar p-4">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center space-x-3">
-                    <span class="text-xl font-bold tracking-wide text-white">Synapse <span class="text-xs text-red-500 align-top">PRO</span></span>
+        <aside id="sidebar" class="sidebar p-5"> 
+            <div class="flex justify-between items-center mb-10"> 
+                <div class="flex items-center gap-3">
+                    <!-- Logo Minimalista (Texto) -->
+                    <span class="text-lg font-semibold tracking-tight text-white">Synapse <span class="text-[10px] bg-white text-black px-1.5 py-0.5 rounded font-bold align-middle ml-1">PRO</span></span>
                 </div>
             </div>
 
-            <nav class="mb-8 flex flex-col gap-2">
-                <p class="text-[#444] text-[10px] font-bold uppercase tracking-widest pl-2 mb-2">Agentes de IA</p>
+            <nav class="flex flex-col gap-1 w-full">
+                <p class="text-[#333] text-[10px] font-bold uppercase tracking-widest pl-3 mb-3">Arsenal</p>
                 
-                <!-- FERRAMENTAS DESBLOQUEADAS (SEM CADEADOS) -->
+                <!-- Ícones Lucide -->
                 <div id="toolDiagnostico" class="tool-item active" onclick="selectTool('Diagnostico')">
-                    <i class="fas fa-brain text-red-500"></i><span>Diagnóstico</span>
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                    <span>Diagnóstico</span>
                 </div>
                 
-                <div id="toolEstrategista" class="tool-item" onclick="selectTool('Estrategista')">
-                    <i class="fas fa-chess-knight"></i><span>Estrategista</span>
+                <div id="toolAtivador" class="tool-item" onclick="selectTool('Ativador')">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    <span>O Ativador</span>
+                </div>
+
+                <div id="toolMentor" class="tool-item" onclick="selectTool('Mentor')">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                    <span>O Mentor</span>
                 </div>
 
                 <div id="toolMestre" class="tool-item" onclick="selectTool('Mestre')">
-                    <i class="fas fa-hammer"></i><span>Ferreiro</span>
-                </div>
-
-                <div id="toolAuditor" class="tool-item" onclick="selectTool('Auditor')">
-                    <i class="fas fa-chart-pie"></i><span>Auditor</span>
+                    <i data-lucide="hammer" class="w-5 h-5"></i>
+                    <span>Ferreiro</span>
                 </div>
             </nav>
 
             <div class="flex-grow"></div>
             
-            <!-- PERFIL (EM VEZ DE VENDA) -->
-            <div class="mt-auto pt-4 border-t border-[#222]">
-                <div class="flex items-center gap-3 px-2 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-red-900 flex items-center justify-center font-bold text-xs text-white" id="userAvatar">U</div>
+            <!-- BOTÃO DO PÂNICO -->
+            <div class="mb-6 px-1">
+                <button onclick="selectTool('Panico')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#222] bg-[#111] hover:bg-[#161616] hover:border-[#333] transition-all group">
+                    <div class="w-8 h-8 rounded-lg bg-red-900/10 flex items-center justify-center group-hover:bg-red-900/20 transition">
+                        <i data-lucide="triangle-alert" class="w-4 h-4 text-red-500/70 group-hover:text-red-500"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-xs font-medium text-gray-300 group-hover:text-white">Botão do Pânico</span>
+                        <span class="block text-[9px] text-gray-600">Emergência</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- PERFIL -->
+            <div class="pt-4 border-t border-[#1a1a1a]">
+                <div class="flex items-center gap-3 px-2">
+                    <div class="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[#333] flex items-center justify-center font-medium text-xs text-gray-400" id="userAvatar">U</div>
                     <div>
-                        <p class="text-sm font-bold text-white truncate max-w-[120px]" id="userNameDisplay">Membro</p>
-                        <p class="text-[10px] text-green-500 font-mono">ONLINE</p>
+                        <p class="text-xs font-medium text-gray-300 truncate max-w-[120px]" id="userNameDisplay">Membro</p>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            <p class="text-[9px] text-gray-600">Online</p>
+                        </div>
                     </div>
                 </div>
-                
             </div>
         </aside>
 
         <main class="chat-area relative">
 
             <!-- HEADER MOBILE -->
-            <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
-                <button id="menuBtn" class="text-white text-xl p-2" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
+            <div id="mobileHeader" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a] z-30 flex items-center px-4 justify-between transition-transform duration-300">
+                <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2" onclick="toggleSidebar()">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-                <h3 class="text-sm font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse PRO</h3>
-                <div class="w-8"></div>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse PRO</h3>
+                <div class="w-9"></div> 
             </div>
 
-            <!-- VIEW 1: CHAT (Estrutura Idêntica ao Gratuito) -->
+            <!-- VIEW 1: CHAT -->
             <div id="viewChat" class="view-section h-full flex flex-col">
                 <div class="chat-messages flex-grow pt-16"> 
                     <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col">
-                        <!-- O JS VAI INJETAR O CABEÇALHO E MENSAGENS AQUI -->
+                        <!-- Conteúdo injetado via JS -->
                     </div>
                 </div>
 
                 <div class="chat-input-container">
                     <div class="w-full max-w-2xl mx-auto">
                         <div id="textInputWrapper">
-                            <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none max-h-24 placeholder-gray-600" placeholder="Digite aqui..."></textarea>
-                            <button id="sendBtn"><i class="fas fa-arrow-up text-white text-xs"></i></button>
+                            <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none max-h-24 placeholder-gray-600 font-inter" placeholder="Digite seu comando..."></textarea>
+                            <button id="sendBtn" class="hover:bg-red-700 transition"><i data-lucide="arrow-up" class="w-4 h-4 text-white"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: JORNADA (Funcional e Sem Bloqueios) -->
-            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
+            <!-- VIEW 2: JORNADA -->
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-20">
+                
+                <button onclick="switchTab('chat')" class="fab-back md:hidden group">
+                    <i data-lucide="message-square" class="w-6 h-6"></i>
+                </button>
+
                 <div class="max-w-md mx-auto">
                     
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Progresso</p>
-                            <h2 class="text-xl font-black text-white flex items-center gap-2">
-                                <span class="bg-green-900/20 text-green-500 px-2 py-1 rounded text-xs border border-green-500/20">NÍVEL 2</span>
-                            </h2>
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Nível Atual</p>
+                                <h2 class="text-lg font-bold text-white flex items-center gap-2 mt-1">
+                                    <span class="bg-[#1a1a1a] text-gray-300 px-2 py-1 rounded text-xs border border-[#333]" id="levelBadge">NÍVEL 1</span>
+                                </h2>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold text-white tracking-tighter" id="proStreakDisplay">0</span>
+                                <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias Focados</p>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <span class="text-2xl font-black text-white" id="proStreakDisplay">0</span>
-                            <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias Seguidos</p>
+
+                        <!-- Barra Fina -->
+                        <div class="w-full bg-[#111] rounded-full h-1 mt-4 overflow-hidden">
+                            <div id="levelProgressBar" class="bg-white h-1 rounded-full transition-all duration-1000" style="width: 0%"></div>
                         </div>
+                        <p class="text-[9px] text-gray-600 mt-2 text-right w-full font-mono" id="nextLevelText">calculando...</p>
                     </div>
 
-                    <!-- CALENDÁRIO -->
-                    <div class="bg-[#111] border border-[#222] rounded-2xl p-6 mb-8 relative shadow-lg">
-                        <div class="flex justify-between mb-4 items-center">
-                             <span class="text-sm font-bold text-white flex gap-2 items-center"><i class="far fa-calendar-alt"></i> <span id="monthDisplay">Mês</span></span>
-                             <button onclick="clearHistory()" class="text-[9px] text-gray-600 hover:text-red-500">Resetar</button>
+                    <!-- Calendário Clean -->
+                    <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-6 mb-8 relative">
+                        <div class="flex justify-between mb-6 items-center border-b border-[#1a1a1a] pb-4">
+                             <span class="text-xs font-semibold text-gray-300 flex gap-2 items-center uppercase tracking-wide">
+                                <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> <span id="monthDisplay">Mês Atual</span>
+                             </span>
+                             <button onclick="clearHistory()" class="text-[9px] text-gray-600 hover:text-white transition">Resetar</button>
                         </div>
                         <div id="calendarGrid" class="calendar-grid"></div>
                     </div>
 
-                    <!-- ROTINA -->
-                    <div class="mb-8">
-                        <h3 class="text-sm font-bold text-white mb-4">Protocolo Diário</h3>
-                        <div id="habitList" class="habit-list"></div>
-                        <button onclick="addNewHabitPrompt()" class="mt-4 w-full py-3 border border-dashed border-[#333] text-gray-500 text-xs rounded-lg hover:text-white hover:border-gray-500 transition">
-                            + Adicionar Hábito
+                    <!-- Lista de Hábitos -->
+                    <div class="mb-20">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-white">Protocolo Diário</h3>
+                            <span class="text-[10px] text-gray-500 font-mono" id="habitCount">0/0</span>
+                        </div>
+                        
+                        <div id="habitList" class="habit-list space-y-2"></div>
+                        
+                        <button onclick="addNewHabitPrompt()" class="mt-4 w-full py-4 border border-dashed border-[#222] text-gray-500 text-xs rounded-xl hover:text-white hover:border-[#444] hover:bg-[#111] transition flex items-center justify-center gap-2 group">
+                            <i data-lucide="plus" class="w-3 h-3 group-hover:text-white transition"></i> Novo Hábito
                         </button>
                     </div>
 
@@ -153,15 +196,24 @@
 
         </main>
 
-        <!-- NAV MOBILE -->
-        <nav class="bottom-nav md:hidden">
-            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')"><i class="fas fa-brain text-xl mb-1"></i><span class="text-[10px] font-medium">Chat</span></button>
-            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')"><i class="fas fa-calendar-check text-xl mb-1"></i><span class="text-[10px] font-medium">Jornada</span></button>
+        <!-- NAV MOBILE CLEAN -->
+        <nav class="bottom-nav md:hidden transition-transform duration-300 border-t border-[#1a1a1a]">
+            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')">
+                <i data-lucide="command" class="w-5 h-5 mb-1"></i><span class="text-[9px] font-medium tracking-wide">COMANDO</span>
+            </button>
+            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')">
+                <i data-lucide="layout-grid" class="w-5 h-5 mb-1"></i><span class="text-[9px] font-medium tracking-wide">JORNADA</span>
+            </button>
         </nav>
         
     </div> 
 
-    <!-- SCRIPT PRO -->
     <script src="script.js"></script>
+    <!-- Fallback para garantir que os ícones carreguem mesmo se o script.js demorar -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.lucide) lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

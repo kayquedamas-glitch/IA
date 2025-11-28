@@ -1,125 +1,175 @@
-/* script.js (PRO) - APP FUNCIONAL COM VISUAL E LÓGICA DE TRIAGEM */
+/* script.js (PRO) - ARSENAL ATUALIZADO 2.0 */
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. DADOS DO USUÁRIO
-    const user = JSON.parse(localStorage.getItem('synapseUser'));
+    // --- DADOS DO USUÁRIO ---
+    const storedUser = localStorage.getItem('synapseUser') || localStorage.getItem('synapse_session_v2');
+    let user = null;
+    try { user = JSON.parse(storedUser); } catch(e) {}
+
     const nameDisplay = document.getElementById('userNameDisplay');
     const avatarDisplay = document.getElementById('userAvatar');
     
     if (user) {
-        if (nameDisplay) nameDisplay.innerText = user.name || "Membro";
-        if (avatarDisplay) avatarDisplay.innerText = (user.name || "M").charAt(0).toUpperCase();
-        
-        // Se for um admin, configurar uma "flag" especial, se desejar
-        if (user.email === 'admin@admin' && user.password === 'batatinha') {
-            // Aqui você poderia adicionar lógica específica para admin
-            console.log("Admin logado");
-        }
+        const displayName = user.name || user.user || "Operador";
+        if (nameDisplay) nameDisplay.innerText = displayName;
+        if (avatarDisplay) avatarDisplay.innerText = displayName.charAt(0).toUpperCase();
     }
 
     const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
     const API_MODEL = "llama-3.1-8b-instant"; 
     
-    // --- DEFINIÇÕES INTELIGENTES PARA TODAS AS FERRAMENTAS ---
-    // Apliquei a estrutura de "Botões + Perguntas Curtas" em todas
+    // --- ARSENAL DE FERRAMENTAS (NOVAS IAs) ---
     const agents = {
         'Diagnostico': { 
             name: "Diagnóstico", 
-            welcome: `Olá ${user ? user.name.split(' ')[0] : 'Membro'}. Vamos encontrar a raiz do problema.`,
-            typewriter: ["analisando perfil...", "acessando dados...", "pronto."],
-            initialButtons: ["Procrastinação", "Ansiedade", "Fadiga", "Vício"],
-            prompt: `Você é o Synapse. PERSONA: Especialista em comportamento.
-            REGRAS:
-            1. Faça perguntas curtas para investigar a causa.
-            2. Termine sempre com sugestões de resposta entre << >>. Ex: <<Sim>> <<Não>>.
-            3. NUNCA use a palavra "OPÇÃO".`
+            welcome: `Olá. O primeiro passo é a consciência. O que está travando sua evolução hoje?`,
+            typewriter: ["acessando núcleo...", "calibrando análise...", "pronto."],
+            initialButtons: ["Procrastinação Crônica", "Vício em Telas", "Cansaço Mental", "Falta de Propósito"],
+            prompt: `Você é o Synapse. 
+            OBJETIVO: Identificar o sabotador do usuário.
+            ESTILO: Direto, analítico, sem rodeios.
+            REGRAS: 1. Faça perguntas curtas para investigar a causa raiz. 2. Termine sempre com opções <<Opção A>> <<Opção B>>. 3. No final, gere um diagnóstico brutal.`
         },
-        'Estrategista': { 
-            name: "Estrategista", 
-            welcome: "Estrategista online. Qual é a meta difícil de hoje?",
-            typewriter: ["calibrando estratégia...", "definindo rotas...", "pronto."],
-            initialButtons: ["Planejar Dia", "Quebrar Tarefa", "Metas", "Foco"],
-            prompt: `Você é o Estrategista. PERSONA: Comandante tático e prático.
-            OBJETIVO: Quebrar tarefas grandes em micro-passos.
-            REGRAS:
-            1. Pergunte qual é a tarefa.
-            2. Devolva um plano passo a passo imediato.
-            3. Termine com botões de ação. Ex: <<Começar Agora>> <<Refinar>>.`
+        'Panico': { 
+            name: "Botão do Pânico", 
+            welcome: `⚠️ ALERTA DE RECAÍDA DETECTADO. PARE TUDO AGORA.
+            Não feche este chat. Essa vontade é química, não é você.
+            
+            O que você está prestes a fazer?`,
+            typewriter: ["ATIVANDO PROTOCOLO SOS...", "BLOQUEANDO RECAÍDA...", "AGUARDE."],
+            initialButtons: ["Ver Pornografia/Telas", "Comer Besteira", "Procrastinar", "Crise de Ansiedade"],
+            prompt: `Você é O SENTINELA. 
+            OBJETIVO: Impedir uma recaída IMEDIATA usando a técnica de "Urge Surfing" (Surfar na vontade).
+            ESTILO: Autoritário, urgente, protetor. Use frases curtas.
+            
+            ROTEIRO:
+            1. Ordene que o usuário PARE e RESPIRE. Diga que a fissura dura apenas 10-15 minutos.
+            2. Pergunte o gatilho: "O que disparou isso? Tédio, Estresse ou Hábito?"
+            3. Dê uma tarefa física imediata: "Beba um copo d'água gelada", "Faça 10 flexões", "Saia do quarto".
+            4. Só libere o usuário quando ele disser que a vontade passou.
+            
+            IMPORTANTE: Não dê palestras. Dê ordens de sobrevivência.`
+        },
+        'Ativador': { 
+            name: "O Ativador", 
+            welcome: `Chega de planejar. Planejamento excessivo é procrastinação.
+            Vamos entrar em Hiperfoco AGORA. Qual a missão?`,
+            typewriter: ["carregando flow state...", "eliminando ruído...", "pronto."],
+            initialButtons: ["Trabalho Focado", "Estudo Pesado", "Tarefa Chata", "Treino Físico"],
+            prompt: `Você é O ATIVADOR.
+            OBJETIVO: Colocar o usuário em ação em menos de 2 minutos.
+            ESTILO: Energético, militar, prático.
+            
+            MÉTODO:
+            1. Não monte cronogramas. Monte RITUAIS DE INÍCIO.
+            2. Ordene a preparação do ambiente: "Celular longe", "Água na mesa", "Fone de ouvido".
+            3. Use a regra dos 5 minutos: "Você só precisa fazer isso por 5 minutos. Aceita o desafio?"
+            4. Termine com: "VÁ. AGORA."`
+        },
+        'Mentor': { 
+            name: "O Mentor", 
+            welcome: `A mente confusa toma decisões ruins.
+            Esvazie sua cabeça aqui. O que está pesando mais?`,
+            typewriter: ["organizando caos...", "filtrando prioridades...", "pronto."],
+            initialButtons: ["Mente Cheia (Overthinking)", "Indecisão", "Desânimo", "Estresse"],
+            prompt: `Você é O MENTOR (Baseado em Marco Aurélio e Sêneca).
+            OBJETIVO: Trazer clareza e remover ruído mental.
+            ESTILO: Calmo, sábio, estoico.
+            
+            MÉTODO:
+            1. Se ele estiver sobrecarregado, use a Matriz de Eisenhower ou Pareto (80/20) para eliminar o inútil.
+            2. Faça ele focar no que está sob o controle dele.
+            3. Pergunte: "Disso tudo, qual é a ÚNICA coisa que, se resolvida, resolve o resto?"`
         },
         'Mestre': { 
             name: "Ferreiro", 
-            welcome: "A forja está quente. Se o dia saiu do trilho, vamos consertar.",
-            typewriter: ["aquecendo forja...", "preparando mentalidade...", "pronto."],
-            initialButtons: ["Resgatar Dia", "Vencer Preguiça", "Disciplina", "Rotina"],
-            prompt: `Você é o Ferreiro de Hábitos. PERSONA: Mentor estoico, firme mas sem julgamentos.
-            OBJETIVO: Ajudar o usuário a voltar para a rotina após uma falha.
-            REGRAS:
-            1. Pergunte o que houve.
-            2. Dê uma ação imediata de 5 minutos para retomar o controle.
-            3. Botões: <<Estou pronto>> <<Preciso de ajuda>>.`
-        },
-        'Auditor': { 
-            name: "Auditor", 
-            welcome: "Auditoria pronta. Cole sua rotina ou descreva seu dia para análise.",
-            typewriter: ["auditando dados...", "calculando perdas...", "pronto."],
-            initialButtons: ["Analisar Ontem", "Otimizar Hoje", "Ver Falhas", "Tempo"],
-            prompt: `Você é o Auditor. PERSONA: Analista de dados cético e lógico.
-            OBJETIVO: Encontrar desperdícios de tempo na rotina.
-            REGRAS:
-            1. Peça a rotina.
-            2. Aponte onde o tempo está sendo jogado fora.
-            3. Botões: <<Entendi>> <<Como melhorar?>>.`
+            welcome: "Um dia ruim não define sua vida, mas dois dias ruins criam um hábito. Vamos consertar isso.",
+            typewriter: ["reaquecendo forja...", "restaurando honra...", "pronto."],
+            initialButtons: ["Perdi o dia todo", "Quebrei a dieta", "Não treinei", "Dormi demais"],
+            prompt: `Você é O FERREIRO.
+            OBJETIVO: Recuperação de falhas.
+            ESTILO: Duro mas justo. Sem vitimismo.
+            
+            MÉTODO:
+            1. Reconheça a falha, mas não deixe ele se culpar. Culpa gasta energia.
+            2. Dê uma micro-vitória para agora: "Arrume sua cama", "Tome um banho frio".
+            3. O objetivo é terminar o dia com UMA vitória, não importa quão pequena.`
         }
     };
     
     let currentAgent = 'Diagnostico';
     let chatHistory = [];
 
-    // --- NAVEGAÇÃO ---
+    // --- NAVEGAÇÃO IMERSIVA ---
     window.switchTab = function(tab) {
         const viewChat = document.getElementById('viewChat');
         const viewProtocolo = document.getElementById('viewProtocolo');
         const tabChat = document.getElementById('tabChat');
         const tabJornada = document.getElementById('tabJornada');
+        
+        const bottomNav = document.querySelector('.bottom-nav');
+        const mobileHeader = document.getElementById('mobileHeader');
 
+        // Reset
+        if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
+        if(tabJornada) { tabJornada.classList.remove('active'); tabJornada.style.color = '#666'; }
+        
         viewChat.classList.add('hidden');
         viewProtocolo.classList.add('hidden');
-        tabChat.classList.remove('active');
-        tabChat.style.color = '#666';
-        tabJornada.classList.remove('active');
-        tabJornada.style.color = '#666';
 
         if (tab === 'chat') {
             viewChat.classList.remove('hidden');
-            tabChat.classList.add('active');
-            tabChat.style.color = '#CC0000';
+            if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
+            
+            // Mostrar Barras
+            if(bottomNav) { bottomNav.style.transform = 'translateY(0)'; }
+            if(mobileHeader) { mobileHeader.style.transform = 'translateY(0)'; }
+            
         } else {
             viewProtocolo.classList.remove('hidden');
-            tabJornada.classList.add('active');
-            tabJornada.style.color = '#CC0000';
+            if(tabJornada) { tabJornada.classList.add('active'); tabJornada.style.color = '#CC0000'; }
+            
+            // Esconder Barras (Imersão)
+            if(bottomNav) { bottomNav.style.transform = 'translateY(100%)'; }
+            if(mobileHeader) { mobileHeader.style.transform = 'translateY(-100%)'; }
+            
             renderCalendar();
+            renderHabits();
         }
     }
 
+    // --- SELETOR DE FERRAMENTAS ---
     window.selectTool = function(agentKey) {
         currentAgent = agentKey;
         document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`tool${agentKey}`).classList.add('active');
+        
+        const activeTool = document.getElementById(`tool${agentKey}`);
+        if(activeTool) activeTool.classList.add('active');
         
         const mobileTitle = document.getElementById('mobileTitle');
-        if(mobileTitle) mobileTitle.innerText = agents[agentKey].name.toUpperCase();
+        if(mobileTitle) {
+            mobileTitle.innerText = agents[agentKey].name.toUpperCase();
+            // Muda cor do título se for Pânico
+            if(agentKey === 'Panico') {
+                mobileTitle.style.color = '#ef4444';
+                mobileTitle.classList.add('animate-pulse');
+            } else {
+                mobileTitle.style.color = 'white';
+                mobileTitle.classList.remove('animate-pulse');
+            }
+        }
 
         resetChat();
         if (window.innerWidth < 768) toggleSidebar();
     }
 
-    // --- RESET INTELIGENTE (A MÁGICA DO APP) ---
+    // --- CHAT ENGINE ---
     function resetChat() {
         const container = document.getElementById('messagesContainer');
         container.innerHTML = '';
         
-        // 1. Recria o Cabeçalho do Typewriter (Texto Piscando)
+        // Cabeçalho Typewriter
         const headerHTML = `
             <div class="w-full text-center mb-6 p-4">
                 <p id="chatSubtitle" class="text-gray-400 text-sm">
@@ -130,28 +180,33 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         container.insertAdjacentHTML('afterbegin', headerHTML);
 
-        // 2. Mensagem Inicial da Ferramenta
+        // Mensagem de Boas Vindas
         const div = document.createElement('div');
         div.className = 'chat-message-ia';
-        div.innerText = agents[currentAgent].welcome;
+        div.innerHTML = agents[currentAgent].welcome.replace(/\n/g, '<br>'); // Suporte a quebra de linha
         container.appendChild(div);
 
-        // 3. Botões Iniciais 3D (Específicos de cada ferramenta)
+        // Botões Iniciais
         const btnContainer = document.createElement('div');
         btnContainer.className = 'quick-reply-container';
         agents[currentAgent].initialButtons.forEach(text => {
             const btn = document.createElement('button');
             btn.className = 'cyber-btn';
+            
+            // Estilo especial para Botão do Pânico
+            if(currentAgent === 'Panico') {
+                btn.style.borderColor = '#7f1d1d';
+                btn.style.color = '#fca5a5';
+            }
+            
             btn.innerText = text;
             btn.onclick = () => sendQuickReply(text);
             btnContainer.appendChild(btn);
         });
         container.appendChild(btnContainer);
 
-        // 4. Configura a memória da IA
+        // Reset Contexto
         chatHistory = [{ role: "system", content: agents[currentAgent].prompt }];
-        
-        // 5. Inicia a Animação
         startTypewriter(agents[currentAgent].typewriter);
     }
 
@@ -171,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function sendQuickReply(text) {
-        // Esconde os botões ao clicar
         const lastBtns = document.querySelector('.quick-reply-container:last-child');
         if(lastBtns) lastBtns.style.display = 'none';
         
@@ -180,11 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sendMessage();
     }
 
-    // --- SISTEMA DE CHAT (COM FILTRO DE BOTÕES) ---
-    const chatInput = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendBtn');
-
     async function sendMessage() {
+        const chatInput = document.getElementById('chatInput');
         const text = chatInput.value.trim();
         if(!text) return;
 
@@ -206,18 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             const reply = data.choices[0].message.content;
-            
-            // Renderiza a resposta da IA
             renderIAMessage(reply, container);
-            
             chatHistory.push({ role: "assistant", content: reply });
-
         } catch (e) {
-            // Fallback de segurança
             setTimeout(() => {
                 const iaDiv = document.createElement('div');
                 iaDiv.className = 'chat-message-ia';
-                iaDiv.innerText = "Estou processando seus dados... Tente novamente.";
+                iaDiv.innerText = "Falha na conexão neural. Tente novamente.";
+                iaDiv.style.color = 'red';
                 container.appendChild(iaDiv);
             }, 1000);
         }
@@ -225,17 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function renderIAMessage(message, container) {
-        // 1. Extrai os botões <<Texto>>
         const buttonRegex = /<<(.+?)>>/g;
         const buttons = [];
         let match;
         while ((match = buttonRegex.exec(message)) !== null) buttons.push(match[1]);
 
-        // 2. Limpa o texto
         let cleanMessage = message.replace(buttonRegex, '').trim();
         cleanMessage = cleanMessage.replace(/\{/g, '<strong>').replace(/\}/g, '</strong>').replace(/\n/g, '<br>');
 
-        // 3. Exibe o texto
         if (cleanMessage) {
             const div = document.createElement('div');
             div.className = 'chat-message-ia';
@@ -243,7 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(div);
         }
 
-        // 4. Exibe os botões novos (se houver)
         if (buttons.length > 0) {
             const btnContainer = document.createElement('div');
             btnContainer.className = 'quick-reply-container';
@@ -251,6 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(btnText.toUpperCase() !== "OPÇÃO") {
                     const btn = document.createElement('button');
                     btn.className = 'cyber-btn';
+                    
+                    if(currentAgent === 'Panico') {
+                        btn.style.borderColor = '#7f1d1d';
+                        btn.style.color = '#fca5a5';
+                    }
+                    
                     btn.innerText = btnText;
                     btn.onclick = () => sendQuickReply(btnText);
                     btnContainer.appendChild(btn);
@@ -260,46 +309,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Listeners Chat
+    const sendBtn = document.getElementById('sendBtn');
+    const chatInputElem = document.getElementById('chatInput');
     if(sendBtn) sendBtn.addEventListener('click', sendMessage);
-    if(chatInput) chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    if(chatInputElem) chatInputElem.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
-    // Sidebar
     window.toggleSidebar = function() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        sidebar.classList.toggle('translate-x-0');
-        if(sidebar.style.transform === 'translateX(0px)') {
-             sidebar.style.transform = 'translateX(-100%)';
-             overlay.style.visibility = 'hidden';
-             overlay.style.opacity = '0';
-        } else {
-             sidebar.style.transform = 'translateX(0px)';
-             overlay.style.visibility = 'visible';
-             overlay.style.opacity = '1';
-        }
+        const isOpen = sidebar.style.transform === 'translateX(0px)';
+        sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+        overlay.style.visibility = isOpen ? 'hidden' : 'visible';
+        overlay.style.opacity = isOpen ? '0' : '1';
     }
-    const overlay = document.getElementById('sidebarOverlay');
-    if(overlay) overlay.addEventListener('click', toggleSidebar);
+    document.getElementById('sidebarOverlay')?.addEventListener('click', toggleSidebar);
 
-    window.logout = function() {
-        localStorage.removeItem('synapseUser');
-        window.location.href = 'login.html';
-    }
 
-    // 5. JORNADA PRO (PERSISTENTE)
+    // --- JORNADA & HÁBITOS ---
+    
     const defaultHabits = [
-        { id: 'h1', name: 'Hidratação (500ml)' },
+        { id: 'h1', name: 'Beber Água ao Acordar' },
         { id: 'h2', name: 'Arrumar a Cama' },
-        { id: 'h3', name: 'Banho de Contraste' },
-        { id: 'h4', name: 'Meditação NSDR' },
-        { id: 'h5', name: 'Deep Work (90min)' }
+        { id: 'h3', name: 'Banho Gelado' },
+        { id: 'h4', name: 'Ler 10 Páginas' },
+        { id: 'h5', name: 'Sem Celular na 1ª Hora' }
     ];
 
     function loadData() {
         const stored = localStorage.getItem('synapseData');
         if (!stored) return { days: {}, habits: defaultHabits };
         const parsed = JSON.parse(stored);
-        if(!parsed.habits) parsed.habits = defaultHabits;
+        if(!parsed.habits || parsed.habits.length === 0) parsed.habits = defaultHabits;
         return parsed;
     }
     function saveData(data) { localStorage.setItem('synapseData', JSON.stringify(data)); }
@@ -311,28 +352,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = loadData();
         if (!data.days[todayKey]) data.days[todayKey] = [];
         habitListEl.innerHTML = '';
+        
+        // Estado Vazio
+        if(data.habits.length === 0) {
+            habitListEl.innerHTML = `
+                <div class="text-center py-8 border border-dashed border-[#222] rounded-xl bg-[#0a0a0a]">
+                    <i class="fas fa-plus-circle text-gray-700 text-3xl mb-3"></i>
+                    <p class="text-gray-500 text-xs">Adicione seus rituais para começar.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const completedCount = data.habits.filter(h => data.days[todayKey].includes(h.id)).length;
+        document.getElementById('habitCount').innerText = `${completedCount}/${data.habits.length}`;
 
         data.habits.forEach(habit => {
             const isChecked = data.days[todayKey].includes(habit.id);
             const div = document.createElement('div');
-            div.className = `habit-item cursor-pointer ${isChecked ? 'checked' : ''}`;
-            div.innerHTML = `<div class="flex items-center"><div class="habit-checkbox ${isChecked ? 'bg-brutal-red border-brutal-red' : 'border-[#333]'} w-5 h-5 rounded border flex items-center justify-center mr-3"><i class="fas fa-check text-white text-xs ${isChecked ? '' : 'hidden'}"></i></div><span class="text-sm text-gray-300">${habit.name}</span></div>`;
+            
+            div.className = `habit-item cursor-pointer flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${isChecked ? 'bg-green-900/10 border-green-500/30' : 'bg-[#111] border-[#222] hover:border-[#333]'}`;
+            
+            div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-green-500 border-green-500' : 'border-[#333]'}">
+                        <i class="fas fa-check text-black text-xs ${isChecked ? '' : 'opacity-0'}"></i>
+                    </div>
+                    <span class="text-sm ${isChecked ? 'text-white line-through opacity-50' : 'text-gray-300'}">${habit.name}</span>
+                </div>
+                ${isChecked ? '<span class="text-[10px] text-green-500 font-bold animate-pulse">+XP</span>' : '<i class="fas fa-chevron-right text-[#333] text-xs"></i>'}
+            `;
             
             div.onclick = () => {
                 const currentData = loadData();
                 const dayData = currentData.days[todayKey] || [];
-                if (dayData.includes(habit.id)) { const index = dayData.indexOf(habit.id); dayData.splice(index, 1); } 
-                else { dayData.push(habit.id); if(navigator.vibrate) navigator.vibrate(50); }
+                
+                if (dayData.includes(habit.id)) { 
+                    const index = dayData.indexOf(habit.id); 
+                    dayData.splice(index, 1); 
+                } else { 
+                    dayData.push(habit.id); 
+                    if(navigator.vibrate) navigator.vibrate(50);
+                    
+                    // Confetes
+                    if (window.confetti) {
+                        confetti({
+                            particleCount: 80,
+                            spread: 60,
+                            origin: { y: 0.7 },
+                            colors: ['#22c55e', '#ffffff']
+                        });
+                    }
+                }
                 currentData.days[todayKey] = dayData;
                 saveData(currentData);
-                renderHabits(); renderCalendar(); 
+                renderHabits(); 
+                renderCalendar();
             };
             habitListEl.appendChild(div);
         });
     }
 
     window.addNewHabitPrompt = function() {
-        const newName = prompt("Nome do novo hábito:");
+        const newName = prompt("Nome do ritual:");
         if(newName) {
             const data = loadData();
             data.habits.push({ id: 'h'+Date.now(), name: newName });
@@ -345,10 +427,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('calendarGrid');
         if(!grid) return;
         grid.innerHTML = '';
+        
+        ['D','S','T','Q','Q','S','S'].forEach(d => {
+            const h = document.createElement('div');
+            h.className = 'calendar-day-header';
+            h.innerText = d;
+            grid.appendChild(h);
+        });
+
         const now = new Date();
         const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
         const today = now.getDate();
         const appData = loadData();
+        let streak = 0;
 
         for (let i = 1; i <= daysInMonth; i++) {
             const d = new Date(now.getFullYear(), now.getMonth(), i);
@@ -356,17 +447,48 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateKey = new Date(d.getTime() - offset).toISOString().split('T')[0];
             const dayHabits = appData.days[dateKey] || [];
             const isDone = dayHabits.length > 0;
+            
+            if(isDone) streak++; 
+
             const el = document.createElement('div');
             el.className = `calendar-day ${isDone ? 'success' : ''} ${i === today ? 'active' : ''}`;
             if(!isDone && i < today) el.style.color = '#333';
             el.innerText = i;
             grid.appendChild(el);
         }
-        let count = 0; for (const key in appData.days) { if (appData.days[key].length > 0) count++; }
-        if(document.getElementById('proStreakDisplay')) document.getElementById('proStreakDisplay').innerText = count;
-    }
-    window.clearHistory = function() { if(confirm("Apagar histórico?")) { localStorage.removeItem('synapseData'); renderHabits(); renderCalendar(); } }
 
+        // Atualizar Níveis
+        const streakEl = document.getElementById('proStreakDisplay');
+        if(streakEl) streakEl.innerText = streak;
+
+        let level = 1;
+        let nextLevelThreshold = 7;
+        
+        if (streak >= 7) { level = 2; nextLevelThreshold = 14; }
+        if (streak >= 14) { level = 3; nextLevelThreshold = 30; }
+        if (streak >= 30) { level = 4; nextLevelThreshold = 60; }
+        
+        let progressPercent = Math.min((streak / nextLevelThreshold) * 100, 100);
+        
+        const progressBar = document.getElementById('levelProgressBar');
+        if(progressBar) progressBar.style.width = `${progressPercent}%`;
+        
+        const levelBadge = document.getElementById('levelBadge');
+        if(levelBadge) levelBadge.innerText = `NÍVEL ${level}`;
+        
+        const nextLevelText = document.getElementById('nextLevelText');
+        if(nextLevelText) nextLevelText.innerText = `Próximo nível em ${nextLevelThreshold - streak} dias`;
+    }
+
+    window.clearHistory = function() { 
+        if(confirm("Reiniciar todo o progresso?")) { 
+            localStorage.removeItem('synapseData'); 
+            renderHabits(); 
+            renderCalendar(); 
+        } 
+    }
+
+    // Inicialização
     selectTool('Diagnostico');
     renderHabits();
     renderCalendar();
