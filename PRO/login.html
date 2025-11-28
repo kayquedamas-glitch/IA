@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
 <head>
-    <link rel="shortcut icon" href="assets/lOGO (3).png" type="image/x-icon">
+<link rel="shortcut icon" href="icone preto.png" type="image/jpeg">
+<link rel="icon" href="icone preto.png" type="image/jpeg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>Entrar - Synapse PRO</title>
@@ -45,14 +46,18 @@
     <!-- LADO ESQUERDO: BRANDING (Visível apenas em telas médias/grandes) -->
     <div class="hidden md:flex w-1/2 bg-[#050505] relative items-center justify-center overflow-hidden border-r border-white/5">
         
-        <!-- Background Effects -->
-        <div class="absolute inset-0 bg-gradient-to-br from-[#1a0505] via-[#0a0000] to-black opacity-80"></div>
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#CC0000] rounded-full blur-[180px] opacity-20 animate-pulse"></div>
+        <img src="polvo_synapse.png" 
+             class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity scale-110" 
+             alt="Synapse Background">
         
-        <!-- Glass Card Flutuante -->
-        <div class="glass-card relative z-10 p-10 rounded-3xl max-w-sm text-center transform hover:scale-[1.02] transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] opacity-90"></div>
+        <div class="absolute inset-0 bg-black/40"></div>
+
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#CC0000] rounded-full blur-[180px] opacity-10 animate-pulse"></div>
+        
+        <div class="glass-card relative z-10 p-10 rounded-3xl max-w-sm text-center transform hover:scale-[1.02] transition-transform duration-500 backdrop-blur-md">
             <div class="w-20 h-20 bg-gradient-to-br from-[#CC0000] to-[#600000] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-red-900/30">
-                <i class="fas fa-brain text-4xl text-white"></i>
+                <img src="logo_synapse.png" class="w-full h-full object-cover rounded-2xl opacity-80 mix-blend-screen">
             </div>
             
             <h2 class="text-3xl font-black mb-3 tracking-tight text-white">Synapse PRO</h2>
@@ -74,7 +79,7 @@
             <!-- Logo Mobile -->
             <div class="md:hidden text-center mb-8">
                 <div class="w-12 h-12 bg-[#CC0000] rounded-xl mx-auto flex items-center justify-center shadow-red-glow">
-                    <i class="fas fa-brain text-white"></i>
+                    <img src="logo_synapse.png" alt="Synapse Logo" class="">
                 </div>
             </div>
 
