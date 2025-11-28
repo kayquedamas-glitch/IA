@@ -75,9 +75,7 @@
 <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
     <div class="bg-[#0f0f0f]/80 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] transition-all hover:border-white/20">
         
-        <!-- LADO ESQUERDO: LOGO + LINKS -->
         <div class="flex items-center gap-6 pl-4">
-            <!-- Logo -->
             <a href="#" class="flex items-center gap-2 group">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
                     <img src="assets/logo_synapse.png" alt="Synapse Logo" class="w-8 h-8 rounded-full border border-red-500/30 object-cover shadow-[0_0_10px_rgba(204,0,0,0.3)]">
@@ -85,32 +83,29 @@
                 <span class="text-white font-bold tracking-tight text-lg">Synapse</span>
             </a>
 
-            <!-- Divisor Vertical -->
             <div class="h-6 w-px bg-white/10"></div>
 
-            <!-- Links de Navegação (SEM O TESTAR FERRAMENTA AQUI) -->
-            <ul class="flex items-center gap-5 text-sm font-medium text-gray-400">
+            <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
                 <li><a href="#inicio" class="hover:text-white transition-colors">Início</a></li>
                 <li><a href="#metodo" class="hover:text-white transition-colors">O Método</a></li>
                 <li><a href="#ferramentas" class="hover:text-white transition-colors">Ferramentas</a></li>
                 <li><a href="#depoimentos" class="hover:text-white transition-colors">Depoimentos</a></li>
+                
+                <li>
+                    <a href="teste.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-400 hover:text-white transition-colors group ml-2 px-3 py-1.5 border border-white/5 rounded-full hover:bg-white/5">
+                        <i class="fas fa-flask text-red-600/80 group-hover:text-red-500 group-hover:scale-110 transition-transform"></i> 
+                        <span>Testar Ferramenta</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
-        <!-- LADO DIREITO: AÇÕES (TESTAR + LOGIN + CTA) -->
         <div class="flex items-center gap-4 pr-2">
             
-            <!-- NOVO BOTÃO TESTAR (DESTACADO E AO LADO DO LOGIN) -->
-            <a href="teste.html" class="flex items-center gap-2 px-3 py-1.5 bg-red-900/10 border border-red-500/30 rounded-full text-red-400 text-xs font-bold uppercase tracking-wide hover:bg-red-900/20 hover:border-red-500/60 hover:text-red-300 transition-all shadow-[0_0_15px_rgba(220,38,38,0.1)] group">
-                <i class="fas fa-flask group-hover:animate-pulse"></i> <span>Testar Ferramenta</span>
-            </a>
-
-            <!-- Link Login -->
             <a href="PRO/login.html" class="text-sm font-bold text-white hover:text-gray-300 transition px-2">
                 Login
             </a>
 
-            <!-- Botão CTA (Principal) -->
             <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2">
                 Desbloquear
                 <i class="fas fa-arrow-right"></i>
@@ -120,26 +115,21 @@
     </div>
 </nav>
 
-<!-- MINI NAVBAR MOBILE (NOVA) -->
-<nav class="fixed top-4 left-4 right-4 z-40 md:hidden mobile-nav-anim">
-    <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between shadow-2xl">
-        <!-- Logo Simplificado -->
-        <a href="#" class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg">
-            <img src="assets/logo_synapse.png" alt="Synapse Logo" class="w-8 h-8 rounded-full border border-red-500/30 object-cover shadow-[0_0_10px_rgba(204,0,0,0.3)]">
-               
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 md:hidden mobile-nav-anim w-max max-w-[95%]">
+    <div class="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-full px-5 py-2 flex items-center gap-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)]">
+        
+        <a href="#" class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center shadow-[0_0_10px_rgba(204,0,0,0.5)] shrink-0 active:scale-90 transition">
+            <img src="assets/logo_synapse.png" alt="Synapse Logo" class="w-5 h-5 object-contain opacity-90">
         </a>
         
-        <div class="flex items-center gap-4">
-             <!-- Botão Testar Mobile -->
-             <a href="teste.html" class="text-[10px] font-bold text-red-400 flex items-center gap-1.5 border border-red-500/30 px-3 py-1.5 rounded-full bg-red-900/10 active:scale-95 transition">
-                <i class="fas fa-flask"></i> Testar
-             </a>
+        <a href="teste.html" class="flex items-center gap-1.5 px-3 py-1.5 bg-red-900/10 border border-red-500/30 rounded-full text-[10px] font-bold text-red-400 hover:bg-red-900/20 active:scale-95 transition shadow-sm">
+            <i class="fas fa-flask text-[9px]"></i> <span>Testar</span>
+        </a>
              
-             <!-- Login Mobile -->
-             <a href="PRO/login.html" class="text-xs font-bold text-gray-300 hover:text-white transition">
-                Login
-             </a>
-        </div>
+        <a href="PRO/login.html" class="text-xs font-bold text-gray-300 hover:text-white transition px-1">
+            Login
+        </a>
+        
     </div>
 </nav>
 
@@ -579,34 +569,37 @@
                 </div>
             </section>
 
-    <!-- FAQ -->
-    <section class="max-w-xl mx-auto mb-20 px-4">
-        <h3 class="text-xl font-bold text-center mb-6 uppercase tracking-tight">Dúvidas</h3>
+  <section class="max-w-xl mx-auto mb-20 px-4">
+        <h3 class="text-xl font-bold text-center mb-6 uppercase tracking-tight">Perguntas Frequentes</h3>
+        
         <div class="space-y-3">
+            
             <details class="group bg-zinc-900/30 border border-white/5 rounded-lg overflow-hidden">
-                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300">
-                    Como recebo o acesso? <span class="text-red-500">+</span>
+                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300 select-none">
+                    Como recebo o meu acesso? <span class="text-red-500 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed">
-                    Chega no seu e-mail na hora. Login, senha e link do App.
+                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed border-t border-white/5 pt-3">
+                    No momento do pagamento, você cadastrará um e-mail. <strong>É com esse mesmo e-mail</strong> que você fará login no sistema imediatamente após a confirmação. Sem burocracia.
+                </div>
+            </details>
+
+            <details class="group bg-zinc-900/30 border border-white/5 rounded-lg overflow-hidden">
+                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300 select-none">
+                    Preciso pagar todo mês? <span class="text-red-500 transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed border-t border-white/5 pt-3">
+                    Não. O acesso é <strong>VITALÍCIO</strong>. Você paga uma única vez (preço de um café) e o sistema é seu para sempre, incluindo atualizações futuras.
                 </div>
             </details>
             <details class="group bg-zinc-900/30 border border-white/5 rounded-lg overflow-hidden">
-                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300">
-                    Funciona no iPhone? <span class="text-red-500">+</span>
+                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300 select-none">
+                    Tenho TDAH ou falta de foco crônica. Funciona? <span class="text-red-500 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed">
-                    Sim! Temos WebApp Premium para iOS e App Nativo para Android.
+                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed border-t border-white/5 pt-3">
+                    Sim. O sistema foi desenhado exatamente para mentes hiperativas. Removemos a necessidade de "força de vontade" usando estímulos visuais e gamificação que mantém seu cérebro engajado.
                 </div>
             </details>
-            <details class="group bg-zinc-900/30 border border-white/5 rounded-lg overflow-hidden">
-                <summary class="flex justify-between items-center p-4 cursor-pointer text-xs font-semibold text-gray-300">
-                    Tem garantia? <span class="text-red-500">+</span>
-                </summary>
-                <div class="px-4 pb-4 text-gray-500 text-xs leading-relaxed">
-                    7 dias de garantia total. Se não gostar, devolvemos tudo.
-                </div>
-            </details>
+
         </div>
     </section>
 
