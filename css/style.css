@@ -75,3 +75,50 @@ body {
     h1 { font-size: 2.5rem; line-height: 1.1; }
     h3 { font-size: 1.5rem; }
 }
+/* css/style.css - REFACTOR PARA ESTILO TELEGRAM/CLEAN */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #050505;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* Scroll Suave */
+html { scroll-behavior: smooth; }
+
+/* Tipografia */
+.font-mono-code { font-family: 'JetBrains Mono', monospace; }
+
+/* Animações de Reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+
+/* Botões Estilo Sistema */
+.btn-system {
+    border-radius: 8px; /* Mais quadrado estilo Telegram */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+}
+.btn-system:active { transform: scale(0.98); }
+
+/* Sticky Footer Animation */
+#stickyFooter {
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
