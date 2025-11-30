@@ -1,1 +1,495 @@
-function _0x49cf(_0x57f772,_0x4b6039){const _0x38ee55=_0x421c();return _0x49cf=function(_0x290386,_0x4ac608){_0x290386=_0x290386-0xcf;let _0x16706c=_0x38ee55[_0x290386];return _0x16706c;},_0x49cf(_0x57f772,_0x4b6039);}function _0x421c(){const _0x5779b9=['min','40EZzslz','Vício\x20em\x20Telas','2140tznBhv','json','indexOf','chat-message-ia','Você\x20é\x20o\x20Synapse.\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20OBJETIVO:\x20Identificar\x20o\x20sabotador\x20do\x20usuário.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ESTILO:\x20Direto,\x20analítico,\x20sem\x20rodeios.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20REGRAS:\x201.\x20Faça\x20perguntas\x20curtas\x20para\x20investigar\x20a\x20causa\x20raiz.\x202.\x20Termine\x20sempre\x20com\x20opções\x20<<Opção\x20A>>\x20<<Opção\x20B>>.\x203.\x20No\x20final,\x20gere\x20um\x20diagnóstico\x20brutal.','messagesContainer','calendar-day\x20','choices','splice','tabJornada','.bottom-nav','opacity-0','carregando\x20flow\x20state...','synapseData','log','apply','Beber\x20Água\x20ao\x20Acordar','addEventListener','bind','DOMContentLoaded','includes','synapse_session_v2','eliminando\x20ruído...','Você\x20é\x20O\x20SENTINELA.\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20OBJETIVO:\x20Impedir\x20uma\x20recaída\x20IMEDIATA\x20usando\x20a\x20técnica\x20de\x20\x22Urge\x20Surfing\x22\x20(Surfar\x20na\x20vontade).\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ESTILO:\x20Autoritário,\x20urgente,\x20protetor.\x20Use\x20frases\x20curtas.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ROTEIRO:\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x201.\x20Ordene\x20que\x20o\x20usuário\x20PARE\x20e\x20RESPIRE.\x20Diga\x20que\x20a\x20fissura\x20dura\x20apenas\x2010-15\x20minutos.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x202.\x20Pergunte\x20o\x20gatilho:\x20\x22O\x20que\x20disparou\x20isso?\x20Tédio,\x20Estresse\x20ou\x20Hábito?\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x203.\x20Dê\x20uma\x20tarefa\x20física\x20imediata:\x20\x22Beba\x20um\x20copo\x20d\x27água\x20gelada\x22,\x20\x22Faça\x2010\x20flexões\x22,\x20\x22Saia\x20do\x20quarto\x22.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x204.\x20Só\x20libere\x20o\x20usuário\x20quando\x20ele\x20disser\x20que\x20a\x20vontade\x20passou.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20IMPORTANTE:\x20Não\x20dê\x20palestras.\x20Dê\x20ordens\x20de\x20sobrevivência.','none','OPÇÃO','<i\x20class=\x22fas\x20fa-chevron-right\x20text-[#333]\x20text-xs\x22></i>','#333','typewriter-text','#ef4444','toString','name','toggleSidebar','.tool-item','307212uqGOKT','getDate','border-[#333]','8816193fMhYqa','mobileTitle','Enter','viewChat','vibrate','createElement','Treino\x20Físico','userAvatar','nextLevelText','Reiniciar\x20todo\x20o\x20progresso?','now','shiftKey','#666','scrollHeight','Cansaço\x20Mental','Olá.\x20O\x20primeiro\x20passo\x20é\x20a\x20consciência.\x20O\x20que\x20está\x20travando\x20sua\x20evolução\x20hoje?','exec','#CC0000','remove','361564fyNjbz','Chega\x20de\x20planejar.\x20Planejamento\x20excessivo\x20é\x20procrastinação.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Vamos\x20entrar\x20em\x20Hiperfoco\x20AGORA.\x20Qual\x20a\x20missão?','cyber-btn','message','add','trim','getTime','getFullYear','constructor','querySelector','animate-pulse','organizando\x20caos...','.quick-reply-container:last-child','Você\x20é\x20O\x20FERREIRO.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20OBJETIVO:\x20Recuperação\x20de\x20falhas.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ESTILO:\x20Duro\x20mas\x20justo.\x20Sem\x20vitimismo.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20MÉTODO:\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x201.\x20Reconheça\x20a\x20falha,\x20mas\x20não\x20deixe\x20ele\x20se\x20culpar.\x20Culpa\x20gasta\x20energia.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x202.\x20Dê\x20uma\x20micro-vitória\x20para\x20agora:\x20\x22Arrume\x20sua\x20cama\x22,\x20\x22Tome\x20um\x20banho\x20frio\x22.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x203.\x20O\x20objetivo\x20é\x20terminar\x20o\x20dia\x20com\x20UMA\x20vitória,\x20não\x20importa\x20quão\x20pequena.','translateY(100%)','key','Operador','782747eWLsEF','Próximo\x20nível\x20em\x20','Não\x20treinei','content','opacity','application/json','Procrastinar','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fas\x20fa-check\x20text-black\x20text-xs\x20','red','tabChat','transform','classList','success','8lzqTva','click','value','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-center\x20gap-3\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22w-6\x20h-6\x20rounded-md\x20border-2\x20flex\x20items-center\x20justify-center\x20transition-colors\x20','chat-message-user','Sem\x20Celular\x20na\x201ª\x20Hora','calendar-day-header','className','trace','hidden','length','Falta\x20de\x20Propósito','Banho\x20Gelado','style','push','Diagnóstico','white','replace','parse','3ABwhRc','initialButtons','insertAdjacentHTML','error','active','visible','\x20dias','A\x20mente\x20confusa\x20toma\x20decisões\x20ruins.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Esvazie\x20sua\x20cabeça\x20aqui.\x20O\x20que\x20está\x20pesando\x20mais?','AGUARDE.','Dormi\x20demais','charAt','Panico','calendarGrid','filtrando\x20prioridades...','innerHTML','button','onclick','<strong>','clearHistory','return\x20(function()\x20','Falha\x20na\x20conexão\x20neural.\x20Tente\x20novamente.','color','renderCalendar','toISOString','removeItem','Diagnostico','switchTab','Desânimo','Crise\x20de\x20Ansiedade','#7f1d1d','toUpperCase','Perdi\x20o\x20dia\x20todo','sidebar','stringify','getElementById','bg-green-900/10\x20border-green-500/30','days','pronto.','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','viewProtocolo','llama-3.1-8b-instant','</strong>','tool','acessando\x20núcleo...','Botão\x20do\x20Pânico','Tarefa\x20Chata','translateX(0px)','chatInput','Um\x20dia\x20ruim\x20não\x20define\x20sua\x20vida,\x20mas\x20dois\x20dias\x20ruins\x20criam\x20um\x20hábito.\x20Vamos\x20consertar\x20isso.','user','sidebarOverlay','confetti','appendChild','getTimezoneOffset','quick-reply-container','chat','__proto__','table','bg-[#111]\x20border-[#222]\x20hover:border-[#333]','levelProgressBar','afterbegin','system','POST','split','mobileHeader','Comer\x20Besteira','Quebrei\x20a\x20dieta','scrollTop','Ferreiro','habit-item\x20cursor-pointer\x20flex\x20items-center\x20justify-between\x20p-4\x20rounded-xl\x20border\x20transition-all\x20duration-200\x20','div','innerText','console','1978062HkXBkH','<br>','\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-sm\x20','info','O\x20Ativador','Nome\x20do\x20ritual:','warn','translateY(-100%)','8225swbRnq','24893UczjnO','prototype','#ffffff','getItem','habits','forEach','Indecisão','borderColor','bg-green-500\x20border-green-500','assistant','BLOQUEANDO\x20RECAÍDA...','Mente\x20Cheia\x20(Overthinking)','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22text-center\x20py-8\x20border\x20border-dashed\x20border-[#222]\x20rounded-xl\x20bg-[#0a0a0a]\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fas\x20fa-plus-circle\x20text-gray-700\x20text-3xl\x20mb-3\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22text-gray-500\x20text-xs\x22>Adicione\x20seus\x20rituais\x20para\x20começar.</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'];_0x421c=function(){return _0x5779b9;};return _0x421c();}const _0x33c461=_0x49cf;(function(_0x4c7b19,_0x983258){const _0x11589b=_0x49cf,_0x5913ee=_0x4c7b19();while(!![]){try{const _0x4a33d4=parseInt(_0x11589b(0xff))/0x1+parseInt(_0x11589b(0x132))/0x2*(parseInt(_0x11589b(0x179))/0x3)+parseInt(_0x11589b(0x148))/0x4*(parseInt(_0x11589b(0x10e))/0x5)+parseInt(_0x11589b(0xf7))/0x6+-parseInt(_0x11589b(0x159))/0x7+-parseInt(_0x11589b(0x166))/0x8*(parseInt(_0x11589b(0x135))/0x9)+parseInt(_0x11589b(0x110))/0xa*(parseInt(_0x11589b(0x100))/0xb);if(_0x4a33d4===_0x983258)break;else _0x5913ee['push'](_0x5913ee['shift']());}catch(_0x2e7026){_0x5913ee['push'](_0x5913ee['shift']());}}}(_0x421c,0x94520));const _0x4ac608=(function(){let _0x48358f=!![];return function(_0x447b4f,_0x46a97a){const _0x34fe1b=_0x48358f?function(){const _0x4d62d4=_0x49cf;if(_0x46a97a){const _0x30e587=_0x46a97a[_0x4d62d4(0x11f)](_0x447b4f,arguments);return _0x46a97a=null,_0x30e587;}}:function(){};return _0x48358f=![],_0x34fe1b;};}()),_0x290386=_0x4ac608(this,function(){const _0x115067=_0x49cf;let _0x4013ff;try{const _0x33ec46=Function(_0x115067(0x18c)+'{}.constructor(\x22return\x20this\x22)(\x20)'+');');_0x4013ff=_0x33ec46();}catch(_0x42a26d){_0x4013ff=window;}const _0x5abcd1=_0x4013ff[_0x115067(0xf6)]=_0x4013ff[_0x115067(0xf6)]||{},_0x58481f=[_0x115067(0x11e),_0x115067(0xfd),_0x115067(0xfa),_0x115067(0x17c),'exception',_0x115067(0xe7),_0x115067(0x16e)];for(let _0x7c2481=0x0;_0x7c2481<_0x58481f['length'];_0x7c2481++){const _0x1ea568=_0x4ac608[_0x115067(0x150)][_0x115067(0x101)][_0x115067(0x122)](_0x4ac608),_0xf58398=_0x58481f[_0x7c2481],_0xfd59c5=_0x5abcd1[_0xf58398]||_0x1ea568;_0x1ea568[_0x115067(0xe6)]=_0x4ac608[_0x115067(0x122)](_0x4ac608),_0x1ea568[_0x115067(0x12e)]=_0xfd59c5[_0x115067(0x12e)]['bind'](_0xfd59c5),_0x5abcd1[_0xf58398]=_0x1ea568;}});_0x290386(),document[_0x33c461(0x121)](_0x33c461(0x123),()=>{const _0x3e9e6b=_0x33c461,_0x35cddb=localStorage[_0x3e9e6b(0x103)]('synapseUser')||localStorage['getItem'](_0x3e9e6b(0x125));let _0xac8c7b=null;try{_0xac8c7b=JSON[_0x3e9e6b(0x178)](_0x35cddb);}catch(_0x51d77f){}const _0x30190e=document[_0x3e9e6b(0xd0)]('userNameDisplay'),_0x4e6b9b=document[_0x3e9e6b(0xd0)](_0x3e9e6b(0x13c));if(_0xac8c7b){const _0x25bf26=_0xac8c7b['name']||_0xac8c7b['user']||_0x3e9e6b(0x158);if(_0x30190e)_0x30190e[_0x3e9e6b(0xf5)]=_0x25bf26;if(_0x4e6b9b)_0x4e6b9b[_0x3e9e6b(0xf5)]=_0x25bf26[_0x3e9e6b(0x183)](0x0)[_0x3e9e6b(0x197)]();}const _0x52c2dc='https://long-block-7f38.kayquedamas.workers.dev',_0x1e2c1b=_0x3e9e6b(0xd6),_0x3a5924={'Diagnostico':{'name':_0x3e9e6b(0x175),'welcome':_0x3e9e6b(0x144),'typewriter':[_0x3e9e6b(0xd9),'calibrando\x20análise...',_0x3e9e6b(0xd3)],'initialButtons':['Procrastinação\x20Crônica',_0x3e9e6b(0x10f),_0x3e9e6b(0x143),_0x3e9e6b(0x171)],'prompt':_0x3e9e6b(0x114)},'Panico':{'name':_0x3e9e6b(0xda),'welcome':'⚠️\x20ALERTA\x20DE\x20RECAÍDA\x20DETECTADO.\x20PARE\x20TUDO\x20AGORA.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Não\x20feche\x20este\x20chat.\x20Essa\x20vontade\x20é\x20química,\x20não\x20é\x20você.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20O\x20que\x20você\x20está\x20prestes\x20a\x20fazer?','typewriter':['ATIVANDO\x20PROTOCOLO\x20SOS...',_0x3e9e6b(0x10a),_0x3e9e6b(0x181)],'initialButtons':['Ver\x20Pornografia/Telas',_0x3e9e6b(0xef),_0x3e9e6b(0x15f),_0x3e9e6b(0x195)],'prompt':_0x3e9e6b(0x127)},'Ativador':{'name':_0x3e9e6b(0xfb),'welcome':_0x3e9e6b(0x149),'typewriter':[_0x3e9e6b(0x11c),_0x3e9e6b(0x126),_0x3e9e6b(0xd3)],'initialButtons':['Trabalho\x20Focado','Estudo\x20Pesado',_0x3e9e6b(0xdb),_0x3e9e6b(0x13b)],'prompt':'Você\x20é\x20O\x20ATIVADOR.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20OBJETIVO:\x20Colocar\x20o\x20usuário\x20em\x20ação\x20em\x20menos\x20de\x202\x20minutos.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ESTILO:\x20Energético,\x20militar,\x20prático.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20MÉTODO:\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x201.\x20Não\x20monte\x20cronogramas.\x20Monte\x20RITUAIS\x20DE\x20INÍCIO.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x202.\x20Ordene\x20a\x20preparação\x20do\x20ambiente:\x20\x22Celular\x20longe\x22,\x20\x22Água\x20na\x20mesa\x22,\x20\x22Fone\x20de\x20ouvido\x22.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x203.\x20Use\x20a\x20regra\x20dos\x205\x20minutos:\x20\x22Você\x20só\x20precisa\x20fazer\x20isso\x20por\x205\x20minutos.\x20Aceita\x20o\x20desafio?\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x204.\x20Termine\x20com:\x20\x22VÁ.\x20AGORA.\x22'},'Mentor':{'name':'O\x20Mentor','welcome':_0x3e9e6b(0x180),'typewriter':[_0x3e9e6b(0x153),_0x3e9e6b(0x186),'pronto.'],'initialButtons':[_0x3e9e6b(0x10b),_0x3e9e6b(0x106),_0x3e9e6b(0x194),'Estresse'],'prompt':'Você\x20é\x20O\x20MENTOR\x20(Baseado\x20em\x20Marco\x20Aurélio\x20e\x20Sêneca).\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20OBJETIVO:\x20Trazer\x20clareza\x20e\x20remover\x20ruído\x20mental.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ESTILO:\x20Calmo,\x20sábio,\x20estoico.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20MÉTODO:\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x201.\x20Se\x20ele\x20estiver\x20sobrecarregado,\x20use\x20a\x20Matriz\x20de\x20Eisenhower\x20ou\x20Pareto\x20(80/20)\x20para\x20eliminar\x20o\x20inútil.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x202.\x20Faça\x20ele\x20focar\x20no\x20que\x20está\x20sob\x20o\x20controle\x20dele.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x203.\x20Pergunte:\x20\x22Disso\x20tudo,\x20qual\x20é\x20a\x20ÚNICA\x20coisa\x20que,\x20se\x20resolvida,\x20resolve\x20o\x20resto?\x22'},'Mestre':{'name':_0x3e9e6b(0xf2),'welcome':_0x3e9e6b(0xde),'typewriter':['reaquecendo\x20forja...','restaurando\x20honra...',_0x3e9e6b(0xd3)],'initialButtons':[_0x3e9e6b(0x198),_0x3e9e6b(0xf0),_0x3e9e6b(0x15b),_0x3e9e6b(0x182)],'prompt':_0x3e9e6b(0x155)}};let _0x5b71a1='Diagnostico',_0x536699=[];window[_0x3e9e6b(0x193)]=function(_0x42bac5){const _0x5476dd=_0x3e9e6b,_0x5ef057=document[_0x5476dd(0xd0)](_0x5476dd(0x138)),_0x2905f7=document['getElementById'](_0x5476dd(0xd5)),_0x5ca5d5=document[_0x5476dd(0xd0)](_0x5476dd(0x162)),_0x231057=document[_0x5476dd(0xd0)](_0x5476dd(0x119)),_0x423947=document['querySelector'](_0x5476dd(0x11a)),_0x4c7639=document[_0x5476dd(0xd0)](_0x5476dd(0xee));_0x5ca5d5&&(_0x5ca5d5['classList'][_0x5476dd(0x147)](_0x5476dd(0x17d)),_0x5ca5d5[_0x5476dd(0x173)][_0x5476dd(0x18e)]='#666'),_0x231057&&(_0x231057[_0x5476dd(0x164)]['remove'](_0x5476dd(0x17d)),_0x231057[_0x5476dd(0x173)]['color']=_0x5476dd(0x141)),_0x5ef057['classList']['add'](_0x5476dd(0x16f)),_0x2905f7[_0x5476dd(0x164)][_0x5476dd(0x14c)](_0x5476dd(0x16f)),_0x42bac5===_0x5476dd(0xe5)?(_0x5ef057['classList'][_0x5476dd(0x147)](_0x5476dd(0x16f)),_0x5ca5d5&&(_0x5ca5d5[_0x5476dd(0x164)][_0x5476dd(0x14c)](_0x5476dd(0x17d)),_0x5ca5d5[_0x5476dd(0x173)][_0x5476dd(0x18e)]=_0x5476dd(0x146)),_0x423947&&(_0x423947['style']['transform']='translateY(0)'),_0x4c7639&&(_0x4c7639[_0x5476dd(0x173)][_0x5476dd(0x163)]='translateY(0)')):(_0x2905f7['classList']['remove']('hidden'),_0x231057&&(_0x231057[_0x5476dd(0x164)][_0x5476dd(0x14c)]('active'),_0x231057[_0x5476dd(0x173)][_0x5476dd(0x18e)]=_0x5476dd(0x146)),_0x423947&&(_0x423947[_0x5476dd(0x173)][_0x5476dd(0x163)]=_0x5476dd(0x156)),_0x4c7639&&(_0x4c7639['style']['transform']=_0x5476dd(0xfe)),renderCalendar(),_0xb1ab2e());},window['selectTool']=function(_0x544d27){const _0x5a12d2=_0x3e9e6b;_0x5b71a1=_0x544d27,document['querySelectorAll'](_0x5a12d2(0x131))[_0x5a12d2(0x105)](_0x4b5613=>_0x4b5613[_0x5a12d2(0x164)]['remove'](_0x5a12d2(0x17d)));const _0x9947dd=document[_0x5a12d2(0xd0)](_0x5a12d2(0xd8)+_0x544d27);if(_0x9947dd)_0x9947dd['classList'][_0x5a12d2(0x14c)](_0x5a12d2(0x17d));const _0x76a275=document[_0x5a12d2(0xd0)](_0x5a12d2(0x136));_0x76a275&&(_0x76a275[_0x5a12d2(0xf5)]=_0x3a5924[_0x544d27][_0x5a12d2(0x12f)][_0x5a12d2(0x197)](),_0x544d27===_0x5a12d2(0x184)?(_0x76a275[_0x5a12d2(0x173)][_0x5a12d2(0x18e)]=_0x5a12d2(0x12d),_0x76a275[_0x5a12d2(0x164)][_0x5a12d2(0x14c)](_0x5a12d2(0x152))):(_0x76a275['style'][_0x5a12d2(0x18e)]=_0x5a12d2(0x176),_0x76a275['classList'][_0x5a12d2(0x147)](_0x5a12d2(0x152))));_0x37ea73();if(window['innerWidth']<0x300)toggleSidebar();};function _0x37ea73(){const _0x77673d=_0x3e9e6b,_0x2cdc87=document['getElementById']('messagesContainer');_0x2cdc87['innerHTML']='';const _0x40080f='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22w-full\x20text-center\x20mb-6\x20p-4\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20id=\x22chatSubtitle\x22\x20class=\x22text-gray-400\x20text-sm\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20id=\x22typewriter-text\x22\x20class=\x22text-brutal-red\x20font-medium\x22></span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22animate-pulse\x22>|</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20';_0x2cdc87[_0x77673d(0x17b)](_0x77673d(0xea),_0x40080f);const _0x45086b=document[_0x77673d(0x13a)](_0x77673d(0xf4));_0x45086b['className']='chat-message-ia',_0x45086b[_0x77673d(0x187)]=_0x3a5924[_0x5b71a1]['welcome'][_0x77673d(0x177)](/\n/g,_0x77673d(0xf8)),_0x2cdc87[_0x77673d(0xe2)](_0x45086b);const _0x26fa35=document[_0x77673d(0x13a)](_0x77673d(0xf4));_0x26fa35[_0x77673d(0x16d)]=_0x77673d(0xe4),_0x3a5924[_0x5b71a1][_0x77673d(0x17a)]['forEach'](_0x82ca06=>{const _0x55eb7d=_0x77673d,_0x1d62f8=document['createElement'](_0x55eb7d(0x188));_0x1d62f8['className']=_0x55eb7d(0x14a),_0x5b71a1==='Panico'&&(_0x1d62f8[_0x55eb7d(0x173)][_0x55eb7d(0x107)]=_0x55eb7d(0x196),_0x1d62f8[_0x55eb7d(0x173)][_0x55eb7d(0x18e)]='#fca5a5'),_0x1d62f8[_0x55eb7d(0xf5)]=_0x82ca06,_0x1d62f8[_0x55eb7d(0x189)]=()=>_0x10fffd(_0x82ca06),_0x26fa35[_0x55eb7d(0xe2)](_0x1d62f8);}),_0x2cdc87['appendChild'](_0x26fa35),_0x536699=[{'role':_0x77673d(0xeb),'content':_0x3a5924[_0x5b71a1]['prompt']}],_0x14fcca(_0x3a5924[_0x5b71a1]['typewriter']);}function _0x14fcca(_0x2149ee){const _0x4afd40=_0x3e9e6b,_0x1ecde3=document[_0x4afd40(0xd0)](_0x4afd40(0x12c));if(!_0x1ecde3)return;let _0xb340cb=0x0,_0xacf109=0x0,_0x17b717=![];function _0x1bb12b(){const _0x2d2562=_0x4afd40,_0x3c41f6=_0x2149ee[_0xb340cb];_0x1ecde3['textContent']=_0x3c41f6['substring'](0x0,_0x17b717?_0xacf109-0x1:_0xacf109+0x1),_0xacf109+=_0x17b717?-0x1:0x1;if(!_0x17b717&&_0xacf109===_0x3c41f6[_0x2d2562(0x170)])_0x17b717=!![],setTimeout(_0x1bb12b,0x7d0);else{if(_0x17b717&&_0xacf109===0x0)_0x17b717=![],_0xb340cb=(_0xb340cb+0x1)%_0x2149ee['length'],setTimeout(_0x1bb12b,0x1f4);else setTimeout(_0x1bb12b,_0x17b717?0x32:0x64);}}_0x1bb12b();}function _0x10fffd(_0x2a0ce3){const _0x54eb8c=_0x3e9e6b,_0x41cc97=document[_0x54eb8c(0x151)](_0x54eb8c(0x154));if(_0x41cc97)_0x41cc97[_0x54eb8c(0x173)]['display']=_0x54eb8c(0x128);const _0x4ffb4c=document[_0x54eb8c(0xd0)](_0x54eb8c(0xdd));_0x4ffb4c[_0x54eb8c(0x168)]=_0x2a0ce3,_0x4c6337();}async function _0x4c6337(){const _0x4eeb85=_0x3e9e6b,_0x13f622=document[_0x4eeb85(0xd0)](_0x4eeb85(0xdd)),_0x2292eb=_0x13f622[_0x4eeb85(0x168)][_0x4eeb85(0x14d)]();if(!_0x2292eb)return;const _0x260b15=document[_0x4eeb85(0xd0)](_0x4eeb85(0x115)),_0x40b795=document['createElement'](_0x4eeb85(0xf4));_0x40b795['className']=_0x4eeb85(0x16a),_0x40b795[_0x4eeb85(0xf5)]=_0x2292eb,_0x260b15[_0x4eeb85(0xe2)](_0x40b795),_0x13f622['value']='',_0x536699[_0x4eeb85(0x174)]({'role':_0x4eeb85(0xdf),'content':_0x2292eb}),_0x260b15[_0x4eeb85(0xf1)]=_0x260b15[_0x4eeb85(0x142)];try{const _0x136624=await fetch(_0x52c2dc,{'method':_0x4eeb85(0xec),'headers':{'Content-Type':_0x4eeb85(0x15e)},'body':JSON['stringify']({'model':_0x1e2c1b,'messages':_0x536699,'temperature':0.7})}),_0x5ee463=await _0x136624[_0x4eeb85(0x111)](),_0xd4a85d=_0x5ee463[_0x4eeb85(0x117)][0x0][_0x4eeb85(0x14b)][_0x4eeb85(0x15c)];_0x26b63c(_0xd4a85d,_0x260b15),_0x536699['push']({'role':_0x4eeb85(0x109),'content':_0xd4a85d});}catch(_0x26f535){setTimeout(()=>{const _0x2859c7=_0x4eeb85,_0xe92541=document['createElement'](_0x2859c7(0xf4));_0xe92541[_0x2859c7(0x16d)]='chat-message-ia',_0xe92541[_0x2859c7(0xf5)]=_0x2859c7(0x18d),_0xe92541[_0x2859c7(0x173)]['color']=_0x2859c7(0x161),_0x260b15[_0x2859c7(0xe2)](_0xe92541);},0x3e8);}_0x260b15['scrollTop']=_0x260b15[_0x4eeb85(0x142)];}function _0x26b63c(_0xf5ef71,_0x4b1947){const _0xbe2fdd=_0x3e9e6b,_0x3048a0=/<<(.+?)>>/g,_0x30e255=[];let _0x5ee2a;while((_0x5ee2a=_0x3048a0[_0xbe2fdd(0x145)](_0xf5ef71))!==null)_0x30e255[_0xbe2fdd(0x174)](_0x5ee2a[0x1]);let _0x8dcc0a=_0xf5ef71[_0xbe2fdd(0x177)](_0x3048a0,'')[_0xbe2fdd(0x14d)]();_0x8dcc0a=_0x8dcc0a[_0xbe2fdd(0x177)](/\{/g,_0xbe2fdd(0x18a))[_0xbe2fdd(0x177)](/\}/g,_0xbe2fdd(0xd7))['replace'](/\n/g,_0xbe2fdd(0xf8));if(_0x8dcc0a){const _0x36f20c=document['createElement'](_0xbe2fdd(0xf4));_0x36f20c[_0xbe2fdd(0x16d)]=_0xbe2fdd(0x113),_0x36f20c[_0xbe2fdd(0x187)]=_0x8dcc0a,_0x4b1947[_0xbe2fdd(0xe2)](_0x36f20c);}if(_0x30e255[_0xbe2fdd(0x170)]>0x0){const _0x5e5923=document[_0xbe2fdd(0x13a)](_0xbe2fdd(0xf4));_0x5e5923[_0xbe2fdd(0x16d)]='quick-reply-container',_0x30e255[_0xbe2fdd(0x105)](_0x481aa1=>{const _0x5d5942=_0xbe2fdd;if(_0x481aa1[_0x5d5942(0x197)]()!==_0x5d5942(0x129)){const _0x133486=document[_0x5d5942(0x13a)](_0x5d5942(0x188));_0x133486[_0x5d5942(0x16d)]=_0x5d5942(0x14a),_0x5b71a1===_0x5d5942(0x184)&&(_0x133486['style'][_0x5d5942(0x107)]=_0x5d5942(0x196),_0x133486[_0x5d5942(0x173)][_0x5d5942(0x18e)]='#fca5a5'),_0x133486[_0x5d5942(0xf5)]=_0x481aa1,_0x133486['onclick']=()=>_0x10fffd(_0x481aa1),_0x5e5923[_0x5d5942(0xe2)](_0x133486);}}),_0x4b1947['appendChild'](_0x5e5923);}}const _0x4264de=document[_0x3e9e6b(0xd0)]('sendBtn'),_0x306c51=document[_0x3e9e6b(0xd0)]('chatInput');if(_0x4264de)_0x4264de[_0x3e9e6b(0x121)]('click',_0x4c6337);if(_0x306c51)_0x306c51[_0x3e9e6b(0x121)]('keydown',_0x438051=>{const _0x13340d=_0x3e9e6b;_0x438051[_0x13340d(0x157)]===_0x13340d(0x137)&&!_0x438051[_0x13340d(0x140)]&&(_0x438051['preventDefault'](),_0x4c6337());});window[_0x3e9e6b(0x130)]=function(){const _0x4986ef=_0x3e9e6b,_0x201885=document[_0x4986ef(0xd0)](_0x4986ef(0x199)),_0x245316=document[_0x4986ef(0xd0)](_0x4986ef(0xe0)),_0x4b0689=_0x201885['style'][_0x4986ef(0x163)]===_0x4986ef(0xdc);_0x201885[_0x4986ef(0x173)][_0x4986ef(0x163)]=_0x4b0689?'translateX(-100%)':_0x4986ef(0xdc),_0x245316['style']['visibility']=_0x4b0689?_0x4986ef(0x16f):_0x4986ef(0x17e),_0x245316[_0x4986ef(0x173)][_0x4986ef(0x15d)]=_0x4b0689?'0':'1';},document[_0x3e9e6b(0xd0)](_0x3e9e6b(0xe0))?.[_0x3e9e6b(0x121)](_0x3e9e6b(0x167),toggleSidebar);const _0xcc49f0=[{'id':'h1','name':_0x3e9e6b(0x120)},{'id':'h2','name':'Arrumar\x20a\x20Cama'},{'id':'h3','name':_0x3e9e6b(0x172)},{'id':'h4','name':'Ler\x2010\x20Páginas'},{'id':'h5','name':_0x3e9e6b(0x16b)}];function _0x1af4c5(){const _0x4e35c1=_0x3e9e6b,_0x3f4e46=localStorage[_0x4e35c1(0x103)](_0x4e35c1(0x11d));if(!_0x3f4e46)return{'days':{},'habits':_0xcc49f0};const _0x14f323=JSON['parse'](_0x3f4e46);if(!_0x14f323[_0x4e35c1(0x104)]||_0x14f323[_0x4e35c1(0x104)][_0x4e35c1(0x170)]===0x0)_0x14f323['habits']=_0xcc49f0;return _0x14f323;}function _0x2284ba(_0x2e0e5b){const _0x20e7a7=_0x3e9e6b;localStorage['setItem'](_0x20e7a7(0x11d),JSON[_0x20e7a7(0xcf)](_0x2e0e5b));}const _0x53de44=document['getElementById']('habitList'),_0x3c72bb=new Date()[_0x3e9e6b(0x190)]()[_0x3e9e6b(0xed)]('T')[0x0];function _0xb1ab2e(){const _0x317477=_0x3e9e6b,_0x5302a8=_0x1af4c5();if(!_0x5302a8['days'][_0x3c72bb])_0x5302a8[_0x317477(0xd2)][_0x3c72bb]=[];_0x53de44[_0x317477(0x187)]='';if(_0x5302a8[_0x317477(0x104)]['length']===0x0){_0x53de44[_0x317477(0x187)]=_0x317477(0x10c);return;}const _0x264f30=_0x5302a8[_0x317477(0x104)]['filter'](_0x3a70f7=>_0x5302a8['days'][_0x3c72bb]['includes'](_0x3a70f7['id']))[_0x317477(0x170)];document[_0x317477(0xd0)]('habitCount')['innerText']=_0x264f30+'/'+_0x5302a8[_0x317477(0x104)]['length'],_0x5302a8[_0x317477(0x104)][_0x317477(0x105)](_0x5b75fb=>{const _0x37caa4=_0x317477,_0x41f82c=_0x5302a8[_0x37caa4(0xd2)][_0x3c72bb][_0x37caa4(0x124)](_0x5b75fb['id']),_0x40a1f5=document['createElement'](_0x37caa4(0xf4));_0x40a1f5[_0x37caa4(0x16d)]=_0x37caa4(0xf3)+(_0x41f82c?_0x37caa4(0xd1):_0x37caa4(0xe8)),_0x40a1f5[_0x37caa4(0x187)]=_0x37caa4(0x169)+(_0x41f82c?_0x37caa4(0x108):_0x37caa4(0x134))+_0x37caa4(0x160)+(_0x41f82c?'':_0x37caa4(0x11b))+_0x37caa4(0xf9)+(_0x41f82c?'text-white\x20line-through\x20opacity-50':'text-gray-300')+'\x22>'+_0x5b75fb[_0x37caa4(0x12f)]+'</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x41f82c?'<span\x20class=\x22text-[10px]\x20text-green-500\x20font-bold\x20animate-pulse\x22>+XP</span>':_0x37caa4(0x12a))+_0x37caa4(0xd4),_0x40a1f5[_0x37caa4(0x189)]=()=>{const _0x234c1d=_0x37caa4,_0x2e2271=_0x1af4c5(),_0x56ca3c=_0x2e2271[_0x234c1d(0xd2)][_0x3c72bb]||[];if(_0x56ca3c[_0x234c1d(0x124)](_0x5b75fb['id'])){const _0x2510e6=_0x56ca3c[_0x234c1d(0x112)](_0x5b75fb['id']);_0x56ca3c[_0x234c1d(0x118)](_0x2510e6,0x1);}else{_0x56ca3c[_0x234c1d(0x174)](_0x5b75fb['id']);if(navigator[_0x234c1d(0x139)])navigator[_0x234c1d(0x139)](0x32);window[_0x234c1d(0xe1)]&&confetti({'particleCount':0x50,'spread':0x3c,'origin':{'y':0.7},'colors':['#22c55e',_0x234c1d(0x102)]});}_0x2e2271[_0x234c1d(0xd2)][_0x3c72bb]=_0x56ca3c,_0x2284ba(_0x2e2271),_0xb1ab2e(),renderCalendar();},_0x53de44[_0x37caa4(0xe2)](_0x40a1f5);});}window['addNewHabitPrompt']=function(){const _0x5a27a7=_0x3e9e6b,_0x1f1b3f=prompt(_0x5a27a7(0xfc));if(_0x1f1b3f){const _0x41a62d=_0x1af4c5();_0x41a62d[_0x5a27a7(0x104)][_0x5a27a7(0x174)]({'id':'h'+Date[_0x5a27a7(0x13f)](),'name':_0x1f1b3f}),_0x2284ba(_0x41a62d),_0xb1ab2e();}},window[_0x3e9e6b(0x18f)]=function(){const _0x53ebac=_0x3e9e6b,_0x12679d=document[_0x53ebac(0xd0)](_0x53ebac(0x185));if(!_0x12679d)return;_0x12679d[_0x53ebac(0x187)]='',['D','S','T','Q','Q','S','S'][_0x53ebac(0x105)](_0x405901=>{const _0x9c1065=_0x53ebac,_0x4d22d4=document[_0x9c1065(0x13a)](_0x9c1065(0xf4));_0x4d22d4['className']=_0x9c1065(0x16c),_0x4d22d4[_0x9c1065(0xf5)]=_0x405901,_0x12679d[_0x9c1065(0xe2)](_0x4d22d4);});const _0x1212f4=new Date(),_0x3bc433=new Date(_0x1212f4[_0x53ebac(0x14f)](),_0x1212f4['getMonth']()+0x1,0x0)[_0x53ebac(0x133)](),_0x465dff=_0x1212f4[_0x53ebac(0x133)](),_0x7d3d08=_0x1af4c5();let _0x4b573e=0x0;for(let _0x4706a4=0x1;_0x4706a4<=_0x3bc433;_0x4706a4++){const _0x2d84d8=new Date(_0x1212f4['getFullYear'](),_0x1212f4['getMonth'](),_0x4706a4),_0x290f96=_0x2d84d8[_0x53ebac(0xe3)]()*0xea60,_0xf8fb93=new Date(_0x2d84d8[_0x53ebac(0x14e)]()-_0x290f96)[_0x53ebac(0x190)]()['split']('T')[0x0],_0x165733=_0x7d3d08[_0x53ebac(0xd2)][_0xf8fb93]||[],_0x808703=_0x165733[_0x53ebac(0x170)]>0x0;if(_0x808703)_0x4b573e++;const _0x45dea7=document[_0x53ebac(0x13a)]('div');_0x45dea7['className']=_0x53ebac(0x116)+(_0x808703?_0x53ebac(0x165):'')+'\x20'+(_0x4706a4===_0x465dff?_0x53ebac(0x17d):'');if(!_0x808703&&_0x4706a4<_0x465dff)_0x45dea7['style']['color']=_0x53ebac(0x12b);_0x45dea7[_0x53ebac(0xf5)]=_0x4706a4,_0x12679d[_0x53ebac(0xe2)](_0x45dea7);}const _0x18035d=document[_0x53ebac(0xd0)]('proStreakDisplay');if(_0x18035d)_0x18035d[_0x53ebac(0xf5)]=_0x4b573e;let _0x18045f=0x1,_0x391b19=0x7;_0x4b573e>=0x7&&(_0x18045f=0x2,_0x391b19=0xe);_0x4b573e>=0xe&&(_0x18045f=0x3,_0x391b19=0x1e);_0x4b573e>=0x1e&&(_0x18045f=0x4,_0x391b19=0x3c);let _0x1aa97a=Math[_0x53ebac(0x10d)](_0x4b573e/_0x391b19*0x64,0x64);const _0x530bb6=document['getElementById'](_0x53ebac(0xe9));if(_0x530bb6)_0x530bb6[_0x53ebac(0x173)]['width']=_0x1aa97a+'%';const _0x255422=document['getElementById']('levelBadge');if(_0x255422)_0x255422[_0x53ebac(0xf5)]='NÍVEL\x20'+_0x18045f;const _0x8f4ed4=document[_0x53ebac(0xd0)](_0x53ebac(0x13d));if(_0x8f4ed4)_0x8f4ed4['innerText']=_0x53ebac(0x15a)+(_0x391b19-_0x4b573e)+_0x53ebac(0x17f);},window[_0x3e9e6b(0x18b)]=function(){const _0x177c6f=_0x3e9e6b;confirm(_0x177c6f(0x13e))&&(localStorage[_0x177c6f(0x191)](_0x177c6f(0x11d)),_0xb1ab2e(),renderCalendar());},selectTool(_0x3e9e6b(0x192)),_0xb1ab2e(),renderCalendar();});
+/* script.js (PRO) - ARSENAL ATUALIZADO 2.0 */
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- DADOS DO USUÁRIO ---
+    const storedUser = localStorage.getItem('synapseUser') || localStorage.getItem('synapse_session_v2');
+    let user = null;
+    try { user = JSON.parse(storedUser); } catch(e) {}
+
+    const nameDisplay = document.getElementById('userNameDisplay');
+    const avatarDisplay = document.getElementById('userAvatar');
+    
+    if (user) {
+        const displayName = user.name || user.user || "Operador";
+        if (nameDisplay) nameDisplay.innerText = displayName;
+        if (avatarDisplay) avatarDisplay.innerText = displayName.charAt(0).toUpperCase();
+    }
+
+    const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
+    const API_MODEL = "llama-3.1-8b-instant"; 
+    
+    // --- ARSENAL DE FERRAMENTAS (NOVAS IAs) ---
+    const agents = {
+        'Diagnostico': { 
+            name: "Diagnóstico", 
+            welcome: `Olá. O primeiro passo é a consciência. O que está travando sua evolução hoje?`,
+            typewriter: ["acessando núcleo...", "calibrando análise...", "pronto."],
+            initialButtons: ["Procrastinação Crônica", "Vício em Telas", "Cansaço Mental", "Falta de Propósito"],
+            prompt: `Você é o Synapse. 
+            OBJETIVO: Identificar o sabotador do usuário.
+            ESTILO: Direto, analítico, sem rodeios.
+            REGRAS: 1. Faça perguntas curtas para investigar a causa raiz. 2. Termine sempre com opções <<Opção A>> <<Opção B>>. 3. No final, gere um diagnóstico brutal.`
+        },
+        'Panico': { 
+            name: "Botão do Pânico", 
+            welcome: `⚠️ ALERTA DE RECAÍDA DETECTADO. PARE TUDO AGORA.
+            Não feche este chat. Essa vontade é química, não é você.
+            
+            O que você está prestes a fazer?`,
+            typewriter: ["ATIVANDO PROTOCOLO SOS...", "BLOQUEANDO RECAÍDA...", "AGUARDE."],
+            initialButtons: ["Ver Pornografia/Telas", "Comer Besteira", "Procrastinar", "Crise de Ansiedade"],
+            prompt: `Você é O SENTINELA. 
+            OBJETIVO: Impedir uma recaída IMEDIATA usando a técnica de "Urge Surfing" (Surfar na vontade).
+            ESTILO: Autoritário, urgente, protetor. Use frases curtas.
+            
+            ROTEIRO:
+            1. Ordene que o usuário PARE e RESPIRE. Diga que a fissura dura apenas 10-15 minutos.
+            2. Pergunte o gatilho: "O que disparou isso? Tédio, Estresse ou Hábito?"
+            3. Dê uma tarefa física imediata: "Beba um copo d'água gelada", "Faça 10 flexões", "Saia do quarto".
+            4. Só libere o usuário quando ele disser que a vontade passou.
+            
+            IMPORTANTE: Não dê palestras. Dê ordens de sobrevivência.`
+        },
+        'Ativador': { 
+            name: "O Ativador", 
+            welcome: `Chega de planejar. Planejamento excessivo é procrastinação.
+            Vamos entrar em Hiperfoco AGORA. Qual a missão?`,
+            typewriter: ["carregando flow state...", "eliminando ruído...", "pronto."],
+            initialButtons: ["Trabalho Focado", "Estudo Pesado", "Tarefa Chata", "Treino Físico"],
+            prompt: `Você é O ATIVADOR.
+            OBJETIVO: Colocar o usuário em ação em menos de 2 minutos.
+            ESTILO: Energético, militar, prático.
+            
+            MÉTODO:
+            1. Não monte cronogramas. Monte RITUAIS DE INÍCIO.
+            2. Ordene a preparação do ambiente: "Celular longe", "Água na mesa", "Fone de ouvido".
+            3. Use a regra dos 5 minutos: "Você só precisa fazer isso por 5 minutos. Aceita o desafio?"
+            4. Termine com: "VÁ. AGORA."`
+        },
+        'Mentor': { 
+            name: "O Mentor", 
+            welcome: `A mente confusa toma decisões ruins.
+            Esvazie sua cabeça aqui. O que está pesando mais?`,
+            typewriter: ["organizando caos...", "filtrando prioridades...", "pronto."],
+            initialButtons: ["Mente Cheia (Overthinking)", "Indecisão", "Desânimo", "Estresse"],
+            prompt: `Você é O MENTOR (Baseado em Marco Aurélio e Sêneca).
+            OBJETIVO: Trazer clareza e remover ruído mental.
+            ESTILO: Calmo, sábio, estoico.
+            
+            MÉTODO:
+            1. Se ele estiver sobrecarregado, use a Matriz de Eisenhower ou Pareto (80/20) para eliminar o inútil.
+            2. Faça ele focar no que está sob o controle dele.
+            3. Pergunte: "Disso tudo, qual é a ÚNICA coisa que, se resolvida, resolve o resto?"`
+        },
+        'Mestre': { 
+            name: "Ferreiro", 
+            welcome: "Um dia ruim não define sua vida, mas dois dias ruins criam um hábito. Vamos consertar isso.",
+            typewriter: ["reaquecendo forja...", "restaurando honra...", "pronto."],
+            initialButtons: ["Perdi o dia todo", "Quebrei a dieta", "Não treinei", "Dormi demais"],
+            prompt: `Você é O FERREIRO.
+            OBJETIVO: Recuperação de falhas.
+            ESTILO: Duro mas justo. Sem vitimismo.
+            
+            MÉTODO:
+            1. Reconheça a falha, mas não deixe ele se culpar. Culpa gasta energia.
+            2. Dê uma micro-vitória para agora: "Arrume sua cama", "Tome um banho frio".
+            3. O objetivo é terminar o dia com UMA vitória, não importa quão pequena.`
+        }
+    };
+    
+    let currentAgent = 'Diagnostico';
+    let chatHistory = [];
+
+    // --- NAVEGAÇÃO IMERSIVA ---
+    window.switchTab = function(tab) {
+        const viewChat = document.getElementById('viewChat');
+        const viewProtocolo = document.getElementById('viewProtocolo');
+        const tabChat = document.getElementById('tabChat');
+        const tabJornada = document.getElementById('tabJornada');
+        
+        const bottomNav = document.querySelector('.bottom-nav');
+        const mobileHeader = document.getElementById('mobileHeader');
+
+        // Reset
+        if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
+        if(tabJornada) { tabJornada.classList.remove('active'); tabJornada.style.color = '#666'; }
+        
+        viewChat.classList.add('hidden');
+        viewProtocolo.classList.add('hidden');
+
+        if (tab === 'chat') {
+            viewChat.classList.remove('hidden');
+            if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
+            
+            // Mostrar Barras
+            if(bottomNav) { bottomNav.style.transform = 'translateY(0)'; }
+            if(mobileHeader) { mobileHeader.style.transform = 'translateY(0)'; }
+            
+        } else {
+            viewProtocolo.classList.remove('hidden');
+            if(tabJornada) { tabJornada.classList.add('active'); tabJornada.style.color = '#CC0000'; }
+            
+            // Esconder Barras (Imersão)
+            if(bottomNav) { bottomNav.style.transform = 'translateY(100%)'; }
+            if(mobileHeader) { mobileHeader.style.transform = 'translateY(-100%)'; }
+            
+            renderCalendar();
+            renderHabits();
+        }
+    }
+
+    // --- SELETOR DE FERRAMENTAS ---
+    window.selectTool = function(agentKey) {
+        currentAgent = agentKey;
+        document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
+        
+        const activeTool = document.getElementById(`tool${agentKey}`);
+        if(activeTool) activeTool.classList.add('active');
+        
+        const mobileTitle = document.getElementById('mobileTitle');
+        if(mobileTitle) {
+            mobileTitle.innerText = agents[agentKey].name.toUpperCase();
+            // Muda cor do título se for Pânico
+            if(agentKey === 'Panico') {
+                mobileTitle.style.color = '#ef4444';
+                mobileTitle.classList.add('animate-pulse');
+            } else {
+                mobileTitle.style.color = 'white';
+                mobileTitle.classList.remove('animate-pulse');
+            }
+        }
+
+        resetChat();
+        if (window.innerWidth < 768) toggleSidebar();
+    }
+
+    // --- CHAT ENGINE ---
+    function resetChat() {
+        const container = document.getElementById('messagesContainer');
+        container.innerHTML = '';
+        
+        // Cabeçalho Typewriter
+        const headerHTML = `
+            <div class="w-full text-center mb-6 p-4">
+                <p id="chatSubtitle" class="text-gray-400 text-sm">
+                    <span id="typewriter-text" class="text-brutal-red font-medium"></span>
+                    <span class="animate-pulse">|</span>
+                </p>
+            </div>
+        `;
+        container.insertAdjacentHTML('afterbegin', headerHTML);
+
+        // Mensagem de Boas Vindas
+        const div = document.createElement('div');
+        div.className = 'chat-message-ia';
+        div.innerHTML = agents[currentAgent].welcome.replace(/\n/g, '<br>'); // Suporte a quebra de linha
+        container.appendChild(div);
+
+        // Botões Iniciais
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'quick-reply-container';
+        agents[currentAgent].initialButtons.forEach(text => {
+            const btn = document.createElement('button');
+            btn.className = 'cyber-btn';
+            
+            // Estilo especial para Botão do Pânico
+            if(currentAgent === 'Panico') {
+                btn.style.borderColor = '#7f1d1d';
+                btn.style.color = '#fca5a5';
+            }
+            
+            btn.innerText = text;
+            btn.onclick = () => sendQuickReply(text);
+            btnContainer.appendChild(btn);
+        });
+        container.appendChild(btnContainer);
+
+        // Reset Contexto
+        chatHistory = [{ role: "system", content: agents[currentAgent].prompt }];
+        startTypewriter(agents[currentAgent].typewriter);
+    }
+
+    function startTypewriter(phrases) {
+        const el = document.getElementById('typewriter-text');
+        if(!el) return;
+        let pIndex = 0, cIndex = 0, isDeleting = false;
+        function type() {
+            const current = phrases[pIndex];
+            el.textContent = current.substring(0, isDeleting ? cIndex - 1 : cIndex + 1);
+            cIndex += isDeleting ? -1 : 1;
+            if(!isDeleting && cIndex === current.length) { isDeleting = true; setTimeout(type, 2000); }
+            else if(isDeleting && cIndex === 0) { isDeleting = false; pIndex = (pIndex + 1) % phrases.length; setTimeout(type, 500); }
+            else setTimeout(type, isDeleting ? 50 : 100);
+        }
+        type();
+    }
+
+    function sendQuickReply(text) {
+        const lastBtns = document.querySelector('.quick-reply-container:last-child');
+        if(lastBtns) lastBtns.style.display = 'none';
+        
+        const chatInput = document.getElementById('chatInput');
+        chatInput.value = text;
+        sendMessage();
+    }
+
+    async function sendMessage() {
+        const chatInput = document.getElementById('chatInput');
+        const text = chatInput.value.trim();
+        if(!text) return;
+
+        const container = document.getElementById('messagesContainer');
+        const userDiv = document.createElement('div');
+        userDiv.className = 'chat-message-user';
+        userDiv.innerText = text;
+        container.appendChild(userDiv);
+        
+        chatInput.value = '';
+        chatHistory.push({ role: "user", content: text });
+        container.scrollTop = container.scrollHeight;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ model: API_MODEL, messages: chatHistory, temperature: 0.7 })
+            });
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            renderIAMessage(reply, container);
+            chatHistory.push({ role: "assistant", content: reply });
+        } catch (e) {
+            setTimeout(() => {
+                const iaDiv = document.createElement('div');
+                iaDiv.className = 'chat-message-ia';
+                iaDiv.innerText = "Falha na conexão neural. Tente novamente.";
+                iaDiv.style.color = 'red';
+                container.appendChild(iaDiv);
+            }, 1000);
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+    
+    function renderIAMessage(message, container) {
+        const buttonRegex = /<<(.+?)>>/g;
+        const buttons = [];
+        let match;
+        while ((match = buttonRegex.exec(message)) !== null) buttons.push(match[1]);
+
+        let cleanMessage = message.replace(buttonRegex, '').trim();
+        cleanMessage = cleanMessage.replace(/\{/g, '<strong>').replace(/\}/g, '</strong>').replace(/\n/g, '<br>');
+
+        if (cleanMessage) {
+            const div = document.createElement('div');
+            div.className = 'chat-message-ia';
+            div.innerHTML = cleanMessage;
+            container.appendChild(div);
+        }
+
+        if (buttons.length > 0) {
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'quick-reply-container';
+            buttons.forEach(btnText => {
+                if(btnText.toUpperCase() !== "OPÇÃO") {
+                    const btn = document.createElement('button');
+                    btn.className = 'cyber-btn';
+                    
+                    if(currentAgent === 'Panico') {
+                        btn.style.borderColor = '#7f1d1d';
+                        btn.style.color = '#fca5a5';
+                    }
+                    
+                    btn.innerText = btnText;
+                    btn.onclick = () => sendQuickReply(btnText);
+                    btnContainer.appendChild(btn);
+                }
+            });
+            container.appendChild(btnContainer);
+        }
+    }
+
+    // Listeners Chat
+    const sendBtn = document.getElementById('sendBtn');
+    const chatInputElem = document.getElementById('chatInput');
+    if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+    if(chatInputElem) chatInputElem.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+    window.toggleSidebar = function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const isOpen = sidebar.style.transform === 'translateX(0px)';
+        sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+        overlay.style.visibility = isOpen ? 'hidden' : 'visible';
+        overlay.style.opacity = isOpen ? '0' : '1';
+    }
+    document.getElementById('sidebarOverlay')?.addEventListener('click', toggleSidebar);
+
+
+    // --- JORNADA & HÁBITOS ---
+    
+    const defaultHabits = [
+        { id: 'h1', name: 'Beber Água ao Acordar' },
+        { id: 'h2', name: 'Arrumar a Cama' },
+        { id: 'h3', name: 'Banho Gelado' },
+        { id: 'h4', name: 'Ler 10 Páginas' },
+        { id: 'h5', name: 'Sem Celular na 1ª Hora' }
+    ];
+
+    function loadData() {
+        const stored = localStorage.getItem('synapseData');
+        if (!stored) return { days: {}, habits: defaultHabits };
+        const parsed = JSON.parse(stored);
+        if(!parsed.habits || parsed.habits.length === 0) parsed.habits = defaultHabits;
+        return parsed;
+    }
+    function saveData(data) { localStorage.setItem('synapseData', JSON.stringify(data)); }
+
+    const habitListEl = document.getElementById('habitList');
+    const todayKey = new Date().toISOString().split('T')[0];
+
+    function renderHabits() {
+        const data = loadData();
+        if (!data.days[todayKey]) data.days[todayKey] = [];
+        habitListEl.innerHTML = '';
+        
+        // Estado Vazio
+        if(data.habits.length === 0) {
+            habitListEl.innerHTML = `
+                <div class="text-center py-8 border border-dashed border-[#222] rounded-xl bg-[#0a0a0a]">
+                    <i class="fas fa-plus-circle text-gray-700 text-3xl mb-3"></i>
+                    <p class="text-gray-500 text-xs">Adicione seus rituais para começar.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const completedCount = data.habits.filter(h => data.days[todayKey].includes(h.id)).length;
+        document.getElementById('habitCount').innerText = `${completedCount}/${data.habits.length}`;
+
+        data.habits.forEach(habit => {
+            const isChecked = data.days[todayKey].includes(habit.id);
+            const div = document.createElement('div');
+            
+            div.className = `habit-item cursor-pointer flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${isChecked ? 'bg-green-900/10 border-green-500/30' : 'bg-[#111] border-[#222] hover:border-[#333]'}`;
+            
+            div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-green-500 border-green-500' : 'border-[#333]'}">
+                        <i class="fas fa-check text-black text-xs ${isChecked ? '' : 'opacity-0'}"></i>
+                    </div>
+                    <span class="text-sm ${isChecked ? 'text-white line-through opacity-50' : 'text-gray-300'}">${habit.name}</span>
+                </div>
+                ${isChecked ? '<span class="text-[10px] text-green-500 font-bold animate-pulse">+XP</span>' : '<i class="fas fa-chevron-right text-[#333] text-xs"></i>'}
+            `;
+            
+            div.onclick = () => {
+                const currentData = loadData();
+                const dayData = currentData.days[todayKey] || [];
+                
+                if (dayData.includes(habit.id)) { 
+                    const index = dayData.indexOf(habit.id); 
+                    dayData.splice(index, 1); 
+                } else { 
+                    dayData.push(habit.id); 
+                    if(navigator.vibrate) navigator.vibrate(50);
+                    
+                    // Confetes
+                    if (window.confetti) {
+                        confetti({
+                            particleCount: 80,
+                            spread: 60,
+                            origin: { y: 0.7 },
+                            colors: ['#22c55e', '#ffffff']
+                        });
+                    }
+                }
+                currentData.days[todayKey] = dayData;
+                saveData(currentData);
+                renderHabits(); 
+                renderCalendar();
+            };
+            habitListEl.appendChild(div);
+        });
+    }
+
+    window.addNewHabitPrompt = function() {
+        const newName = prompt("Nome do ritual:");
+        if(newName) {
+            const data = loadData();
+            data.habits.push({ id: 'h'+Date.now(), name: newName });
+            saveData(data);
+            renderHabits();
+        }
+    }
+
+    window.renderCalendar = function() {
+        const grid = document.getElementById('calendarGrid');
+        if(!grid) return;
+        grid.innerHTML = '';
+        
+        ['D','S','T','Q','Q','S','S'].forEach(d => {
+            const h = document.createElement('div');
+            h.className = 'calendar-day-header';
+            h.innerText = d;
+            grid.appendChild(h);
+        });
+
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const today = now.getDate();
+        const appData = loadData();
+        let streak = 0;
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const d = new Date(now.getFullYear(), now.getMonth(), i);
+            const offset = d.getTimezoneOffset() * 60000;
+            const dateKey = new Date(d.getTime() - offset).toISOString().split('T')[0];
+            const dayHabits = appData.days[dateKey] || [];
+            const isDone = dayHabits.length > 0;
+            
+            if(isDone) streak++; 
+
+            const el = document.createElement('div');
+            el.className = `calendar-day ${isDone ? 'success' : ''} ${i === today ? 'active' : ''}`;
+            if(!isDone && i < today) el.style.color = '#333';
+            el.innerText = i;
+            grid.appendChild(el);
+        }
+
+        // Atualizar Níveis
+        const streakEl = document.getElementById('proStreakDisplay');
+        if(streakEl) streakEl.innerText = streak;
+
+        let level = 1;
+        let nextLevelThreshold = 7;
+        
+        if (streak >= 7) { level = 2; nextLevelThreshold = 14; }
+        if (streak >= 14) { level = 3; nextLevelThreshold = 30; }
+        if (streak >= 30) { level = 4; nextLevelThreshold = 60; }
+        
+        let progressPercent = Math.min((streak / nextLevelThreshold) * 100, 100);
+        
+        const progressBar = document.getElementById('levelProgressBar');
+        if(progressBar) progressBar.style.width = `${progressPercent}%`;
+        
+        const levelBadge = document.getElementById('levelBadge');
+        if(levelBadge) levelBadge.innerText = `NÍVEL ${level}`;
+        
+        const nextLevelText = document.getElementById('nextLevelText');
+        if(nextLevelText) nextLevelText.innerText = `Próximo nível em ${nextLevelThreshold - streak} dias`;
+    }
+
+    window.clearHistory = function() { 
+        if(confirm("Reiniciar todo o progresso?")) { 
+            localStorage.removeItem('synapseData'); 
+            renderHabits(); 
+            renderCalendar(); 
+        } 
+    }
+
+    // Inicialização
+    selectTool('Diagnostico');
+    renderHabits();
+    renderCalendar();
+});
