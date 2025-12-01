@@ -1,4 +1,4 @@
-/* app.js - VERSÃO FINAL: BOTÕES INICIAIS + OFERTA DIRETA */
+/* app.js - ATUALIZADO: ESTRATÉGIAS DE CONVERSÃO (BARNUM + LOADING + AMOSTRA GRÁTIS) */
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -11,115 +11,92 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
     
+    // Navegação e UI
     const viewChat = document.getElementById('viewChat');
     const viewProtocolo = document.getElementById('viewProtocolo');
-    
     const tabChat = document.getElementById('tabChat');
     const tabProtocolo = document.getElementById('tabJornada') || document.getElementById('tabProtocolo');
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
 
-    // --- CORREÇÃO: BOTÃO DA SIDEBAR VAI DIRETO PRO PREÇO ---
-    const sidebarBtn = document.querySelector('.sidebar-upgrade-box a');
-    if (sidebarBtn) {
-        sidebarBtn.href = "index.html#planos"; 
-    }
-
-    // --- DEFINIÇÃO DAS FERRAMENTAS E PROMPTS ---
+    // --- ESTRATÉGIA 1 & 3: DEFINIÇÕES DE FERRAMENTAS COM GATILHOS ---
     const toolDefinitions = {
         'Diagnostico': {
             title: "Sessão de Diagnóstico",
-            subtitle: "Analisando seu perfil...", 
-            typewriterExamples: [ 
-                "desabafa comigo...",
-                "sem julgamentos...",
-                "vamos resolver isso."
-            ],
-            // O CÉREBRO DA ESTRATÉGIA
+            subtitle: "Analisando perfil...", 
+            typewriterExamples: [ "identificando padrões...", "acessando núcleo...", "iniciando varredura..." ],
+            
+            // ESTRATÉGIA 1: EFEITO BARNUM (NOMEAR O SABOTADOR)
             systemPrompt: `Você é o Synapse.
-PERSONA: Um especialista em comportamento que fala a língua do povo. Você é direto, mas amigo.
-NÃO USE PALAVRAS DIFÍCEIS. Fale como se estivesse no WhatsApp.
-TOM: Acolhedor, Empático, Sábio e Não-Julgador.
+PERSONA: Especialista em comportamento, direto, curto e cirúrgico.
+OBJETIVO: Identificar o padrão de comportamento do usuário.
 
-OBJETIVO: Fazer uma Anamnese (Triagem) e levar o usuário até o momento de revelar o "Sabotador".
-
-REGRAS DE OURO (INTERFACE):
-1. NUNCA faça 2 perguntas de uma vez.
-2. Sempre termine suas perguntas oferecendo opções em botões no formato <<OPÇÃO>>.
-3. E OBRIGATORIAMENTE a última opção deve ser sempre: <<Outro>>.
-4. SEUS BOTÕES DEVEM SER MINÚSCULOS (1 a 3 palavras).
-5. SUAS PERGUNTAS DEVEM SER CURTAS E DIRETAS.
-
-
-REGRAS DE OURO (BOTÕES):
-1. SUAS PALAVRAS DENTRO DOS BOTÕES DEVEM SER CURTAS E DIRETAS.
-2. NUNCA repita os botões iniciais se não fizer sentido.
-3. Gere botões que sejam RESPOSTAS lógicas para a pergunta que você fez.
-   Ex: Se perguntar "Isso acontece de manhã?", botões devem ser: <<Sim, de manhã>> <<Não, à noite>>.
-
-
-ROTEIRO DA CONVERSA:
-Fase 1: Investigação com perguntas(5 a 7 perguntas)
-- Pergunte o que está travando a vida dele hoje.
-- Vá aprofundando com perguntas curtas e com botões mais sugeridos com o tipo de pergunta, até sentir que entendeu o padrão.
-- Faça perguntas curtas para entender o sintoma.
-- NÃO dê explicações, conselhos ou teorias agora. Apenas colete dados.
-- A cada resposta do usuário, faça uma nova pergunta de aprofundamento.
-
-Fase 2: O Diagnóstico do Sintoma (O "Pré-Fechamento")
-- Quando tiver dados suficientes, diga: "Entendi. O quadro é claro. Você sofre de [Nome do Problema Superficial]."
-- Explique brevemente (1 frase curta) por que isso acontece.
-- E termine com esta PERGUNTA EXATA: "A análise está completa. O problema não é você, é esse padrão neuroquímico. Eu tenho o Protocolo exato para corrigir isso. Quer acessar a solução?"
-- Botões:  <<Sim, quero a solução>>
-
-Fase 3: O Dossiê (O Grande Final)
-- Se o usuário disser "Sim" (ou algo parecido), responda:
-  "Ok. Prepare-se. Vou gerar seu Dossiê Completo agora. Ele contém as 2 Raízes do problema e a solução para eliminar seu Sabotador."
-- E IMEDIATAMENTE no final desta mensagem, coloque APENAS a tag: [FIM_DA_SESSAO]
-- NÃO escreva mais nada depois da tag.
-- Termine a sessão aqui. NÃO FAÇA MAIS PERGUNTAS.
-- Não fale as raizes ou o nome do sabotador aqui. Deixe ele curioso e diga que para ter acesso tem que desbloquear nosso plano. Apenas gere a tag para o paywall.`,
-            isLocked: false 
+Fase 1: Faça apenas 2 ou 3 perguntas curtas (uma por vez) para entender o problema dele (Procrastinação, Ansiedade, Vício, etc).
+Fase 2: Após as respostas, DÊ UM NOME CRIATIVO E IMPACTANTE AO SABOTADOR dele (ex: "O Perfeccionista Paralisado", "O Dopamina Junkie", "O Procrastinador Ansioso").
+Fase 3: Diga exatamente esta frase final: "Identifiquei seu padrão. Você está preso no ciclo do [NOME DO SABOTADOR]. Tenho o antídoto químico exato para isso."
+Fase 4: IMEDIATAMENTE após essa frase, coloque a tag: [FIM_DA_SESSAO]`
         },
+        
+        'Faca na Caveira': {
+            title: "Faca na Caveira",
+            subtitle: "Quebrando inércia...",
+            typewriterExamples: ["carregando protocolo...", "preparando dopamina...", "vamos começar."],
+            
+            // ESTRATÉGIA 3: A "AMOSTRA GRÁTIS" QUE TRAVA NO MOMENTO DO COMPROMISSO
+            systemPrompt: `Você é o Sargento Synapse.
+OBJETIVO: Fazer o usuário começar uma tarefa AGORA.
+ESTILO: Militar, energético, imperativo. Curto.
+
+1. Pergunte: "Qual a única tarefa que você precisa matar agora? Responda em poucas palavras."
+2. Aguarde a resposta do usuário.
+3. Quando ele responder a tarefa, diga: "Entendido. A missão foi aceita. Vamos ativar o Protocolo de Hiperfoco de 2 Minutos para iniciar [TAREFA DO USUARIO]. Prepare-se." e IMEDIATAMENTE coloque a tag: [BLOQUEIO_PRO]`
+        }
     };
 
+    // Estado Inicial
+    let currentTool = 'Diagnostico';
     let conversationHistory = [];
 
-    // --- NAVEGAÇÃO ---
-    window.switchTab = function(tab) {
-        if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
-        if(tabProtocolo) { tabProtocolo.classList.remove('active'); tabProtocolo.style.color = '#666'; }
+    // --- FUNÇÃO GLOBAL DE SELEÇÃO DE FERRAMENTA ---
+    window.selectTool = function(toolKey) {
+        currentTool = toolKey;
         
-        if(viewChat) viewChat.classList.add('hidden');
-        if(viewProtocolo) viewProtocolo.classList.add('hidden');
+        // 1. Atualiza Visual da Sidebar
+        document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
+        const activeToolBtn = document.getElementById('tool' + toolKey);
+        if(activeToolBtn) activeToolBtn.classList.add('active');
 
-        if (tab === 'chat') {
-            if(viewChat) viewChat.classList.remove('hidden');
-            if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
-        } else {
-            if(viewProtocolo) viewProtocolo.classList.remove('hidden');
-            if(tabProtocolo) { tabProtocolo.classList.add('active'); tabProtocolo.style.color = '#CC0000'; }
-            renderCalendar(); 
+        // 2. Reseta o Chat Completo
+        messagesContainer.innerHTML = '';
+        const tool = toolDefinitions[toolKey];
+        
+        // 3. Reseta Histórico com o Novo Prompt
+        conversationHistory = [{ role: "system", content: tool.systemPrompt }];
+        
+        // 4. Recria Cabeçalho
+        createHeader(tool.typewriterExamples);
+
+        // 5. Mensagem Inicial Específica
+        if (toolKey === 'Diagnostico') {
+             addMessage("Olá. O que está travando a sua vida hoje? <<Procrastinação>> <<Fadiga>> <<Ansiedade>> <<Vício>>", false);
+        } else if (toolKey === 'Faca na Caveira') {
+             addMessage("Sargento Synapse na escuta. Qual a missão (tarefa) que você está adiando? Digite abaixo:", false);
         }
-    }
-
-    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
-    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-
-    // --- FUNÇÃO DE REDIRECIONAMENTO (OFERTA DIRETA) ---
-    function redirectToSales() {
-        window.location.href = "index.html#planos"; 
-    }
-
-    // --- RESET DO CHAT (COM BOTÕES INICIAIS DE VOLTA) ---
-    function resetChat() {
-        // 1. Limpa a tela
-        messagesContainer.innerHTML = ''; 
         
-        // 2. Recria o cabeçalho (Typewriter)
+        // 6. Habilita input e foca
+        chatInput.disabled = false;
+        chatInput.value = '';
+        chatInput.placeholder = "Digite aqui...";
+        
+        // 7. UI Mobile
+        if(sidebar) { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+        switchTab('chat');
+    }
+
+    function createHeader(phrases) {
         const headerHTML = `
-            <div class="w-full text-center mb-6 p-4">
+            <div class="w-full text-center mb-6 p-4 fade-in">
                 <p id="chatSubtitle" class="text-gray-400 text-sm">
                     <span id="typewriter-text" class="text-brutal-red font-medium"></span>
                     <span class="animate-pulse">|</span>
@@ -127,25 +104,7 @@ Fase 3: O Dossiê (O Grande Final)
             </div>
         `;
         messagesContainer.insertAdjacentHTML('afterbegin', headerHTML);
-
-        // 3. Reseta memória
-        conversationHistory = [{ 
-            role: "system", 
-            content: toolDefinitions['Diagnostico'].systemPrompt 
-        }];
-        
-        // 4. Reseta Input
-        chatInput.disabled = false;
-        chatInput.value = '';
-        chatInput.placeholder = "Digite aqui...";
-        
-        // 5. Manda a mensagem inicial COM OS BOTÕES (CORRIGIDO)
-        // Isso garante que os botões apareçam logo de cara
-        const welcomeText = "Olá! Estou aqui para ajudar. O que está travando a sua vida hoje? <<Procrastinação>> <<Fadiga Mental>> <<Ansiedade>> <<Vício>> <<Outro>>";
-        addMessage(welcomeText, false); 
-        
-        // 6. Inicia o efeito de digitação
-        startTypewriter(toolDefinitions['Diagnostico'].typewriterExamples);
+        startTypewriter(phrases);
     }
 
     // --- LÓGICA DO CHAT ---
@@ -157,12 +116,14 @@ Fase 3: O Dossiê (O Grande Final)
 
         let cleanMessage = message.replace(buttonRegex, '').trim();
         
-        // Limpeza de "sujeira" da IA
-        cleanMessage = cleanMessage.replace(/\|/g, ''); 
-        cleanMessage = cleanMessage.replace(/,,,/g, ''); 
-        
+        // Detecta Gatilhos Especiais
         const isSalesTrigger = cleanMessage.includes('[FIM_DA_SESSAO]');
-        cleanMessage = cleanMessage.replace('[FIM_DA_SESSAO]', '').trim();
+        const isProLockTrigger = cleanMessage.includes('[BLOQUEIO_PRO]');
+
+        // Limpa as tags do texto visível
+        cleanMessage = cleanMessage.replace('[FIM_DA_SESSAO]', '').replace('[BLOQUEIO_PRO]', '').trim();
+        
+        // Formatação
         cleanMessage = cleanMessage.replace(/\{/g, '<strong>').replace(/\}/g, '</strong>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
 
         if (cleanMessage) {
@@ -173,71 +134,43 @@ Fase 3: O Dossiê (O Grande Final)
             messagesContainer.appendChild(div);
         }
 
-        // RENDERIZA OS BOTÕES
-        if (buttons.length > 0 && !isUser && !isSalesTrigger) {
+        // Renderiza Botões (apenas se não for fim de sessão)
+        if (buttons.length > 0 && !isUser && !isSalesTrigger && !isProLockTrigger) {
             const btnContainer = document.createElement('div');
             btnContainer.className = 'quick-reply-container';
             buttons.forEach(btnText => {
-                if(btnText.toUpperCase() !== "OPÇÃO" && btnText.trim() !== "") { 
-                    const btn = document.createElement('button');
-                    btn.className = 'cyber-btn';
-                    btn.innerText = btnText;
-                    btn.onclick = () => sendQuickReply(btnText);
-                    btnContainer.appendChild(btn);
-                }
+                const btn = document.createElement('button');
+                btn.className = 'cyber-btn';
+                btn.innerText = btnText;
+                btn.onclick = () => sendQuickReply(btnText);
+                btnContainer.appendChild(btn);
             });
             messagesContainer.appendChild(btnContainer);
         }
 
-        // --- GATILHO DE VENDA FINAL ---
+        // --- GATILHOS DE CONVERSÃO ---
+        
+        // 1. ESTRATÉGIA 2: LOADING FAKE + VENDA
         if (isSalesTrigger && !isUser) {
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'w-full mt-4 mb-8 animate-pulse';
-            saleContainer.innerHTML = `
-                <div class="bg-[#111] border border-red-900/50 rounded-xl p-6 text-center shadow-[0_0_20px_rgba(204,0,0,0.2)]">
-                    <div class="flex justify-center mb-4">
-                        <div class="w-12 h-12 rounded-full bg-red-900/20 flex items-center justify-center border border-red-500/30">
-                            <i class="fas fa-file-medical-alt text-xl text-[#CC0000]"></i>
-                        </div>
-                    </div>
-                    <p class="text-white text-sm mb-2 font-bold uppercase tracking-wide">Diagnóstico Concluído</p>
-                    <p class="text-gray-400 text-xs mb-6 leading-relaxed">
-                        O mapeamento do seu padrão comportamental está pronto. O Dossiê Técnico e a estratégia de correção foram gerados.
-                    </p>
-                    
-                    <a href="index.html#planos" class="block w-full py-3.5 bg-[#CC0000] hover:bg-red-700 text-white font-bold rounded-lg text-xs uppercase tracking-[0.15em] transition-all shadow-lg shadow-red-900/30 no-underline">
-                        ACESSAR MEU DOSSIÊ
-                    </a>
-                </div>
-            `;
-            messagesContainer.appendChild(saleContainer);
-            
-            chatInput.disabled = true;
-            chatInput.placeholder = "Análise finalizada.";
+            triggerFakeLoading(messagesContainer, chatInput);
+        }
+
+        // 2. ESTRATÉGIA 3: BLOQUEIO PRO (Amostra Grátis)
+        if (isProLockTrigger && !isUser) {
+            triggerProLock(messagesContainer, chatInput);
         }
         
-        const scroller = document.querySelector('.chat-messages');
-        if(scroller) setTimeout(() => { scroller.scrollTop = scroller.scrollHeight; }, 50);
+        scrollToBottom();
     }
 
     function sendQuickReply(text) {
         const lastBtns = messagesContainer.querySelector('.quick-reply-container:last-child');
-        
-        if (text.toLowerCase().includes('outro')) {
-            if(lastBtns) lastBtns.style.display = 'none';
-            addMessage("Entendi. Descreva brevemente o que você sente:", false);
-            chatInput.value = "";
-            chatInput.placeholder = "Digite aqui...";
-            chatInput.focus();
-            return;
-        }
-
         if(lastBtns) lastBtns.style.display = 'none';
         chatInput.value = text;
         sendMessage();
     }
 
-   async function sendMessage() {
+    async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
 
@@ -262,48 +195,192 @@ Fase 3: O Dossiê (O Grande Final)
             
             if(!reply) throw new Error("Vazio");
 
-            // Garante botões genéricos se a IA falhar em criar contexto
-            let finalReply = reply;
-            if (!reply.includes('<<') && !reply.includes('[FIM_DA_SESSAO]')) {
-                finalReply += " <<Sim>> <<Não>> <<Talvez>>";
-            }
-
-            addMessage(finalReply, false);
             conversationHistory.push({ role: "assistant", content: reply });
+            addMessage(reply, false);
 
         } catch (e) {
-            // MODO DE SEGURANÇA
+            // Fallback de segurança
             setTimeout(() => {
-                let fakeReply = "";
-                
-                if (conversationHistory.length <= 3) {
-                    fakeReply = "Minha conexão oscilou. Pode repetir?";
-                } else if (conversationHistory.length <= 5) {
-                    fakeReply = "Minha conexão oscilou. Pode repetir?";
-                } else {
-                    fakeReply = "Análise concluída. O problema não é falta de vontade, é um padrão neuroquímico. Tenho o Protocolo para corrigir isso. Quer acessar? [FIM_DA_SESSAO]";
-                }
-                
+                const fakeReply = "Conexão instável. Tente novamente.";
                 addMessage(fakeReply, false);
-                conversationHistory.push({ role: "assistant", content: fakeReply });
-                
-                // REMOVIDO O chatInput.focus() DAQUI
-                if (!fakeReply.includes('[FIM_DA_SESSAO]')) {
-                    chatInput.disabled = false;
-                    // chatInput.focus(); -> COMENTADO PARA NÃO ABRIR TECLADO
-                }
+                chatInput.disabled = false;
             }, 1000);
-            return;
-        } 
+        }
         
-        const lastMsg = conversationHistory[conversationHistory.length - 1].content;
-        if (!lastMsg.includes('[FIM_DA_SESSAO]')) {
+        // Reabilita input se não houve gatilho de bloqueio na resposta (verificado dentro de addMessage)
+        const lastMsg = conversationHistory[conversationHistory.length - 1]?.content || "";
+        if (!lastMsg.includes('[FIM_DA_SESSAO]') && !lastMsg.includes('[BLOQUEIO_PRO]')) {
             chatInput.disabled = false;
-            
+            // chatInput.focus(); // Opcional no mobile para não pular teclado
         }
     }
 
-    // --- CALENDÁRIO E HÁBITOS ---
+    // --- FUNÇÕES ESPECIAIS DE CONVERSÃO ---
+
+    // ESTRATÉGIA 2: LOADING FAKE (Valor Percebido)
+    function triggerFakeLoading(container, input) {
+        input.disabled = true;
+        input.placeholder = "Gerando Dossiê...";
+
+        const loaderId = 'loader-' + Date.now();
+        const loaderHTML = `
+            <div id="${loaderId}" class="w-full mt-4 mb-8 fade-in">
+                <div class="bg-[#111] border border-white/10 rounded-xl p-6 text-center shadow-lg">
+                    <p class="text-gray-400 text-xs mb-3 font-mono-code animate-pulse" id="loaderText${loaderId}">> Mapeando padrões de sintaxe...</p>
+                    <div class="w-full bg-gray-900 h-1.5 rounded-full overflow-hidden border border-white/5">
+                        <div class="bg-red-600 h-full w-0 transition-all duration-[3000ms] ease-out shadow-[0_0_10px_rgba(220,38,38,0.7)]" id="loaderBar${loaderId}"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', loaderHTML);
+        const bar = document.getElementById(`loaderBar${loaderId}`);
+        const text = document.getElementById(`loaderText${loaderId}`);
+        
+        scrollToBottom();
+
+        // Sequência de Animação
+        setTimeout(() => { bar.style.width = "45%"; }, 100);
+        setTimeout(() => { text.innerText = "> Cruzando dados neuroquímicos..."; }, 1500);
+        setTimeout(() => { bar.style.width = "80%"; text.innerText = "> Identificando gatilhos de falha..."; }, 2200);
+        setTimeout(() => { bar.style.width = "100%"; text.innerText = "> Dossiê Gerado."; }, 3200);
+
+        // Troca pelo Card de Venda
+        setTimeout(() => {
+            const loaderEl = document.getElementById(loaderId);
+            if(loaderEl) loaderEl.remove();
+            renderSalesCard(container);
+        }, 3800);
+    }
+
+    // ESTRATÉGIA 4: CARD DE VENDA COM BLUR (Curiosidade)
+    function renderSalesCard(container) {
+        const saleHTML = `
+            <div class="w-full mt-4 mb-8 animate-fade-in-up">
+                <div class="bg-[#0f0f0f] border border-red-900/50 rounded-xl p-6 text-center shadow-[0_0_25px_rgba(204,0,0,0.1)] relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-900 via-red-600 to-red-900"></div>
+                    
+                    <div class="flex justify-center mb-3">
+                        <div class="w-10 h-10 rounded-full bg-red-900/20 flex items-center justify-center border border-red-500/30">
+                            <i class="fas fa-file-medical-alt text-red-500"></i>
+                        </div>
+                    </div>
+
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider mb-1">Dossiê Completo Gerado</h3>
+                    <p class="text-gray-500 text-[10px] mb-4">Estratégia personalizada pronta para acesso.</p>
+                    
+                    <!-- BLUR SEDUTOR -->
+                    <div class="text-left bg-black/40 border border-white/5 p-4 rounded mb-5 relative select-none overflow-hidden cursor-pointer" onclick="window.location.href='index.html#planos'">
+                        <div class="filter blur-[4px] opacity-50 text-[10px] text-gray-400 group-hover:blur-[2.5px] transition-all duration-500 leading-relaxed">
+                            <strong>1. Gatilho Primário:</strong> O padrão identificado mostra uma sobrecarga de dopamina barata às...<br>
+                            <strong>2. Ação Corretiva:</strong> Aplicar o jejum de telas por 15 minutos logo após...<br>
+                            <strong>3. Ferramenta Sugerida:</strong> Utilizar o "Faca na caveira" sempre que sentir...
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/20 to-transparent">
+                            <div class="bg-black/80 backdrop-blur-sm border border-red-500/30 px-3 py-1.5 rounded-full flex items-center gap-2">
+                                <i class="fas fa-lock text-red-500 text-xs"></i>
+                                <span class="text-[9px] font-bold text-white uppercase tracking-wider">Conteúdo Bloqueado</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="index.html#planos" class="block w-full py-3.5 bg-[#CC0000] hover:bg-red-700 text-white font-bold rounded-lg text-xs uppercase tracking-[0.15em] transition-all shadow-lg shadow-red-900/20 active:scale-[0.98]">
+                        DESBLOQUEAR AGORA
+                    </a>
+                    <p class="text-[9px] text-gray-600 mt-2">Garantia de 7 dias ou seu dinheiro de volta.</p>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', saleHTML);
+        scrollToBottom();
+    }
+
+    // ESTRATÉGIA 3: BLOQUEIO PRO (Perda/Compromisso)
+    function triggerProLock(container, input) {
+        input.disabled = true;
+        input.placeholder = "Acesso PRO Necessário.";
+        
+        const lockHTML = `
+            <div class="w-full mt-4 mb-4 animate-fade-in-up">
+                <div class="bg-red-900/10 border border-red-500/30 rounded-lg p-4 relative overflow-hidden">
+                     <div class="absolute -right-4 -top-4 w-16 h-16 bg-red-500/10 rounded-full blur-xl"></div>
+                    
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-ban text-red-500 mt-1"></i>
+                        <div>
+                            <p class="font-bold text-xs text-red-200 mb-1">Acesso Negado ao Protocolo</p>
+                            <p class="text-xs text-gray-400 leading-relaxed">
+                                Você já definiu a missão. Não pare agora. O "Faca na Caveira" é uma ferramenta exclusiva do plano PRO.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <a href="index.html#planos" class="inline-flex items-center gap-2 mt-3 text-[10px] font-bold text-white bg-red-600 px-4 py-2 rounded uppercase hover:bg-red-500 transition shadow-lg shadow-red-900/20">
+                        Liberar Acesso Imediato <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', lockHTML);
+        scrollToBottom();
+    }
+
+    // --- UTILITÁRIOS ---
+    function scrollToBottom() {
+        const scroller = document.querySelector('.chat-messages');
+        if(scroller) setTimeout(() => { scroller.scrollTop = scroller.scrollHeight; }, 50);
+    }
+
+    function startTypewriter(phrases) {
+        const el = document.getElementById('typewriter-text');
+        if(!el) return;
+        let pIndex = 0, cIndex = 0, isDeleting = false;
+        
+        // Limpa intervalo anterior se houver (para evitar sobreposição)
+        if(window.typewriterTimeout) clearTimeout(window.typewriterTimeout);
+
+        function type() {
+            const current = phrases[pIndex];
+            if (!current) return;
+            
+            el.textContent = current.substring(0, isDeleting ? cIndex - 1 : cIndex + 1);
+            cIndex += isDeleting ? -1 : 1;
+            
+            let speed = isDeleting ? 30 : 80;
+
+            if(!isDeleting && cIndex === current.length) { 
+                isDeleting = true; 
+                speed = 2000; 
+            } else if(isDeleting && cIndex === 0) { 
+                isDeleting = false; 
+                pIndex = (pIndex + 1) % phrases.length; 
+                speed = 500; 
+            }
+            
+            window.typewriterTimeout = setTimeout(type, speed);
+        }
+        type();
+    }
+
+    // Navegação (Abas)
+    window.switchTab = function(tab) {
+        if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
+        if(tabProtocolo) { tabProtocolo.classList.remove('active'); tabProtocolo.style.color = '#666'; }
+        
+        viewChat.classList.add('hidden');
+        viewProtocolo.classList.add('hidden');
+
+        if (tab === 'chat') {
+            viewChat.classList.remove('hidden');
+            if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
+        } else {
+            viewProtocolo.classList.remove('hidden');
+            if(tabProtocolo) { tabProtocolo.classList.add('active'); tabProtocolo.style.color = '#CC0000'; }
+            renderCalendar(); 
+        }
+    }
+
+    // Calendário (Simples para Demo)
     function renderCalendar() {
         const grid = document.getElementById('realCalendarGrid');
         if(!grid) return;
@@ -321,70 +398,18 @@ Fase 3: O Dossiê (O Grande Final)
             } else if (i === today) { dayEl.classList.add('active'); }
             else { 
                 dayEl.classList.add('locked'); 
-                dayEl.addEventListener('click', redirectToSales); 
+                dayEl.addEventListener('click', () => window.location.href="index.html#planos"); 
             }
             grid.appendChild(dayEl);
         }
     }
 
-    window.toggleHabit = function(el) {
-        el.classList.toggle('checked');
-        const check = el.querySelector('.habit-checkbox i');
-        if(check.classList.contains('opacity-0')) { check.classList.remove('opacity-0'); if(navigator.vibrate) navigator.vibrate(30); } 
-        else { check.classList.add('opacity-0'); }
-    }
-
-    const btnCheckIn = document.getElementById('btnCheckIn');
-    if (btnCheckIn) {
-        const todayStr = new Date().toDateString();
-        if(localStorage.getItem('lastCheckInDate') === todayStr) {
-            btnCheckIn.classList.add('btn-checkin-active');
-            btnCheckIn.innerHTML = '<i class="fas fa-check"></i> Vitória Registrada!';
-        }
-        btnCheckIn.addEventListener('click', () => {
-            if (btnCheckIn.classList.contains('btn-checkin-active')) return;
-            btnCheckIn.classList.add('btn-checkin-active');
-            btnCheckIn.innerHTML = '<i class="fas fa-check"></i> Vitória Registrada!';
-            localStorage.setItem('lastCheckInDate', todayStr);
-            if (navigator.vibrate) navigator.vibrate([50]);
-        });
-    }
-
-    // --- TYPEWRITER ---
-    function startTypewriter(phrases) {
-        const el = document.getElementById('typewriter-text');
-        if(!el) return;
-        let pIndex = 0, cIndex = 0, isDeleting = false;
-        function type() {
-            const current = phrases[pIndex];
-            el.textContent = current.substring(0, isDeleting ? cIndex - 1 : cIndex + 1);
-            cIndex += isDeleting ? -1 : 1;
-            if(!isDeleting && cIndex === current.length) { isDeleting = true; setTimeout(type, 2000); }
-            else if(isDeleting && cIndex === 0) { isDeleting = false; pIndex = (pIndex + 1) % phrases.length; setTimeout(type, 500); }
-            else setTimeout(type, isDeleting ? 50 : 100);
-        }
-        type();
-    }
-
-    // --- LISTENERS ---
+    // Listeners
     if(sendBtn) sendBtn.addEventListener('click', sendMessage);
     if(chatInput) chatInput.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-    if(menuBtn) menuBtn.addEventListener('click', openSidebar);
-    if(overlay) overlay.addEventListener('click', closeSidebar);
+    if(menuBtn) menuBtn.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+    if(overlay) overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
     
-    document.querySelectorAll('.tool-item').forEach(i => i.addEventListener('click', (e) => { 
-        if(e.currentTarget.classList.contains('is-locked')) {
-            redirectToSales();
-        } else {
-            resetChat(); 
-            switchTab('chat');
-            closeSidebar(); 
-        }
-    }));
-    
-    const btnLockedStats = document.getElementById('btnLockedStats');
-    if(btnLockedStats) btnLockedStats.addEventListener('click', redirectToSales);
-
-    // INICIALIZAÇÃO (IMPORTANTE)
-    resetChat();
+    // INICIALIZAÇÃO
+    selectTool('Diagnostico');
 });

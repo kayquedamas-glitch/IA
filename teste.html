@@ -3,6 +3,7 @@
 <head>
 <link rel="shortcut icon" href="assets/icone preto.png" type="image/jpeg">
 <link rel="icon" href="assets/icone preto.png" type="image/jpeg">
+    <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -18,57 +19,17 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1"
     /></noscript>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
     <title>Synapse - Demonstração</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
     <link rel="stylesheet" href="css/app.css"> 
-    
-    <style>
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Ajustes finos para imitar o CSS do PRO na Sidebar */
-        .sidebar { background-color: #111; border-right: 1px solid #222; }
-        .tool-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: #a3a3a3; transition: all 0.2s; cursor: pointer; }
-        .tool-item:hover { background-color: #1a1a1a; color: white; }
-        .tool-item.active { background-color: #1f1f1f; color: #CC0000; font-weight: 600; border-left: 3px solid #CC0000; }
-        .tool-item.is-locked { opacity: 0.6; justify-content: space-between; }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.5s ease-out forwards;
-        }
-    </style>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyA0CxDk9z4RZnuv4BV04TjP252mXuny_wE",
-            authDomain: "synapse-e14d0.firebaseapp.com",
-            projectId: "synapse-e14d0",
-            storageBucket: "synapse-e14d0.firebasestorage.app",
-            messagingSenderId: "945597083388",
-            appId: "1:945597083388:web:b3ab20432ed21696837179",
-            measurementId: "G-XFDQ7B4BTC"
-        };
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
 </head>
 
 <body class="h-full bg-black text-white font-inter">
@@ -77,6 +38,7 @@
 
     <div class="app-layout">
 
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="sidebar p-5 flex flex-col h-full">
             <div class="flex justify-between items-center mb-10">
                 <div class="flex items-center gap-3">
@@ -87,53 +49,57 @@
             <nav class="flex flex-col gap-1 w-full mb-8">
                 <p class="text-[#333] text-[10px] font-bold uppercase tracking-widest pl-3 mb-3">Arsenal Disponível</p>
                 
-                <a id="toolDiagnostico" class="tool-item active">
+                <!-- FERRAMENTA 1: DIAGNÓSTICO (ABERTA) -->
+                <div id="toolDiagnostico" class="tool-item active" onclick="selectTool('Diagnostico')">
                     <i data-lucide="activity" class="w-5 h-5"></i>
                     <span>Diagnóstico</span>
-                </a>
+                </div>
                 
-                <a id="toolAtivador" class="tool-item is-locked">
+                <!-- FERRAMENTA 2: Faca na caveira (ESTRATÉGIA 3: AMOSTRA GRÁTIS - DESBLOQUEADA VISUALMENTE) -->
+                <div id="toolFacanaCaveira" class="tool-item" onclick="selectTool('Faca na Caveira')">
                     <div class="flex items-center gap-3">
                         <i data-lucide="zap" class="w-5 h-5"></i>
-                        <span>O Ativador</span>
+                        <span>Faca na Caveira</span>
                     </div>
-                    <i data-lucide="lock" class="w-3 h-3 text-gray-600"></i> 
-                </a>
+                    <!-- Ícone de cadeado removido para parecer liberado -->
+                </div>
 
-                <a id="toolMentor" class="tool-item is-locked">
+                <!-- FERRAMENTAS BLOQUEADAS (CURIOSIDADE) -->
+                <div id="toolMentor" class="tool-item is-locked" onclick="window.location.href='index.html#planos'">
                     <div class="flex items-center gap-3">
                         <i data-lucide="brain-circuit" class="w-5 h-5"></i>
                         <span>O Mentor</span>
                     </div>
                     <i data-lucide="lock" class="w-3 h-3 text-gray-600"></i> 
-                </a>
+                </div>
 
-                <a id="toolMestre" class="tool-item is-locked">
+                <div id="toolMestre" class="tool-item is-locked" onclick="window.location.href='index.html#planos'">
                     <div class="flex items-center gap-3">
                         <i data-lucide="hammer" class="w-5 h-5"></i>
                         <span>Ferreiro</span>
                     </div>
                     <i data-lucide="lock" class="w-3 h-3 text-gray-600"></i> 
-                </a>
+                </div>
             </nav>
 
             <div class="flex-grow"></div>
             
             <div class="sidebar-upgrade-box mt-auto pt-6 space-y-3">
-                <div class="p-4 bg-gradient-to-b from-[#1a1a1a] to-black border border-[#333] rounded-xl text-center relative overflow-hidden">
+                <div class="p-4 bg-gradient-to-b from-[#1a1a1a] to-black border border-[#333] rounded-xl text-center relative overflow-hidden group cursor-pointer" onclick="window.location.href='index.html#planos'">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
                     <p class="text-xs text-gray-300 mb-3 font-medium">Desbloqueie o Arsenal Completo</p>
-                    <a href="index.html#planos" onclick="fbq('track', 'InitiateCheckout');"
-                        class="block w-full bg-[#CC0000] text-white font-bold py-3 px-4 rounded-lg hover:bg-red-700 transition uppercase text-[10px] tracking-widest shadow-lg shadow-red-900/30">
+                    <button class="block w-full bg-[#CC0000] group-hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition uppercase text-[10px] tracking-widest shadow-lg shadow-red-900/30">
                         Liberar Acesso PRO
-                    </a>
+                    </button>
                 </div>
             </div>
         </aside>
 
         <main class="chat-area relative">
 
+            <!-- VIEW 1: CHAT -->
             <div id="viewChat" class="view-section h-full flex flex-col">
+                <!-- Header Mobile -->
                 <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/90 backdrop-blur-md border-b border-white/5 z-30 flex items-center px-4 justify-between">
                     <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2">
                         <i data-lucide="menu" class="w-5 h-5"></i>
@@ -144,12 +110,7 @@
 
                 <div class="chat-messages flex-grow pt-16"> 
                     <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col">
-                        <div class="w-full text-center mb-6 p-4">
-                            <p id="chatSubtitle" class="text-gray-400 text-sm">
-                                <span id="typewriter-text" class="text-brutal-red font-medium"></span>
-                                <span class="animate-pulse">|</span>
-                            </p>
-                        </div>
+                        <!-- Conteúdo injetado via app.js -->
                     </div>
                 </div>
 
@@ -165,10 +126,11 @@
                 </div>
             </div>
 
+            <!-- VIEW 2: JORNADA (PROTOCOLOS) -->
             <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-32 pt-20">
-                
                 <div class="max-w-md mx-auto">
                     
+                    <!-- Cabeçalho Jornada -->
                     <div class="flex items-center justify-between mb-8">
                         <div>
                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Status Neuroquímico</p>
@@ -179,13 +141,14 @@
                         </div>
                         <div class="text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <span class="text-2xl font-black text-white" id="streakDisplay">0</span>
+                                <span class="text-2xl font-black text-white">0</span>
                                 <i data-lucide="flame" class="w-5 h-5 text-red-500 fill-red-500 animate-pulse"></i>
                             </div>
                             <p class="text-[9px] text-gray-500 uppercase tracking-wider">Dias no Controle</p>
                         </div>
                     </div>
 
+                    <!-- Calendário Simulado -->
                     <div class="bg-[#0A0A0A] border border-[#222] rounded-2xl p-5 mb-8 shadow-lg relative overflow-hidden">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
@@ -193,15 +156,14 @@
                             </h3>
                             <span class="text-[9px] bg-[#111] border border-[#333] px-2 py-1 rounded text-gray-400">Meta: 30 Dias</span>
                         </div>
+                        <div class="calendar-grid" id="realCalendarGrid"></div>
                         
-                        <div class="calendar-grid" id="realCalendarGrid">
-                            </div>
-
-                        <button id="btnCheckIn" class="mt-6 w-full py-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-gray-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2">
-                            <i class="fas fa-check-circle"></i> Registrar Vitória de Hoje
+                        <button onclick="window.location.href='index.html#planos'" class="mt-6 w-full py-3 rounded-xl bg-[#CC0000] text-white font-bold text-xs uppercase tracking-widest hover:bg-red-700 transition-all shadow-[0_0_15px_rgba(204,0,0,0.2)] flex items-center justify-center gap-2">
+                            <i class="fas fa-lock"></i> Desbloquear Check-in
                         </button>
                     </div>
 
+                    <!-- Lista de Hábitos (Bloqueada) -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-bold text-white">Protocolo Matinal</h3>
@@ -209,19 +171,15 @@
                         </div>
 
                         <div class="habit-list">
-                            <div class="habit-item unlocked" onclick="toggleHabit(this)">
+                            <!-- Hábito 1 (Amostra) -->
+                            <div class="habit-item unlocked" onclick="this.classList.toggle('checked')">
                                 <div class="flex items-center">
                                     <div class="habit-checkbox"><i class="fas fa-check text-black text-[10px] opacity-0"></i></div>
                                     <span class="text-sm text-gray-300">Hidratação (500ml)</span>
                                 </div>
                             </div>
-                            <div class="habit-item unlocked" onclick="toggleHabit(this)">
-                                <div class="flex items-center">
-                                    <div class="habit-checkbox"><i class="fas fa-check text-black text-[10px] opacity-0"></i></div>
-                                    <span class="text-sm text-gray-300">Arrumar a Cama</span>
-                                </div>
-                            </div>
-                            <div class="habit-item locked" onclick="redirectToSales()">
+                            <!-- Hábito 2 (Bloqueado) -->
+                            <div class="habit-item locked" onclick="window.location.href='index.html#planos'">
                                 <div class="flex items-center">
                                     <div class="habit-checkbox border-red-900/50 flex items-center justify-center">
                                         <i data-lucide="lock" class="w-3 h-3 text-red-700"></i>
@@ -231,64 +189,17 @@
                                         <span class="text-[9px] text-red-900 uppercase font-bold tracking-wider">Versão PRO</span>
                                     </div>
                                 </div>
-                                <i data-lucide="lock" class="w-3 h-3 text-gray-700"></i>
+                                <i data-lucide="chevron-right" class="w-3 h-3 text-gray-700"></i>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="relative mt-8 pt-6 border-t border-[#222]">
-                        <div class="flex items-center justify-between mb-4 opacity-50">
-                            <h3 class="text-sm font-bold text-white">Neuro-Dados</h3>
-                            <i data-lucide="lock" class="w-3 h-3 text-gray-500"></i>
-                        </div>
-                        <div class="relative" id="btnLockedStats">
-                             <div class="absolute inset-0 z-10 flex items-center justify-center">
-                                <div class="bg-black/80 backdrop-blur border border-red-900/40 px-4 py-2 rounded-lg cursor-pointer hover:bg-black/90 transition">
-                                    <span class="text-[10px] text-red-500 font-bold uppercase tracking-widest flex gap-2 items-center">
-                                        <i data-lucide="lock" class="w-3 h-3"></i> Versão PRO
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3 filter blur-[4px] opacity-40 select-none">
-                                <div class="bg-[#111] h-20 rounded-xl"></div>
-                                <div class="bg-[#111] h-20 rounded-xl"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div id="viewLocked" class="view-section h-full hidden flex flex-col items-center justify-center p-6 text-center bg-[#050505] relative overflow-hidden">
-                <div class="absolute inset-0 bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-                <div class="max-w-md relative z-10 animate-fade-in-up">
-                    <div class="w-20 h-20 rounded-2xl bg-[#111] border border-red-900/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(204,0,0,0.15)]">
-                        <i data-lucide="lock" class="w-8 h-8 text-[#CC0000]"></i>
-                    </div>
-
-                    <h2 class="text-2xl md:text-3xl font-black uppercase text-white mb-4 tracking-tight">
-                        Por que você <span class="text-[#CC0000]">ainda</span> não mudou?
-                    </h2>
-
-                    <div class="space-y-4 text-gray-400 text-sm md:text-base leading-relaxed mb-8">
-                        <p>Vou te contar um segredo brutal: <strong>O cérebro humano ignora o que é de graça.</strong></p>
-                        <p>Enquanto você não tiver "Pele em Risco", sua mente vai continuar achando desculpas para procrastinar.</p>
-                        <p class="text-white font-bold border-l-2 border-[#CC0000] pl-4 italic">"Você só tem disciplina quando a dor de desperdiçar seu dinheiro é maior que a dor de fazer o trabalho."</p>
-                    </div>
-
-                    <a href="index.html#planos" class="group relative w-full py-4 bg-[#CC0000] rounded-xl text-white font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(204,0,0,0.4)] border-b-4 border-[#8a0000]">
-                        <span>Assumir o Compromisso</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
-                    
-                    <p class="mt-4 text-[10px] text-gray-600 uppercase tracking-widest">Acesso Vitalício por preço de café.</p>
                 </div>
             </div>
 
         </main>
 
+        <!-- NAV MOBILE -->
         <nav class="bottom-nav md:hidden border-t border-[#1a1a1a]">
             <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')">
                 <i data-lucide="command" class="w-5 h-5 mb-1"></i>
@@ -301,31 +212,12 @@
         </nav>
         
     </div> 
+    
     <script src="js/app.js"></script>
     <script>
-        // Inicializa os ícones do Lucide após o carregamento da página
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            
-            // Re-executa caso haja troca de abas (opcional, mas seguro)
-            window.switchTab = (function(original) {
-                return function(tab) {
-                    original(tab);
-                    setTimeout(() => lucide.createIcons(), 50);
-                }
-            })(window.switchTab);
         });
     </script>
-    <script>
-    // Bloqueador de Botão Direito e Atalhos de Inspeção
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) { return false; } // F12
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){ return false; } // Ctrl+Shift+I
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){ return false; } // Ctrl+Shift+C
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){ return false; } // Ctrl+Shift+J
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){ return false; } // Ctrl+U
-    }
-</script>
 </body>
 </html>
