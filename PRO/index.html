@@ -209,12 +209,12 @@
         
     </div> 
 
-    <script src="script.js"></script>
-    <!-- Fallback para garantir que os ícones carreguem mesmo se o script.js demorar -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if(window.lucide) lucide.createIcons();
-        });
-    </script>
+<script type="module" src="js/main.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(window.lucide) lucide.createIcons();
+    });
+</script>
 </body>
 </html>
