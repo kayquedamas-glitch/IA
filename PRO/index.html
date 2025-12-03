@@ -62,9 +62,9 @@
                     <span>Diagnóstico</span>
                 </div>
                 
-                <div id="toolFacanaCaveira" class="tool-item" onclick="selectTool('Faca na Caveira')">
-                    <i data-lucide="skull" class="w-5 h-5"></i> <!-- Ícone alterado para Skull -->
-                    <span>Faca na Caveira</span>
+                <div id="toolAtivador" class="tool-item" onclick="selectTool('Ativador')">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    <span>O Ativador</span>
                 </div>
 
                 <div id="toolMentor" class="tool-item" onclick="selectTool('Mentor')">
@@ -216,16 +216,5 @@
             if(window.lucide) lucide.createIcons();
         });
     </script>
-    <script>
-    // Bloqueador de Botão Direito e Atalhos de Inspeção
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) { return false; } // F12
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){ return false; } // Ctrl+Shift+I
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){ return false; } // Ctrl+Shift+C
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){ return false; } // Ctrl+Shift+J
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){ return false; } // Ctrl+U
-    }
-</script>
 </body>
 </html>

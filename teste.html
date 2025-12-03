@@ -31,11 +31,25 @@
     <link rel="stylesheet" href="css/app.css">
     
     <style>
-        .tool-locked { opacity: 0.5; cursor: pointer; position: relative; justify-content: flex-start; }
-        .tool-locked:hover { opacity: 0.9; background-color: rgba(204, 0, 0, 0.05); border-left: 3px solid #333; }
-        .lock-icon { font-size: 0.75rem; color: #666; margin-left: auto; }
+        /* Ajustes Específicos do Tema Spotify */
+        .sidebar-spotify { background-color: #000000; }
+        .spotify-card { transition: background-color 0.3s ease; }
+        .spotify-card:hover { background-color: #1a1a1a; }
         
-        /* Animações Customizadas */
+        /* Marca D'água de Fundo */
+        .chat-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            opacity: 0.03; /* Muito sutil */
+            pointer-events: none;
+            z-index: 0;
+            filter: grayscale(100%);
+        }
+        
+        /* Animações */
         @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .animate-slide-in { animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -55,87 +69,141 @@
 
     <div class="app-layout">
 
-        <aside id="sidebar" class="sidebar p-5"> 
-            <div class="flex justify-between items-center mb-10"> 
-                <div class="flex items-center gap-3">
-                    <span class="text-lg font-semibold tracking-tight text-white">Synapse <span class="text-[10px] bg-white text-black px-1.5 py-0.5 rounded font-bold align-middle ml-1">DEMO</span></span>
-                </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-1">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-
-            <nav class="flex flex-col gap-1 w-full">
-                <p class="text-[#333] text-[10px] font-bold uppercase tracking-widest pl-3 mb-3">Arsenal Gratuito</p>
-                
-                <div id="toolDiagnostico" class="tool-item active" onclick="selectTool('Diagnostico')">
-                    <i data-lucide="activity" class="w-5 h-5"></i>
-                    <span>Diagnóstico</span>
-                </div>
-                
-                <p class="text-[#333] text-[10px] font-bold uppercase tracking-widest pl-3 mb-3 mt-6">Arsenal PRO (Bloqueado)</p>
-
-                <div id="toolFacanaCaveira" class="tool-item tool-locked" onclick="window.location.href='index.html#planos'">
-                    <i data-lucide="skull" class="w-5 h-5"></i>
-                    <span>Faca na Caveira</span>
-                    <i class="fas fa-lock lock-icon"></i>
-                </div>
-
-                <div id="toolMentor" class="tool-item tool-locked" onclick="window.location.href='index.html#planos'">
-                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
-                    <span>O Mentor</span>
-                    <i class="fas fa-lock lock-icon"></i>
-                </div>
-
-                <div id="toolMestre" class="tool-item tool-locked" onclick="window.location.href='index.html#planos'">
-                    <i data-lucide="hammer" class="w-5 h-5"></i>
-                    <span>Ferreiro</span>
-                    <i class="fas fa-lock lock-icon"></i>
-                </div>
-                
-                <div class="tool-item bg-red-900/10 border border-red-500/20 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all cursor-pointer mt-2" onclick="triggerPanicSequence()">
-                    <i data-lucide="triangle-alert" class="w-5 h-5"></i>
-                    <span>Botão do Pânico</span>
-                </div>
-            </nav>
-
-            <div class="flex-grow"></div>
-
-            <div class="mb-6 px-1">
-                <div onclick="window.location.href='index.html#planos'" class="w-full bg-gradient-to-b from-[#111] to-black border border-red-900/30 rounded-xl p-4 cursor-pointer hover:border-red-600 transition group relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
-                    <p class="text-xs text-gray-300 mb-2 font-medium">Desbloqueie todas as ferramentas</p>
-                    <button class="w-full bg-[#CC0000] text-white text-[10px] font-bold uppercase py-2 rounded shadow-lg group-hover:bg-red-700 transition">
-                        Acessar Plano PRO
+        <aside id="sidebar" class="sidebar sidebar-spotify border-r border-[#1a1a1a] flex flex-col h-full font-inter w-[280px]"> 
+            
+            <div class="p-6 bg-[#000] rounded-xl m-2 mb-0">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-2 text-white">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center p-1">
+                            <img src="assets/icone preto.png" alt="Logo" class="w-full h-full object-contain opacity-90 invert">
+                        </div>
+                        <span class="font-bold text-lg tracking-tight">Synapse</span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white transition">
+                        <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
+
+                <div class="space-y-1">
+                
+                 
+                </div>
             </div>
 
-            <div class="pt-4 border-t border-[#1a1a1a]">
-                <div class="flex items-center gap-3 px-2 opacity-50">
-                    <div class="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[#333] flex items-center justify-center font-medium text-xs text-gray-400">V</div>
-                    <div>
-                        <p class="text-xs font-medium text-gray-300">Visitante</p>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>
-                            <p class="text-[9px] text-gray-600">Modo Teste</p>
+            <div class="flex-grow px-2 overflow-y-auto m-2 bg-[#121212] rounded-xl relative">
+                <div class="p-4 sticky top-0 bg-[#121212] z-10 shadow-sm mb-2">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2 text-gray-400 hover:text-white transition cursor-pointer">
+                            <i data-lucide="library" class="w-6 h-6"></i>
+                            <span class="font-bold text-sm">Seu Arsenal</span>
                         </div>
+
+                    </div>
+                     <div class="flex gap-2 mt-4">
+                        <span class="bg-[#2a2a2a] text-white text-[10px] px-3 py-1.5 rounded-full font-medium cursor-pointer hover:bg-[#333] transition" onclick="selectTool('Diagnostico')">Ferramentas</span>
+
+                    </div>
+                </div>
+                
+                <div class="px-2 pb-4 space-y-1">
+                    
+                    <div onclick="selectTool('Diagnostico')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#1a1a1a] cursor-pointer group transition">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-800 to-blue-600 rounded flex items-center justify-center shadow-lg flex-shrink-0">
+                            <i data-lucide="activity" class="w-5 h-5 text-white fill-white"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-white font-bold text-sm truncate group-hover:text-green-400 transition">Diagnóstico Inicial</p>
+                            <p class="text-xs text-gray-400 truncate flex items-center gap-1">
+                                <span class="text-green-500">●</span> Sessão Ativa
+                            </p>
+                        </div>
+                    </div>
+
+                    <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#1a1a1a] cursor-pointer group transition opacity-60 hover:opacity-100">
+                        <div class="w-12 h-12 bg-[#282828] rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="skull" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <div class="flex justify-between items-center">
+                                <p class="text-white font-bold text-sm truncate group-hover:text-white transition">Faca na Caveira</p>
+                                <i class="fas fa-lock text-[10px] text-gray-500"></i>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">Protocolo de Foco</p>
+                        </div>
+                    </div>
+
+                    <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#1a1a1a] cursor-pointer group transition opacity-60 hover:opacity-100">
+                        <div class="w-12 h-12 bg-[#282828] rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="brain-circuit" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <div class="flex justify-between items-center">
+                                <p class="text-white font-bold text-sm truncate group-hover:text-white transition">O Mentor</p>
+                                <i class="fas fa-lock text-[10px] text-gray-500"></i>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">Organização Mental</p>
+                        </div>
+                    </div>
+
+                    <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#1a1a1a] cursor-pointer group transition opacity-60 hover:opacity-100">
+                        <div class="w-12 h-12 bg-[#282828] rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="hammer" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <div class="flex justify-between items-center">
+                                <p class="text-white font-bold text-sm truncate group-hover:text-white transition">Ferreiro</p>
+                                <i class="fas fa-lock text-[10px] text-gray-500"></i>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">Disciplina</p>
+                        </div>
+                    </div>
+
+                     <div onclick="triggerPanicSequence()" class="flex items-center gap-3 p-2 rounded-lg bg-red-900/10 hover:bg-red-900/20 border border-transparent hover:border-red-900/30 cursor-pointer group transition mt-2">
+                        <div class="w-12 h-12 bg-red-900/30 rounded flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-900/10">
+                            <i data-lucide="triangle-alert" class="w-5 h-5 text-red-500 fill-red-900/20 group-hover:animate-pulse"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <div class="flex justify-between items-center">
+                                <p class="text-red-200 font-bold text-sm truncate group-hover:text-white transition">Botão do Pânico</p>
+                            </div>
+                            <p class="text-xs text-red-500/60 truncate">Intervenção Imediata</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="px-2 pb-2">
+                <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-lg shadow-red-900/20">
+                    <div class="bg-[#1a0505] p-4 rounded-md h-full">
+                        <div class="flex justify-between items-start">
+                            <p class="text-white font-bold text-sm mb-1">Teste o Synapse PRO</p>
+                        </div>
+                        <p class="text-gray-400 text-[10px] mb-3 leading-relaxed">Desbloqueie ferramentas ilimitadas e análise avançada.</p>
+                        <button class="bg-white text-black font-bold text-xs rounded-full px-4 py-2 hover:bg-gray-200 transition transform hover:scale-105">
+                            Ver Planos
+                        </button>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <main class="chat-area relative">
+        <main class="chat-area relative flex flex-col h-full bg-[#000]">
+            
+            <img src="assets/polvo_synapse.png" class="chat-watermark invert" alt="">
 
             <div id="mobileHeader" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a] z-30 flex items-center px-4 justify-between transition-transform duration-300">
                 <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2" onclick="toggleSidebar()">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse DEMO</h3>
+                <div class="flex items-center gap-2">
+                     <img src="assets/logo_synapse.png" class="w-5 h-5 opacity-80 invert">
+                     <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse DEMO</h3>
+                </div>
                 <div class="w-9"></div> 
             </div>
 
-            <div id="viewChat" class="view-section h-full flex flex-col">
+            <div id="viewChat" class="view-section h-full flex flex-col relative z-10">
                 <div class="chat-messages flex-grow pt-16"> 
                     <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col"></div>
                 </div>
@@ -149,14 +217,10 @@
                 </div>
             </div>
 
-            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-20">
-                
-                <button onclick="switchTab('chat')" class="fab-back md:hidden group">
-                    <i data-lucide="message-square" class="w-6 h-6"></i>
-                </button>
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-20 relative z-10">
+                <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i data-lucide="message-square" class="w-6 h-6"></i></button>
 
                 <div class="max-w-md mx-auto relative">
-                    
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-2">
                             <div>
@@ -172,11 +236,10 @@
                     </div>
 
                     <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-6 mb-8 relative group cursor-pointer" onclick="window.location.href='index.html#planos'">
-                         
                         <div id="journeyLockBanner" class="hidden absolute inset-0 bg-black/80 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 rounded-xl border border-red-900/50">
                             <i class="fas fa-crown text-yellow-500 mb-2 text-2xl drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]"></i>
-                            <span class="text-sm font-bold text-white uppercase tracking-wider text-center px-4">Esse é o seu potencial de consistência</span>
-                            <span class="text-[10px] text-gray-400 mt-2 mb-4">Torne isso realidade com o Synapse PRO</span>
+                            <span class="text-sm font-bold text-white uppercase tracking-wider text-center px-4">Esse é o seu potencial</span>
+                            <span class="text-[10px] text-gray-400 mt-2 mb-4">Realize com o Synapse PRO</span>
                             <button class="bg-[#CC0000] text-white px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest hover:bg-red-600">Desbloquear Agora</button>
                         </div>
 
@@ -185,23 +248,18 @@
                                 <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> Mês Atual
                              </span>
                         </div>
-                        
                         <div id="demoCalendarGrid" class="calendar-grid"></div>
                     </div>
 
                     <div class="mb-20 opacity-50 pointer-events-none">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-sm font-semibold text-white">Hábitos</h3>
-                        </div>
+                        <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-semibold text-white">Hábitos</h3></div>
                         <div class="space-y-2">
                              <div class="habit-item bg-[#111] border-[#222]"><div class="p-3"><span class="text-sm text-gray-300">...</span></div></div>
                              <div class="habit-item bg-[#111] border-[#222]"><div class="p-3"><span class="text-sm text-gray-300">...</span></div></div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </main>
 
         <nav class="bottom-nav md:hidden transition-transform duration-300 border-t border-[#1a1a1a]">

@@ -138,17 +138,78 @@
         </div>
     </div>
 
-<script src="auth.js"></script>
-<script>
-    // Bloqueador de Botão Direito e Atalhos de Inspeção
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) { return false; } // F12
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){ return false; } // Ctrl+Shift+I
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){ return false; } // Ctrl+Shift+C
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){ return false; } // Ctrl+Shift+J
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){ return false; } // Ctrl+U
-    }
-</script>
+    <script>
+        // ====================================================
+        // CONFIGURAÇÃO SHEETDB & SEGURANÇA
+        // ====================================================
+        const API_URL = 'https://sheetdb.io/api/v1/eplcagfbxnfje'; 
+        const APP_SECRET = "SYNAPSE_Protocol_v1_SECURE_HASH_2025_KEY";
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
+            const btn = document.getElementById('btnSubmit');
+            const errorMsg = document.getElementById('errorMsg');
+            const form = document.getElementById('loginForm');
+            const originalText = btn.innerHTML; // Salva o texto original
+
+            // UI: Loading
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VALIDANDO...';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            btn.disabled = true;
+            errorMsg.classList.add('hidden');
+            
+            try {
+                // Consulta API
+                const response = await fetch(`${API_URL}/search?email=${emailInput}`);
+                
+                if (!response.ok) throw new Error("Erro na API");
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    const nomeUsuario = data[0].nome || "Membro";
+                    
+                    // SUCESSO: Gera Token Seguro e Salva
+                    const tokenSeguro = btoa(emailInput + APP_SECRET); 
+                    const sessionData = {
+                        user: nomeUsuario,
+                        email: emailInput,
+                        token: tokenSeguro,
+                        loginDate: Date.now()
+                    };
+
+                    localStorage.setItem('synapse_session_v2', JSON.stringify(sessionData));
+
+                    // Feedback Visual de Sucesso
+                    btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO AUTORIZADO';
+                    
+                    // Redireciona
+                    setTimeout(() => {
+                        window.location.href = "index.html"; 
+                    }, 1000);
+
+                } else {
+                    throw new Error("Email não encontrado");
+                }
+
+            } catch (error) {
+                console.error("Erro:", error);
+                
+                // UI: Erro
+                btn.innerHTML = originalText;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btn.disabled = false;
+                errorMsg.classList.remove('hidden');
+                
+                // Animação de Shake no Formulário
+                const container = document.querySelector('.w-full.max-w-md'); // Container do form
+                container.classList.add('shake-anim');
+                setTimeout(() => container.classList.remove('shake-anim'), 500);
+            }
+        });
+    </script>
 </body>
 </html>
