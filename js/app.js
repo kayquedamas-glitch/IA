@@ -1,16 +1,16 @@
 /* js/app.js - VERSÃO RESTAURADA E OTIMIZADA (SEM NOTIFICAÇÕES) */
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     // CONFIGURAÇÕES
-    const API_URL = "https://long-block-7f38.kayquedamas.workers.dev";
-    const API_MODEL = "llama-3.1-8b-instant";
+    const API_URL = "https://long-block-7f38.kayquedamas.workers.dev"; 
+    const API_MODEL = "llama-3.1-8b-instant"; 
 
     // --- ELEMENTOS DO DOM ---
     const messagesContainer = document.getElementById('messagesContainer');
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
-
+    
     // UI Geral
     const viewChat = document.getElementById('viewChat');
     const viewProtocolo = document.getElementById('viewProtocolo');
@@ -18,7 +18,150 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabProtocolo = document.getElementById('tabJornada');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    
+
+    // --- DEFINIÇÕES DE FERRAMENTAS (Lógica Restaurada) ---
+    const toolDefinitions = {
+        'Diagnostico': {
+            title: "Sessão de Diagnóstico",
+            subtitle: "Analisando seu perfil...", 
+            typewriterExamples: [ "desabafa comigo...", "sem julgamentos...", "vamos resolver isso." ],
+            initialMessage: "Olá. O que está travando a sua vida hoje?",
+            initialButtons: ["Procrastinação", "Fadiga", "Ansiedade", "Vício"],
+            
+            // O CÉREBRO DA ESTRATÉGIA (RESTAURADO)
+            systemPrompt: `Você é o Synapse.
+PERSONA: Um especialista em comportamento que fala a língua do povo. Você é direto, mas amigo.
+NÃO USE PALAVRAS DIFÍCEIS. Fale como se estivesse no WhatsApp.
+TOM: Acolhedor, Empático, Sábio e Não-Julgador.
+
+OBJETIVO: Fazer uma Anamnese (Triagem) e levar o usuário até o momento de revelar o "Sabotador".
+
+REGRAS DE OURO (INTERFACE):
+1. NUNCA faça 2 perguntas de uma vez.
+2. Sempre termine suas perguntas oferecendo opções em botões no formato <<OPÇÃO>>.
+3. A última opção deve ser sempre: <<Outro>>.
+4. SEUS BOTÕES DEVEM SER MINÚSCULOS (1 a 3 palavras).
+5. SUAS PERGUNTAS DEVEM SER CURTAS E DIRETAS.
+
+ROTEIRO DA CONVERSA:
+Fase 1: Investigação (5 a 7 perguntas curtas)
+- Pergunte o que está travando a vida dele hoje.
+- Aprofunde com perguntas curtas e botões sugeridos.
+- NÃO dê explicações ou conselhos agora. Apenas colete dados.
+
+Fase 2: O Diagnóstico (O "Pré-Fechamento")
+- Quando tiver dados, diga: "Entendi. O quadro é claro. Você sofre de [Nome do Problema Superficial]."
+- Explique brevemente (1 frase).
+- Termine com: "A análise está completa. O problema não é você, é esse padrão neuroquímico. Eu tenho o Protocolo exato para corrigir isso. Quer acessar a solução?"
+- Botões: <<Sim, quero a solução>>
+
+Fase 3: O Dossiê (O Grande Final)
+- Se o usuário disser "Sim", responda: "Ok. Prepare-se. Vou gerar seu Dossiê Completo agora. Ele contém as 2 Raízes do problema e a solução para eliminar seu Sabotador."
+- E IMEDIATAMENTE coloque APENAS a tag: [FIM_DA_SESSAO]`
+        }
+    };
+
+    let currentTool = 'Diagnostico';
+    let conversationHistory = [];
+
+    // --- ENGINE DE CHAT ---
+    window.selectTool = function(toolKey) {
+        currentTool = toolKey;
+        messagesContainer.innerHTML = '';
+        const tool = toolDefinitions[toolKey];
+        conversationHistory = [{ role: "system", content: tool.systemPrompt }];
+        
+        createHeader(tool.typewriterExamples);
+        addMessage(tool.initialMessage, false); 
+        if (tool.initialButtons) renderButtons(tool.initialButtons);
+        
+        chatInput.disabled = false;
+        chatInput.value = '';
+        
+        // UI Mobile Close
+        if(sidebar && sidebar.classList.contains('open')) toggleSidebar();
+        switchTab('chat');
+    }
+
+    function createHeader(phrases) {
+        messagesContainer.insertAdjacentHTML('afterbegin', `
+            <div class="w-full text-center mb-6 p-4 fade-in">
+                <p class="text-gray-500 text-xs tracking-widest uppercase">
+                    <span id="typewriter-text" class="text-red-500 font-bold"></span><span class="animate-pulse">|</span>
+                </p>
+            </div>
+        `);
+        startTypewriter(phrases);
+    }
+
+    function addMessage(message, isUser) {
+        // GATILHO RESTAURADO: FIM DA SESSÃO -> LOADING -> VENDA
+        if (message.includes('[FIM_DA_SESSAO]') && !isUser) {
+            message = message.replace('[FIM_DA_SESSAO]', '');
+            triggerFakeLoading(messagesContainer, chatInput);
+        }
+
+        const buttonRegex = /<<(.+?)>>/g;
+        const buttons = [];
+        let match;
+        while ((match = buttonRegex.exec(message)) !== null) buttons.push(match[1]);
+        let cleanMessage = message.replace(buttonRegex, '').trim().replace(/\n/g, '<br>');
+
+        if (cleanMessage) {
+            const div = document.createElement('div');
+            div.className = isUser ? 'chat-message-user' : 'chat-message-ia';
+            div.innerHTML = cleanMessage;
+            messagesContainer.appendChild(div);
+        }
+
+        if (buttons.length > 0 && !isUser && !message.includes('[FIM_DA_SESSAO]')) {
+            renderButtons(buttons);
+        }
+        scrollToBottom();
+    }
+
+    function renderButtons(labels) {
+        const div = document.createElement('div');
+        div.className = 'quick-reply-container';
+        labels.forEach(text => {
+            const btn = document.createElement('button');
+            btn.className = 'cyber-btn';
+            btn.innerText = text;
+            btn.onclick = () => { div.style.display='none'; chatInput.value=text; sendMessage(); };
+            div.appendChild(btn);
+        });
+        messagesContainer.appendChild(div);
+        scrollToBottom();
+    }
+
+    async function sendMessage() {
+        const text = chatInput.value.trim();
+        if(!text) return;
+        addMessage(text, true);
+        chatInput.value = '';
+        chatInput.disabled = true;
+        
+        conversationHistory.push({ role: "user", content: text });
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ model: API_MODEL, messages: conversationHistory, temperature: 0.7 })
+            });
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            conversationHistory.push({ role: "assistant", content: reply });
+            addMessage(reply, false);
+        } catch(e) {
+            addMessage("Erro na conexão.", false);
+        } finally {
+            const lastMsg = conversationHistory[conversationHistory.length - 1]?.content || "";
+            if (!lastMsg.includes('[FIM_DA_SESSAO]')) {
+                chatInput.disabled = false;
+            }
+        }
+    }
 
     // --- FUNÇÕES DE CONVERSÃO RESTAURADAS ---
 
@@ -40,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.insertAdjacentHTML('beforeend', loaderHTML);
         const bar = document.getElementById(`loaderBar${loaderId}`);
         const text = document.getElementById(`loaderText${loaderId}`);
-
+        
         scrollToBottom();
 
         setTimeout(() => { bar.style.width = "45%"; }, 100);
@@ -50,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             const loaderEl = document.getElementById(loaderId);
-            if (loaderEl) loaderEl.remove();
+            if(loaderEl) loaderEl.remove();
             renderSalesCard(container);
         }, 3800);
     }
@@ -96,11 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- SEQUÊNCIA DE PÂNICO (URGÊNCIA) ---
-    window.triggerPanicSequence = function () {
-        if (sidebar && sidebar.classList.contains('open')) toggleSidebar();
+    window.triggerPanicSequence = function() {
+        if(sidebar && sidebar.classList.contains('open')) toggleSidebar();
         switchTab('chat');
         messagesContainer.innerHTML = '';
-
+        
         const overlay = document.createElement('div');
         overlay.className = 'fixed inset-0 bg-red-600/20 z-50 pointer-events-none animate-pulse';
         document.body.appendChild(overlay);
@@ -140,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- SIMULAÇÃO DE POTENCIAL (JORNADA) ---
-    window.switchTab = function (tab) {
+    window.switchTab = function(tab) {
         if (tab === 'chat') {
             viewChat.classList.remove('hidden');
             viewProtocolo.classList.add('hidden');
@@ -151,8 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
             viewProtocolo.classList.remove('hidden');
             tabChat.classList.remove('active'); tabChat.style.color = '#666';
             tabProtocolo.classList.add('active'); tabProtocolo.style.color = '#CC0000';
-
-            if (!window.hasSeenJourneyAnimation) {
+            
+            if(!window.hasSeenJourneyAnimation) {
                 playJourneyAnimation();
                 window.hasSeenJourneyAnimation = true;
             }
@@ -161,10 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function playJourneyAnimation() {
         const grid = document.getElementById('demoCalendarGrid');
-        if (!grid) return;
-
+        if(!grid) return;
+        
         grid.innerHTML = '';
-        for (let i = 1; i <= 30; i++) {
+        for(let i=1; i<=30; i++) {
             const el = document.createElement('div');
             el.className = 'calendar-day border border-[#222] text-[#333]';
             el.innerText = i;
@@ -174,13 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let count = 1;
         const interval = setInterval(() => {
-            if (count > 20) {
+            if(count > 20) {
                 clearInterval(interval);
                 showJourneyLock(grid);
                 return;
             }
             const el = document.getElementById(`day-${count}`);
-            if (el) {
+            if(el) {
                 el.className = 'calendar-day bg-green-500 text-white border-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] transform scale-110 transition';
                 el.innerHTML = '<i class="fas fa-check text-xs"></i>';
             }
@@ -192,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             grid.classList.add('opacity-30', 'blur-[1px]', 'transition', 'duration-1000');
             const banner = document.getElementById('journeyLockBanner');
-            if (banner) {
+            if(banner) {
                 banner.classList.remove('hidden');
                 banner.classList.add('animate-pop-in');
             }
@@ -201,21 +344,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function scrollToBottom() {
         const scroller = document.querySelector('.chat-messages');
-        if (scroller) setTimeout(() => scroller.scrollTop = scroller.scrollHeight, 50);
+        if(scroller) setTimeout(() => scroller.scrollTop = scroller.scrollHeight, 50);
     }
 
     function startTypewriter(phrases) {
         const el = document.getElementById('typewriter-text');
-        if (!el) return;
+        if(!el) return;
         let pIndex = 0, cIndex = 0, isDeleting = false;
-        if (window.typewriterTimeout) clearTimeout(window.typewriterTimeout);
+        if(window.typewriterTimeout) clearTimeout(window.typewriterTimeout);
         function type() {
             const current = phrases[pIndex];
-            el.textContent = current.substring(0, isDeleting ? cIndex - 1 : cIndex + 1);
+            el.textContent = current.substring(0, isDeleting ? cIndex-1 : cIndex+1);
             cIndex += isDeleting ? -1 : 1;
             let speed = isDeleting ? 30 : 80;
-            if (!isDeleting && cIndex === current.length) { isDeleting = true; speed = 2000; }
-            else if (isDeleting && cIndex === 0) { isDeleting = false; pIndex = (pIndex + 1) % phrases.length; speed = 500; }
+            if(!isDeleting && cIndex === current.length) { isDeleting = true; speed = 2000; }
+            else if(isDeleting && cIndex === 0) { isDeleting = false; pIndex = (pIndex+1)%phrases.length; speed = 500; }
             window.typewriterTimeout = setTimeout(type, speed);
         }
         type();

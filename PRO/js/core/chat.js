@@ -29,7 +29,6 @@ export function selectTool(agentKey) {
     
     // Atualiza UI da Sidebar
     document.querySelectorAll('.tool-item').forEach(el => el.classList.remove('active'));
-    // Se existir ID específico (adaptação para novo design)
     const activeTool = document.getElementById(`tool${agentKey}`);
     if(activeTool) activeTool.classList.add('active');
     
@@ -56,7 +55,7 @@ function resetChat() {
     if(!container) return;
     container.innerHTML = '';
     
-    // Cabeçalho Dinâmico
+    // Cabeçalho
     const headerHTML = `
         <div class="w-full text-center mb-6 p-4">
             <p id="chatSubtitle" class="text-gray-400 text-sm">
@@ -73,7 +72,7 @@ function resetChat() {
     // Botões Iniciais
     renderQuickReplies(agents[currentAgent].initialButtons);
 
-    // Reset Contexto - Salva prompt de sistema no histórico local
+    // Reset Contexto
     chatHistory = [{ role: "system", content: agents[currentAgent].prompt }];
     startTypewriter(agents[currentAgent].typewriter);
 }
@@ -87,62 +86,21 @@ async function sendMessage() {
     addUserMessage(text);
     
     chatInput.value = '';
-    chatInput.disabled = true;
-    
-    // Adiciona ao histórico local
     chatHistory.push({ role: "user", content: text });
 
-    // --- PREPARAÇÃO PARA GEMINI ---
-    // Endpoint do Gemini Flash
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${CONFIG.API_KEY}`;
-    
-    // Separa System Prompt e Mensagens
-    const systemMessage = chatHistory.find(msg => msg.role === 'system');
-    
-    // Mapeia histórico para formato Gemini (user/model)
-    const contents = chatHistory
-        .filter(msg => msg.role !== 'system')
-        .map(msg => ({
-            role: msg.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: msg.content }]
-        }));
-
-    const payload = {
-        contents: contents,
-        generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 800
-        }
-    };
-
-    if (systemMessage) {
-        payload.systemInstruction = {
-            parts: [{ text: systemMessage.content }]
-        };
-    }
-
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(CONFIG.API_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ model: CONFIG.API_MODEL, messages: chatHistory, temperature: 0.7 })
         });
-        
         const data = await response.json();
-        
-        if (data.error) throw new Error(data.error.message);
-
-        const reply = data.candidates[0].content.parts[0].text;
+        const reply = data.choices[0].message.content;
         
         addIAMessage(reply);
         chatHistory.push({ role: "assistant", content: reply });
-        
     } catch (e) {
-        console.error(e);
         setTimeout(() => addIAMessage("Falha na conexão neural. Tente novamente.", true), 1000);
-    } finally {
-        chatInput.disabled = false;
-        chatInput.focus();
     }
 }
 
@@ -167,16 +125,13 @@ function addIAMessage(text, isError = false) {
     while ((match = buttonRegex.exec(text)) !== null) buttons.push(match[1]);
 
     let cleanMessage = text.replace(buttonRegex, '').trim();
-    // Formatação básica (Markdown simples para HTML)
-    cleanMessage = cleanMessage
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Negrito
-        .replace(/\{/g, '<strong>').replace(/\}/g, '</strong>') 
-        .replace(/\n/g, '<br>');
+    // Formatação básica
+    cleanMessage = cleanMessage.replace(/\{/g, '<strong>').replace(/\}/g, '</strong>').replace(/\n/g, '<br>');
 
     if (cleanMessage) {
         const div = document.createElement('div');
         div.className = 'chat-message-ia';
-        if(isError) div.style.color = '#ef4444';
+        if(isError) div.style.color = 'red';
         div.innerHTML = cleanMessage;
         container.appendChild(div);
     }
