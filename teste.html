@@ -95,77 +95,80 @@
 
     <div class="bg-[#121212] rounded-lg flex-grow flex flex-col overflow-hidden relative">
         
-        <div class="p-4 shadow-sm z-10 bg-[#121212]">
+        <div class="p-4 shadow-sm z-10 bg-[#121212] border-b border-white/5">
             <div class="flex justify-between items-center text-gray-400 hover:text-white transition cursor-pointer group">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-lg group-hover:text-white transition"></i>
-                    <span class="font-bold text-sm group-hover:text-white transition">Sua Biblioteca</span>
+                    <i class="fa-solid fa-layer-group text-lg group-hover:text-white transition"></i>
+                    <span class="font-bold text-sm group-hover:text-white transition">Seu Arsenal</span>
                 </div>
                 <div class="flex gap-3">
                     <i class="fa-solid fa-plus hover:bg-[#1a1a1a] rounded-full p-1 transition cursor-pointer"></i>
-                    <i class="fa-solid fa-arrow-right hover:bg-[#1a1a1a] rounded-full p-1 transition cursor-pointer"></i>
                 </div>
             </div>
-            
-            <div class="flex gap-2 mt-4 overflow-x-auto no-scrollbar pb-2">
-                <span class="bg-[#232323] hover:bg-[#2a2a2a] text-white text-[11px] px-3 py-1.5 rounded-full font-medium cursor-pointer transition whitespace-nowrap" onclick="selectTool('Diagnostico'); closeSidebar()">
-                    Agentes
-                </span>
-                <span class="bg-[#232323] hover:bg-[#2a2a2a] text-white text-[11px] px-3 py-1.5 rounded-full font-medium cursor-pointer transition whitespace-nowrap" onclick="window.location.href='index.html#planos'">
-                    Exclusivos
-                </span>
             </div>
-        </div>
 
-        <div class="overflow-y-auto px-2 pb-4 space-y-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+        <div class="overflow-y-auto px-2 py-4 space-y-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
             
             <div onclick="selectTool('Diagnostico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#CC0000] to-[#990000] rounded-md flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <i class="fa-solid fa-chart-line text-white text-xl"></i>
+                <div class="w-10 h-10 bg-gradient-to-br from-[#CC0000] to-[#990000] rounded-md flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <i class="fa-solid fa-chart-line text-white text-lg"></i>
                 </div>
                 <div class="overflow-hidden">
                     <p class="text-white font-bold text-sm truncate group-hover:text-green-400 transition mb-0.5">Diagnóstico</p>
-                    <p class="text-[11px] text-gray-400 truncate flex items-center gap-1">
-                        <span class="text-green-500 text-[8px]">●</span> Agente • Ativo
+                    <p class="text-[10px] text-gray-400 truncate flex items-center gap-1">
+                        <span class="text-green-500 text-[6px]">●</span> Sessão Ativa
                     </p>
                 </div>
             </div>
 
-            <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition opacity-60 hover:opacity-100">
-                <div class="w-12 h-12 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+            <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition opacity-70 hover:opacity-100">
+                <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-skull text-gray-400 text-lg"></i>
                 </div>
                 <div class="overflow-hidden flex-grow">
                     <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">Faca na Caveira</p>
                     <div class="flex items-center gap-1">
                         <i class="fa-solid fa-lock text-[9px] text-gray-500"></i>
-                        <p class="text-[11px] text-gray-500 truncate">Ferramenta • PRO</p>
+                        <p class="text-[10px] text-gray-500 truncate">Ferramenta • PRO</p>
                     </div>
                 </div>
             </div>
 
-            <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition opacity-60 hover:opacity-100">
-                <div class="w-12 h-12 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+            <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition opacity-70 hover:opacity-100">
+                <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-microchip text-gray-400 text-lg"></i>
+                </div>
+                <div class="overflow-hidden flex-grow">
+                    <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">O Mentor</p>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-lock text-[9px] text-gray-500"></i>
+                        <p class="text-[10px] text-gray-500 truncate">IA • PRO</p>
+                    </div>
+                </div>
+            </div>
+
+             <div onclick="window.location.href='index.html#planos'" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition opacity-70 hover:opacity-100">
+                <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-gavel text-gray-400 text-lg"></i>
                 </div>
                 <div class="overflow-hidden flex-grow">
                     <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">Ferreiro</p>
                     <div class="flex items-center gap-1">
                         <i class="fa-solid fa-lock text-[9px] text-gray-500"></i>
-                        <p class="text-[11px] text-gray-500 truncate">Disciplina • PRO</p>
+                        <p class="text-[10px] text-gray-500 truncate">Disciplina • PRO</p>
                     </div>
                 </div>
             </div>
 
             <div onclick="triggerPanicSequence(); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition mt-2">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#450a0a] to-red-900 rounded-md flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 bg-gradient-to-br from-[#450a0a] to-red-900 rounded-md flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-triangle-exclamation text-red-200 text-lg animate-pulse"></i>
                 </div>
                 <div class="overflow-hidden">
                     <p class="text-white font-bold text-sm truncate group-hover:text-red-400 transition mb-0.5">Botão do Pânico</p>
                     <div class="flex items-center gap-1">
                         <i class="fa-solid fa-thumbtack text-[9px] text-green-500 rotate-45"></i>
-                        <p class="text-[11px] text-gray-400 truncate">Emergência</p>
+                        <p class="text-[10px] text-gray-400 truncate">Emergência</p>
                     </div>
                 </div>
             </div>
@@ -174,7 +177,7 @@
     </div>
     
     <div class="mt-auto">
-        <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-[0_8px_16px_rgba(0,0,0,0.5)] group">
+        <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-lg group">
             <div class="bg-[#000] p-3 rounded-[7px] h-full flex items-center gap-3 relative overflow-hidden">
                 <div class="w-10 h-10 bg-[#333] rounded shadow-lg flex-shrink-0 relative z-10 flex items-center justify-center">
                     <img src="assets/icone preto.png" class="w-full h-full object-cover invert opacity-80 p-1">
@@ -193,8 +196,6 @@
                 <div class="z-10">
                     <i class="fa-solid fa-chevron-up text-gray-400"></i>
                 </div>
-
-                <div class="absolute inset-0 bg-gradient-to-r from-red-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
             </div>
         </div>
     </div>
@@ -239,49 +240,66 @@
                 </div>
             </div>
 
-            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-20 relative z-10">
-                <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i data-lucide="message-square" class="w-6 h-6"></i></button>
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-10 relative z-10">
+    <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i class="fa-solid fa-comment-dots text-xl"></i></button>
 
-                <div class="max-w-md mx-auto relative">
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-2">
-                            <div>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Potencial</p>
-                                <h2 class="text-lg font-bold text-white flex items-center gap-2 mt-1">
-                                    <span class="bg-[#1a1a1a] text-gray-300 px-2 py-1 rounded text-xs border border-[#333]">NÍVEL 0</span>
-                                </h2>
-                            </div>
-                        </div>
-                        <div class="w-full bg-[#111] rounded-full h-1 mt-4 overflow-hidden">
-                            <div class="bg-white h-1 rounded-full w-[5%]"></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-6 mb-8 relative group cursor-pointer" onclick="window.location.href='index.html#planos'">
-                        <div id="journeyLockBanner" class="hidden absolute inset-0 bg-black/80 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 rounded-xl border border-red-900/50">
-                            <i class="fas fa-crown text-yellow-500 mb-2 text-2xl drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]"></i>
-                            <span class="text-sm font-bold text-white uppercase tracking-wider text-center px-4">Esse é o seu potencial</span>
-                            <span class="text-[10px] text-gray-400 mt-2 mb-4">Realize com o Synapse PRO</span>
-                            <button class="bg-[#CC0000] text-white px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest hover:bg-red-600">Desbloquear Agora</button>
-                        </div>
-
-                        <div class="flex justify-between mb-6 items-center border-b border-[#1a1a1a] pb-4">
-                             <span class="text-xs font-semibold text-gray-300 flex gap-2 items-center uppercase tracking-wide">
-                                <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> Mês Atual
-                             </span>
-                        </div>
-                        <div id="demoCalendarGrid" class="calendar-grid"></div>
-                    </div>
-
-                    <div class="mb-20 opacity-50 pointer-events-none">
-                        <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-semibold text-white">Hábitos</h3></div>
-                        <div class="space-y-2">
-                             <div class="habit-item bg-[#111] border-[#222]"><div class="p-3"><span class="text-sm text-gray-300">...</span></div></div>
-                             <div class="habit-item bg-[#111] border-[#222]"><div class="p-3"><span class="text-sm text-gray-300">...</span></div></div>
-                        </div>
+    <div class="w-full max-w-md md:max-w-6xl mx-auto relative transition-all duration-500">
+        
+        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-database"></i> Sincronizando Neural Link...
+                </p>
+                <h2 id="gamificationHeader" class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 mt-1 opacity-50">
+                    <span class="bg-[#1a1a1a] text-gray-300 px-3 py-1 rounded text-sm border border-[#333]" id="levelBadge">NÍVEL 1</span>
+                    <span class="hidden md:inline text-gray-600 text-sm font-normal">| Iniciante</span>
+                </h2>
+            </div>
+            
+            <div class="w-full md:w-1/3 opacity-50" id="xpContainer">
+                <div class="flex justify-between text-[10px] text-gray-500 mb-1">
+                    <span id="xpStatusText">Aguardando dados...</span>
+                    <span class="text-white font-bold">350 / 1000 XP</span>
+                </div>
+                <div class="w-full bg-[#111] rounded-full h-3 overflow-hidden border border-[#222]">
+                    <div id="xpBar" class="xp-bar-fill bg-gradient-to-r from-red-900 via-red-600 to-red-400 h-3 rounded-full w-[0%] shadow-[0_0_15px_rgba(220,38,38,0.5)] relative">
+                         <div class="absolute inset-0 bg-[url('assets/noise.png')] opacity-20 mix-blend-overlay"></div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-6 md:p-10 mb-8 relative group overflow-hidden shadow-2xl">
+            
+            <div id="journeyLockBanner" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-30 rounded-2xl transition-all duration-500 opacity-0">
+                <div class="bg-[#090909] border border-red-500/50 p-8 rounded-2xl text-center shadow-[0_0_60px_rgba(220,38,38,0.2)] transform scale-90 md:scale-110 relative overflow-hidden">
+                     <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
+                    <i class="fas fa-lock text-red-500 mb-4 text-4xl animate-pulse"></i>
+                    <h3 class="text-xl font-black text-white uppercase tracking-wider mb-2 font-brand">Sincronização Interrompida</h3>
+                    <p class="text-sm text-gray-400 mb-6 max-w-[220px] mx-auto leading-relaxed">
+                        Esses são recursos exclusivos do <strong class="text-white">Synapse PRO</strong>.
+                    </p>
+                    <button onclick="window.location.href='index.html#planos'" class="bg-[#CC0000] text-white px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-[0.2em] hover:bg-red-600 transition shadow-[0_0_20px_rgba(204,0,0,0.4)] hover:scale-105 active:scale-95 flex items-center gap-3 mx-auto">
+                        <i class="fa-solid fa-unlock"></i> Desbloquear Jornada
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between mb-8 items-center border-b border-[#1a1a1a] pb-4">
+                 <span class="text-sm font-semibold text-gray-300 flex gap-2 items-center uppercase tracking-wide font-mono">
+                    <i class="fa-solid fa-calendar-days text-red-500"></i> Histórico Neural
+                 </span>
+                 <div class="flex gap-3 text-[10px] uppercase tracking-widest">
+                     <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span> Flow</div>
+                     <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 shadow-[0_0_5px_#cc0000]"></span> Falha</div>
+                 </div>
+            </div>
+            
+            <div id="demoCalendarGrid" class="calendar-grid md:gap-3"></div>
+        </div>
+    </div>
+</div>
+</div>
         </main>
 
         <nav class="bottom-nav md:hidden transition-transform duration-300 border-t border-[#1a1a1a]">
@@ -327,6 +345,122 @@
             toggleSidebar(); // Chama a função original apenas se necessário
         }
     }
+</script>
+<script>
+    // --- CONFIGURAÇÃO DA ANIMAÇÃO ---
+    // ESCOLHA AQUI SUA VERSÃO PREFERIDA (1 a 5):
+    // 1 = Neural Flood (Explosão)
+    // 2 = Orbital Scan (Varredura)
+    // 3 = Data Rain (Chuva Matrix)
+    // 4 = Impact Pulse (Impacto Forte)
+    // 5 = Circuit Etch (Desenho de Circuito)
+    const STYLE_TO_USE = 1; 
+
+
+    // --- FUNÇÃO PRINCIPAL: Toca a sequência inteira ---
+    function runFullDemoSequence() {
+        const grid = document.getElementById('demoCalendarGrid');
+        const lockBanner = document.getElementById('journeyLockBanner');
+        const xpBar = document.getElementById('xpBar');
+        const levelBadge = document.getElementById('levelBadge');
+        const xpHeader = document.getElementById('gamificationHeader');
+        const xpContainer = document.getElementById('xpContainer');
+        const xpStatus = document.getElementById('xpStatusText');
+
+        // 1. RESET (Prepara o palco)
+        grid.innerHTML = '';
+        lockBanner.classList.add('hidden');
+        lockBanner.style.opacity = '0';
+        xpBar.style.width = '0%';
+        xpBar.classList.remove('filling');
+        levelBadge.classList.remove('level-badge-pulse');
+        xpHeader.style.opacity = '0.5';
+        xpContainer.style.opacity = '0.5';
+        xpStatus.innerText = "Aguardando conexão...";
+
+        // 2. FASE 1: GAMIFICAÇÃO (0s - 1.5s)
+        setTimeout(() => {
+            xpHeader.style.opacity = '1';
+            xpContainer.style.opacity = '1';
+            xpStatus.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin mr-1'></i> Processando dados neurais...";
+            levelBadge.classList.add('level-badge-pulse');
+            xpBar.classList.add('filling'); // Dispara animação CSS da barra
+        }, 300);
+
+        // 3. FASE 2: O CALENDÁRIO (1.5s - 7s)
+        setTimeout(() => {
+            xpStatus.innerHTML = "<i class='fa-solid fa-check text-green-500 mr-1'></i> Dados sincronizados.";
+            // Adiciona a classe do estilo escolhido ao grid pai
+            grid.classList.add(`anim-style-${STYLE_TO_USE}`);
+            
+            // Gera os 30 dias com atraso (delay) entre cada um
+            const totalDays = 30;
+            for (let i = 0; i < totalDays; i++) {
+                const day = document.createElement('div');
+                day.classList.add('day-cell');
+                day.innerText = i + 1;
+                
+                // Lógica para parecer real (mais acertos que erros)
+                // Dias 5, 12, 18, 24, 28 serão "falhas" (vermelho)
+                if ([5, 12, 18, 24, 28].includes(i + 1)) {
+                    day.classList.add('miss');
+                } else {
+                    day.classList.add('hit');
+                }
+
+                // O último dia é "Hoje"
+                if (i === totalDays - 1) {
+                     day.classList.remove('hit', 'miss');
+                     day.classList.add('today');
+                     day.innerHTML = "<i class='fa-solid fa-crosshairs text-red-500'></i>";
+                }
+
+                // A MÁGICA: Calcula o atraso da animação para cada célula
+                // Quanto maior o índice 'i', mais tarde ele aparece.
+                const delay = i * 150; // 150ms de intervalo entre cada dia
+                day.style.animationDelay = `${delay}ms`;
+                
+                // Para estilos que usam ::after (tipo o scanner), precisamos aplicar delay lá também
+                if(STYLE_TO_USE === 2) {
+                     const styleElem = document.head.appendChild(document.createElement("style"));
+                     styleElem.innerHTML = `.anim-style-2 .day-cell:nth-child(${i+1})::after { animation-delay: ${delay}ms; }`;
+                }
+
+                grid.appendChild(day);
+            }
+        }, 1800); // Começa após a gamificação
+
+        // 4. FASE 3: O BLOQUEIO (7s+)
+        // Calcula quando a animação do calendário termina (30 dias * 150ms + margem)
+        const sequenceDuration = (30 * 150) + 2500; 
+
+        setTimeout(() => {
+            // Efeito sonoro visual de "Glitch" antes de travar
+            grid.style.filter = "invert(1) hue-rotate(180deg)";
+            setTimeout(() => { grid.style.filter = "none"; }, 100);
+            setTimeout(() => { grid.style.filter = "invert(1) hue-rotate(180deg)"; }, 200);
+            setTimeout(() => { 
+                grid.style.filter = "none"; 
+                // Mostra o banner de bloqueio
+                lockBanner.classList.remove('hidden');
+                setTimeout(() => { lockBanner.style.opacity = '1'; }, 50); // Fade in suave
+            }, 300);
+            
+        }, sequenceDuration);
+    }
+
+    // --- GATILHO ---
+    // Modifica a função switchTab existente para rodar a animação quando abrir a aba 'protocolo'
+    const originalSwitchTab = window.switchTab;
+    window.switchTab = function(tabName) {
+        // Chama a função original primeiro
+        if(originalSwitchTab) originalSwitchTab(tabName);
+        
+        // Se a aba for a de Jornada (protocolo), roda a sequência
+        if (tabName === 'protocolo') {
+            runFullDemoSequence();
+        }
+    };
 </script>
 </body>
 </html>

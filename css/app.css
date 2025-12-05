@@ -152,3 +152,34 @@ body {
     .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 90; visibility: hidden; opacity: 0; transition: opacity 0.3s; }
     .sidebar-overlay.open { visibility: visible; opacity: 1; }
 }
+/* --- ESTILOS GERAIS DO CALENDÁRIO --- */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 10px;
+}
+
+/* Célula base do dia */
+.day-cell {
+    aspect-ratio: 1;
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #333;
+    position: relative;
+    overflow: hidden;
+    opacity: 0; /* Começa invisível para a animação */
+}
+
+/* Estados de Sucesso/Falha */
+.day-cell.hit { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; }
+.day-cell.miss { background: rgba(204, 0, 0, 0.1); border-color: rgba(204, 0, 0, 0.3); color: #cc0000; }
+
+/* Efeito de "Hoje" */
+.day-cell.today { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+
