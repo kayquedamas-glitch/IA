@@ -82,3 +82,101 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffff
     .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 100%; }
     .nav-btn.active { color: #CC0000; }
 }
+/* Estilos do Neuro-Planner */
+.planner-grid {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1px;
+    background-color: #222; /* Linhas da grade */
+    border: 1px solid #222;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.planner-cell {
+    background-color: #0f0f0f;
+    padding: 10px;
+    font-size: 0.8rem;
+    color: #888;
+}
+.planner-input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+/* Barra de Vícios */
+.vice-meter {
+    height: 6px;
+    background: #222;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+.vice-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+}
+/* --- ESTILOS DASHBOARD CLEAN --- */
+.dashboard-card {
+    background: #0f0f0f;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 24px; /* Bordas bem arredondadas */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.1);
+}
+
+/* Gráfico Circular (Donut Chart CSS puro) */
+.circle-chart {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#CC0000 var(--percentage), #222 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circle-chart::after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: #0f0f0f;
+    border-radius: 50%;
+}
+.circle-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+/* Gráfico de Barras Simples */
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+}
+.bar {
+    flex: 1;
+    background: #222;
+    border-radius: 4px;
+    position: relative;
+    transition: height 1s ease;
+}
+.bar.active { background: #CC0000; }
+.bar:hover::after {
+    content: attr(data-val);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: #fff;
+}

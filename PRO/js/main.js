@@ -2,41 +2,52 @@
 import { CONFIG } from './config.js';
 import { initNavigation } from './modules/navigation.js';
 import { initChat } from './core/chat.js';
-import { renderHabits, renderCalendar, addNewHabitPrompt, clearHistory } from './modules/gamification.js';
+// Importa syncData corretamente
+import { renderHabits, renderCalendar, addNewHabitPrompt, clearHistory, syncData } from './modules/gamification.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. Verificação de Auth (Segurança Básica)
+    console.log("Synapse OS v2.0 :: Inicializando...");
+
     checkAuth();
     loadUserProfile();
 
-    // 2. Inicializar Módulos
-    initNavigation();
-    initChat();
+    // Tenta inicializar módulos. Se falhar, captura o erro para não travar tudo.
+    try {
+        initNavigation();
+        initChat();
+    } catch (e) {
+        console.error("Erro ao iniciar módulos UI:", e);
+    }
     
-    // 3. Inicializar Gamificação
-    renderHabits();
-    renderCalendar();
-    
-    // 4. Expor funções globais para o HTML (onclicks antigos)
     window.addNewHabitPrompt = addNewHabitPrompt;
     window.clearHistory = clearHistory;
     
-    // Listener especial para atualizar calendário quando mudar de aba
     document.addEventListener('tabChanged:protocolo', () => {
         renderCalendar();
         renderHabits();
     });
 
-    console.log("Synapse OS v2.0 :: Modules Loaded");
+    // Inicia Gamificação (com tratamento de erro se o Supabase falhar)
+    try {
+        syncData().then(() => {
+            console.log("Sync completo.");
+            renderHabits();
+            renderCalendar();
+        }).catch(err => {
+            console.warn("Modo Offline:", err);
+            renderHabits();
+            renderCalendar();
+        });
+    } catch (e) {
+        console.error("Erro fatal na gamificação:", e);
+    }
 });
 
 function checkAuth() {
     try {
         const user = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
-        const session = localStorage.getItem(CONFIG.SESSION_STORAGE_KEY);
-        // Se não tiver user nem sessão, manda pro login
-        if (!user && !session) {
+        const session = JSON.parse(localStorage.getItem(CONFIG.SESSION_STORAGE_KEY));
+        if (!user && !session && !localStorage.getItem('synapse_access')) {
              window.location.href = "login.html"; 
         }
         document.body.style.visibility = "visible";
@@ -46,16 +57,24 @@ function checkAuth() {
 }
 
 function loadUserProfile() {
-    const storedUser = localStorage.getItem(CONFIG.USER_STORAGE_KEY) || localStorage.getItem(CONFIG.SESSION_STORAGE_KEY);
-    let user = null;
-    try { user = JSON.parse(storedUser); } catch(e) {}
+    try {
+        const storedUser = localStorage.getItem(CONFIG.USER_STORAGE_KEY) || localStorage.getItem(CONFIG.SESSION_STORAGE_KEY);
+        let user = null;
+        if(storedUser) user = JSON.parse(storedUser);
 
-    const nameDisplay = document.getElementById('userNameDisplay');
-    const avatarDisplay = document.getElementById('userAvatar');
-    
-    if (user) {
-        const displayName = user.name || user.user || "Operador";
-        if (nameDisplay) nameDisplay.innerText = displayName;
-        if (avatarDisplay) avatarDisplay.innerText = displayName.charAt(0).toUpperCase();
-    }
+        const ids = ['userNameDisplay', 'userNameSidebar', 'userNameDashboard'];
+        if (user) {
+            const name = user.name || user.user || "Membro";
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerText = name;
+            });
+            
+            const avatarIds = ['userAvatar', 'userAvatarSidebar'];
+            avatarIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerText = name.charAt(0).toUpperCase();
+            });
+        }
+    } catch(e) {}
 }
