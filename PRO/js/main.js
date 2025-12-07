@@ -2,79 +2,162 @@
 import { CONFIG } from './config.js';
 import { initNavigation } from './modules/navigation.js';
 import { initChat } from './core/chat.js';
-// Importa syncData corretamente
-import { renderHabits, renderCalendar, addNewHabitPrompt, clearHistory, syncData } from './modules/gamification.js';
+import { syncData, renderHabits, renderCalendar, addNewHabitPrompt, clearHistory } from './modules/gamification.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("Synapse OS v2.0 :: Inicializando...");
+// Variáveis para os módulos carregados dinamicamente
+let initDashboard, startZenMode, showWeeklyReport, initCalendar;
 
-    checkAuth();
+// Função para carregar os módulos extras sem travar o site se falharem
+async function loadModules() {
+    try {
+        // Carrega Dashboard (Lista de Missões e XP)
+        const dashModule = await import('./modules/dashboard.js');
+        initDashboard = dashModule.initDashboard;
+        
+        // Carrega Features (Modo Zen e Relatório)
+        const featModule = await import('./modules/features.js');
+        startZenMode = featModule.startZenMode;
+        showWeeklyReport = featModule.showWeeklyReport;
+
+        // Carrega o Calendário Tático (Novo)
+        const calModule = await import('./modules/calendar.js');
+        initCalendar = calModule.initCalendar;
+
+    } catch (e) {
+        console.error("⚠️ Aviso: Alguns módulos (Dashboard/Calendar) não foram carregados.", e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("🚀 Inicializando Synapse PRO v2.5...");
+    
+    // 1. Carrega os módulos pesados
+    await loadModules();
+
+    // 2. Verifica usuário
+    const user = checkAuth();
     loadUserProfile();
 
-    // Tenta inicializar módulos. Se falhar, captura o erro para não travar tudo.
+    // 3. CORREÇÃO ERRO 406: Garante que o usuário existe no Banco de Dados
+    if (user && window.supabase) {
+        await ensureUserInDB(user.email);
+    }
+
+    // 4. Inicializa a Interface (Com proteção contra falhas)
     try {
         initNavigation();
         initChat();
+        
+        // Inicializa os módulos se estiverem carregados
+        if (initDashboard) initDashboard();
+        if (initCalendar) initCalendar();
+        
+        setupButtons(); // Liga os botões de Foco e Relatório
+
     } catch (e) {
-        console.error("Erro ao iniciar módulos UI:", e);
+        console.error("❌ Erro crítico na UI:", e);
+    } finally {
+        // 5. GARANTIA ANTI-TELA PRETA: Força o site a aparecer sempre
+        document.body.style.visibility = "visible";
     }
-    
+
+    // Globais para acesso via HTML (se necessário)
     window.addNewHabitPrompt = addNewHabitPrompt;
     window.clearHistory = clearHistory;
-    
+
+    // 6. Listeners: O que acontece quando troca de aba
     document.addEventListener('tabChanged:protocolo', () => {
-        renderCalendar();
+        // Recarrega tudo para garantir dados frescos
+        renderCalendar(); // Calendário de Hábitos (antigo)
         renderHabits();
+        
+        if (initDashboard) initDashboard(); // Lista de Missões
+        if (initCalendar) initCalendar();   // Novo Calendário de Eventos
+        
+        setupButtons(); // Re-liga os botões
     });
 
-    // Inicia Gamificação (com tratamento de erro se o Supabase falhar)
-    try {
-        syncData().then(() => {
-            console.log("Sync completo.");
-            renderHabits();
-            renderCalendar();
-        }).catch(err => {
-            console.warn("Modo Offline:", err);
-            renderHabits();
-            renderCalendar();
-        });
-    } catch (e) {
-        console.error("Erro fatal na gamificação:", e);
+    // 7. Sincronização Inicial (Gamificação)
+    if (typeof syncData === 'function') {
+        syncData().catch(e => console.warn("Modo Offline ativado:", e));
     }
 });
+
+// --- FUNÇÕES AUXILIARES ---
+
+function setupButtons() {
+    const btnFoco = document.getElementById('btnFoco');
+    const btnRelatorio = document.getElementById('btnRelatorio');
+
+    if (btnFoco) {
+        // Clone para remover listeners antigos e evitar duplicidade
+        const newFoco = btnFoco.cloneNode(true);
+        btnFoco.parentNode.replaceChild(newFoco, btnFoco);
+        
+        newFoco.onclick = () => {
+            if (startZenMode) startZenMode();
+            else alert("Carregando módulo de Foco...");
+        };
+    }
+
+    if (btnRelatorio) {
+        const newRep = btnRelatorio.cloneNode(true);
+        btnRelatorio.parentNode.replaceChild(newRep, btnRelatorio);
+        
+        newRep.onclick = () => {
+            if (showWeeklyReport) showWeeklyReport();
+            else alert("Carregando módulo de Relatório...");
+        };
+    }
+}
+
+async function ensureUserInDB(email) {
+    try {
+        // Tenta buscar o usuário sem gerar erro 406 (usando maybeSingle)
+        const { data } = await supabase
+            .from('user_progress')
+            .select('id')
+            .eq('user_email', email)
+            .maybeSingle();
+        
+        // Se não existir, CRIA automaticamente
+        if (!data) {
+            console.log("🆕 Novo usuário detectado. Criando registro no DB...");
+            await supabase.from('user_progress').insert([{ 
+                user_email: email, 
+                game_data: {},
+                current_xp: 0,
+                current_level: 1
+            }]);
+        }
+    } catch (e) {
+        console.warn("Erro ao verificar DB (pode ser falha de conexão):", e);
+    }
+}
 
 function checkAuth() {
     try {
         const user = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
-        const session = JSON.parse(localStorage.getItem(CONFIG.SESSION_STORAGE_KEY));
-        if (!user && !session && !localStorage.getItem('synapse_access')) {
-             window.location.href = "login.html"; 
-        }
-        document.body.style.visibility = "visible";
-    } catch(e) { 
-        document.body.style.visibility = "visible"; 
-    }
+        // Se não tiver usuário, retorna um temporário para não quebrar o layout
+        return user || { email: "visitante@synapse.com", name: "Visitante" };
+    } catch (e) { return null; }
 }
 
 function loadUserProfile() {
-    try {
-        const storedUser = localStorage.getItem(CONFIG.USER_STORAGE_KEY) || localStorage.getItem(CONFIG.SESSION_STORAGE_KEY);
-        let user = null;
-        if(storedUser) user = JSON.parse(storedUser);
-
+    const user = checkAuth();
+    if (user) {
         const ids = ['userNameDisplay', 'userNameSidebar', 'userNameDashboard'];
-        if (user) {
-            const name = user.name || user.user || "Membro";
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerText = name;
-            });
-            
-            const avatarIds = ['userAvatar', 'userAvatarSidebar'];
-            avatarIds.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerText = name.charAt(0).toUpperCase();
-            });
-        }
-    } catch(e) {}
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = user.name || user.user || "Membro";
+        });
+        
+        // Avatar (Inicial do nome)
+        const avatarIds = ['userAvatar', 'userAvatarSidebar'];
+        avatarIds.forEach(id => {
+            const el = document.getElementById(id);
+            const name = user.name || user.user || "M";
+            if (el) el.innerText = name.charAt(0).toUpperCase();
+        });
+    }
 }

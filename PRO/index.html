@@ -23,25 +23,14 @@
         /* --- ESTILOS DE ANIMAÇÃO E LAYOUT --- */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         body { visibility: hidden; background-color: #000; } 
-
-        /* Calendário Styles */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 4px; }
-        .calendar-day-header { text-align: center; font-size: 0.65rem; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 8px; }
         
-        .day-cell {
-            aspect-ratio: 1;
-            background: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; color: #444; position: relative;
-            opacity: 0; /* Começa invisível para animação */
-        }
-        /* Estados */
-        .day-cell.active { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.1); }
-        .day-cell.today { border-color: #fff; color: #fff; }
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #111; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* Animação: SOFT LIFT (Clean & Profissional) */
+        /* Animação: SOFT LIFT */
         .anim-active .day-cell { animation: softLift 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes softLift {
             0% { opacity: 0; transform: translateY(10px); }
@@ -51,8 +40,13 @@
         /* Animação XP */
         .xp-bar-fill { transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
         .level-pulse { animation: badgePulse 2s infinite; }
+      
         @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 rgba(204,0,0,0); border-color: #333; } 50% { box-shadow: 0 0 10px rgba(204,0,0,0.4); border-color: #666; } }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
+
 </head>
 
 <body class="h-full bg-black text-white font-inter overflow-hidden">
@@ -212,152 +206,130 @@
             </div>
 
             <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-10 relative z-10">
-    <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i class="fa-solid fa-comment-dots text-xl"></i></button>
+                <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i class="fa-solid fa-comment-dots text-xl"></i></button>
 
-    <div class="w-full max-w-md md:max-w-6xl mx-auto relative transition-all duration-500">
-        
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-            <div>
-                <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                    Olá, <span id="userNameDashboard" class="text-gray-400">Membro</span>
-                </h2>
-                <p class="text-xs text-gray-500 mt-1">Aqui está sua performance neuroquímica hoje.</p>
-            </div>
-            
-            <div class="flex gap-3">
-                <button onclick="window.location.href='index.html#planos'" class="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 border border-white/5">
-                    <i class="fa-solid fa-file-export"></i> Relatório
-                </button>
-                <button onclick="switchTab('chat')" class="bg-[#CC0000] hover:bg-red-600 text-white px-5 py-2 rounded-full text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center gap-2">
-                    <i class="fa-solid fa-play"></i> Iniciar Foco
-                </button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="dashboard-card p-5 flex flex-col justify-between">
-                <div class="flex justify-between items-start">
-                    <div class="w-8 h-8 rounded-full bg-blue-900/20 flex items-center justify-center text-blue-500"><i class="fa-solid fa-trophy text-xs"></i></div>
-                    <span class="text-[10px] text-green-500 bg-green-900/10 px-2 py-0.5 rounded-full font-bold">+12%</span>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-white mt-2">Nível 1</div>
-                    <div class="text-[10px] text-gray-500">Iniciante Focado</div>
-                </div>
-            </div>
-
-            <div class="dashboard-card p-5 flex flex-col justify-between">
-                <div class="flex justify-between items-start">
-                    <div class="w-8 h-8 rounded-full bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire text-xs"></i></div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-white mt-2">0 Dias</div>
-                    <div class="text-[10px] text-gray-500">Sequência Atual</div>
-                </div>
-            </div>
-
-            <div class="dashboard-card p-5 flex flex-col justify-between">
-                <div class="flex justify-between items-start">
-                    <div class="w-8 h-8 rounded-full bg-purple-900/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-brain text-xs"></i></div>
-                    <span class="text-[10px] text-gray-500">Hoje</span>
-                </div>
-                <div>
-                    <div class="w-full bg-[#222] rounded-full h-1.5 mt-3 mb-1 overflow-hidden">
-                        <div class="bg-purple-500 h-full w-[65%] rounded-full"></div>
-                    </div>
-                    <div class="text-[10px] text-gray-400 flex justify-between">
-                        <span>Carga Mental</span>
-                        <span class="text-white">65%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-card p-4 flex items-center justify-between">
-                <div>
-                    <div class="text-xs text-gray-400 mb-1">Meta Diária</div>
-                    <div class="text-xl font-bold text-white">4/5</div>
-                    <div class="text-[9px] text-gray-500">Tarefas</div>
-                </div>
-                <div class="circle-chart" style="--percentage: 80deg; width: 60px; height: 60px;">
-                    <div class="circle-content text-[10px] font-bold text-white">80%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <div class="dashboard-card p-6 lg:col-span-1">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-sm font-bold text-white">Consistência Semanal</h3>
-                    <i class="fa-solid fa-chart-simple text-gray-600"></i>
-                </div>
-
-                <div class="bar-chart mb-6 w-full justify-between px-2">
-                    <div class="bar" style="height: 40%" data-val="40%"></div> <div class="bar active" style="height: 80%" data-val="80%"></div> <div class="bar" style="height: 30%" data-val="30%"></div> <div class="bar active" style="height: 90%" data-val="90%"></div> <div class="bar" style="height: 50%" data-val="50%"></div> <div class="bar" style="height: 20%" data-val="20%"></div> <div class="bar" style="height: 10%" data-val="10%"></div> </div>
-                <div class="flex justify-between text-[9px] text-gray-500 px-2 uppercase font-bold">
-                    <span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-white/5">
-                    <h4 class="text-xs font-bold text-white mb-3">Sabotadores Detectados</h4>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Telas
-                            </div>
-                            <span class="text-white font-mono">2h 10m</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Sono Irregular
-                            </div>
-                            <span class="text-white font-mono">Médio</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-card p-6 lg:col-span-2">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-[#CC0000]"></i> Planejamento Tático
-                    </h3>
-                    <span class="text-[10px] text-gray-500 bg-[#1a1a1a] px-2 py-1 rounded-md">Hoje, 25 Nov</span>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="group flex items-center gap-4 bg-[#141414] hover:bg-[#1a1a1a] p-3 rounded-xl border border-transparent hover:border-white/5 transition">
-                        <div class="text-xs font-mono text-gray-500 w-10">08:00</div>
-                        <div class="w-px h-6 bg-white/5"></div>
-                        <input type="text" class="bg-transparent text-sm text-gray-300 w-full outline-none placeholder-gray-700" value="Rotina Matinal: Banho Gelado + Café" readonly>
-                        <div class="w-5 h-5 rounded-full border-2 border-green-500/50 flex items-center justify-center text-green-500 text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                    </div>
-
-                    <div class="group flex items-center gap-4 bg-[#141414] hover:bg-[#1a1a1a] p-3 rounded-xl border border-transparent hover:border-white/5 transition">
-                        <div class="text-xs font-mono text-gray-500 w-10">09:30</div>
-                        <div class="w-px h-6 bg-white/5"></div>
-                        <input type="text" class="bg-transparent text-sm text-white font-medium w-full outline-none placeholder-gray-600" placeholder="Digite seu foco principal...">
-                        <div class="w-5 h-5 rounded-full border-2 border-[#333] hover:border-[#CC0000] cursor-pointer transition"></div>
-                    </div>
-
-                    <div class="group flex items-center gap-4 bg-[#141414] hover:bg-[#1a1a1a] p-3 rounded-xl border border-transparent hover:border-white/5 transition">
-                        <div class="text-xs font-mono text-gray-500 w-10">14:00</div>
-                        <div class="w-px h-6 bg-white/5"></div>
-                        <input type="text" class="bg-transparent text-sm text-white w-full outline-none placeholder-gray-600" placeholder="Bloco de Deep Work...">
-                        <div class="w-5 h-5 rounded-full border-2 border-[#333] hover:border-[#CC0000] cursor-pointer transition"></div>
-                    </div>
+                <div class="w-full max-w-md md:max-w-6xl mx-auto relative transition-all duration-500">
                     
-                    <button class="w-full py-3 mt-2 border border-dashed border-[#333] rounded-xl text-xs text-gray-500 hover:text-white hover:border-gray-500 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Adicionar Bloco
-                    </button>
-                </div>
-            </div>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                                QG Operacional
+                            </h2>
+                            <p class="text-xs text-gray-500 mt-1">Bem-vindo, <span id="userNameDashboard" class="text-gray-300 font-bold">Comandante</span>.</p>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button id="btnRelatorio" class="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 border border-white/5">
+                                <i class="fa-solid fa-file-export"></i> Relatório
+                            </button>
+                            <button id="btnFoco" class="bg-[#CC0000] hover:bg-red-600 text-white px-5 py-2 rounded-full text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center gap-2">
+                                <i class="fa-solid fa-play"></i> Iniciar Foco
+                            </button>
+                        </div>
+                    </div>
 
-        </div>
-    </div>
-</div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-900/20 flex items-center justify-center text-blue-500"><i class="fa-solid fa-trophy text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white mt-2" id="levelDisplay">Nível 1</div>
+                                <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden">
+                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-500"></div>
+                                </div>
+                                <div class="text-[10px] text-gray-500 mt-1">Progresso de XP</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white mt-2">1 Dia</div>
+                                <div class="text-[10px] text-gray-500">Sequência Ativa</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-purple-900/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-brain text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="w-full bg-[#222] rounded-full h-1.5 mt-3 mb-1 overflow-hidden">
+                                    <div class="bg-purple-500 h-full w-[65%] rounded-full animate-pulse"></div>
+                                </div>
+                                <div class="text-[10px] text-gray-400 flex justify-between">
+                                    <span>Sistema</span>
+                                    <span class="text-white">Online</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-4 flex items-center justify-between">
+                            <div>
+                                <div class="text-xs text-gray-400 mb-1">Missões Hoje</div>
+                                <div class="text-xl font-bold text-white" id="dailyMetaText">0/0</div>
+                            </div>
+                            <div class="circle-chart" style="--percentage: 0deg; width: 60px; height: 60px;">
+                                <div class="circle-content text-[10px] font-bold text-white">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <div class="dashboard-card p-6 lg:col-span-1 h-[400px] flex flex-col">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-sm font-bold text-white"><i class="fa-regular fa-calendar text-gray-500 mr-2"></i>Agenda</h3>
+                                <div class="flex gap-2">
+                                    <button id="prevMonth" class="text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <button id="nextMonth" class="text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            
+                            <h4 id="cal-month-year" class="text-white font-bold text-center mb-2 capitalize">...</h4>
+                            
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-gray-600 font-bold uppercase mb-2">
+                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+                            </div>
+                            
+                            <div id="dashboardCalendar" class="grid grid-cols-7 gap-1 flex-grow overflow-y-auto custom-scrollbar"></div>
+                        </div>
+
+                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col h-[400px]">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-[#CC0000]"></i> Missões Ativas
+                                </h3>
+                                <span class="text-[10px] text-gray-500 bg-[#1a1a1a] px-2 py-1 rounded-md">Prioridade Alta</span>
+                            </div>
+
+                            <div id="tactical-list" class="space-y-2 flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                                <p class="text-xs text-gray-600 text-center py-10">Sincronizando banco de dados...</p>
+                                
+                                <div class="group flex items-center gap-4 bg-[#141414] hover:bg-[#1a1a1a] p-3 rounded-xl border border-transparent hover:border-white/5 transition">
+                                    <div class="text-xs font-mono text-gray-500 w-10">08:00</div>
+                                    <div class="w-px h-6 bg-white/5"></div>
+                                    <input type="text" class="bg-transparent text-sm text-gray-300 w-full outline-none placeholder-gray-700" value="Rotina Matinal" readonly>
+                                    <div class="w-5 h-5 rounded-full border-2 border-green-500/50 flex items-center justify-center text-green-500 text-xs">
+                                        <i class="fa-solid fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 mt-4 pt-4 border-t border-white/5">
+                                <input id="newMissionInput" type="text" class="bg-[#141414] text-sm text-white px-4 py-3 rounded-xl w-full outline-none placeholder-gray-600 focus:border-gray-600 border border-transparent transition" placeholder="Nova missão...">
+                                <button id="btnAddBlock" class="bg-[#1a1a1a] hover:bg-[#CC0000] text-gray-400 hover:text-white px-4 rounded-xl transition">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    </div>
+            </div>
 
         </main>
 
@@ -403,72 +375,64 @@
             const levelContainer = document.getElementById('levelContainer');
             const xpContainer = document.getElementById('xpContainer');
             const habitContainer = document.getElementById('habitContainer');
-            const grid = document.getElementById('calendarGrid');
+            const grid = document.getElementById('dashboardCalendar'); // Corrigido ID aqui também se necessário
 
-            // Reset visual
-            if(levelContainer) levelContainer.style.opacity = '0';
-            if(xpContainer) xpContainer.style.opacity = '0';
-            if(habitContainer) habitContainer.style.opacity = '0';
+            // Reset visual e animações
             if(grid) {
                 grid.classList.remove('anim-active');
-                // Força reflow para reiniciar animação
                 void grid.offsetWidth;
             }
-
-            // Sequência de entrada
-            setTimeout(() => { if(levelContainer) levelContainer.style.opacity = '1'; }, 100);
-            setTimeout(() => { if(xpContainer) xpContainer.style.opacity = '1'; }, 300);
             setTimeout(() => { 
-                if(grid) grid.classList.add('anim-active'); // Ativa animação CSS nas células
+                if(grid) grid.classList.add('anim-active');
             }, 500);
-            setTimeout(() => { if(habitContainer) habitContainer.style.opacity = '1'; }, 800);
         });
+
         // Renderiza o mini-calendário do Dashboard
-function renderDashboardCalendar() {
-    const grid = document.getElementById('dashboardCalendar');
-    if(!grid) return;
-    grid.innerHTML = '';
+        function renderDashboardCalendar() {
+            // CORREÇÃO: O ID agora bate com o HTML
+            const grid = document.getElementById('dashboardCalendar');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            // Dias (Simulados)
+            for(let i=1; i<=30; i++) {
+                const d = document.createElement('div');
+                d.className = 'day-cell aspect-square flex items-center justify-center text-[9px] rounded-sm text-gray-500 border border-transparent hover:border-white/20 transition cursor-pointer';
+                d.innerText = i;
+                
+                // Simulação de dados
+                if([2,3,4,8,9,10,15,16,22].includes(i)) {
+                    d.classList.add('bg-green-900/20', 'text-green-500', 'border-green-900/30'); // Dias Bons
+                } else if ([5,12,19].includes(i)) {
+                    d.classList.add('bg-red-900/20', 'text-red-500'); // Dias Ruins
+                }
+                
+                // Dia Atual
+                if(i === 24) { 
+                    d.classList.add('bg-white', '!text-black', 'font-bold');
+                }
+
+                grid.appendChild(d);
+            }
+        }
+
+        // Chamar ao carregar a aba
+        document.addEventListener('tabChanged:protocolo', renderDashboardCalendar);
+        
+        // Atualiza nome no dashboard
+        const user = JSON.parse(localStorage.getItem('synapseUser')) || JSON.parse(localStorage.getItem('synapse_session_v2'));
+        if(user) {
+            const name = user.name || user.user || "Membro";
+            const dashName = document.getElementById('userNameDashboard');
+            if(dashName) dashName.innerText = name;
+        }
+    </script>
+    <script type="module">
+    import { initDashboard } from './js/modules/dashboard.js';
     
-    // Headers (D S T Q Q S S)
-    const days = ['D','S','T','Q','Q','S','S'];
-    days.forEach(d => {
-        const h = document.createElement('div');
-        h.className = 'text-center text-[8px] text-gray-600 font-bold';
-        h.innerText = d;
-        grid.appendChild(h);
-    });
-
-    // Dias (Simulados)
-    for(let i=1; i<=30; i++) {
-        const d = document.createElement('div');
-        d.className = 'aspect-square flex items-center justify-center text-[9px] rounded-sm text-gray-500 border border-transparent hover:border-white/20 transition cursor-pointer';
-        d.innerText = i;
-        
-        // Simulação de dados
-        if([2,3,4,8,9,10,15,16,22].includes(i)) {
-            d.classList.add('bg-green-900/20', 'text-green-500', 'border-green-900/30'); // Dias Bons
-        } else if ([5,12,19].includes(i)) {
-            d.classList.add('bg-red-900/20', 'text-red-500'); // Dias Ruins
-        }
-        
-        // Dia Atual
-        if(i === 24) { // Exemplo
-            d.classList.add('bg-white', '!text-black', 'font-bold');
-        }
-
-        grid.appendChild(d);
-    }
-}
-
-// Chamar ao carregar a aba
-document.addEventListener('tabChanged:protocolo', renderDashboardCalendar);
-// Atualiza nome no dashboard
-const user = JSON.parse(localStorage.getItem('synapseUser')) || JSON.parse(localStorage.getItem('synapse_session_v2'));
-if(user) {
-    const name = user.name || user.user || "Membro";
-    const dashName = document.getElementById('userNameDashboard');
-    if(dashName) dashName.innerText = name;
-}
+    // Inicia o dashboard quando a aba "protocolo" for aberta ou ao carregar
+    document.addEventListener('DOMContentLoaded', initDashboard);
+    document.addEventListener('tabChanged:protocolo', initDashboard);
     </script>
 </body>
 </html>
