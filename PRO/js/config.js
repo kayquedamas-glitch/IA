@@ -9,5 +9,5 @@ export const CONFIG = {
     // CORREÇÃO: URL COMPLETA DO SUPABASE
     // Se a sua URL for diferente dessa estrutura, copie a "Project URL" inteira do painel do Supabase
     SUPABASE_URL: "https://yuadzvxjdhbwhwwgmbtm.supabase.co", 
-    SUPABASE_KEY: "sb_publishable_7FS2cy5GkmJSWiBY5rRXgQ_AZoAhK7H"
+    SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1YWR6dnhqZGhid2h3d2dtYnRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5NjAzNTYsImV4cCI6MjA4MDUzNjM1Nn0.WzwoLqP4NgOeK2E4xc8OonbD-wGVRTGCIQ7KgqzrNVA"
 };
