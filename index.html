@@ -532,17 +532,17 @@
     </section>
 
     <!-- Seção Planos -->
-    <section id="planos" class="py-24 relative overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#CC0000] opacity-[0.05] blur-[100px] rounded-full pointer-events-none"></div>
-
+    <section id="planos" class="py-24 bg-black relative border-t border-white/10">
+        <div class="absolute top-0 right-0 w-full h-full bg-[url('assets/noise.png')] opacity-5 pointer-events-none"></div>
+        
         <div class="max-w-4xl mx-auto px-4 relative z-10">
-            <div class="reveal clean-card overflow-hidden shadow-2xl flex flex-col md:flex-row !bg-[#0f0f0f]/80">
+            <div class="reveal bg-[#111] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
                 
-                <div class="p-10 flex-1 relative">
+                <!-- Lado Esquerdo (Info) -->
+                <div class="p-8 md:p-12 flex-1 relative">
                     <div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div>
-                    <span class="bg-red-500/10 text-red-500 border border-red-500/20 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">Oferta Limitada</span>
-                    <h3 class="text-3xl font-black text-white mt-4 mb-2 font-brand">Acesso Vitalício</h3>
-                    <p class="text-gray-400 text-sm mb-8">Pague uma vez, tenha controle para sempre.</p>
+                    <h3 class="text-2xl font-black text-white uppercase mb-2 font-brand">Acesso Vitalício</h3>
+                    <p class="text-xs text-gray-400 mb-6 uppercase tracking-widest">Oferta por tempo limitado</p>
                     
                     <ul class="space-y-4 mb-8">
                         <li class="flex items-center gap-3 text-sm text-gray-300">
@@ -559,21 +559,35 @@
                         </li>
                     </ul>
 
-                    <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" class="block w-full bg-[#CC0000] hover:bg-red-700 text-white font-bold py-4 rounded-full text-center uppercase tracking-widest shadow-lg shadow-red-900/20 transition-transform hover:scale-[1.01] btn-pill">
+                    <!-- Preço Desktop -->
+                    <div class="hidden md:block mb-6">
+                        <div class="flex items-start leading-none">
+                            <span class="text-xl font-bold text-gray-500 mt-2 mr-1">R$</span>
+                            <span class="text-7xl font-black text-white tracking-tighter">27</span>
+                            <span class="text-3xl font-bold text-red-600 mt-2">,90</span>
+                        </div>
+                    </div>
+
+                    <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" class="block w-full bg-[#CC0000] hover:bg-red-700 text-white font-bold py-4 rounded text-center uppercase tracking-widest shadow-lg transition-all transform hover:scale-[1.01]">
                         Quero Assumir o Controle
                     </a>
                 </div>
 
-                <div class="bg-[#151515] p-10 md:w-[40%] flex flex-col justify-center items-center border-t md:border-t-0 md:border-l border-white/5">
-                    <p class="text-gray-500 text-xs uppercase font-bold tracking-widest mb-2">Valor Único</p>
-                    <div class="flex items-start leading-none text-white">
-                        <span class="text-2xl font-bold mt-2 mr-1 text-gray-400">R$</span>
-                        <span class="text-7xl font-black tracking-tighter text-glow">27</span>
-                        <span class="text-3xl font-bold mt-2 text-gray-400">,90</span>
+                <!-- Lado Direito (Imagem/Destaque Mobile) -->
+                <div class="bg-[#0f0f0f] p-8 md:p-12 flex flex-col justify-center items-center border-t md:border-t-0 md:border-l border-white/5">
+                    <!-- Preço Mobile -->
+                    <div class="md:hidden text-center mb-6">
+                         <span class="text-xs text-gray-500 uppercase">Pagamento Único</span>
+                         <div class="flex items-center justify-center gap-1 mt-1">
+                             <span class="text-3xl font-black text-white">R$ 27,90</span>
+                         </div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-4 text-center">Menos que um café por mês.</p>
-                    
-                    <div class="flex gap-4 mt-8 opacity-30 text-white">
+
+                    <img src="assets/icone preto.png" class="w-24 h-24 md:w-32 md:h-32 opacity-80 mb-4 invert">
+                    <p class="text-[10px] text-gray-500 text-center max-w-[200px]">
+                        Sistema seguro e criptografado. Acesso imediato via e-mail.
+                    </p>
+                    <div class="flex gap-3 mt-4 opacity-30 grayscale">
                         <i class="fab fa-cc-visa text-2xl"></i>
                         <i class="fab fa-cc-mastercard text-2xl"></i>
                         <i class="fas fa-qrcode text-2xl"></i>
