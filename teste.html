@@ -44,6 +44,32 @@
         .tool-animate:nth-child(4) { animation-delay: 0.4s; }
         .tool-animate:nth-child(5) { animation-delay: 0.5s; }
 
+        /* --- ANIMAÇÕES DOPAMINÉRGICAS (NOVAS) --- */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            60% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .dopamine-card {
+            opacity: 0; /* Começa invisível */
+            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        /* Delays em cascata para os cards */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+
+        /* Brilho pulsante sutil */
+        @keyframes subtleGlow {
+            0%, 100% { box-shadow: 0 0 0 rgba(204,0,0,0); border-color: rgba(255,255,255,0.05); }
+            50% { box-shadow: 0 0 15px rgba(204,0,0,0.1); border-color: rgba(204,0,0,0.3); }
+        }
+        .glow-pulse { animation: subtleGlow 3s infinite; }
+
         /* CHAT AREA & MESSAGES */
         .chat-area { display: flex; flex-direction: column; background-color: #000000; background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 24px 24px; height: 100%; position: relative; overflow: hidden; }
         .chat-messages { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; display: flex; flex-direction: column; padding: 0 16px; padding-bottom: 100px; }
@@ -51,6 +77,7 @@
 
         .chat-message-user { background-color: #CC0000; color: #fff; align-self: flex-end; border-radius: 18px 18px 4px 18px; padding: 10px 14px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: fadeIn 0.2s; word-wrap: break-word; }
         .chat-message-ia { background-color: transparent; color: #F2F2F2; align-self: flex-start; padding: 0; margin-left: 2px; max-width: 95%; font-size: 0.95rem; line-height: 1.5; animation: fadeIn 0.2s; word-wrap: break-word; }
+        .chat-message-ia strong { color: white; font-weight: 700; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* BOTÕES & INPUT */
@@ -86,7 +113,8 @@
             .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); display: flex !important; }
             .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 40; visibility: hidden; opacity: 0; transition: opacity 0.3s; }
             .chat-input-container { bottom: 70px; background: transparent; border: none; padding: 0 10px 10px 10px; }
-            .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 50; padding-bottom: env(safe-area-inset-bottom); }
+            /* Barra fixa no rodapé estilo App */
+            .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 50; padding-bottom: env(safe-area-inset-bottom); transform: translateY(0) !important; /* FORÇA VISIBILIDADE */ }
             .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 100%; }
             .nav-btn.active { color: #CC0000; }
         }
@@ -94,6 +122,8 @@
         .anim-active .day-cell { animation: softLift 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes softLift { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ANIMAÇÃO PÂNICO (Progress Bar) */
         @keyframes progressFill { from { width: 0%; } to { width: 100%; } }
@@ -129,7 +159,7 @@
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
                         <img src="assets/icone preto.png" alt="Logo" class="w-6 h-6 object-contain invert">
-                        <span class="font-bold text-white tracking-tight text-sm">Synapse</span>
+                        <span class="font-bold text-white tracking-tight text-sm">Synapse PRO</span>
                     </div>
                     <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-2">
                         <i class="fa-solid fa-xmark text-2xl"></i>
@@ -137,7 +167,7 @@
                 </div>
 
                 <nav class="space-y-1">
-                    <!-- BOTÃO ALTERADO PARA JORNADA -->
+                    <!-- BOTÃO JORNADA -->
                     <div onclick="switchTab('protocolo'); closeSidebar()" class="flex items-center gap-4 px-3 py-2 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-md cursor-pointer transition font-bold text-sm group">
                         <div class="w-6 text-center"><i class="fa-solid fa-layer-group text-lg group-hover:text-white transition"></i></div>
                         <span>Jornada</span>
@@ -217,7 +247,7 @@
                 </div>
             </div>
             
-            <!-- RODAPÉ SIDEBAR PREMIUM (Restaurado) -->
+            <!-- RODAPÉ SIDEBAR PREMIUM -->
             <div class="mt-auto">
                 <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-lg group border border-[#222]">
                     <div class="bg-[#000] p-3 rounded-[7px] h-full flex items-center gap-3 relative overflow-hidden">
@@ -251,7 +281,7 @@
                 <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2" onclick="toggleSidebar()">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse TESTE</h3>
                 <div class="w-9"></div> 
             </div>
 
@@ -292,31 +322,32 @@
                         </div>
                     </div>
 
+                    <!-- CARDS ANIMADOS -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-100">
                             <div class="flex justify-between items-start">
                                 <div class="w-8 h-8 rounded-full bg-blue-900/20 flex items-center justify-center text-blue-500"><i class="fa-solid fa-trophy text-xs"></i></div>
                             </div>
                             <div>
                                 <div class="text-2xl font-bold text-white mt-2" id="levelDisplay">Nível 1</div>
                                 <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden">
-                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-500"></div>
+                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000 ease-out"></div>
                                 </div>
                                 <div class="text-[10px] text-gray-500 mt-1">Modo Demo</div>
                             </div>
                         </div>
 
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-200">
                             <div class="flex justify-between items-start">
                                 <div class="w-8 h-8 rounded-full bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire text-xs"></i></div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-white mt-2">0 Dias</div>
+                                <div class="text-2xl font-bold text-white mt-2 glow-pulse">0 Dias</div>
                                 <div class="text-[10px] text-gray-500">Sequência (Bloqueado)</div>
                             </div>
                         </div>
 
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-300">
                             <div class="flex justify-between items-start">
                                 <div class="w-8 h-8 rounded-full bg-purple-900/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-brain text-xs"></i></div>
                             </div>
@@ -331,7 +362,7 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-card p-4 flex items-center justify-between">
+                        <div class="dashboard-card p-4 flex items-center justify-between dopamine-card delay-400">
                             <div>
                                 <div class="text-xs text-gray-400 mb-1">Missões Hoje</div>
                                 <div class="text-xl font-bold text-white" id="dailyMetaText">0/1</div>
@@ -342,7 +373,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
                         
                         <div class="dashboard-card p-6 lg:col-span-1 h-[400px] flex flex-col relative group">
                             
@@ -401,449 +432,6 @@
     </div>
 
     <!-- SCRIPT PRINCIPAL UNIFICADO -->
-    <script type="module">
-        const CONFIG = {
-            API_URL: "https://long-block-7f38.kayquedamas.workers.dev",
-            API_MODEL: "llama-3.1-8b-instant"
-        };
-
-        const IS_DEMO = true;
-        let chatMessageCount = 0;
-        const CHAT_LIMIT = 3;
-        const MISSION_LIMIT = 1;
-
-        // -----------------------------------------------------------
-        // 2. MÓDULO DE NAVEGAÇÃO & SELEÇÃO
-        // -----------------------------------------------------------
-        function initNavigation() {
-            window.toggleSidebar = toggleSidebar;
-            window.switchTab = switchTab;
-            window.selectTool = selectTool;
-            window.showLockedFeature = showLockedFeature;
-            document.getElementById('sidebarOverlay')?.addEventListener('click', toggleSidebar);
-        }
-
-        // Função de seleção inteligente
-        function selectTool(toolKey) {
-            if (window.innerWidth < 768) toggleSidebar();
-
-            if (toolKey === 'Diagnostico') {
-                resetChat('Diagnostico'); // Grátis, abre direto
-            } else if (toolKey === 'Panico') {
-                playPanicSequence(); // Animação exclusiva
-            } else {
-                showToolBlockedScreen(toolKey); // Bloqueio direto profissional
-            }
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (!sidebar || !overlay) return;
-            const isOpen = sidebar.style.transform === 'translateX(0px)';
-            sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
-            overlay.style.visibility = isOpen ? 'hidden' : 'visible';
-            overlay.style.opacity = isOpen ? '0' : '1';
-        }
-
-        function switchTab(tab) {
-            const viewChat = document.getElementById('viewChat');
-            const viewProtocolo = document.getElementById('viewProtocolo');
-            const tabChat = document.getElementById('tabChat');
-            const tabJornada = document.getElementById('tabJornada');
-            const bottomNav = document.querySelector('.bottom-nav');
-            const mobileHeader = document.getElementById('mobileHeader');
-
-            // Reset
-            if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
-            if(tabJornada) { tabJornada.classList.remove('active'); tabJornada.style.color = '#666'; }
-            viewChat.classList.add('hidden');
-            viewProtocolo.classList.add('hidden');
-
-            // --- NUNCA ESCONDER NAV BAR INFERIOR OU HEADER NO MOBILE ---
-            if(bottomNav) bottomNav.style.transform = 'translateY(0)';
-            if(mobileHeader) mobileHeader.style.transform = 'translateY(0)';
-
-            if (tab === 'chat') {
-                viewChat.classList.remove('hidden');
-                if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
-            } else {
-                viewProtocolo.classList.remove('hidden');
-                if(tabJornada) { tabJornada.classList.add('active'); tabJornada.style.color = '#CC0000'; }
-            }
-        }
-
-        function showLockedFeature(featureName) {
-            alert(`🔒 RECURSO BLOQUEADO NA DEMO\n\nO acesso ao módulo "${featureName}" é exclusivo para membros PRO.\n\nAssine agora para liberar.`);
-        }
-
-        // -----------------------------------------------------------
-        // 3. ANIMAÇÃO EXCLUSIVA DE PÂNICO
-        // -----------------------------------------------------------
-        function playPanicSequence() {
-            switchTab('chat');
-            const container = document.getElementById('messagesContainer');
-            const inputContainer = document.querySelector('.chat-input-container');
-            if(!container) return;
-
-            if(inputContainer) inputContainer.classList.add('hidden-input');
-            container.innerHTML = '';
-            
-            // Animação Dramática "ANALISANDO CRISE"
-            const animationHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center fade-in pt-24 bg-scan-overlay fixed inset-0 z-50">
-                    <i class="fa-solid fa-biohazard text-5xl text-red-600 mb-6 animate-pulse"></i>
-                    <h2 class="text-2xl font-black text-white tracking-widest uppercase mb-2 text-glow-red">ANALISANDO CRISE</h2>
-                    <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden mb-2 mt-4 border border-red-900/50">
-                        <div class="h-full bg-red-600 animate-progress-fill" style="width: 0%"></div>
-                    </div>
-                    <p class="text-[10px] text-red-500 tracking-widest uppercase blink-slow">DETECTANDO PADRÃO DE RECAÍDA...</p>
-                </div>
-            `;
-            
-            container.innerHTML = animationHTML;
-            
-            // Após 3s, mostra o bloqueio profissional
-            setTimeout(() => {
-                showToolBlockedScreen('Protocolo de Pânico');
-                if(inputContainer) inputContainer.classList.remove('hidden-input');
-            }, 3000);
-        }
-
-        // -----------------------------------------------------------
-        // 4. TELA DE BLOQUEIO PROFISSIONAL (Paywall)
-        // -----------------------------------------------------------
-        function showToolBlockedScreen(toolName) {
-            switchTab('chat'); // Garante que estamos na aba certa
-            const container = document.getElementById('messagesContainer');
-            if(!container) return;
-
-            // HTML Profissional (Borda Neon Vermelha, Ícone Mão, Botão Largo)
-            const blockedHTML = `
-                <div class="flex flex-col items-center justify-center h-full fade-in pt-16 px-4">
-                    <div class="bg-[#0a0505] border border-red-600 shadow-[0_0_60px_rgba(220,38,38,0.25)] p-8 rounded-2xl max-w-sm w-full text-center relative overflow-hidden">
-                        
-                        <!-- Watermark de Polvo -->
-                        <div class="absolute inset-0 bg-[url('assets/polvo_synapse.png')] bg-center bg-no-repeat opacity-10 pointer-events-none bg-contain mix-blend-overlay"></div>
-
-                        <!-- Ícone de Bloqueio -->
-                        <div class="w-14 h-14 bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-red-600 text-red-500 shadow-[0_0_15px_rgba(220,38,38,0.6)]">
-                            <i class="fas fa-hand-paper text-2xl"></i>
-                        </div>
-                        
-                        <h3 class="text-white font-black text-xl mb-3 uppercase tracking-wide">Intervenção Bloqueada</h3>
-                        
-                        <p class="text-gray-400 text-xs mb-8 leading-relaxed font-medium">
-                            O módulo <strong>${toolName}</strong> é uma ferramenta neuroquímica avançada disponível apenas para membros do <span class="text-red-500 font-bold">Synapse PRO</span>.
-                        </p>
-                        
-                        <button onclick="window.location.href='index.html#planos'" class="w-full py-4 bg-[#CC0000] hover:bg-red-600 text-white font-black rounded-lg uppercase tracking-[0.15em] text-[10px] shadow-lg shadow-red-900/40 transition-all transform hover:-translate-y-1 active:scale-95">
-                            DESBLOQUEAR AGORA
-                        </button>
-                        
-                        <p class="text-[9px] text-gray-600 mt-4 font-mono-code">SISTEMA PROTEGIDO v2.5</p>
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = blockedHTML;
-            document.getElementById('chatInput').disabled = true;
-            document.getElementById('chatInput').placeholder = "Acesso Restrito.";
-        }
-
-        // -----------------------------------------------------------
-        // 5. MÓDULO DE CHAT (Diagnóstico)
-        // -----------------------------------------------------------
-        const AGENTS = {
-            Diagnostico: {
-                name: "Psicólogo IA",
-                welcome: "Oi. Sou seu analista pessoal. Como é apenas uma demonstração, serei breve. O que está te travando hoje?",
-                typewriter: ["analisando contexto...", "conectado (modo demo)."],
-                initialButtons: ["Procrastinação", "Ansiedade", "Desânimo"],
-                prompt: "Você é um psicólogo comportamental. Seja breve e direto."
-            }
-        };
-
-        let chatHistory = [];
-
-        function initChat() {
-            const sendBtn = document.getElementById('sendBtn');
-            const chatInput = document.getElementById('chatInput');
-            if(sendBtn) sendBtn.addEventListener('click', sendMessage);
-            if(chatInput) chatInput.addEventListener('keydown', (e) => { 
-                if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } 
-            });
-            // Inicia zerado, selectTool chama o resetChat
-        }
-
-        function resetChat(agentKey = 'Diagnostico') {
-            const container = document.getElementById('messagesContainer');
-            if(!container) return;
-            
-            container.innerHTML = ''; 
-            chatMessageCount = 0;
-            
-            document.getElementById('chatInput').disabled = false;
-            document.getElementById('chatInput').placeholder = "Digite seu comando...";
-
-            const agent = AGENTS[agentKey];
-            
-            const headerHTML = `
-                <div class="w-full text-center mb-6 p-4">
-                    <p id="chatSubtitle" class="text-gray-400 text-sm">
-                        <span id="typewriter-text" class="text-brutal-red font-medium"></span>
-                        <span class="animate-pulse">|</span>
-                    </p>
-                </div>
-            `;
-            container.insertAdjacentHTML('afterbegin', headerHTML);
-            addIAMessage(agent.welcome);
-            renderQuickReplies(agent.initialButtons);
-            chatHistory = [{ role: "system", content: agent.prompt }];
-            startTypewriter(agent.typewriter);
-        }
-
-        async function sendMessage() {
-            const chatInput = document.getElementById('chatInput');
-            const text = chatInput.value.trim();
-            if(!text) return;
-
-            if (chatMessageCount >= CHAT_LIMIT) {
-                showPaywallInChat();
-                chatInput.value = '';
-                return;
-            }
-
-            addUserMessage(text);
-            chatInput.value = '';
-            chatHistory.push({ role: "user", content: text });
-            chatMessageCount++;
-
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'chat-message-ia opacity-50 text-xs';
-            loadingDiv.id = 'loadingMsg';
-            loadingDiv.innerText = `Analisando...`;
-            document.getElementById('messagesContainer').appendChild(loadingDiv);
-            scrollToBottom();
-
-            try {
-                const response = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ model: CONFIG.API_MODEL, messages: chatHistory, temperature: 0.7 })
-                });
-                loadingDiv.remove();
-                const data = await response.json();
-                if (!data.choices || !data.choices[0]) throw new Error("API sem resposta");
-                const reply = data.choices[0].message.content;
-                
-                addIAMessage(reply);
-                chatHistory.push({ role: "assistant", content: reply });
-
-                if (chatMessageCount >= CHAT_LIMIT) setTimeout(showPaywallInChat, 1000);
-
-            } catch (e) {
-                if(document.getElementById('loadingMsg')) document.getElementById('loadingMsg').remove();
-                addIAMessage("Erro de conexão na demo.", true);
-            }
-        }
-
-        function showPaywallInChat() {
-            const container = document.getElementById('messagesContainer');
-            const paywallHTML = `
-                <div class="paywall-card">
-                    <i class="fa-solid fa-lock text-2xl text-red-500 mb-2"></i>
-                    <h3 class="text-white font-bold text-sm uppercase">Dossiê Bloqueado</h3>
-                    <p class="text-gray-400 text-xs mt-2 mb-4">Você atingiu o limite de interações da demonstração gratuita.</p>
-                    <button onclick="window.location.href='index.html#planos'" class="bg-[#CC0000] hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-xs uppercase tracking-wider w-full">
-                        Desbloquear Análise Completa
-                    </button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', paywallHTML);
-            document.getElementById('chatInput').disabled = true;
-            document.getElementById('chatInput').placeholder = "Sessão Finalizada.";
-            scrollToBottom();
-        }
-
-        function addUserMessage(text) {
-            const container = document.getElementById('messagesContainer');
-            const div = document.createElement('div');
-            div.className = 'chat-message-user';
-            div.innerText = text;
-            container.appendChild(div);
-            scrollToBottom();
-        }
-
-        function addIAMessage(text, isError = false) {
-            const container = document.getElementById('messagesContainer');
-            let cleanMessage = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-            const div = document.createElement('div');
-            div.className = 'chat-message-ia';
-            if(isError) div.style.color = '#ef4444';
-            div.innerHTML = cleanMessage;
-            container.appendChild(div);
-            scrollToBottom();
-        }
-
-        function renderQuickReplies(buttons) {
-            const container = document.getElementById('messagesContainer');
-            const btnContainer = document.createElement('div');
-            btnContainer.className = 'quick-reply-container';
-            buttons.forEach(btnText => {
-                const btn = document.createElement('button');
-                btn.className = 'cyber-btn';
-                btn.innerText = btnText;
-                btn.onclick = () => {
-                    btnContainer.style.display = 'none'; 
-                    document.getElementById('chatInput').value = btnText;
-                    sendMessage();
-                };
-                btnContainer.appendChild(btn);
-            });
-            container.appendChild(btnContainer);
-            scrollToBottom();
-        }
-
-        function startTypewriter(phrases) {
-            const el = document.getElementById('typewriter-text');
-            if(!el) return;
-            let pIndex = 0, cIndex = 0, isDeleting = false;
-            function type() {
-                const current = phrases[pIndex];
-                el.textContent = current.substring(0, isDeleting ? cIndex - 1 : cIndex + 1);
-                cIndex += isDeleting ? -1 : 1;
-                let speed = isDeleting ? 50 : 100;
-                if(!isDeleting && cIndex === current.length) { isDeleting = true; speed = 2000; }
-                else if(isDeleting && cIndex === 0) { isDeleting = false; pIndex = (pIndex + 1) % phrases.length; speed = 500; }
-                setTimeout(type, speed);
-            }
-            type();
-        }
-
-        function scrollToBottom() {
-            const container = document.getElementById('messagesContainer');
-            const parent = container.parentElement;
-            if(parent) parent.scrollTop = parent.scrollHeight;
-        }
-
-        // -----------------------------------------------------------
-        // 6. MÓDULO DASHBOARD (Limitado)
-        // -----------------------------------------------------------
-        let localMissions = []; 
-
-        function initDashboard() {
-            setupInput();
-            renderMissions();
-        }
-
-        function renderMissions() {
-            const list = document.getElementById('tactical-list');
-            list.innerHTML = '';
-            
-            if (localMissions.length === 0) {
-                list.innerHTML = '<div class="text-center py-8 text-gray-700 text-xs">Adicione uma missão para testar o sistema.<br>(Limite: 1 na Demo)</div>';
-                updateMeta();
-                return;
-            }
-
-            localMissions.forEach(m => {
-                const div = document.createElement('div');
-                div.className = `group flex items-center gap-3 bg-[#111] hover:bg-[#161616] p-3 rounded-lg border border-transparent hover:border-white/5 transition mb-2 ${m.completed ? 'opacity-50' : ''}`;
-                div.innerHTML = `
-                    <button class="check-btn w-5 h-5 rounded border ${m.completed ? 'bg-green-500 border-green-500 text-black' : 'border-[#444] hover:border-white'} flex items-center justify-center transition">
-                        ${m.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
-                    </button>
-                    <input type="text" readonly value="${m.title}" class="bg-transparent text-sm w-full outline-none ${m.completed ? 'text-gray-500 line-through' : 'text-gray-200'}">
-                    <button class="del-btn text-gray-700 hover:text-red-500 opacity-0 group-hover:opacity-100 transition px-2"><i class="fa-solid fa-trash text-xs"></i></button>
-                `;
-                div.querySelector('.check-btn').onclick = () => {
-                    m.completed = !m.completed;
-                    if(m.completed) {
-                        const xpBar = document.getElementById('xpBar');
-                        if(xpBar) xpBar.style.width = '20%';
-                        if(window.confetti) confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 } });
-                    }
-                    renderMissions();
-                };
-                div.querySelector('.del-btn').onclick = () => {
-                    localMissions = localMissions.filter(item => item.id !== m.id);
-                    renderMissions();
-                };
-                list.appendChild(div);
-            });
-            updateMeta();
-        }
-
-        function setupInput() {
-            const btn = document.getElementById('btnAddBlock');
-            const input = document.getElementById('newMissionInput');
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-
-            const addFn = () => {
-                const title = input.value.trim();
-                if(!title) return;
-                if (localMissions.length >= MISSION_LIMIT) {
-                    alert("🔒 LIMITE DE DEMO ATINGIDO\n\nNa versão gratuita, você pode testar com apenas 1 missão ativa.\n\nDesbloqueie o PRO para missões ilimitadas.");
-                    return;
-                }
-                input.value = '';
-                localMissions.push({ id: Date.now(), title: title, completed: false });
-                renderMissions();
-            };
-            newBtn.onclick = addFn;
-            input.onkeydown = (e) => { if(e.key === 'Enter') addFn(); };
-        }
-
-        function updateMeta() {
-            const done = localMissions.filter(m => m.completed).length;
-            const total = localMissions.length > 0 ? localMissions.length : 1; 
-            const pct = Math.round((done/total)*100);
-            
-            document.getElementById('dailyMetaText').innerText = `${done}/${localMissions.length}`;
-            document.querySelector('.circle-content').innerText = `${pct}%`;
-            document.querySelector('.circle-chart').style.setProperty('--percentage', `${pct * 3.6}deg`);
-        }
-
-        // -----------------------------------------------------------
-        // 7. INICIALIZAÇÃO
-        // -----------------------------------------------------------
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log("🚀 Inicializando Synapse (Modo DEMO)...");
-            
-            initNavigation();
-            initChat();
-            initDashboard();
-            
-            // Inicia com Diagnóstico (Sem animação de crise)
-            selectTool('Diagnostico');
-
-            // Forçar abertura da sidebar no mobile
-            if (window.innerWidth < 768) {
-                setTimeout(() => toggleSidebar(), 100);
-            }
-            
-            const calGrid = document.getElementById('cal-grid');
-            if(calGrid) {
-                for(let i=1; i<=30; i++) {
-                    const d = document.createElement('div');
-                    d.className = 'aspect-square rounded border border-[#222] flex items-center justify-center text-[10px] text-[#444]';
-                    d.innerText = i;
-                    calGrid.appendChild(d);
-                }
-            }
-
-            document.body.style.visibility = "visible";
-            if(window.lucide) lucide.createIcons();
-        });
-        
-        // Listeners Extras
-        document.getElementById('btnFoco').onclick = () => showLockedFeature("Modo Foco");
-        document.getElementById('btnRelatorio').onclick = () => showLockedFeature("Relatórios Avançados");
-        
-        // Fallback global para evitar erros
-        window.triggerPanicSequence = () => selectTool('Panico');
-    </script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
