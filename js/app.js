@@ -57,6 +57,9 @@ let chatHistory = [];
 // -----------------------------------------------------------
 // 1. INICIALIZAÇÃO & NAVEGAÇÃO
 // -----------------------------------------------------------
+// -----------------------------------------------------------
+// 1. INICIALIZAÇÃO & NAVEGAÇÃO
+// -----------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🚀 Inicializando Synapse (Modo Divertido)...");
     
@@ -64,11 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initChat();
     initDashboard();
     
-    // Inicia Sessão
+    // Inicia a ferramenta (necessário para carregar configurações), 
+    // mas força a visualização para a aba JORNADA logo em seguida.
     selectTool('Diagnostico');
+    switchTab('protocolo'); // <--- MUDANÇA AQUI: Inicia na Jornada
 
     if (window.innerWidth < 768) {
-        setTimeout(() => toggleSidebar(), 100);
+        // Garante que a sidebar comece fechada no mobile
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) sidebar.style.transform = 'translateX(-100%)';
+        if (overlay) { overlay.style.visibility = 'hidden'; overlay.style.opacity = '0'; }
     }
     
     // Renderiza calendário estático
@@ -76,7 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if(calGrid) {
         for(let i=1; i<=30; i++) {
             const d = document.createElement('div');
-            d.className = 'aspect-square rounded border border-[#222] flex items-center justify-center text-[10px] text-[#444]';
+            // Ajuste visual para números do calendário
+            d.className = 'aspect-square rounded border border-[#222] flex items-center justify-center text-[10px] text-[#555] font-mono hover:bg-[#1a1a1a] transition-colors cursor-default';
             d.innerText = i;
             calGrid.appendChild(d);
         }
