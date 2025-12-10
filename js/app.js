@@ -10,6 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesContainer = document.getElementById('messagesContainer');
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
+
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendMessage);
+    }
+
+    // 2. Ativa o envio com a tecla "Enter" (melhor experiência)
+    if (chatInput) {
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Evita pular linha
+                sendMessage();
+            }
+        });
+    }
     
     // UI Geral
     const viewChat = document.getElementById('viewChat');
