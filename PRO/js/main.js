@@ -29,18 +29,23 @@ async function loadModules() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("🚀 Inicializando Synapse PRO v2.5...");
+    console.log("🚀 Inicializando Synapse PRO v2.6 (Auth Fix)...");
     
     // 1. Carrega os módulos pesados
     await loadModules();
 
-    // 2. Verifica usuário
+    // 2. Verifica usuário (CORREÇÃO AQUI)
     const user = checkAuth();
     loadUserProfile();
 
-    // 3. CORREÇÃO ERRO 406: Garante que o usuário existe no Banco de Dados
-    if (user && window.supabase) {
-        await ensureUserInDB(user.email);
+    // 3. Garante que o usuário existe no Banco de Dados
+    // Agora verifica 'user.user' (nome) ou 'user.email'
+    if (user && user.email && window.supabase) {
+        // Evita criar registro para o usuário genérico 'visitante' se possível,
+        // mas garante que quem logou tenha registro.
+        if (user.email !== "visitante@synapse.com") {
+            await ensureUserInDB(user.email);
+        }
     }
 
     // 4. Inicializa a Interface (Com proteção contra falhas)
@@ -135,29 +140,37 @@ async function ensureUserInDB(email) {
     }
 }
 
+// --- CORREÇÃO PRINCIPAL: Ler das duas chaves de armazenamento ---
 function checkAuth() {
     try {
-        const user = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
-        // Se não tiver usuário, retorna um temporário para não quebrar o layout
-        return user || { email: "visitante@synapse.com", name: "Visitante" };
+        // Tenta ler do login novo (v2) OU do antigo
+        const sessionV2 = JSON.parse(localStorage.getItem(CONFIG.SESSION_STORAGE_KEY));
+        const userV1 = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
+        
+        const activeUser = sessionV2 || userV1;
+
+        // Se achou alguém, retorna. Se não, retorna o Visitante.
+        return activeUser || { email: "visitante@synapse.com", name: "Visitante" };
     } catch (e) { return null; }
 }
 
 function loadUserProfile() {
     const user = checkAuth();
     if (user) {
+        // Prioriza 'user' (do sheetDB) ou 'name', depois email, ou genérico
+        const displayName = user.user || user.name || user.email || "Membro";
+        
         const ids = ['userNameDisplay', 'userNameSidebar', 'userNameDashboard'];
         ids.forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.innerText = user.name || user.user || "Membro";
+            if (el) el.innerText = displayName;
         });
         
         // Avatar (Inicial do nome)
         const avatarIds = ['userAvatar', 'userAvatarSidebar'];
         avatarIds.forEach(id => {
             const el = document.getElementById(id);
-            const name = user.name || user.user || "M";
-            if (el) el.innerText = name.charAt(0).toUpperCase();
+            if (el) el.innerText = displayName.charAt(0).toUpperCase();
         });
     }
 }

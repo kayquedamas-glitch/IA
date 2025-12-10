@@ -1,10 +1,28 @@
 // PRO/js/modules/dashboard.js
 import { CONFIG } from '../config.js';
 
+// --- CORREÇÃO 1: Inicializar o Supabase corretamente ---
+let supabase = null;
+try {
+    if (window.supabase && CONFIG.SUPABASE_URL && CONFIG.SUPABASE_KEY) {
+        supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+    } else {
+        console.error("Supabase não encontrado. Verifique o arquivo config.js e se o script CDN está no HTML.");
+    }
+} catch (e) {
+    console.error("Erro ao iniciar Supabase:", e);
+}
+
 export async function initDashboard() {
     console.log("📊 Inicializando Dashboard Tático...");
-    const user = getUser();
-    if(!user) return;
+    
+    // --- CORREÇÃO 2: Aceitar Visitante (Modo Teste) ---
+    const user = getUser() || { email: "visitante@teste.com", name: "Visitante" };
+
+    if (!supabase) {
+        console.warn("Sem conexão com banco de dados. O Dashboard não salvará nada.");
+        return;
+    }
 
     await loadMissions(user.email);
     setupInput(user.email);
@@ -16,11 +34,14 @@ async function loadMissions(email) {
     const list = document.getElementById('tactical-list');
     if(!list) return;
 
-    const { data: missions } = await supabase
+    // Busca missões do banco
+    const { data: missions, error } = await supabase
         .from('missions')
         .select('*')
         .eq('user_email', email)
         .order('id', { ascending: true });
+
+    if (error) console.error("Erro ao carregar missões:", error);
 
     list.innerHTML = '';
 
@@ -52,25 +73,54 @@ function renderMissionHTML(mission, container) {
 
     // Click: Completar
     div.querySelector('.check-btn').onclick = async () => {
-        await supabase.from('missions').update({ is_completed: !mission.is_completed }).eq('id', mission.id);
-        if(!mission.is_completed) addXP(10); // Ganha 10 XP ao completar
-        loadMissions(mission.user_email);
+        // Atualiza visualmente na hora (para parecer rápido)
+        mission.is_completed = !mission.is_completed;
+        const btn = div.querySelector('.check-btn');
+        const input = div.querySelector('input');
+        
+        if(mission.is_completed) {
+            btn.className = "check-btn w-5 h-5 rounded border bg-green-500 border-green-500 text-black flex items-center justify-center transition";
+            btn.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i>';
+            input.classList.add('text-gray-500', 'line-through');
+            div.classList.add('opacity-50');
+        } else {
+            btn.className = "check-btn w-5 h-5 rounded border border-[#444] hover:border-white flex items-center justify-center transition";
+            btn.innerHTML = '';
+            input.classList.remove('text-gray-500', 'line-through');
+            div.classList.remove('opacity-50');
+        }
+
+        // Atualiza no Banco
+        await supabase.from('missions').update({ is_completed: mission.is_completed }).eq('id', mission.id);
+        if(mission.is_completed) addXP(10); // Ganha 10 XP
+        
+        // Recarrega estatísticas
+        updateMeta(await getLocalMissions(mission.user_email)); 
     };
 
     // Click: Deletar
     div.querySelector('.del-btn').onclick = async () => {
         if(confirm("Abortar missão?")) {
+            div.remove(); // Remove visualmente na hora
             await supabase.from('missions').delete().eq('id', mission.id);
-            loadMissions(mission.user_email);
+            updateMeta(await getLocalMissions(mission.user_email));
         }
     };
 
     container.appendChild(div);
 }
 
+// Função auxiliar para evitar recarregar tudo do banco só para atualizar o gráfico
+async function getLocalMissions(email) {
+    const { data } = await supabase.from('missions').select('*').eq('user_email', email);
+    return data || [];
+}
+
 function setupInput(email) {
     const btn = document.getElementById('btnAddBlock');
     const input = document.getElementById('newMissionInput');
+
+    if(!btn || !input) return;
 
     // Clone para limpar listeners antigos
     const newBtn = btn.cloneNode(true);
@@ -81,9 +131,18 @@ function setupInput(email) {
         const title = input.value.trim();
         if(!title) return;
         
+        // Limpa input e dá feedback visual
         input.value = '';
-        await supabase.from('missions').insert({ user_email: email, title });
-        loadMissions(email);
+        input.placeholder = "Salvando...";
+        
+        const { error } = await supabase.from('missions').insert({ user_email: email, title });
+        
+        input.placeholder = "Nova missão...";
+        if(error) {
+            alert("Erro ao salvar: " + error.message);
+        } else {
+            loadMissions(email); // Recarrega lista
+        }
     };
 
     newBtn.onclick = addFn;
@@ -106,19 +165,25 @@ function updateMeta(missions) {
 
 // --- XP SYSTEM ---
 async function loadXP(email) {
-    const { data } = await supabase.from('user_progress').select('current_xp, current_level').eq('user_email', email).single();
+    const { data } = await supabase.from('user_progress').select('current_xp, current_level').eq('user_email', email).maybeSingle();
+    
     if(data) {
         updateXPUI(data.current_xp || 0, data.current_level || 1);
+    } else {
+        // Se não tiver XP ainda, cria o registro
+        await supabase.from('user_progress').insert({ user_email: email, current_xp: 0 });
     }
 }
 
 async function addXP(amount) {
-    const user = getUser();
-    const { data } = await supabase.from('user_progress').select('current_xp').eq('user_email', user.email).single();
-    const newXP = (data.current_xp || 0) + amount;
+    const user = getUser() || { email: "visitante@teste.com" };
+    const { data } = await supabase.from('user_progress').select('current_xp').eq('user_email', user.email).maybeSingle();
     
-    await supabase.from('user_progress').update({ current_xp: newXP }).eq('user_email', user.email);
-    updateXPUI(newXP, 1); // Simplificado: Nível 1 fixo por enquanto
+    const currentXP = data ? data.current_xp : 0;
+    const newXP = currentXP + amount;
+    
+    await supabase.from('user_progress').upsert({ user_email: user.email, current_xp: newXP }, { onConflict: 'user_email' });
+    updateXPUI(newXP, 1);
 }
 
 function updateXPUI(xp, level) {
