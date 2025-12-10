@@ -1,714 +1,475 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
-
+<html lang="pt-BR" class="h-full">
 <head>
     <link rel="shortcut icon" href="assets/icone preto.png" type="image/jpeg">
     <link rel="icon" href="assets/icone preto.png" type="image/jpeg">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-    <title>Synapse - O Sistema Operacional da Sua Mente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
+    <title>Synapse - Demonstração Gratuita</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Bibliotecas Externas -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    
-    <!-- Scripts de Rastreamento -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1912088396392621');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1" /></noscript>
-    
-    <!-- Adicionando Poppins conforme seu código -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        /* --- ESTILO DARK MODE PREMIUM --- */
-        body { 
-            background-color: #050505; 
-            color: #e5e5e5;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-        
-        /* Fontes Personalizadas */
+        /* --- ESTILOS GERAIS --- */
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; margin: 0; padding: 0; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        .brutal-red { color: #CC0000; }
+        .bg-brutal-red { background-color: #CC0000; }
         .font-mono-code { font-family: 'JetBrains Mono', monospace; }
-        .font-brand { font-family: 'Poppins', sans-serif; }
 
-        /* NOVO PATTERN DE FUNDO (Do código anterior que você gostou) */
-        .bg-dark-pattern {
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(204, 0, 0, 0.15), transparent 70%), 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-            background-position: center top, center, center;
-            background-repeat: no-repeat, repeat, repeat;
+        /* LAYOUT */
+        .app-layout { display: grid; grid-template-columns: 280px 1fr; height: 100dvh; width: 100%; overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar { background-color: #111; border-right: 1px solid #222; display: flex; flex-direction: column; height: 100%; overflow-y: auto; z-index: 100; transition: transform 0.3s ease; box-shadow: 5px 0 30px rgba(0,0,0,0.8); }
+
+        .tool-item { display: flex; align-items: center; padding: 14px 16px; margin-bottom: 4px; border-radius: 12px; color: #a3a3a3; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; width: 100%; position: relative; }
+        .tool-item:hover { background-color: #1a1a1a; color: #fff; }
+        .tool-item.active { background-color: #1f1f1f; color: #CC0000; font-weight: 600; border-left: 3px solid #CC0000; }
+        .tool-item.locked { opacity: 0.7; }
+        .tool-item.locked i { color: #666; }
+        .tool-item.locked::after { content: '\f023'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 15px; font-size: 10px; color: #666; }
+        
+        /* TOOLTIP RICO (Card Explicativo) */
+        .tool-tooltip {
+            position: absolute; left: 105%; top: 50%; transform: translateY(-50%) translateX(-10px);
+            width: 280px; background: #0f0f0f; border: 1px solid #333; border-radius: 16px;
+            padding: 16px; z-index: 50; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.8);
+        }
+        .tool-tooltip::before { content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 12px; height: 12px; background: #0f0f0f; border-left: 1px solid #333; border-bottom: 1px solid #333; }
+        .tool-item:hover .tool-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); pointer-events: auto; }
+        
+        /* Ajuste Tooltip Mobile */
+        @media (max-width: 768px) {
+            .tool-tooltip { display: none; } /* No mobile usamos clique para abrir modal */
+        }
+
+        /* ANIMAÇÕES DOPAMINÉRGICAS */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            60% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .dopamine-card { opacity: 0; animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+
+        /* Contadores */
+        .counter-anim { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+        /* Card Hover 3D */
+        .dashboard-card { 
+            background: #0f0f0f; border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+            transform-style: preserve-3d;
+        }
+        .dashboard-card:hover { 
+            transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 15px 30px -10px rgba(204,0,0,0.15); 
+            border-color: rgba(204,0,0,0.3); 
+        }
+
+        /* Barra de Progresso Viva */
+        .xp-fill-anim {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            position: relative; overflow: hidden;
+        }
+        .xp-fill-anim::after {
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+        /* CHAT & UI GERAL */
+        .chat-area { display: flex; flex-direction: column; background-color: #000000; background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 24px 24px; height: 100%; position: relative; overflow: hidden; }
+        .chat-messages { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; display: flex; flex-direction: column; padding: 0 16px; padding-bottom: 100px; }
+        #messagesContainer { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 42rem; margin: 0 auto; padding-top: 10px; }
+        .chat-message-user { background-color: #CC0000; color: #fff; align-self: flex-end; border-radius: 18px 18px 4px 18px; padding: 10px 14px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: fadeIn 0.2s; }
+        .chat-message-ia { background-color: transparent; color: #F2F2F2; align-self: flex-start; padding: 0; margin-left: 2px; max-width: 95%; font-size: 0.95rem; line-height: 1.5; animation: fadeIn 0.2s; }
+        .chat-message-ia strong { color: white; font-weight: 700; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- ANIMAÇÃO DE LOADING (BOLINHAS ESTILO WHATSAPP) --- */
+        .typing-indicator {
+            background-color: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: fit-content;
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #666;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; background-color: #fff; }
+        }
+
+        .quick-reply-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 95%; align-self: flex-start; margin-top: 4px; margin-bottom: 12px; }
+        .cyber-btn { background-color: #1E1E1E; color: #e0e0e0; font-weight: 600; font-size: 0.85rem; padding: 12px 8px; border-radius: 12px; border: none; border-bottom: 4px solid #000000; transition: all 0.1s; cursor: pointer; text-align: center; }
+        .cyber-btn:active { transform: translateY(3px); border-bottom-width: 1px; background-color: #252525; }
+        .cyber-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+        .chat-input-container { position: absolute; bottom: 0; left: 0; right: 0; background-color: #000; padding: 15px; border-top: 1px solid #222; z-index: 30; display: flex; align-items: center; transition: opacity 0.5s; }
+        .chat-input-container.hidden-input { opacity: 0; pointer-events: none; }
+        #textInputWrapper { background-color: #1a1a1a; border-radius: 24px; border: 1px solid #333; padding: 8px 14px; display: flex; align-items: center; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        #chatInput { font-size: 0.95rem; color: #fff; width: 100%; background: transparent; outline: none; }
+        #sendBtn { width: 36px; height: 36px; border-radius: 50%; background-color: #CC0000; display: flex; align-items: center; justify-content: center; margin-left: 8px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer; }
+
+        .circle-chart { position: relative; width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#CC0000 var(--percentage), #222 0); display: flex; align-items: center; justify-content: center; transition: background 1s ease-out; }
+        .circle-chart::after { content: ''; position: absolute; width: 80%; height: 80%; background: #0f0f0f; border-radius: 50%; }
+        .circle-content { position: relative; z-index: 10; text-align: center; }
+        
+        /* NO-SCROLLBAR (Hide scrollbar visually but keep functionality) */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .paywall-card { background: #0f0f0f; border: 1px solid rgba(204, 0, 0, 0.3); border-radius: 16px; padding: 20px; text-align: center; margin-top: 20px; box-shadow: 0 0 20px rgba(204,0,0,0.1); animation: fadeIn 0.5s ease; position: relative; overflow: hidden; }
+        .paywall-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #990000, #ff0000, #990000); }
+
+        @media (max-width: 768px) {
+            .app-layout { display: flex; flex-direction: column; }
+            .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); display: flex !important; }
+            .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 40; visibility: hidden; opacity: 0; transition: opacity 0.3s; }
+            .chat-input-container { bottom: 70px; background: transparent; border: none; padding: 0 10px 10px 10px; }
+            .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 50; padding-bottom: env(safe-area-inset-bottom); transform: translateY(0) !important; }
+            .nav-btn { background: none; border: none; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50%; height: 100%; }
+            .nav-btn.active { color: #CC0000; }
         }
         
-        /* Botões com Glow e Pílula */
-        .btn-pill {
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+        .bg-scan-overlay {
+            background-color: #000;
+            background-image: radial-gradient(circle at center, rgba(100, 0, 0, 0.1) 0%, transparent 70%), linear-gradient(rgba(20, 0, 0, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(20, 0, 0, 0.5) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
         }
-        .btn-pill:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(204, 0, 0, 0.4); 
-        }
-
-        /* Cards Dark Mode (Vidro Escuro Premium) */
-        .clean-card {
-            background-color: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            transition: all 0.3s ease;
-        }
-        .clean-card:hover {
-            background-color: rgba(30, 30, 30, 0.8);
-            border-color: #CC0000; 
-            box-shadow: 0 0 30px -5px rgba(204, 0, 0, 0.15);
-            transform: translateY(-4px);
-        }
-
-        /* Tipografia Neon Sutil */
-        .text-glow {
-            text-shadow: 0 0 20px rgba(204, 0, 0, 0.5);
-        }
-        .text-glow-red {
-            text-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
-        }
-
-        /* FAQ Styling */
-        details summary::-webkit-details-marker { display: none; }
-        details > summary { list-style: none; }
-        details[open] summary ~ * { animation: slideDown 0.3s ease-in-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .faq-card {
-            background-color: rgba(20, 20, 20, 0.4);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            transition: all 0.2s;
-        }
-        .faq-card:hover { border-color: rgba(255,255,255,0.15); }
-        details[open] .faq-card { border-color: rgba(204, 0, 0, 0.4); background-color: rgba(22, 5, 5, 0.8); }
-
-        /* Animações */
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 0.1s; }
-        .delay-200 { transition-delay: 0.2s; }
-        .delay-300 { transition-delay: 0.3s; }
+        .text-glow-red { text-shadow: 0 0 15px rgba(220, 38, 38, 0.8); }
+        .animate-progress-fill { animation: progressFill 3s ease-out forwards; }
+        @keyframes progressFill { from { width: 0%; } to { width: 100%; } }
+        .blink-slow { animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 
-<body class="antialiased bg-dark-pattern selection:bg-red-900 selection:text-white pb-10 md:pb-0">
+<body class="h-full bg-black text-white font-inter overflow-hidden">
 
-    <!-- NAVBAR DESKTOP (Integrada do seu código, mas com estilo Glass) -->
-    <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
-        <div class="bg-[#050505]/70 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-2xl hover:border-white/20 transition-all">
-            <div class="flex items-center gap-6 pl-4">
-                <a href="#" class="flex items-center gap-2 group">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
-                        <img src="assets/logo_synapse.png" alt="S" class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
-                    </div>
-                    <span class="text-white font-bold tracking-tight text-lg font-brand">Synapse</span>
-                </a>
-                <div class="h-6 w-px bg-white/10"></div>
-                <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
-                    <li><a href="#inicio" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Início</a></li>
-                    <li><a href="#metodo" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">O Método</a></li>
-                    <li><a href="#ferramentas" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Ferramentas</a></li>
-                    <li><a href="#depoimentos" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Resultados</a></li>
-                </ul>
-            </div>
-            <div class="flex items-center gap-4 pr-2">
-                <a href="PRO/login.html" class="text-sm font-bold text-gray-400 hover:text-white transition px-2">Login</a>
-                <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2 btn-pill">
-                    Desbloquear <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
-    <!-- NAVBAR MOBILE (Estilo Flutuante do seu código) -->
-    <nav class="fixed top-4 left-4 right-4 z-50 md:hidden flex justify-between items-start pointer-events-none">
-        <!-- Logo Flutuante (Esquerda) -->
-        <a href="#" class="pointer-events-auto w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-lg active:scale-95 transition">
-            <img src="assets/logo_synapse.png" alt="Synapse" class="w-full h-full rounded-full opacity-90 p-1">
-        </a>
+    <div class="app-layout">
 
-        <!-- Cápsula Login (Direita) -->
-        <div class="pointer-events-auto bg-black/60 backdrop-blur-xl border border-white/20 rounded-full px-4 py-2.5 flex items-center gap-3 shadow-2xl">
-            <a href="PRO/login.html" class="text-[10px] font-bold text-gray-200 hover:text-white transition flex items-center gap-1.5">
-                <i class="fas fa-sign-in-alt text-gray-500 text-[9px]"></i> <span>LOGIN</span>
-            </a>
-        </div>
-    </nav>
-
-    <!-- Header / Hero Section -->
-    <header id="inicio" class="pt-32 md:pt-44 pb-20 text-center px-4 relative overflow-hidden">
-        
-        <!-- Badge Social Proof (Do seu código) -->
-        <div class="reveal delay-100 flex items-center justify-center gap-3 mb-8 scale-90 md:scale-100 backdrop-blur-sm py-2 px-4 rounded-full bg-white/5 inline-flex border border-white/5">
-            <div class="flex -space-x-3">
-                <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m0hc54c4vcld5c_tn">
-                <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/26dd8def372fbabbf76f210464ce019e_tn">
-                <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lpbudcvajhj9d1_tn">
-            </div>
-            <span class="text-[10px] md:text-xs text-gray-400 uppercase tracking-widest font-mono-code text-left leading-tight">
-                <span class="text-white font-bold block">+25.000</span> pessoas evoluindo
-            </span>
-        </div>
-
-        <div class="max-w-5xl mx-auto relative z-10">
-            <!-- Título Reduzido -->
-            <h1 class="reveal delay-100 text-3xl md:text-5xl lg:text-6xl font-black font-brand uppercase leading-[1.1] tracking-tight mb-6">
-                A inteligência artificial <br class="hidden md:block"> que te coloca no <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-600 text-glow-red">Controle da sua própria mente.</span>
-            </h1>
-
-            <!-- Subtítulo Reduzido -->
-            <p class="reveal delay-200 text-sm md:text-base text-gray-400 max-w-xl mx-auto font-medium leading-relaxed mb-10">
-                O primeiro Sistema Operacional que utiliza modelos de linguagem para modular sua neuroquímica em tempo real. Foco, disciplina e controle sem esforço.
-            </p>
-
-
-            <!-- Botões Iniciais -->
-            <div class="reveal delay-300 flex flex-col md:flex-row items-center justify-center gap-4">
-                <a href="#planos" class="w-full md:w-auto bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 px-10 rounded-full shadow-[0_0_30px_-5px_rgba(204,0,0,0.5)] btn-pill flex items-center justify-center gap-2 border border-red-500/20 uppercase tracking-widest text-xs">
-                    Quero Acessar o Sistema
-                </a>
-                <a href="teste.html" class="w-full md:w-auto bg-transparent hover:bg-white/10 text-white border border-white/20 font-bold py-4 px-8 rounded-full btn-pill flex items-center justify-center gap-2 backdrop-blur-sm uppercase tracking-widest text-xs">
-                    <i class="fas fa-flask text-red-500"></i> Testar Versão Web
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Seção Método (Com Gráfico e Noise) -->
-    <section id="metodo" class="py-24 relative border-y border-white/5 bg-black/40 overflow-hidden">
-        <!-- Noise Texture -->
-        <div class="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%221%22/%3E%3C/svg%3E');"></div>
-        
-        <div class="max-w-5xl mx-auto px-4 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="reveal">
-                    <h3 class="text-2xl md:text-4xl font-black uppercase leading-tight mb-4 font-brand text-white">
-                        Por que o Synapse é <br>
-                        <span class="text-[#CC0000] text-glow-red">Diferente?</span>
-                    </h3>
-                    <p class="text-gray-400 text-sm md:text-base mb-8 leading-relaxed">
-                        Você tenta se concentrar "na marra", baixa bloqueadores de apps e faz listas intermináveis, mas a vontade de procrastinar sempre vence. O Synapse ajusta a biologia.
-                    </p>
-
-                    <div class="space-y-6">
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:border-red-500/50 transition-colors">
-                                <i class="fas fa-microchip text-white group-hover:text-red-500 transition-colors text-sm"></i>
-                            </div>
-                            <div>
-                                <h5 class="text-white font-bold text-sm md:text-base">Biologia vs. Motivação</h5>
-                                <p class="text-gray-500 text-xs md:text-sm mt-1">O Synapse ajusta sua química cerebral. O foco se torna natural.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:border-red-500/50 transition-colors">
-                                <i class="fas fa-user-astronaut text-white group-hover:text-red-500 transition-colors text-sm"></i>
-                            </div>
-                            <div>
-                                <h5 class="text-white font-bold text-sm md:text-base">Personalização via IA</h5>
-                                <p class="text-gray-500 text-xs md:text-sm mt-1">Nossa IA adapta a estratégia para o SEU tipo de sabotador.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gráfico Comparativo (Estilo Glass) -->
-                <div class="reveal delay-200 relative mt-6 md:mt-0">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-red-900 to-black rounded-3xl blur opacity-30"></div>
-                    <div class="clean-card p-8 relative">
-                        <h4 class="text-center text-gray-500 text-[10px] uppercase tracking-widest mb-8 font-mono-code">Eficiência Comprovada</h4>
-                        <div class="space-y-6">
-                            <div>
-                                <div class="flex justify-between text-[10px] mb-2 font-medium">
-                                    <span class="text-gray-400">Terapia Convencional</span>
-                                    <span class="text-gray-600">Lento</span>
-                                </div>
-                                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-gray-700 h-full w-[30%]"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-[10px] mb-2 font-medium">
-                                    <span class="text-gray-400">Livros/Cursos</span>
-                                    <span class="text-gray-600">Teórico</span>
-                                </div>
-                                <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-gray-700 h-full w-[45%]"></div>
-                                </div>
-                            </div>
-                            <div class="pt-2">
-                                <div class="flex justify-between text-[10px] mb-2 font-bold">
-                                    <span class="text-white">Método Synapse</span>
-                                    <span class="text-red-500">Imediato</span>
-                                </div>
-                                <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-                                    <div class="absolute top-0 left-0 h-full w-[95%] bg-gradient-to-r from-red-700 to-red-500"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="mecanismo" class="py-20 border-b border-white/5 bg-[#080808]">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="text-center mb-16 reveal">
-                <span class="text-red-500 font-mono-code text-xs font-bold tracking-widest uppercase mb-2 block">O Mecanismo</span>
-                <h3 class="text-3xl font-black text-white uppercase font-brand">Como o Synapse muda seu estado mental</h3>
-                <p class="text-gray-400 text-sm mt-4">Não é mágica. É neurociência aplicada via algoritmo.</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
-                <!-- Passo 1 -->
-                <div class="reveal delay-100 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-red-500 text-xl font-bold">1</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Detecção</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">A IA identifica qual dos 4 sabotadores está ativo na sua mente agora.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
-                </div>
-
-                <!-- Passo 2 -->
-                <div class="reveal delay-200 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">2</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Protocolo</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">O sistema gera uma intervenção específica para quebrar o padrão.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
-                </div>
-
-                <!-- Passo 3 -->
-                <div class="reveal delay-300 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">3</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Modulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Estímulos audiovisuais ajustam seu foco emocional em segundos.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
-                </div>
-
-                <!-- Passo 4 -->
-                <div class="reveal delay-400 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">4</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Regulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Sua dopamina é redirecionada do prazer barato para a execução.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
-                </div>
-
-                <!-- Passo 5 -->
-                <div class="reveal delay-500 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-red-600 border border-red-500 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(204,0,0,0.4)] text-white text-xl font-bold"><i class="fas fa-check"></i></div>
-                    <h5 class="text-white text-sm font-bold mb-2">Execução</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Você entra em estado de fluxo e realiza a tarefa sem dor.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<section id="metodo" class="py-24 bg-black relative border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-4">
-        
-        <div class="text-center mb-16 reveal">
-            <h3 class="text-3xl md:text-4xl font-black text-white uppercase font-brand mb-4">
-                Upgrade <span class="text-[#CC0000]">Neural</span>
-            </h3>
-            <p class="text-gray-400 text-sm">Abandone o sistema operacional antigo.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="sidebar bg-black flex flex-col h-full font-inter w-[280px] p-2 gap-2 overflow-hidden fixed md:relative z-[100] md:z-auto transition-transform duration-300 md:translate-x-0 -translate-x-full"> 
             
-            <div class="bg-[#0a0a0a] border border-[#222] rounded-2xl p-1 flex relative overflow-hidden group hover:border-red-900/50 transition-colors">
-                <div class="w-1/2 p-6 flex flex-col justify-center border-r border-[#222] bg-[#050505]">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Modo Antigo</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed">Luta contra a vontade, gasta energia e trava.</p>
+            <div class="bg-[#121212] rounded-lg p-5 flex flex-col gap-5">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
+                        <img src="assets/icone preto.png" alt="Logo" class="w-6 h-6 object-contain invert">
+                        <span class="font-bold text-white tracking-tight text-sm">Synapse PRO</span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-2">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
                 </div>
-                <div class="w-1/2 p-6 flex flex-col justify-center bg-gradient-to-br from-red-900/10 to-transparent relative">
-                    <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <h4 class="text-xs font-bold text-[#CC0000] uppercase mb-2 flex items-center gap-2"><i class="fas fa-bolt"></i> Synapse</h4>
-                    <p class="text-white text-sm font-medium leading-relaxed">Ação imediata por indução de dopamina.</p>
-                </div>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#111] border border-[#333] rounded-full flex items-center justify-center text-[9px] font-black text-gray-500 z-10">VS</div>
+
+                <nav class="space-y-1">
+                    <!-- BOTÃO JORNADA -->
+                    <div onclick="switchTab('protocolo'); closeSidebar()" class="flex items-center gap-4 px-3 py-2 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-md cursor-pointer transition font-bold text-sm group">
+                        <div class="w-6 text-center"><i class="fa-solid fa-layer-group text-lg group-hover:text-white transition"></i></div>
+                        <span>Jornada</span>
+                    </div>
+                </nav>
             </div>
 
-            <div class="bg-[#0a0a0a] border border-[#222] rounded-2xl p-1 flex relative overflow-hidden group hover:border-red-900/50 transition-colors">
-                <div class="w-1/2 p-6 flex flex-col justify-center border-r border-[#222] bg-[#050505]">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Modo Antigo</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed">Caos, ansiedade e "abas abertas" no cérebro.</p>
-                </div>
-                <div class="w-1/2 p-6 flex flex-col justify-center bg-gradient-to-br from-red-900/10 to-transparent relative">
-                    <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <h4 class="text-xs font-bold text-[#CC0000] uppercase mb-2 flex items-center gap-2"><i class="fas fa-brain"></i> Synapse</h4>
-                    <p class="text-white text-sm font-medium leading-relaxed">Clareza cristalina e foco laser.</p>
-                </div>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#111] border border-[#333] rounded-full flex items-center justify-center text-[9px] font-black text-gray-500 z-10">VS</div>
-            </div>
-
-            <div class="bg-[#0a0a0a] border border-[#222] rounded-2xl p-1 flex relative overflow-hidden group hover:border-red-900/50 transition-colors">
-                <div class="w-1/2 p-6 flex flex-col justify-center border-r border-[#222] bg-[#050505]">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Modo Antigo</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed">Dura 3 dias e depois você desiste.</p>
-                </div>
-                <div class="w-1/2 p-6 flex flex-col justify-center bg-gradient-to-br from-red-900/10 to-transparent relative">
-                    <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <h4 class="text-xs font-bold text-[#CC0000] uppercase mb-2 flex items-center gap-2"><i class="fas fa-redo"></i> Synapse</h4>
-                    <p class="text-white text-sm font-medium leading-relaxed">Disciplina gamificada que vicia.</p>
-                </div>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#111] border border-[#333] rounded-full flex items-center justify-center text-[9px] font-black text-gray-500 z-10">VS</div>
-            </div>
-
-            <div class="bg-[#0a0a0a] border border-[#222] rounded-2xl p-1 flex relative overflow-hidden group hover:border-red-900/50 transition-colors">
-                <div class="w-1/2 p-6 flex flex-col justify-center border-r border-[#222] bg-[#050505]">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-2">Modo Antigo</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed">Você é dominado sem perceber.</p>
-                </div>
-                <div class="w-1/2 p-6 flex flex-col justify-center bg-gradient-to-br from-red-900/10 to-transparent relative">
-                    <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <h4 class="text-xs font-bold text-[#CC0000] uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Synapse</h4>
-                    <p class="text-white text-sm font-medium leading-relaxed">Identificação e neutralização em minutos.</p>
-                </div>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#111] border border-[#333] rounded-full flex items-center justify-center text-[9px] font-black text-gray-500 z-10">VS</div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-    <!-- SEÇÃO FERRAMENTAS (Features) -->
-    <section id="ferramentas" class="py-20 md:py-28">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="reveal text-center mb-16">
-                <span class="text-[10px] font-mono-code text-red-500 uppercase tracking-widest mb-3 block">Arquitetura do Sistema</span>
-                <h3 class="text-3xl md:text-4xl font-black text-white uppercase mb-4 font-brand">4 Agentes de IA <br> Um único Objetivo</h3>
-                <p class="text-gray-400 text-sm max-w-xl mx-auto">Cada ferramenta foi desenhada para neutralizar um tipo específico de falha mental.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-[#121212] rounded-lg flex-grow flex flex-col overflow-hidden relative">
                 
-                <!-- Card 1 -->
-                <div class="reveal delay-100 clean-card p-6 flex flex-col items-start hover:bg-white/5 group h-full transition-all">
-                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-5 text-white border border-white/10 group-hover:border-red-500/50 group-hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-chart-line text-lg"></i>
-                    </div>
-                    <h4 class="font-bold text-white text-base mb-1">Diagnóstico Neural</h4>
-                    <p class="text-[10px] text-red-500 uppercase font-bold tracking-widest mb-3">O Início de Tudo</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">Responda 3 perguntas simples e a IA identifica qual neurotransmissor está em falta e gera o plano de ação.</p>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="reveal delay-200 clean-card p-6 flex flex-col items-start hover:bg-white/5 group h-full transition-all">
-                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-5 text-white border border-white/10 group-hover:border-red-500/50 group-hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-skull text-lg"></i>
-                    </div>
-                    <h4 class="font-bold text-white text-base mb-1">Faca na Caveira</h4>
-                    <p class="text-[10px] text-red-500 uppercase font-bold tracking-widest mb-3">Ação Imediata</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">Protocolo militar de quebra de inércia. Transforma o estado de "não quero fazer" em execução em 2 minutos.</p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="reveal delay-300 clean-card p-6 flex flex-col items-start hover:bg-white/5 group h-full transition-all">
-                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-5 text-white border border-white/10 group-hover:border-red-500/50 group-hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-microchip text-lg"></i>
-                    </div>
-                    <h4 class="font-bold text-white text-base mb-1">O Mentor</h4>
-                    <p class="text-[10px] text-red-500 uppercase font-bold tracking-widest mb-3">Clareza Mental</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">Organiza o caos. A IA prioriza suas tarefas para você, eliminando a paralisia por excesso de opções.</p>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="reveal delay-100 clean-card p-6 flex flex-col items-start hover:bg-white/5 group h-full transition-all">
-                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-5 text-white border border-white/10 group-hover:border-red-500/50 group-hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-gavel text-lg"></i>
-                    </div>
-                    <h4 class="font-bold text-white text-base mb-1">Ferreiro</h4>
-                    <p class="text-[10px] text-red-500 uppercase font-bold tracking-widest mb-3">Disciplina Automática</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">Ferramentas para construção de hábitos sólidos. Torne o difícil fácil e o fácil automático.</p>
-                </div>
-
-                <!-- Botão do Pânico (Destaque) -->
-                <div class="reveal delay-200 lg:col-span-4 mt-2 p-1 bg-gradient-to-r from-red-900/30 to-black rounded-2xl">
-                    <div class="bg-[#0f0505] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 group border border-red-900/30 hover:border-red-500/50 transition relative overflow-hidden">
-                         <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[80px] pointer-events-none"></div>
-                        
-                        <div class="flex-shrink-0 relative">
-                            <div class="absolute inset-0 bg-red-600/20 blur-xl animate-pulse"></div>
-                            <div class="w-16 h-16 rounded-full bg-[#1a0505] flex items-center justify-center border border-red-500 relative z-10 shadow-[0_0_15px_rgba(204,0,0,0.4)]">
-                                <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
-                            </div>
+                <div class="p-4 shadow-sm z-10 bg-[#121212] border-b border-white/5">
+                    <div class="flex justify-between items-center text-gray-400 hover:text-white transition cursor-pointer group">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-lg group-hover:text-white transition"></i>
+                            <span class="font-bold text-sm group-hover:text-white transition">Seu Arsenal</span>
                         </div>
-                        <div class="text-center md:text-left z-10">
-                            <h4 class="text-white font-bold text-lg mb-2">Protocolo de Emergência (Botão do Pânico)</h4>
-                            <p class="text-sm text-gray-400 max-w-2xl leading-relaxed">
-                                Sentiu vontade de procrastinar ou recair em um vício? Acione este botão. O sistema inicia um <strong>protocolo audiovisual</strong> de 60 segundos projetado para resetar seu estado emocional imediatamente.
+                        <div class="flex gap-3">
+                            <i class="fa-solid fa-plus hover:bg-[#1a1a1a] rounded-full p-1 transition cursor-pointer" onclick="showLockedFeature('Personalizar Arsenal')"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LISTA COM NO-SCROLLBAR -->
+                <div class="overflow-y-auto px-2 py-4 space-y-1 hover:overflow-y-auto no-scrollbar">
+                    
+                    <div onclick="selectTool('Diagnostico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition tool-item relative">
+                        <div class="w-10 h-10 bg-gradient-to-br from-[#CC0000] to-[#990000] rounded-md flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <i class="fa-solid fa-chart-line text-white text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-white font-bold text-sm truncate group-hover:text-green-400 transition mb-0.5">Diagnóstico</p>
+                            <p class="text-[10px] text-gray-400 truncate flex items-center gap-1">
+                                <span class="text-green-500 text-[6px]">●</span> IA Ativa
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Seção Depoimentos -->
-    <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808]">
-        <div class="max-w-6xl mx-auto px-4">
-            
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 reveal">
-                <div>
-                    <h3 class="text-3xl font-black text-white uppercase font-brand">O que estão <br>falando</h3>
-                </div>
-                <div class="mt-4 md:mt-0 flex items-center gap-3">
-                    <div class="flex -space-x-2">
-                        <img class="w-8 h-8 rounded-full border-2 border-[#080808]" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lt2f7q9t9bm5b4_tn">
-                        <img class="w-8 h-8 rounded-full border-2 border-[#080808]" src="https://down-br.img.susercontent.com/file/br-11134233-81z1k-mgtt2at1t1xh29_tn">
-                        <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-[#080808] flex items-center justify-center text-[9px] font-bold text-white">+25k</div>
-                    </div>
-                    <p class="text-xs text-gray-500 font-medium">membros ativos</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div class="reveal delay-100 clean-card p-6 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex gap-3">
-                            <img src="https://down-br.img.susercontent.com/file/12d7cea7f05165ec80151afdab869c0f_tn" class="w-10 h-10 rounded-full border border-white/10">
-                            <div>
-                                <p class="text-sm font-bold text-white flex items-center gap-1">Lucas M. <i class="fas fa-check-circle text-green-500 text-[10px]"></i></p>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-wide">Membro Verificado</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-quote-right text-white/10 text-xl group-hover:text-white/30 transition"></i>
-                    </div>
-                    <p class="text-sm text-gray-300 leading-relaxed font-light">
-                        Tenho TDAH e já tentei de tudo. O Synapse foi o único que calou minha mente. A ferramenta <strong class="text-white">Faca na Caveira</strong> é obrigatória.
-                    </p>
-                    <div class="mt-4 flex text-red-600 text-[10px] gap-1">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                </div>
-
-                <div class="reveal delay-200 clean-card p-6 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex gap-3">
-                            <img src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lzrys2g6qis528_tn" class="w-10 h-10 rounded-full border border-white/10">
-                            <div>
-                                <p class="text-sm font-bold text-white flex items-center gap-1">Renan C. <i class="fas fa-check-circle text-green-500 text-[10px]"></i></p>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-wide">Compra Verificada</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-quote-right text-white/10 text-xl group-hover:text-white/30 transition"></i>
-                    </div>
-                    <p class="text-sm text-gray-300 leading-relaxed font-light">
-                        Queimei a língua. Só a ferramenta de <strong class="text-white">Diagnóstico</strong> já valeria o triplo do valor. É assustadoramente preciso.
-                    </p>
-                    <div class="mt-4 flex text-red-600 text-[10px] gap-1">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                </div>
-
-                <div class="reveal delay-300 clean-card p-6 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex gap-3">
-                            <img src="https://down-br.img.susercontent.com/file/880052fd019089a0eb398ed9d268b847_tn" class="w-10 h-10 rounded-full border border-white/10">
-                            <div>
-                                <p class="text-sm font-bold text-white flex items-center gap-1">Juliana S. <i class="fas fa-check-circle text-green-500 text-[10px]"></i></p>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-wide">Membro Elite</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-quote-right text-white/10 text-xl group-hover:text-white/30 transition"></i>
-                    </div>
-                    <p class="text-sm text-gray-300 leading-relaxed font-light">
-                        Em 1 semana usando o protocolo eu fiz o que estava enrolando há 3 meses. O sistema te <strong class="text-white">OBRIGA</strong> a agir.
-                    </p>
-                    <div class="mt-4 flex text-red-600 text-[10px] gap-1">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Seção Planos -->
- <section id="planos" class="py-20 md:py-32 px-4 bg-black relative flex justify-center items-center overflow-hidden">
-    
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-    <div class="w-full max-w-sm md:max-w-4xl relative z-10 reveal">
-        
-        <div class="bg-[#050505] border border-[#222] rounded-3xl p-6 md:p-12 flex flex-col md:flex-row items-center md:justify-between gap-8 md:gap-16 shadow-2xl relative group hover:border-red-900/30 transition-colors duration-500">
-            
-            <div class="text-center md:text-left flex-1 border-b md:border-b-0 md:border-r border-[#222] md:pr-12 md:mr-4 pb-8 md:pb-0 h-full flex flex-col justify-center">
-                <div class="relative inline-block">
-                    <img src="assets/polvo_synapse.png" class="w-24 md:w-48 mx-auto md:mx-0 mb-6 opacity-90 invert drop-shadow-[0_0_25px_rgba(204,0,0,0.2)] transform group-hover:scale-105 transition-transform duration-500">
-                    <div class="hidden md:block absolute -top-2 -right-12 bg-[#CC0000] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg rotate-12">
-                        Vitalício
-                    </div>
-                </div>
-                
-                <h3 class="text-white text-xl md:text-5xl font-black font-brand uppercase italic tracking-tighter mb-2">
-                    Synapse <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Protocol</span>
-                </h3>
-                <p class="text-gray-500 text-xs md:text-base font-medium max-w-[200px] md:max-w-none mx-auto md:mx-0">
-                    Licença de Usuário Único • Acesso Imediato
-                </p>
-            </div>
-
-            <div class="w-full md:w-[400px] text-center flex flex-col justify-between">
-                
-                <div class="mb-8 relative">
-                    <span class="text-gray-600 line-through text-xs md:text-sm absolute -top-4 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2">R$ 97,00</span>
-                    <div class="flex items-start justify-center leading-none text-white">
-                        <span class="text-lg text-gray-500 font-bold mt-2 mr-1">R$</span>
-                        <span class="text-6xl md:text-8xl font-black tracking-tighter">27</span>
-                        <span class="text-2xl md:text-3xl font-bold text-[#CC0000] mt-2">,90</span>
-                    </div>
-                    <p class="text-green-500 text-[10px] font-bold uppercase tracking-[0.2em] mt-2 animate-pulse">
-                        Pagamento Único
-                    </p>
-                </div>
-
-                <a href="https://pay.kiwify.com.br/YzOIskc" onclick="fbq('track', 'InitiateCheckout');" class="group relative block w-full bg-[#CC0000] hover:bg-red-600 text-white font-black py-5 md:py-6 rounded-2xl md:rounded-xl uppercase tracking-widest text-xs md:text-sm shadow-[0_0_30px_rgba(204,0,0,0.3)] hover:shadow-[0_0_50px_rgba(204,0,0,0.5)] transition-all transform hover:-translate-y-1 active:scale-[0.98] overflow-hidden mb-8 md:mb-10">
-                    <span class="relative z-10 flex items-center justify-center gap-2">
-                        Desbloquear Agora <i class="fas fa-lock text-[10px]"></i>
-                    </span>
-                    <div class="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] group-hover:animate-[shine_1s_ease-in-out]"></div>
-                </a>
-
-                <div class="hidden md:flex flex-col items-center gap-4 border-t border-[#222] pt-8">
-                    <img src="assets/icone preto.png" class="w-16 h-16 opacity-30 invert">
+                    <!-- FERRAMENTAS PRO COM TOOLTIPS RICOS -->
                     
-                    <p class="text-[10px] text-gray-500 max-w-[220px] leading-relaxed">
-                        Sistema seguro e criptografado. Acesso imediato via e-mail.
-                    </p>
+                    <!-- Comandante -->
+                    <div onclick="selectTool('Comandante'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition tool-item locked relative">
+                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-skull text-gray-400 text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <p class="text-white font-bold text-sm truncate">Comandante</p>
+                            <p class="text-[10px] text-gray-500 truncate">PRO</p>
+                        </div>
+                        <div class="tool-tooltip">
+                            <h4 class="text-white font-bold text-sm mb-1">Disciplina Militar</h4>
+                            <p class="text-gray-400 text-xs mb-2">Uma IA agressiva que não aceita desculpas. Ideal para quebrar a procrastinação na marra.</p>
+                            <span class="text-[#CC0000] text-[10px] font-bold uppercase">Exclusivo PRO</span>
+                        </div>
+                    </div>
 
-                    <div class="flex gap-3 text-gray-600 text-2xl opacity-60">
-                        <i class="fab fa-cc-visa hover:text-white transition"></i>
-                        <i class="fab fa-cc-mastercard hover:text-white transition"></i>
-                        <i class="fas fa-qrcode hover:text-white transition"></i>
+                    <!-- General -->
+                    <div onclick="selectTool('General'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition tool-item locked relative">
+                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-chess-knight text-gray-400 text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <p class="text-white font-bold text-sm truncate">General</p>
+                            <p class="text-[10px] text-gray-500 truncate">PRO</p>
+                        </div>
+                        <div class="tool-tooltip">
+                            <h4 class="text-white font-bold text-sm mb-1">Estratégia de Negócios</h4>
+                            <p class="text-gray-400 text-xs mb-2">Um estrategista de elite focado em lucro, escala e dominação de mercado.</p>
+                            <span class="text-[#CC0000] text-[10px] font-bold uppercase">Exclusivo PRO</span>
+                        </div>
+                    </div>
+
+                    <!-- Tático -->
+                    <div onclick="selectTool('Tatico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition tool-item locked relative">
+                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-satellite-dish text-gray-400 text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden flex-grow">
+                            <p class="text-white font-bold text-sm truncate">Tático</p>
+                            <p class="text-[10px] text-gray-500 truncate">PRO</p>
+                        </div>
+                        <div class="tool-tooltip">
+                            <h4 class="text-white font-bold text-sm mb-1">Tech & Operacional</h4>
+                            <p class="text-gray-400 text-xs mb-2">Resolve problemas técnicos, otimiza processos e cria sistemas automáticos.</p>
+                            <span class="text-[#CC0000] text-[10px] font-bold uppercase">Exclusivo PRO</span>
+                        </div>
+                    </div>
+
+                    <!-- Pânico -->
+                    <div onclick="selectTool('Panico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition mt-2 tool-item relative">
+                        <div class="w-10 h-10 bg-gradient-to-br from-[#450a0a] to-red-900 rounded-md flex items-center justify-center flex-shrink-0 shadow-red-900/20 animate-pulse">
+                            <i class="fa-solid fa-triangle-exclamation text-red-200 text-lg"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-white font-bold text-sm truncate group-hover:text-red-400 transition mb-0.5">Botão do Pânico</p>
+                            <p class="text-[10px] text-gray-400 truncate">Emergência</p>
+                        </div>
+                        <div class="tool-tooltip border-red-900/50">
+                            <h4 class="text-red-500 font-bold text-sm mb-1">Protocolo de Emergência</h4>
+                            <p class="text-gray-400 text-xs mb-2">Intervenção neuroquímica imediata para parar recaídas em vícios ou procrastinação severa.</p>
+                            <span class="text-[#CC0000] text-[10px] font-bold uppercase">Salva-Vidas</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="mt-auto">
+                <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-lg group border border-[#222]">
+                    <div class="bg-[#000] p-3 rounded-[7px] h-full flex items-center gap-3 relative overflow-hidden">
+                        <div class="w-10 h-10 bg-[#333] rounded shadow-lg flex-shrink-0 relative z-10 flex items-center justify-center">
+                            <img src="assets/icone preto.png" class="w-full h-full object-cover invert opacity-80 p-1">
+                        </div>
+                        <div class="flex-grow z-10 overflow-hidden">
+                            <div class="flex items-center gap-2">
+                                 <p class="text-white font-bold text-xs truncate">Synapse Premium</p>
+                                 <span class="bg-white text-black text-[8px] font-black px-1 rounded uppercase">PRO</span>
+                            </div>
+                            <p class="text-gray-400 text-[10px] truncate group-hover:text-white transition-colors">
+                                Desbloquear 4 Agentes
+                            </p>
+                        </div>
+                        <div class="z-10"><i class="fa-solid fa-chevron-up text-gray-400"></i></div>
                     </div>
                 </div>
+            </div>
+        </aside>
 
-                <div class="flex md:hidden justify-center gap-4 opacity-40 grayscale">
-                    <i class="fab fa-cc-visa text-xl"></i>
-                    <i class="fab fa-cc-mastercard text-xl"></i>
-                    <i class="fas fa-qrcode text-xl"></i>
-                </div>
-                <div class="md:hidden mt-6 flex flex-col gap-2 items-center justify-center">
-                    <div class="flex items-center gap-2 text-[10px] text-gray-500 bg-[#0f0f0f] border border-[#222] px-3 py-1.5 rounded-full">
-                        <i class="fas fa-shield-alt text-green-500"></i>
-                        <span>Ambiente 100% Seguro (SSL)</span>
-                    </div>
-                </div>
+        <!-- MAIN AREA -->
+        <main class="chat-area relative flex flex-col h-full bg-[#000]">
 
+            <div id="mobileHeader" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a] z-30 flex items-center px-4 justify-between transition-transform duration-300">
+                <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2" onclick="toggleSidebar()">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse TESTE</h3>
+                <div class="w-9"></div> 
             </div>
 
-        </div>
+            <!-- VIEW: CHAT -->
+            <div id="viewChat" class="view-section h-full flex flex-col">
+                <div class="chat-messages flex-grow pt-16"> 
+                    <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col"></div>
+                </div>
+                <div class="chat-input-container">
+                    <div class="w-full max-w-2xl mx-auto">
+                        <div id="textInputWrapper">
+                            <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none max-h-24 placeholder-gray-600 font-inter" placeholder="Digite seu comando..."></textarea>
+                            <button id="sendBtn" class="hover:bg-red-700 transition"><i data-lucide="arrow-up" class="w-4 h-4 text-white"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: PROTOCOLO / DASHBOARD -->
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-20 relative z-10 no-scrollbar">
+                
+                <div class="w-full max-w-md md:max-w-6xl mx-auto relative transition-all duration-500">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">QG Operacional</h2>
+                            <p class="text-xs text-gray-500 mt-1">Bem-vindo, <span id="userNameDashboard" class="text-gray-300 font-bold">Visitante</span>.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button id="btnRelatorio" class="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 border border-white/5 opacity-50 cursor-not-allowed">
+                                <i class="fa-solid fa-lock text-xs"></i> Relatório
+                            </button>
+                            <button id="btnFoco" class="bg-[#CC0000] hover:bg-red-600 text-white px-5 py-2 rounded-full text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center gap-2 opacity-50 cursor-not-allowed">
+                                <i class="fa-solid fa-lock"></i> Iniciar Foco
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CARDS ANIMADOS -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-100">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-900/20 flex items-center justify-center text-blue-500"><i class="fa-solid fa-trophy text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white mt-2" id="levelDisplay">Nível 1</div>
+                                <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden">
+                                    <div id="xpBar" class="xp-fill-anim h-full w-[0%] transition-all duration-1000 ease-out"></div>
+                                </div>
+                                <div class="text-[10px] text-gray-500 mt-1">Modo Demo</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-200">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white mt-2">0 Dias</div>
+                                <div class="text-[10px] text-gray-500">Sequência (Bloqueado)</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-300">
+                            <div class="flex justify-between items-start">
+                                <div class="w-8 h-8 rounded-full bg-purple-900/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-brain text-xs"></i></div>
+                            </div>
+                            <div>
+                                <div class="w-full bg-[#222] rounded-full h-1.5 mt-3 mb-1 overflow-hidden">
+                                    <div class="bg-purple-500 h-full w-[35%] rounded-full animate-pulse"></div>
+                                </div>
+                                <div class="text-[10px] text-gray-400 flex justify-between">
+                                    <span>Sistema</span>
+                                    <span class="text-yellow-500">Trial</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-4 flex items-center justify-between dopamine-card delay-400">
+                            <div>
+                                <div class="text-xs text-gray-400 mb-1">Missões Hoje</div>
+                                <div class="text-xl font-bold text-white"><span class="counter-anim" id="missionCount">0</span>/1</div>
+                            </div>
+                            <div class="circle-chart" style="--percentage: 0deg; width: 60px; height: 60px;">
+                                <div class="circle-content text-[10px] font-bold text-white counter-anim" id="missionPercent">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
+                        <div class="dashboard-card p-6 lg:col-span-1 h-[400px] flex flex-col relative group">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-sm font-bold text-white"><i class="fa-regular fa-calendar text-gray-500 mr-2"></i>Agenda</h3>
+                                <div class="flex gap-2">
+                                    <button class="text-gray-400"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <button class="text-gray-400"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <h4 id="cal-month-year" class="text-white font-bold text-center mb-2 capitalize">...</h4>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-gray-600 font-bold uppercase mb-2">
+                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+                            </div>
+                            <div id="cal-grid" class="grid grid-cols-7 gap-1 flex-grow overflow-y-auto custom-scrollbar"></div>
+                        </div>
+
+                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col h-[400px]">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-[#CC0000]"></i> Missões Ativas
+                                </h3>
+                                <span class="text-[10px] text-gray-500 bg-[#1a1a1a] px-2 py-1 rounded-md border border-yellow-900/30 text-yellow-600">Demo Limitada</span>
+                            </div>
+                            <div id="tactical-list" class="space-y-2 flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                                <p class="text-xs text-gray-600 text-center py-10">Adicione sua primeira missão para testar.</p>
+                            </div>
+                            <div class="flex gap-2 mt-4 pt-4 border-t border-white/5">
+                                <input id="newMissionInput" type="text" class="bg-[#141414] text-sm text-white px-4 py-3 rounded-xl w-full outline-none placeholder-gray-600 focus:border-gray-600 border border-transparent transition" placeholder="Nova missão...">
+                                <button id="btnAddBlock" class="bg-[#1a1a1a] hover:bg-[#CC0000] text-gray-400 hover:text-white px-4 rounded-xl transition">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <nav class="bottom-nav md:hidden transition-transform duration-300 border-t border-[#1a1a1a]">
+            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')">
+                <i class="fa-solid fa-layer-group text-lg mb-1"></i>
+                <span class="text-[9px] font-medium tracking-wide">JORNADA</span>
+            </button>
+            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')">
+                <i class="fa-solid fa-terminal text-lg mb-1"></i>
+                <span class="text-[9px] font-medium tracking-wide">COMANDO</span>
+            </button>
+        </nav>
+        
     </div>
-</section>
 
-<style>
-    @keyframes shine {
-        0% { left: -100%; }
-        100% { left: 200%; }
-    }
-</style>
-
-    <!-- FAQ (Adicionada) -->
-    <section id="faq" class="py-16 max-w-2xl mx-auto px-4 border-t border-white/5">
-        <h3 class="text-lg font-bold text-white text-center uppercase mb-8 font-brand">Dúvidas Frequentes</h3>
-        
-        <div class="space-y-3">
-            <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
-                    Como recebo o acesso?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
-                </summary>
-                <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-                    Imediatamente após a confirmação do pagamento. Você receberá um e-mail com seu login e senha para acessar o painel web.
-                </div>
-            </details>
-
-            <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
-                    Preciso pagar mensalidade?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
-                </summary>
-                <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-                    Não. Esta oferta é de acesso vitalício. Você paga uma única vez e o sistema é seu para sempre.
-                </div>
-            </details>
-
-            <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
-                    Funciona no celular?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
-                </summary>
-                <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-                    Sim. O Synapse é um Web App otimizado que funciona perfeitamente no navegador do seu celular (iPhone ou Android) e no computador.
-                </div>
-            </details>
-        </div>
-    </section>
-
-    <footer class="py-10 text-center border-t border-white/5 bg-[#050505]">
-        <p class="text-xs text-gray-600 font-medium">© 2025 Synapse Protocol. Todos os direitos reservados.</p>
-    </footer>
-
-    <script src="js/script.js"></script>
-    <script>
-        lucide.createIcons();
-
-        // Lógica do Player de Vídeo
-        const videoContainer = document.getElementById('videoContainer');
-        const video = document.getElementById('meuVideo');
-        const overlay = document.getElementById('videoOverlay');
-
-        if(videoContainer && video && overlay) {
-            videoContainer.addEventListener('click', () => {
-                if (video.paused) {
-                    video.play();
-                    video.muted = false;
-                    video.style.opacity = "1";
-                    overlay.style.opacity = "0";
-                    overlay.style.pointerEvents = "none";
-                } else {
-                    video.pause();
-                    overlay.style.opacity = "1";
-                    overlay.style.pointerEvents = "auto";
-                    video.style.opacity = "0.6";
-                }
-            });
-        }
-        
-        // Animação Reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    <!-- SCRIPT PRINCIPAL UNIFICADO -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
