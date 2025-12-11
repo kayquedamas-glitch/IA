@@ -168,35 +168,41 @@
                 const data = await response.json();
 
                 if (data.length > 0) {
-                    const nomeUsuario = data[0].nome || "Membro";
+                    // --- CORREÇÃO DE NOME INTELIGENTE ---
+                    // Procura por todas as variações possíveis na sua planilha
+                    const registro = data[0];
+                    let nomeReal = registro.nome || registro.Nome || registro.NOME || registro.name || registro.Name || registro["Nome Completo"];
+
+                    // Se não achou, pega o começo do e-mail (ex: "kayque" de kayque@gmail.com)
+                    if (!nomeReal || nomeReal === "Membro") {
+                        const parteEmail = emailInput.split('@')[0];
+                        nomeReal = parteEmail.charAt(0).toUpperCase() + parteEmail.slice(1);
+                    }
                     
                     // SUCESSO: Gera Token Seguro e Salva
                     const tokenSeguro = btoa(emailInput + APP_SECRET); 
                     const sessionData = {
-                        user: nomeUsuario,
+                        user: nomeReal, // Salva o nome correto encontrado
                         email: emailInput,
                         token: tokenSeguro,
                         loginDate: Date.now()
                     };
 
+                    // Salva na gaveta nova
                     localStorage.setItem('synapse_session_v2', JSON.stringify(sessionData));
 
-                    // Feedback Visual de Sucesso
+                    // Feedback Visual
                     btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
                     btn.classList.add('bg-green-600', 'hover:bg-green-700');
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO AUTORIZADO';
                     
-                    // Redireciona
-                    setTimeout(() => {
-                        window.location.href = "index.html"; 
-                    }, 1000);
+                    setTimeout(() => { window.location.href = "index.html"; }, 1000);
 
                 } else {
                     throw new Error("Email não encontrado");
                 }
-
             } catch (error) {
-                console.error("Erro:", error);
+                // ... (o resto do código de erro continua igual)
                 
                 // UI: Erro
                 btn.innerHTML = originalText;
