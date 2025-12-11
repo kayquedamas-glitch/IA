@@ -1,212 +1,249 @@
-// PRO/js/modules/dashboard.js
 import { CONFIG } from '../config.js';
 
+let supabase = null;
+
+try {
+    if (window.supabase) {
+        supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+    }
+} catch (e) {
+    console.warn("Modo Offline Ativado (Supabase Error)");
+}
+
 export async function initDashboard() {
-    console.log("📊 Inicializando Dashboard Tático...");
+    console.log("⚙️ Dashboard System Init...");
+    
     const user = getUser();
-    if(!user) return;
-
+    updateProfileUI(user);
+    
+    // Load Missions (Híbrido: Local + Cloud)
     await loadMissions(user.email);
-    setupInput(user.email);
-    loadXP(user.email);
-}
-
-// --- MISSÕES ---
-async function loadMissions(email) {
-    const list = document.getElementById('tactical-list');
-    if(!list) return;
-
-    const { data: missions } = await supabase
-        .from('missions')
-        .select('*')
-        .eq('user_email', email)
-        .order('id', { ascending: true });
-
-    list.innerHTML = '';
-
-    if(missions && missions.length > 0) {
-        missions.forEach(m => renderMissionHTML(m, list));
-        updateMeta(missions);
-    } else {
-        list.innerHTML = '<div class="text-center py-8 text-gray-700 text-xs">Nenhuma missão ativa.<br>Adicione uma abaixo.</div>';
-        updateMeta([]);
-    }
-}
-
-// ... imports e initDashboard existentes ...
-
-function renderMissionHTML(mission, container) {
-    // Cores baseadas na prioridade (igual ao Next.js)
-    const priorityColors = {
-        'low': 'border-gray-500 text-gray-500',
-        'normal': 'border-blue-500 text-blue-500',
-        'high': 'border-yellow-500 text-yellow-500',
-        'critical': 'border-[#CC0000] text-[#CC0000]'
-    };
     
-    const pColor = priorityColors[mission.priority] || priorityColors['normal'];
-    const xpReward = mission.xp_reward || 15;
-
-    const div = document.createElement('div');
-    div.className = `bg-[#0a0a0a] border border-[#222] rounded-lg p-4 mb-2 transition-all ${mission.status === 'completed' ? 'opacity-50 border-green-900' : ''}`;
+    // Setup Inputs
+    setupMissionInput(user.email);
     
-    div.innerHTML = `
-        <div class="flex items-start gap-3">
-            <button class="check-btn w-5 h-5 mt-1 border-2 rounded flex items-center justify-center transition-colors ${mission.status === 'completed' ? 'bg-green-500 border-green-500' : 'border-[#CC0000] hover:bg-[#CC0000]/20'}">
-                ${mission.status === 'completed' ? '<i class="fas fa-check text-black text-xs"></i>' : ''}
-            </button>
-            
-            <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                    <h3 class="font-mono font-bold text-sm ${mission.status === 'completed' ? 'line-through text-gray-600' : 'text-white'}">${mission.title}</h3>
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 border rounded uppercase ${pColor}">
-                        ${mission.priority || 'NORMAL'}
-                    </span>
-                </div>
-                <div class="flex items-center gap-2 text-xs font-mono">
-                    <span class="${mission.status === 'completed' ? 'text-green-500' : 'text-[#CC0000]'}">+${xpReward} XP</span>
-                </div>
-            </div>
-            
-            <button class="del-btn text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
-        </div>
-    `;
-
-    // Lógica de Check
-    div.querySelector('.check-btn').onclick = async () => {
-        if(mission.status === 'completed') return; // Evita farmar XP clicando várias vezes
-        
-        // Atualiza UI
-        mission.status = 'completed';
-        div.classList.add('opacity-50', 'border-green-900');
-        div.querySelector('.check-btn').classList.add('bg-green-500', 'border-green-500');
-        div.querySelector('.check-btn').innerHTML = '<i class="fas fa-check text-black text-xs"></i>';
-        div.querySelector('h3').classList.add('line-through', 'text-gray-600');
-
-        // Som e Confete
-        if(window.confetti) confetti({ particleCount: 50, origin: { y: 0.7 }, colors: ['#CC0000', '#FFF'] });
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); // Click sound
-        audio.play().catch(()=>{});
-
-        // Supabase
-        await supabase.from('missions').update({ status: 'completed', completed_at: new Date() }).eq('id', mission.id);
-        
-        // Adiciona XP
-        if(window.addXP) window.addXP(xpReward);
-    };
-
-    // Lógica Delete
-    div.querySelector('.del-btn').onclick = async () => {
-        if(confirm("Remover missão?")) {
-            div.remove();
-            await supabase.from('missions').delete().eq('id', mission.id);
-        }
-    };
-
-    container.appendChild(div);
-}
-
-function setupInput(email) {
-    const btn = document.getElementById('btnAddBlock');
-    // Você precisará adicionar um select de prioridade no HTML ou criar um modal via JS
-    // Aqui farei uma versão simplificada que cria um modal para adicionar missão com prioridade
-    
-    btn.onclick = () => {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4';
-        modal.innerHTML = `
-            <div class="bg-[#121212] border border-[#333] w-full max-w-md rounded-xl p-6">
-                <h3 class="text-white font-mono text-xl mb-4">Nova Missão</h3>
-                <input id="modalMissionTitle" class="w-full bg-[#0a0a0a] border border-[#333] text-white p-3 rounded mb-4 font-mono text-sm" placeholder="Título da missão">
-                
-                <label class="text-gray-500 text-xs font-mono mb-2 block">PRIORIDADE</label>
-                <div class="grid grid-cols-4 gap-2 mb-6">
-                    <button onclick="selectPriority(this, 'low', 10)" class="p-btn border border-[#333] text-gray-500 text-xs py-2 rounded hover:border-gray-500">BAIXA</button>
-                    <button onclick="selectPriority(this, 'normal', 15)" class="p-btn border border-blue-900 text-blue-500 text-xs py-2 rounded bg-blue-900/10 ring-1 ring-blue-500">NORMAL</button>
-                    <button onclick="selectPriority(this, 'high', 30)" class="p-btn border border-[#333] text-yellow-500 text-xs py-2 rounded hover:border-yellow-500">ALTA</button>
-                    <button onclick="selectPriority(this, 'critical', 50)" class="p-btn border border-[#333] text-[#CC0000] text-xs py-2 rounded hover:border-[#CC0000]">CRÍTICA</button>
-                </div>
-                
-                <div class="flex gap-3">
-                    <button onclick="this.closest('.fixed').remove()" class="flex-1 py-3 text-gray-400 font-mono text-xs">CANCELAR</button>
-                    <button id="saveMissionBtn" class="flex-1 bg-[#CC0000] text-white font-mono font-bold text-xs py-3 rounded">CRIAR (+15 XP)</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        let selectedPriority = 'normal';
-        let selectedXP = 15;
-
-        window.selectPriority = (el, prio, xp) => {
-            document.querySelectorAll('.p-btn').forEach(b => {
-                b.className = 'p-btn border border-[#333] text-gray-500 text-xs py-2 rounded';
-            });
-            el.className = `p-btn border border-white text-white text-xs py-2 rounded bg-white/10`;
-            selectedPriority = prio;
-            selectedXP = xp;
-            document.getElementById('saveMissionBtn').innerText = `CRIAR (+${xp} XP)`;
-        };
-
-        document.getElementById('saveMissionBtn').onclick = async () => {
-            const title = document.getElementById('modalMissionTitle').value;
-            if(!title) return;
-            
-            await supabase.from('missions').insert({
-                user_email: email, // Nota: idealmente use user_id se tiver tabela de profiles sincronizada
-                title: title,
-                priority: selectedPriority,
-                xp_reward: selectedXP,
-                status: 'active'
-            });
-            
-            modal.remove();
-            loadMissions(email);
-        };
-    };
-}
-function updateMeta(missions) {
-    const total = missions.length;
-    const done = missions.filter(m => m.is_completed).length;
-    const pct = total === 0 ? 0 : Math.round((done/total)*100);
-
-    const txt = document.getElementById('dailyMetaText');
-    const circle = document.querySelector('.circle-chart');
-    const content = document.querySelector('.circle-content');
-
-    if(txt) txt.innerText = `${done}/${total}`;
-    if(content) content.innerText = `${pct}%`;
-    if(circle) circle.style.setProperty('--percentage', `${pct * 3.6}deg`);
-}
-
-// --- XP SYSTEM ---
-async function loadXP(email) {
-    const { data } = await supabase.from('user_progress').select('current_xp, current_level').eq('user_email', email).single();
-    if(data) {
-        updateXPUI(data.current_xp || 0, data.current_level || 1);
-    }
-}
-
-async function addXP(amount) {
-    const user = getUser();
-    const { data } = await supabase.from('user_progress').select('current_xp').eq('user_email', user.email).single();
-    const newXP = (data.current_xp || 0) + amount;
-    
-    await supabase.from('user_progress').update({ current_xp: newXP }).eq('user_email', user.email);
-    updateXPUI(newXP, 1); // Simplificado: Nível 1 fixo por enquanto
-}
-
-function updateXPUI(xp, level) {
-    const bar = document.getElementById('xpBar');
-    const lvl = document.getElementById('levelDisplay');
-    
-    // Meta arbitrária de 100 XP para nivel 2
-    const pct = Math.min((xp / 100) * 100, 100);
-    
-    if(bar) bar.style.width = `${pct}%`;
-    if(lvl) lvl.innerText = `Nível ${level} (${xp} XP)`;
+    // Setup Calendar Render (Simples)
+    renderCalendar();
 }
 
 function getUser() {
-    try { return JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY)); } catch(e) { return null; }
+    try {
+        const s = JSON.parse(localStorage.getItem('synapse_session_v2'));
+        const u = JSON.parse(localStorage.getItem('synapseUser'));
+        return s || u || { email: 'visitante@synapse.com', user: 'Visitante' };
+    } catch {
+        return { email: 'erro@synapse.com', user: 'Erro' };
+    }
+}
+
+function updateProfileUI(user) {
+    const name = user.user || user.name || "Membro";
+    const initial = name.charAt(0).toUpperCase();
+    
+    const els = {
+        sidebarName: document.getElementById('userNameSidebar'),
+        sidebarAvatar: document.getElementById('userAvatarSidebar'),
+        dashName: document.getElementById('userNameDashboard')
+    };
+
+    if(els.sidebarName) els.sidebarName.innerText = name;
+    if(els.sidebarAvatar) els.sidebarAvatar.innerText = initial;
+    if(els.dashName) els.dashName.innerText = name.toUpperCase();
+}
+
+// --- MISSIONS LOGIC ---
+
+async function loadMissions(email) {
+    const container = document.getElementById('tactical-list');
+    if(!container) return;
+    
+    container.innerHTML = '<div class="text-center py-10 text-gray-600 animate-pulse font-mono text-xs">BUSCANDO DADOS TÁTICOS...</div>';
+
+    let missions = [];
+
+    // Tenta carregar do Supabase
+    if(supabase) {
+        const { data, error } = await supabase
+            .from('missions')
+            .select('*')
+            .eq('user_email', email)
+            .order('created_at', { ascending: false });
+        
+        if(!error && data) missions = data;
+    }
+
+    // Fallback LocalStorage se falhar ou vazio
+    if(missions.length === 0) {
+        const local = localStorage.getItem('synapse_local_missions');
+        if(local) missions = JSON.parse(local);
+    }
+
+    renderMissionList(missions);
+}
+
+function renderMissionList(missions) {
+    const container = document.getElementById('tactical-list');
+    container.innerHTML = '';
+
+    if (missions.length === 0) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-48 text-center opacity-50 border border-dashed border-white/10 rounded-xl">
+                <i class="fa-solid fa-ban text-2xl mb-2 text-gray-500"></i>
+                <p class="text-xs font-mono text-gray-500">SEM ORDENS ATIVAS.</p>
+                <p class="text-[10px] text-red-900 mt-1 uppercase tracking-widest">A ociosidade é o inimigo.</p>
+            </div>
+        `;
+        updateStats(0, 0);
+        return;
+    }
+
+    missions.forEach(m => {
+        const el = document.createElement('div');
+        el.className = `group flex items-center gap-3 bg-[#111] border border-white/5 p-4 rounded-lg hover:border-white/20 transition-all ${m.is_completed ? 'opacity-40' : ''}`;
+        
+        el.innerHTML = `
+            <input type="checkbox" class="mission-checkbox" ${m.is_completed ? 'checked' : ''}>
+            <span class="flex-1 text-sm font-medium ${m.is_completed ? 'line-through text-gray-500' : 'text-gray-200'}">${m.title}</span>
+            <button class="text-gray-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity delete-btn">
+                <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+        `;
+
+        // Check Handler
+        const chk = el.querySelector('.mission-checkbox');
+        chk.onchange = () => toggleMission(m, missions);
+
+        // Delete Handler
+        el.querySelector('.delete-btn').onclick = () => deleteMission(m.id, missions);
+
+        container.appendChild(el);
+    });
+
+    updateStats(missions);
+}
+
+async function toggleMission(mission, allMissions) {
+    mission.is_completed = !mission.is_completed;
+    
+    // Save
+    saveMissions(allMissions);
+    renderMissionList(allMissions); // Re-render for visual feedback
+}
+
+async function deleteMission(id, allMissions) {
+    if(!confirm("ABORTAR MISSÃO?")) return;
+    
+    const idx = allMissions.findIndex(m => m.id === id);
+    if(idx > -1) {
+        allMissions.splice(idx, 1);
+        
+        // Se tiver ID do banco, deleta lá tbm
+        if(supabase && typeof id !== 'number') { // IDs locais são timestamps (números)
+            await supabase.from('missions').delete().eq('id', id);
+        }
+        
+        saveMissions(allMissions);
+        renderMissionList(allMissions);
+    }
+}
+
+async function setupMissionInput(email) {
+    const btn = document.getElementById('btnAddBlock');
+    const input = document.getElementById('newMissionInput');
+    
+    const add = async () => {
+        const title = input.value.trim();
+        if(!title) return;
+
+        input.value = '';
+        input.placeholder = "REGISTRANDO...";
+        
+        const newM = {
+            id: Date.now(), // Temp ID
+            title: title,
+            is_completed: false,
+            user_email: email,
+            created_at: new Date().toISOString()
+        };
+
+        // Carrega atuais
+        let current = [];
+        const stored = localStorage.getItem('synapse_local_missions');
+        if(stored) current = JSON.parse(stored);
+        
+        current.unshift(newM);
+        saveMissions(current);
+        
+        // Se tiver supabase, salva lá em background
+        if(supabase) {
+            supabase.from('missions').insert({ title, user_email: email })
+                .then(() => loadMissions(email)); // Recarrega com ID real
+        } else {
+            renderMissionList(current);
+        }
+        
+        input.placeholder = "Nova ordem...";
+    };
+
+    btn.onclick = add;
+    input.onkeydown = (e) => { if(e.key === 'Enter') add(); };
+}
+
+function saveMissions(missions) {
+    localStorage.setItem('synapse_local_missions', JSON.stringify(missions));
+}
+
+function updateStats(missions) {
+    if(!missions) {
+         document.getElementById('dailyMetaText').innerText = "0/0";
+         return;
+    }
+    const total = missions.length;
+    const done = missions.filter(m => m.is_completed).length;
+    const pct = total === 0 ? 0 : Math.round((done/total)*100);
+    
+    // Update Text
+    document.getElementById('dailyMetaText').innerText = `${done}/${total}`;
+    
+    // Update Circle Chart
+    const circle = document.getElementById('progressCircle');
+    if(circle) {
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        const offset = circumference - (pct / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+    }
+
+    // Update XP Bar (Simulado)
+    const xpBar = document.getElementById('xpBar');
+    if(xpBar) xpBar.style.width = `${pct}%`;
+}
+
+// --- CALENDAR SIMPLE ---
+function renderCalendar() {
+    const grid = document.getElementById('cal-grid');
+    const label = document.getElementById('cal-month-year');
+    if(!grid) return;
+
+    const date = new Date();
+    const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    label.innerText = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+    grid.innerHTML = '';
+    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const startDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+
+    // Empties
+    for(let i=0; i<startDay; i++) {
+        grid.appendChild(document.createElement('div'));
+    }
+
+    // Days
+    for(let i=1; i<=daysInMonth; i++) {
+        const d = document.createElement('div');
+        const isToday = i === date.getDate();
+        d.className = `aspect-square flex items-center justify-center text-[10px] font-mono rounded ${isToday ? 'bg-red-600 text-white font-bold' : 'bg-[#111] text-gray-500 hover:border hover:border-white/20'}`;
+        d.innerText = i;
+        grid.appendChild(d);
+    }
 }

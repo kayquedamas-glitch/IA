@@ -1,181 +1,41 @@
 // PRO/js/main.js
-import { CONFIG } from './config.js';
-import { initNavigation } from './modules/navigation.js';
-import { initChat } from './core/chat.js';
-import { syncData, renderHabits, renderCalendar, addNewHabitPrompt, clearHistory } from './modules/gamification.js';
-
-// Variáveis para os módulos carregados dinamicamente
-let initDashboard, startZenMode, showWeeklyReport, initCalendar;
-
-// Função para carregar os módulos extras sem travar o site se falharem
-async function loadModules() {
-    try {
-        // Carrega Dashboard (Lista de Missões e XP)
-        const dashModule = await import('./modules/dashboard.js');
-        initDashboard = dashModule.initDashboard;
-        
-        // Carrega Features (Modo Zen e Relatório)
-        const featModule = await import('./modules/features.js');
-        startZenMode = featModule.startZenMode;
-        showWeeklyReport = featModule.showWeeklyReport;
-
-        // Carrega o Calendário Tático (Novo)
-        const calModule = await import('./modules/calendar.js');
-        initCalendar = calModule.initCalendar;
-
-    } catch (e) {
-        console.error("⚠️ Aviso: Alguns módulos (Dashboard/Calendar) não foram carregados.", e);
-    }
-}
+import { initChat, switchAgent } from './core/chat.js';
+import { initDashboard } from './modules/dashboard.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("🚀 Inicializando Synapse PRO v2.5...");
+    console.log("🚀 SYNAPSE CORE v3.0 STARTED");
+
+    // 1. Inicializa Chat
+    initChat();
     
-    // 1. Carrega os módulos pesados
-    await loadModules();
+    // 2. Inicializa Dashboard (async para carregar dados)
+    await initDashboard();
 
-    // 2. Verifica usuário
-    const user = checkAuth();
-    loadUserProfile();
-
-    // 3. CORREÇÃO ERRO 406: Garante que o usuário existe no Banco de Dados
-    if (user && window.supabase) {
-        await ensureUserInDB(user.email);
-    }
-
-    // 4. Inicializa a Interface (Com proteção contra falhas)
-    try {
-        initNavigation();
-        initChat();
-        
-        // Inicializa os módulos se estiverem carregados
-        if (initDashboard) initDashboard();
-        if (initCalendar) initCalendar();
-        
-        setupButtons(); // Liga os botões de Foco e Relatório
-
-    } catch (e) {
-        console.error("❌ Erro crítico na UI:", e);
-    } finally {
-        // 5. GARANTIA ANTI-TELA PRETA: Força o site a aparecer sempre
-        document.body.style.visibility = "visible";
-    }
-
-    // Globais para acesso via HTML (se necessário)
-    window.addNewHabitPrompt = addNewHabitPrompt;
-    window.clearHistory = clearHistory;
-
-    // 6. Listeners: O que acontece quando troca de aba
-    document.addEventListener('tabChanged:protocolo', () => {
-        // Recarrega tudo para garantir dados frescos
-        renderCalendar(); // Calendário de Hábitos (antigo)
-        renderHabits();
-        
-        if (initDashboard) initDashboard(); // Lista de Missões
-        if (initCalendar) initCalendar();   // Novo Calendário de Eventos
-        
-        setupButtons(); // Re-liga os botões
-    });
-
-    // 7. Sincronização Inicial (Gamificação)
-    if (typeof syncData === 'function') {
-        syncData().catch(e => console.warn("Modo Offline ativado:", e));
-    }
+    // 3. Funções Globais para HTML
+    window.switchTab = switchTab;
+    window.selectTool = switchAgent;
+    
+    // 4. Inicia na Aba Correta
+    switchTab('protocolo'); // Começa no Dashboard
 });
 
-// --- FUNÇÕES AUXILIARES ---
-
-function setupButtons() {
-    const btnFoco = document.getElementById('btnFoco');
-    const btnRelatorio = document.getElementById('btnRelatorio');
-
-    if (btnFoco) {
-        // Clone para remover listeners antigos e evitar duplicidade
-        const newFoco = btnFoco.cloneNode(true);
-        btnFoco.parentNode.replaceChild(newFoco, btnFoco);
-        
-        newFoco.onclick = () => {
-            if (startZenMode) startZenMode();
-            else alert("Carregando módulo de Foco...");
-        };
-    }
-
-    if (btnRelatorio) {
-        const newRep = btnRelatorio.cloneNode(true);
-        btnRelatorio.parentNode.replaceChild(newRep, btnRelatorio);
-        
-        newRep.onclick = () => {
-            if (showWeeklyReport) showWeeklyReport();
-            else alert("Carregando módulo de Relatório...");
-        };
-    }
-}
-
-async function ensureUserInDB(email) {
-    try {
-        // Tenta buscar o usuário sem gerar erro 406 (usando maybeSingle)
-        const { data } = await supabase
-            .from('user_progress')
-            .select('id')
-            .eq('user_email', email)
-            .maybeSingle();
-        
-        // Se não existir, CRIA automaticamente
-        if (!data) {
-            console.log("🆕 Novo usuário detectado. Criando registro no DB...");
-            await supabase.from('user_progress').insert([{ 
-                user_email: email, 
-                game_data: {},
-                current_xp: 0,
-                current_level: 1
-            }]);
-        }
-    } catch (e) {
-        console.warn("Erro ao verificar DB (pode ser falha de conexão):", e);
-    }
-}
-
-function checkAuth() {
-    try {
-        const user = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
-        // Se não tiver usuário, retorna um temporário para não quebrar o layout
-        return user || { email: "visitante@synapse.com", name: "Visitante" };
-    } catch (e) { return null; }
-}
-
-function loadUserProfile() {
-    const user = checkAuth();
-    if (user) {
-        const ids = ['userNameDisplay', 'userNameSidebar', 'userNameDashboard'];
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerText = user.name || user.user || "Membro";
-        });
-        
-        // Avatar (Inicial do nome)
-        const avatarIds = ['userAvatar', 'userAvatarSidebar'];
-        avatarIds.forEach(id => {
-            const el = document.getElementById(id);
-            const name = user.name || user.user || "M";
-            if (el) el.innerText = name.charAt(0).toUpperCase();
-        });
-    }
-}
-import { initFocus } from './modules/focus.js';
-import { initPanic } from './modules/panic.js';
-// ... imports existentes
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // ... código existente
+function switchTab(tabId) {
+    const chat = document.getElementById('viewChat');
+    const proto = document.getElementById('viewProtocolo');
+    const navJornada = document.getElementById('navJornada');
     
-    initFocus(); // Carrega lógica do Foco (Pomodoro)
-    initPanic(); // Carrega lógica do Pânico
+    // Reseta Nav Active State
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
     
-    // Atualiza os botões do HTML para usar as novas funções
-    const btnFoco = document.getElementById('btnFoco');
-    if(btnFoco) {
-        btnFoco.onclick = () => window.openFocusModal();
+    if (tabId === 'chat') {
+        chat.classList.remove('hidden');
+        chat.classList.add('flex'); // Chat precisa de flexbox
+        proto.classList.add('hidden');
+        if(navJornada) navJornada.classList.remove('active-nav-item');
+    } else {
+        chat.classList.add('hidden');
+        chat.classList.remove('flex');
+        proto.classList.remove('hidden');
+        if(navJornada) navJornada.classList.add('active-nav-item');
     }
-    
-    // ...
-});
+}
