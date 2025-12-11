@@ -173,46 +173,4 @@ function loadUserProfile() {
             if (el) el.innerText = displayName.charAt(0).toUpperCase();
         });
     }
-}// --- CORREÇÃO: Ler das duas chaves de armazenamento ---
-function checkAuth() {
-    try {
-        // Tenta ler do login novo (v2) OU do antigo
-        const sessionV2 = JSON.parse(localStorage.getItem('synapse_session_v2'));
-        const userV1 = JSON.parse(localStorage.getItem(CONFIG.USER_STORAGE_KEY));
-        
-        // Prioriza a sessão nova
-        const activeUser = sessionV2 || userV1;
-
-        // Se achou alguém, retorna. Se não, retorna o Visitante.
-        return activeUser || { email: "visitante@synapse.com", name: "Visitante" };
-    } catch (e) { return null; }
-}
-
-function loadUserProfile() {
-    const user = checkAuth();
-    if (user) {
-        // Pega o nome ou usa o começo do e-mail se falhar
-        let displayName = user.user || user.name;
-        
-        if (!displayName || displayName === "Membro" || displayName === "Visitante") {
-             if (user.email && user.email.includes('@')) {
-                const nick = user.email.split('@')[0];
-                displayName = nick.charAt(0).toUpperCase() + nick.slice(1);
-             }
-        }
-
-        // Atualiza na tela
-        const ids = ['userNameDisplay', 'userNameSidebar', 'userNameDashboard'];
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerText = displayName;
-        });
-        
-        // Avatar
-        const avatarIds = ['userAvatar', 'userAvatarSidebar'];
-        avatarIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerText = displayName ? displayName.charAt(0).toUpperCase() : "M";
-        });
-    }
 }
