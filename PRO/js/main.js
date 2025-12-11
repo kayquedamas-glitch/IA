@@ -161,3 +161,21 @@ function loadUserProfile() {
         });
     }
 }
+import { initFocus } from './modules/focus.js';
+import { initPanic } from './modules/panic.js';
+// ... imports existentes
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // ... código existente
+    
+    initFocus(); // Carrega lógica do Foco (Pomodoro)
+    initPanic(); // Carrega lógica do Pânico
+    
+    // Atualiza os botões do HTML para usar as novas funções
+    const btnFoco = document.getElementById('btnFoco');
+    if(btnFoco) {
+        btnFoco.onclick = () => window.openFocusModal();
+    }
+    
+    // ...
+});
