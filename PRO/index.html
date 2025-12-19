@@ -1,438 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
 <head>
-    <link rel="shortcut icon" href="icone preto.png" type="image/jpeg">
-    <link rel="icon" href="icone preto.png" type="image/jpeg">
+    <link rel="shortcut icon" href="icone preto.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
-    <title>Synapse PRO</title>
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Synapse PRO | Neural OS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* --- ESTILOS DE ANIMAÇÃO E LAYOUT --- */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        body { visibility: hidden; background-color: #000; } 
-        
-        /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #111; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
-
-        /* Animação: SOFT LIFT */
-        .anim-active .day-cell { animation: softLift 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes softLift {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Animação XP */
-        .xp-bar-fill { transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
-        .level-pulse { animation: badgePulse 2s infinite; }
-      
-        @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 rgba(204,0,0,0); border-color: #333; } 50% { box-shadow: 0 0 10px rgba(204,0,0,0.4); border-color: #666; } }
-        
-        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
-
 </head>
 
-<body class="h-full bg-black text-white font-inter overflow-hidden">
+<body class="h-full bg-black text-white font-inter overflow-hidden selection:bg-red-600/30">
 
-    <script>
-        try {
-            const user = JSON.parse(localStorage.getItem('synapseUser')) || JSON.parse(localStorage.getItem('synapse_session_v2'));
-            if (!user && !localStorage.getItem('synapse_access')) {
-                 window.location.href = "login.html"; 
-            }
-            document.body.style.visibility = "visible";
-        } catch(e) { document.body.style.visibility = "visible"; }
-    </script>
+    <!-- Fundo de proteção para mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 
-    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+    <div class="app-layout h-full">
 
-    <div class="app-layout">
-
-        <aside id="sidebar" class="sidebar bg-black flex flex-col h-full font-inter w-[280px] p-2 gap-2 overflow-hidden fixed md:relative z-[100] md:z-auto transition-transform duration-300 md:translate-x-0 -translate-x-full"> 
+        <!-- SIDEBAR (Menu Lateral) -->
+        <aside id="sidebar" class="sidebar z-[70]"> 
             
-            <div class="bg-[#121212] rounded-lg p-5 flex flex-col gap-5">
+            <div class="bg-[#121212] rounded-xl p-5 flex flex-col gap-5 m-2 mb-0 border border-white/5">
                 <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
-                        <img src="icone preto.png" alt="Logo" class="w-6 h-6 object-contain invert">
-                        <span class="font-bold text-white tracking-tight text-sm">Synapse PRO</span>
+                    <div class="flex items-center gap-2">
+                        <img src="icone preto.png" alt="Logo" class="w-6 h-6 invert opacity-80">
+                        <span class="font-bold text-white tracking-tighter text-sm uppercase">Synapse PRO</span>
                     </div>
-                    <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-2">
-                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    <!-- Botão de fechar só aparece no celular -->
+                    <button onclick="window.toggleSidebar(false)" class="md:hidden text-gray-400 hover:text-white p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
                 </div>
 
                 <nav class="space-y-1">
-                    <div onclick="switchTab('protocolo'); closeSidebar()" class="flex items-center gap-4 px-3 py-2 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-md cursor-pointer transition font-bold text-sm group">
-                        <div class="w-6 text-center"><i class="fa-solid fa-house text-lg group-hover:text-white transition"></i></div>
-                        <span>Início</span>
+                    <div onclick="window.switchTab('protocolo')" class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
+                        <div class="w-5 text-center"><i class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
+                        <span class="uppercase tracking-widest">Base de Comando</span>
                     </div>
                 </nav>
             </div>
 
-            <div class="bg-[#121212] rounded-lg flex-grow flex flex-col overflow-hidden relative">
-                
-                <div class="p-4 shadow-sm z-10 bg-[#121212] border-b border-white/5">
-                    <div class="flex justify-between items-center text-gray-400 hover:text-white transition cursor-pointer group">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group text-lg group-hover:text-white transition"></i>
-                            <span class="font-bold text-sm group-hover:text-white transition">Seu Arsenal</span>
-                        </div>
-                        <div class="flex gap-3">
-                            <i class="fa-solid fa-plus hover:bg-[#1a1a1a] rounded-full p-1 transition cursor-pointer"></i>
-                        </div>
-                    </div>
+            <!-- Lista de Ferramentas IA -->
+            <div class="bg-[#121212] rounded-xl flex-grow flex flex-col overflow-hidden relative m-2 mt-2 border border-white/5">
+                <div class="p-4 bg-[#121212] border-b border-white/5">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
                 </div>
 
-                <div class="overflow-y-auto px-2 py-4 space-y-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-                    
-                    <div onclick="selectTool('Diagnostico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition">
-                        <div class="w-10 h-10 bg-gradient-to-br from-[#CC0000] to-[#990000] rounded-md flex items-center justify-center flex-shrink-0 shadow-lg">
-                            <i class="fa-solid fa-chart-line text-white text-lg"></i>
+                <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar">
+                    <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate" style="animation-delay: 0.1s">
+                        <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
+                             <i class="fa-solid fa-brain text-white text-lg"></i>
                         </div>
-                        <div class="overflow-hidden">
-                            <p class="text-white font-bold text-sm truncate group-hover:text-green-400 transition mb-0.5">Diagnóstico</p>
-                            <p class="text-[10px] text-gray-400 truncate flex items-center gap-1">
-                                <span class="text-green-500 text-[6px]">●</span> IA Ativa
-                            </p>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black uppercase tracking-tight">Diagnóstico</span>
+                            <span class="text-[8px] text-gray-500 uppercase font-mono">Análise</span>
                         </div>
                     </div>
 
-                    <div id="toolCOMANDANTE" onclick="selectTool('COMANDANTE'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition">
-                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition">
-                            <i class="fa-solid fa-skull text-gray-400 text-lg group-hover:text-white"></i>
+                    <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate" style="animation-delay: 0.2s">
+                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                            <i class="fa-solid fa-skull text-gray-500 text-lg"></i>
                         </div>
-                        <div class="overflow-hidden flex-grow">
-                            <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">Comandante</p>
-                            <p class="text-[10px] text-gray-500 truncate">Disciplina & Execução</p>
-                        </div>
-                    </div>
-
-                    <div id="toolGENERAL" onclick="selectTool('GENERAL'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition">
-                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition">
-                            <i class="fa-solid fa-chess-knight text-gray-400 text-lg group-hover:text-white"></i>
-                        </div>
-                        <div class="overflow-hidden flex-grow">
-                            <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">General</p>
-                            <p class="text-[10px] text-gray-500 truncate">Estratégia & Negócios</p>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black uppercase tracking-tight">Comandante</span>
+                            <span class="text-[8px] text-gray-600 uppercase font-mono">Disciplina</span>
                         </div>
                     </div>
 
-                    <div id="toolTATICO" onclick="selectTool('TATICO'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition">
-                        <div class="w-10 h-10 bg-[#282828] rounded-md flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition">
-                            <i class="fa-solid fa-satellite-dish text-gray-400 text-lg group-hover:text-white"></i>
+                    <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate" style="animation-delay: 0.3s">
+                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                            <i class="fa-solid fa-chess-knight text-gray-500 text-lg"></i>
                         </div>
-                        <div class="overflow-hidden flex-grow">
-                            <p class="text-white font-bold text-sm truncate group-hover:text-white transition mb-0.5">Tático</p>
-                            <p class="text-[10px] text-gray-500 truncate">Tech & Operacional</p>
-                        </div>
-                    </div>
-
-                    <div onclick="selectTool('Panico'); closeSidebar()" class="flex items-center gap-3 p-2 rounded-md hover:bg-[#1a1a1a] cursor-pointer group transition mt-2">
-                        <div class="w-10 h-10 bg-gradient-to-br from-[#450a0a] to-red-900 rounded-md flex items-center justify-center flex-shrink-0 shadow-red-900/20">
-                            <i class="fa-solid fa-triangle-exclamation text-red-200 text-lg animate-pulse"></i>
-                        </div>
-                        <div class="overflow-hidden">
-                            <p class="text-white font-bold text-sm truncate group-hover:text-red-400 transition mb-0.5">Botão do Pânico</p>
-                            <p class="text-[10px] text-gray-400 truncate">Emergência</p>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black uppercase tracking-tight">General</span>
+                            <span class="text-[8px] text-gray-600 uppercase font-mono">Estratégia</span>
                         </div>
                     </div>
 
+                    <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate" style="animation-delay: 0.4s">
+                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                            <i class="fa-solid fa-satellite-dish text-gray-500 text-lg"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black uppercase tracking-tight">Tático</span>
+                            <span class="text-[8px] text-gray-600 uppercase font-mono">Operação</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="mt-auto">
-                <div class="bg-gradient-to-r from-[#111] to-[#1a1a1a] p-[1px] rounded-lg shadow-lg group border border-[#222]">
-                    <div class="bg-[#000] p-3 rounded-[7px] h-full flex items-center gap-3 relative overflow-hidden">
-                        <div class="w-10 h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center border border-[#333] text-gray-400 font-bold" id="userAvatarSidebar">
-                            U
-                        </div>
-                        
-                        <div class="flex-grow z-10 overflow-hidden">
-                            <div class="flex items-center gap-2">
-                                 <p class="text-white font-bold text-xs truncate" id="userNameSidebar">Membro</p>
-                                 <span class="bg-[#CC0000] text-white text-[8px] font-black px-1.5 rounded uppercase">PRO</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                <p class="text-gray-500 text-[9px] truncate">Sistema Online</p>
-                            </div>
-                        </div>
+
+            <!-- Perfil do Usuário -->
+            <div class="mt-auto m-2 p-3 bg-[#111] rounded-xl border border-white/5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl" id="sidebarAvatar">?</div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-black text-white truncate uppercase tracking-tighter" id="sidebarName">CARREGANDO...</p>
+                    <div class="flex items-center gap-1.5">
+                         <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                         <span class="text-[8px] text-gray-500 font-black uppercase tracking-widest">Online</span>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <main class="chat-area relative flex flex-col h-full bg-[#000]">
+        <!-- ÁREA PRINCIPAL -->
+        <main class="main-content relative flex flex-col h-full bg-black overflow-hidden">
 
-            <div id="mobileHeader" class="md:hidden fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a] z-30 flex items-center px-4 justify-between transition-transform duration-300">
-                <button id="menuBtn" class="text-gray-400 hover:text-white transition p-2" onclick="toggleSidebar()">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
-                <h3 class="text-xs font-bold uppercase tracking-widest text-white" id="mobileTitle">Synapse PRO</h3>
-                <div class="w-9"></div> 
+            <!-- Cabeçalho Mobile (Só aparece no celular) -->
+            <div class="md:hidden h-14 bg-black/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 z-40 shrink-0 sticky top-0">
+                <button onclick="window.toggleSidebar(true)" class="text-gray-400 hover:text-white p-2"><i class="fa-solid fa-bars-staggered"></i></button>
+                <span class="text-xs font-black tracking-[0.2em] text-white italic">SYNAPSE <span class="text-red-600">PRO</span></span>
+                <div class="w-9"></div>
             </div>
 
-            <div id="viewChat" class="view-section h-full flex flex-col">
-                <div class="chat-messages flex-grow pt-16"> 
-                    <div id="messagesContainer" class="pb-24 w-full max-w-2xl mx-auto flex flex-col">
-                        </div>
-                </div>
-
-                <div class="chat-input-container">
-                    <div class="w-full max-w-2xl mx-auto">
-                        <div id="textInputWrapper">
-                            <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none max-h-24 placeholder-gray-600 font-inter" placeholder="Digite seu comando..."></textarea>
-                            <button id="sendBtn" class="hover:bg-red-700 transition"><i data-lucide="arrow-up" class="w-4 h-4 text-white"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto bg-[#050505] p-5 pb-24 pt-8 md:pt-10 relative z-10">
-                <button onclick="switchTab('chat')" class="fab-back md:hidden group"><i class="fa-solid fa-comment-dots text-xl"></i></button>
-
-                <div class="w-full max-w-md md:max-w-6xl mx-auto relative transition-all duration-500">
-                    
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                        <div>
-                            <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                                QG Operacional
-                            </h2>
-                            <p class="text-xs text-gray-500 mt-1">Bem-vindo, <span id="userNameDashboard" class="text-gray-300 font-bold">Comandante</span>.</p>
-                        </div>
-                        
-                        <div class="flex gap-3">
-                            <button id="btnRelatorio" class="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 border border-white/5">
-                                <i class="fa-solid fa-file-export"></i> Relatório
-                            </button>
-                            <button id="btnFoco" class="bg-[#CC0000] hover:bg-red-600 text-white px-5 py-2 rounded-full text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center gap-2">
-                                <i class="fa-solid fa-play"></i> Iniciar Foco
-                            </button>
+            <!-- TELA: CHAT IA -->
+            <div id="viewChat" class="view-section h-full flex flex-col hidden bg-black">
+                <div class="chat-area flex-grow flex flex-col relative overflow-hidden">
+                    <div class="chat-messages pt-4" id="chatContainer"> 
+                        <div id="messagesArea">
+                            <!-- O Chat vai aparecer aqui -->
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div class="w-8 h-8 rounded-full bg-blue-900/20 flex items-center justify-center text-blue-500"><i class="fa-solid fa-trophy text-xs"></i></div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-white mt-2" id="levelDisplay">Nível 1</div>
-                                <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden">
-                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-500"></div>
-                                </div>
-                                <div class="text-[10px] text-gray-500 mt-1">Progresso de XP</div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div class="w-8 h-8 rounded-full bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire text-xs"></i></div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-white mt-2">1 Dia</div>
-                                <div class="text-[10px] text-gray-500">Sequência Ativa</div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card p-5 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div class="w-8 h-8 rounded-full bg-purple-900/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-brain text-xs"></i></div>
-                            </div>
-                            <div>
-                                <div class="w-full bg-[#222] rounded-full h-1.5 mt-3 mb-1 overflow-hidden">
-                                    <div class="bg-purple-500 h-full w-[65%] rounded-full animate-pulse"></div>
-                                </div>
-                                <div class="text-[10px] text-gray-400 flex justify-between">
-                                    <span>Sistema</span>
-                                    <span class="text-white">Online</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card p-4 flex items-center justify-between">
-                            <div>
-                                <div class="text-xs text-gray-400 mb-1">Missões Hoje</div>
-                                <div class="text-xl font-bold text-white" id="dailyMetaText">0/0</div>
-                            </div>
-                            <div class="circle-chart" style="--percentage: 0deg; width: 60px; height: 60px;">
-                                <div class="circle-content text-[10px] font-bold text-white">0%</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
-                        <div class="dashboard-card p-6 lg:col-span-1 h-[400px] flex flex-col">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-sm font-bold text-white"><i class="fa-regular fa-calendar text-gray-500 mr-2"></i>Agenda</h3>
-                                <div class="flex gap-2">
-                                    <button id="prevMonth" class="text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-left"></i></button>
-                                    <button id="nextMonth" class="text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-right"></i></button>
-                                </div>
-                            </div>
-                            
-                            <h4 id="cal-month-year" class="text-white font-bold text-center mb-2 capitalize">...</h4>
-                            
-                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-gray-600 font-bold uppercase mb-2">
-                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-                            </div>
-                            
-                            <div id="dashboardCalendar" class="grid grid-cols-7 gap-1 flex-grow overflow-y-auto custom-scrollbar"></div>
-                        </div>
-
-                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col h-[400px]">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                                    <i class="fa-solid fa-list-check text-[#CC0000]"></i> Missões Ativas
-                                </h3>
-                                <span class="text-[10px] text-gray-500 bg-[#1a1a1a] px-2 py-1 rounded-md">Prioridade Alta</span>
-                            </div>
-
-                            <div id="tactical-list" class="space-y-2 flex-grow overflow-y-auto pr-2 custom-scrollbar">
-                                <p class="text-xs text-gray-600 text-center py-10">Sincronizando banco de dados...</p>
-                                
-                                <div class="group flex items-center gap-4 bg-[#141414] hover:bg-[#1a1a1a] p-3 rounded-xl border border-transparent hover:border-white/5 transition">
-                                    <div class="text-xs font-mono text-gray-500 w-10">08:00</div>
-                                    <div class="w-px h-6 bg-white/5"></div>
-                                    <input type="text" class="bg-transparent text-sm text-gray-300 w-full outline-none placeholder-gray-700" value="Rotina Matinal" readonly>
-                                    <div class="w-5 h-5 rounded-full border-2 border-green-500/50 flex items-center justify-center text-green-500 text-xs">
-                                        <i class="fa-solid fa-check"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-2 mt-4 pt-4 border-t border-white/5">
-                                <input id="newMissionInput" type="text" class="bg-[#141414] text-sm text-white px-4 py-3 rounded-xl w-full outline-none placeholder-gray-600 focus:border-gray-600 border border-transparent transition" placeholder="Nova missão...">
-                                <button id="btnAddBlock" class="bg-[#1a1a1a] hover:bg-[#CC0000] text-gray-400 hover:text-white px-4 rounded-xl transition">
-                                    <i class="fa-solid fa-plus"></i>
+                    <!-- Caixa de Texto Flutuante -->
+                    <div class="chat-input-container">
+                        <div class="w-full max-w-2xl mx-auto px-4">
+                            <div id="textInputWrapper" class="relative">
+                                <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter" placeholder="Digite seu comando..."></textarea>
+                                <button id="sendMessageBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
+                                    <i data-lucide="arrow-up" class="w-5 h-5 text-white"></i>
                                 </button>
                             </div>
                         </div>
-
                     </div>
-                    </div>
+                </div>
             </div>
 
+            <!-- TELA: DASHBOARD (JORNADA) -->
+            <div id="viewProtocolo" class="view-section h-full overflow-y-auto p-4 md:p-8 pb-32 pt-20 md:pt-10 relative z-10 custom-scrollbar">
+                
+                <div class="w-full max-w-6xl mx-auto">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 animate-fade-in-up">
+                        <div>
+                            <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Quartel General</h2>
+                            <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName" class="text-white font-bold">...</span></p>
+                        </div>
+                        <button id="btnZenMode" class="bg-[#111] hover:bg-red-600 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 flex items-center gap-2">
+                            <i class="fa-solid fa-expand"></i> Foco Total
+                        </button>
+                    </div>
+
+                    <!-- Cards Superiores -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-100">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Nível</span>
+                                <i class="fa-solid fa-trophy text-blue-500 text-xs"></i>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-black text-white italic"><span id="levelDisplay">1</span></div>
+                                <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden shadow-inner">
+                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
+                                </div>
+                                <div class="text-[9px] text-gray-500 mt-2 text-right font-mono"><span id="xpText">0</span> XP</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-200">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
+                                <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-black text-white italic"><span id="streakDisplay">0</span> <span class="text-xs not-italic text-gray-600 uppercase">Dias</span></div>
+                                <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">Consistência</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-300">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Status</span>
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-[10px] font-black text-white uppercase italic">Sistemas Ativos</p>
+                                <div class="text-[9px] text-gray-600 mt-1 uppercase font-mono">Neural OS v4.5</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card p-5 flex items-center justify-between dopamine-card delay-400">
+                            <div>
+                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões</div>
+                                <div class="text-2xl font-black text-white italic" id="dailyMetaText">0/0</div>
+                            </div>
+                            <div class="circle-chart" >
+                                <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agenda e Missões -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
+                        <div class="dashboard-card p-6 lg:col-span-1 min-h-[420px] flex flex-col">
+                            <h3 class="text-xs font-black text-white uppercase tracking-widest italic flex items-center gap-2 mb-6">
+                                <i class="fa-regular fa-calendar text-red-600"></i> Agenda
+                            </h3>
+                            <h4 id="calMonthYear" class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">...</h4>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3">
+                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+                            </div>
+                            <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
+                             <div class="mt-auto pt-6 border-t border-white/5">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
+                                    <button id="addHabitBtn" class="text-red-500 hover:text-white transition"><i class="fa-solid fa-plus-circle"></i></button>
+                                </div>
+                                <div id="habitList" class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
+                             </div>
+                        </div>
+
+                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col min-h-[420px]">
+                            <h3 class="text-xs font-black text-white uppercase tracking-widest italic flex items-center gap-2 mb-6">
+                                <i class="fa-solid fa-list-check text-red-600"></i> Objetivos Táticos
+                            </h3>
+                            <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar"></div>
+                            <div class="flex gap-2 mt-6 pt-6 border-t border-white/5">
+                                <input id="newMissionInput" type="text" class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all" placeholder="Nova ordem estratégica...">
+                                <button id="addMissionBtn" class="bg-red-600 hover:bg-red-700 text-white px-6 rounded-xl transition-all shadow-lg active:scale-95"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
-        <nav class="bottom-nav md:hidden transition-transform duration-300 border-t border-[#1a1a1a]">
-            <button id="tabJornada" class="nav-btn" onclick="switchTab('protocolo')">
-                <i class="fa-solid fa-layer-group text-lg mb-1"></i>
-                <span class="text-[9px] font-medium tracking-wide">JORNADA</span>
+        <!-- MENU INFERIOR (Estilo Spotify - Mobile) -->
+        <nav class="bottom-nav md:hidden z-50">
+            <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')">
+                <i class="fa-solid fa-layer-group text-xl"></i>
+                <span>Jornada</span>
             </button>
-            <button id="tabChat" class="nav-btn active" onclick="switchTab('chat')">
-                <i class="fa-solid fa-terminal text-lg mb-1"></i>
-                <span class="text-[9px] font-medium tracking-wide">COMANDO</span>
+            <button id="tabChat" class="nav-btn active" onclick="window.switchTab('chat')">
+                <i class="fa-solid fa-terminal text-xl"></i>
+                <span>Comando</span>
             </button>
         </nav>
         
-    </div> 
+    </div>
 
+    <!-- Scripts do Sistema -->
     <script type="module" src="js/main.js"></script>
-
     <script>
-        // Inicializar ícones
-        document.addEventListener('DOMContentLoaded', () => {
-            if(window.lucide) lucide.createIcons();
-            
-            // Carregar dados do usuário na sidebar
-            const user = JSON.parse(localStorage.getItem('synapseUser')) || JSON.parse(localStorage.getItem('synapse_session_v2'));
-            if(user) {
-                const name = user.name || user.user || "Membro";
-                document.getElementById('userNameSidebar').innerText = name;
-                document.getElementById('userAvatarSidebar').innerText = name.charAt(0).toUpperCase();
-            }
-        });
-
-        // Função segura para fechar sidebar
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar && sidebar.classList.contains('open')) {
-                toggleSidebar(); // Usa a função importada/global
-            }
-        }
-
-        // Animação de Entrada na Jornada
-        document.addEventListener('tabChanged:protocolo', () => {
-            const levelContainer = document.getElementById('levelContainer');
-            const xpContainer = document.getElementById('xpContainer');
-            const habitContainer = document.getElementById('habitContainer');
-            const grid = document.getElementById('dashboardCalendar'); // Corrigido ID aqui também se necessário
-
-            // Reset visual e animações
-            if(grid) {
-                grid.classList.remove('anim-active');
-                void grid.offsetWidth;
-            }
-            setTimeout(() => { 
-                if(grid) grid.classList.add('anim-active');
-            }, 500);
-        });
-
-        // Renderiza o mini-calendário do Dashboard
-        function renderDashboardCalendar() {
-            // CORREÇÃO: O ID agora bate com o HTML
-            const grid = document.getElementById('dashboardCalendar');
-            if(!grid) return;
-            grid.innerHTML = '';
-            
-            // Dias (Simulados)
-            for(let i=1; i<=30; i++) {
-                const d = document.createElement('div');
-                d.className = 'day-cell aspect-square flex items-center justify-center text-[9px] rounded-sm text-gray-500 border border-transparent hover:border-white/20 transition cursor-pointer';
-                d.innerText = i;
-                
-                // Simulação de dados
-                if([2,3,4,8,9,10,15,16,22].includes(i)) {
-                    d.classList.add('bg-green-900/20', 'text-green-500', 'border-green-900/30'); // Dias Bons
-                } else if ([5,12,19].includes(i)) {
-                    d.classList.add('bg-red-900/20', 'text-red-500'); // Dias Ruins
-                }
-                
-                // Dia Atual
-                if(i === 24) { 
-                    d.classList.add('bg-white', '!text-black', 'font-bold');
-                }
-
-                grid.appendChild(d);
-            }
-        }
-
-        // Chamar ao carregar a aba
-        document.addEventListener('tabChanged:protocolo', renderDashboardCalendar);
-        
-        // Atualiza nome no dashboard
-        const user = JSON.parse(localStorage.getItem('synapseUser')) || JSON.parse(localStorage.getItem('synapse_session_v2'));
-        if(user) {
-            const name = user.name || user.user || "Membro";
-            const dashName = document.getElementById('userNameDashboard');
-            if(dashName) dashName.innerText = name;
-        }
-    </script>
-    <script type="module">
-    import { initDashboard } from './js/modules/dashboard.js';
-    
-    // Inicia o dashboard quando a aba "protocolo" for aberta ou ao carregar
-    document.addEventListener('DOMContentLoaded', initDashboard);
-    document.addEventListener('tabChanged:protocolo', initDashboard);
+        // Inicia ícones
+        lucide.createIcons();
     </script>
 </body>
 </html>
