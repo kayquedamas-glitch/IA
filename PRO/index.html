@@ -3,7 +3,8 @@
 <head>
     <link rel="shortcut icon" href="icone preto.png" type="image/png">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1">
+    <!-- Viewport ajustado para prevenir zoom e garantir renderização correta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>Synapse PRO | Neural OS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,28 +16,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="h-full bg-black text-white font-inter overflow-hidden selection:bg-red-600/30">
+<body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
 
-    <!-- Fundo de proteção para mobile -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 
     <div class="app-layout h-full">
 
-        <!-- SIDEBAR (Menu Lateral) -->
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="sidebar z-[70]"> 
-            
             <div class="bg-[#121212] rounded-xl p-5 flex flex-col gap-5 m-2 mb-0 border border-white/5">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
                         <img src="icone preto.png" alt="Logo" class="w-6 h-6 invert opacity-80">
                         <span class="font-bold text-white tracking-tighter text-sm uppercase">Synapse PRO</span>
                     </div>
-                    <!-- Botão de fechar só aparece no celular -->
                     <button onclick="window.toggleSidebar(false)" class="md:hidden text-gray-400 hover:text-white p-2">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
                 </div>
-
                 <nav class="space-y-1">
                     <div onclick="window.switchTab('protocolo')" class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
                         <div class="w-5 text-center"><i class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
@@ -45,12 +42,11 @@
                 </nav>
             </div>
 
-            <!-- Lista de Ferramentas IA -->
+            <!-- Arsenal -->
             <div class="bg-[#121212] rounded-xl flex-grow flex flex-col overflow-hidden relative m-2 mt-2 border border-white/5">
                 <div class="p-4 bg-[#121212] border-b border-white/5">
                     <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
                 </div>
-
                 <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar">
                     <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate" style="animation-delay: 0.1s">
                         <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
@@ -61,7 +57,6 @@
                             <span class="text-[8px] text-gray-500 uppercase font-mono">Análise</span>
                         </div>
                     </div>
-
                     <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate" style="animation-delay: 0.2s">
                         <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-skull text-gray-500 text-lg"></i>
@@ -71,7 +66,6 @@
                             <span class="text-[8px] text-gray-600 uppercase font-mono">Disciplina</span>
                         </div>
                     </div>
-
                     <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate" style="animation-delay: 0.3s">
                         <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-chess-knight text-gray-500 text-lg"></i>
@@ -81,20 +75,18 @@
                             <span class="text-[8px] text-gray-600 uppercase font-mono">Estratégia</span>
                         </div>
                     </div>
-
                     <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate" style="animation-delay: 0.4s">
                         <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-satellite-dish text-gray-500 text-lg"></i>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs font-black uppercase tracking-tight">Tático</span>
-                            <span class="text-[8px] text-gray-600 uppercase font-mono">Operação</span>
+                            <span class="text-[8px] text-gray-600 uppercase font-mono">Prosperidade</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Perfil do Usuário -->
             <div class="mt-auto m-2 p-3 bg-[#111] rounded-xl border border-white/5 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl" id="sidebarAvatar">?</div>
                 <div class="overflow-hidden">
@@ -107,30 +99,27 @@
             </div>
         </aside>
 
-        <!-- ÁREA PRINCIPAL -->
+        <!-- MAIN CONTENT -->
         <main class="main-content relative flex flex-col h-full bg-black overflow-hidden">
 
-            <!-- Cabeçalho Mobile (Só aparece no celular) -->
+            <!-- Mobile Header -->
             <div class="md:hidden h-14 bg-black/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 z-40 shrink-0 sticky top-0">
                 <button onclick="window.toggleSidebar(true)" class="text-gray-400 hover:text-white p-2"><i class="fa-solid fa-bars-staggered"></i></button>
                 <span class="text-xs font-black tracking-[0.2em] text-white italic">SYNAPSE <span class="text-red-600">PRO</span></span>
                 <div class="w-9"></div>
             </div>
 
-            <!-- TELA: CHAT IA -->
+            <!-- CHAT IA -->
             <div id="viewChat" class="view-section h-full flex flex-col hidden bg-black">
                 <div class="chat-area flex-grow flex flex-col relative overflow-hidden">
-                    <div class="chat-messages pt-4" id="chatContainer"> 
-                        <div id="messagesArea">
-                            <!-- O Chat vai aparecer aqui -->
-                        </div>
+                    <div class="chat-messages" id="chatContainer"> 
+                        <div id="messagesArea"></div>
                     </div>
 
-                    <!-- Caixa de Texto Flutuante -->
                     <div class="chat-input-container">
                         <div class="w-full max-w-2xl mx-auto px-4">
                             <div id="textInputWrapper" class="relative">
-                                <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter" placeholder="Digite seu comando..."></textarea>
+                                <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter" placeholder="Comando neural..."></textarea>
                                 <button id="sendMessageBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
                                     <i data-lucide="arrow-up" class="w-5 h-5 text-white"></i>
                                 </button>
@@ -140,57 +129,38 @@
                 </div>
             </div>
 
-            <!-- TELA: DASHBOARD (JORNADA) -->
-            <div id="viewProtocolo" class="view-section h-full overflow-y-auto p-4 md:p-8 pb-32 pt-20 md:pt-10 relative z-10 custom-scrollbar">
+            <!-- DASHBOARD -->
+            <div id="viewProtocolo" class="view-section h-full overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
                 
                 <div class="w-full max-w-6xl mx-auto">
-                    
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 animate-fade-in-up">
                         <div>
                             <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Quartel General</h2>
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName" class="text-white font-bold">...</span></p>
                         </div>
                         <button id="btnZenMode" class="bg-[#111] hover:bg-red-600 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 flex items-center gap-2">
-                            <i class="fa-solid fa-expand"></i> Foco Total
+                            <i class="fa-solid fa-expand"></i> Modo Zen
                         </button>
                     </div>
 
-                    <!-- Cards Superiores -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-100">
-                            <div class="flex justify-between items-start">
-                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Nível</span>
-                                <i class="fa-solid fa-trophy text-blue-500 text-xs"></i>
+                        <div class="dashboard-card p-5 dopamine-card delay-100">
+                            <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Nível</span>
+                            <div class="text-3xl font-black text-white italic mt-2"><span id="levelDisplay">1</span></div>
+                            <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden shadow-inner">
+                                <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
                             </div>
-                            <div class="mt-4">
-                                <div class="text-3xl font-black text-white italic"><span id="levelDisplay">1</span></div>
-                                <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden shadow-inner">
-                                    <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
-                                </div>
-                                <div class="text-[9px] text-gray-500 mt-2 text-right font-mono"><span id="xpText">0</span> XP</div>
-                            </div>
+                            <div class="text-[9px] text-gray-500 mt-2 text-right font-mono"><span id="xpText">0</span> XP</div>
                         </div>
 
-                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-200">
-                            <div class="flex justify-between items-start">
-                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
-                                <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
-                            </div>
-                            <div class="mt-4">
-                                <div class="text-3xl font-black text-white italic"><span id="streakDisplay">0</span> <span class="text-xs not-italic text-gray-600 uppercase">Dias</span></div>
-                                <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">Consistência</p>
-                            </div>
+                        <div class="dashboard-card p-5 dopamine-card delay-200">
+                            <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
+                            <div class="text-3xl font-black text-white italic mt-2"><span id="streakDisplay">0</span></div>
                         </div>
 
-                        <div class="dashboard-card p-5 flex flex-col justify-between dopamine-card delay-300">
-                            <div class="flex justify-between items-start">
-                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Status</span>
-                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                            </div>
-                            <div class="mt-4">
-                                <p class="text-[10px] font-black text-white uppercase italic">Sistemas Ativos</p>
-                                <div class="text-[9px] text-gray-600 mt-1 uppercase font-mono">Neural OS v4.5</div>
-                            </div>
+                        <div class="dashboard-card p-5 dopamine-card delay-300">
+                            <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Status</span>
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse mt-2"></div>
                         </div>
 
                         <div class="dashboard-card p-5 flex items-center justify-between dopamine-card delay-400">
@@ -198,22 +168,18 @@
                                 <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões</div>
                                 <div class="text-2xl font-black text-white italic" id="dailyMetaText">0/0</div>
                             </div>
-                            <div class="circle-chart" >
+                            <!-- Gráfico Circular (Sem bug de bola preta) -->
+                            <div class="circle-chart" style="width: 55px; height: 55px; --percentage: 0deg;">
                                 <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Agenda e Missões -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
-                        <div class="dashboard-card p-6 lg:col-span-1 min-h-[420px] flex flex-col">
-                            <h3 class="text-xs font-black text-white uppercase tracking-widest italic flex items-center gap-2 mb-6">
-                                <i class="fa-regular fa-calendar text-red-600"></i> Agenda
-                            </h3>
+                        <div class="dashboard-card p-6 lg:col-span-1 min-h-[400px] flex flex-col">
+                            <h3 class="text-xs font-black text-white uppercase italic mb-6">Agenda</h3>
                             <h4 id="calMonthYear" class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">...</h4>
-                            <div class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3">
-                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
                             <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
                              <div class="mt-auto pt-6 border-t border-white/5">
                                 <div class="flex justify-between items-center mb-3">
@@ -224,13 +190,11 @@
                              </div>
                         </div>
 
-                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col min-h-[420px]">
-                            <h3 class="text-xs font-black text-white uppercase tracking-widest italic flex items-center gap-2 mb-6">
-                                <i class="fa-solid fa-list-check text-red-600"></i> Objetivos Táticos
-                            </h3>
+                        <div class="dashboard-card p-6 lg:col-span-2 flex flex-col min-h-[400px]">
+                            <h3 class="text-xs font-black text-white uppercase italic mb-6">Objetivos</h3>
                             <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar"></div>
                             <div class="flex gap-2 mt-6 pt-6 border-t border-white/5">
-                                <input id="newMissionInput" type="text" class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all" placeholder="Nova ordem estratégica...">
+                                <input id="newMissionInput" type="text" class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all" placeholder="Nova ordem...">
                                 <button id="addMissionBtn" class="bg-red-600 hover:bg-red-700 text-white px-6 rounded-xl transition-all shadow-lg active:scale-95"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
@@ -239,7 +203,7 @@
             </div>
         </main>
 
-        <!-- MENU INFERIOR (Estilo Spotify - Mobile) -->
+        <!-- Navbar Spotify Mobile -->
         <nav class="bottom-nav md:hidden z-50">
             <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')">
                 <i class="fa-solid fa-layer-group text-xl"></i>
@@ -253,11 +217,7 @@
         
     </div>
 
-    <!-- Scripts do Sistema -->
     <script type="module" src="js/main.js"></script>
-    <script>
-        // Inicia ícones
-        lucide.createIcons();
-    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
