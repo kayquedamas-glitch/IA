@@ -2,8 +2,9 @@ import { initChat, loadAgent } from './core/chat.js';
 import { initDashboard } from './modules/dashboard.js';
 import { initGamification } from './modules/gamification.js';
 import { initCalendar } from './modules/calendar.js';
-// NOVO: Importar o protocolo SOS
-import { startSOSProtocol } from './modules/features.js';
+
+// --- IMPORTANTE: Importar as novas funcionalidades ---
+import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
 
 // --- FUNÇÕES GLOBAIS (Para o HTML acessar) ---
 
@@ -20,6 +21,7 @@ window.switchTab = function(tabId) {
         if(navChat) navChat.classList.add('active');
         if(navProtocolo) navProtocolo.classList.remove('active');
     } else {
+        // Aba Jornada/Protocolo
         if(chatView) { chatView.classList.add('hidden'); chatView.classList.remove('flex'); }
         if(protocolView) protocolView.classList.remove('hidden');
         if(navProtocolo) navProtocolo.classList.add('active');
@@ -48,20 +50,29 @@ window.toggleSidebar = function(forceState) {
 
     if(shouldShow) {
         sidebar.classList.add('visible');
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.add('opacity-100'), 10);
+        if(overlay) {
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.add('opacity-100'), 10);
+        }
     } else {
         sidebar.classList.remove('visible');
-        overlay.classList.remove('opacity-100');
-        setTimeout(() => overlay.classList.add('hidden'), 300);
+        if(overlay) {
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
     }
 };
 
-// Tornar features acessíveis globalmente (útil para debug ou botões inline)
-window.features = { startSOSProtocol };
+// --- EXPOR FUNCIONALIDADES PARA OS BOTÕES ---
+window.features = { 
+    startSOSProtocol, 
+    startFocusMode, 
+    showWeeklyReport 
+};
 
+// --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v5.1 | PROTOCOLOS DE CURA ATIVOS");
+    console.log("🚀 SYNAPSE CORE v5.3 | MÓDULOS DE FOCO ATIVOS");
 
     // Inicia os módulos
     initChat();
@@ -70,19 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
     initCalendar();
     loadUserProfile();
     
-    // --- NOVO: LIGAÇÃO DO BOTÃO SOS ---
-    // Procura o botão pelo ID que definimos no HTML e adiciona o evento de clique
+    // Forçar início na aba Jornada (Visual e Lógica)
+    window.switchTab('protocolo');
+    
+    // Ligar o botão SOS da Sidebar (se existir)
     const btnSOS = document.getElementById('btn-sos-protocol');
     if(btnSOS) {
         btnSOS.addEventListener('click', () => {
             console.log("⚠ INICIANDO PROTOCOLO DE EMERGÊNCIA...");
             startSOSProtocol();
-            // Fecha sidebar em mobile se estiver aberta
             if(window.innerWidth <= 768) window.toggleSidebar(false);
         });
     }
 
-    // Botão de fechar no overlay
+    // Botão de fechar no overlay (Mobile)
     const overlay = document.getElementById('sidebarOverlay');
     if(overlay) overlay.onclick = () => window.toggleSidebar(false);
 });

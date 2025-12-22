@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
+
 <head>
     <link rel="shortcut icon" href="icone preto.png" type="image/png">
     <meta charset="UTF-8">
     <!-- Viewport ajustado para prevenir zoom e garantir renderização correta -->
-     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>Synapse PRO | Neural OS</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
-    
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300">
+    </div>
 
     <div class="app-layout h-full">
 
         <!-- SIDEBAR -->
-        <aside id="sidebar" class="sidebar z-[70]"> 
+        <aside id="sidebar" class="sidebar z-[70]">
             <div class="bg-[#121212] rounded-xl p-5 flex flex-col gap-5 m-2 mb-0 border border-white/5">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -38,30 +43,37 @@
                     </button>
                 </div>
                 <nav class="space-y-1">
-                    <div onclick="window.switchTab('protocolo')" class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
-                        <div class="w-5 text-center"><i class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
+                    <div onclick="window.switchTab('protocolo')"
+                        class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
+                        <div class="w-5 text-center"><i
+                                class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
                         <span class="uppercase tracking-widest">Base de Comando</span>
                     </div>
                 </nav>
             </div>
 
             <!-- Arsenal -->
-            <div class="bg-[#121212] rounded-xl flex-grow flex flex-col overflow-hidden relative m-2 mt-2 border border-white/5">
+            <div
+                class="bg-[#121212] rounded-xl flex-grow flex flex-col overflow-hidden relative m-2 mt-2 border border-white/5">
                 <div class="p-4 bg-[#121212] border-b border-white/5">
                     <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
                 </div>
                 <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar">
-                    <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate" style="animation-delay: 0.1s">
-                        <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
-                             <i class="fa-solid fa-brain text-white text-lg"></i>
+                    <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate"
+                        style="animation-delay: 0.1s">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
+                            <i class="fa-solid fa-brain text-white text-lg"></i>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs font-black uppercase tracking-tight">Diagnóstico</span>
                             <span class="text-[8px] text-gray-500 uppercase font-mono">Análise</span>
                         </div>
                     </div>
-                    <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate" style="animation-delay: 0.2s">
-                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                    <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate"
+                        style="animation-delay: 0.2s">
+                        <div
+                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-skull text-gray-500 text-lg"></i>
                         </div>
                         <div class="flex flex-col">
@@ -69,8 +81,10 @@
                             <span class="text-[8px] text-gray-600 uppercase font-mono">Disciplina</span>
                         </div>
                     </div>
-                    <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate" style="animation-delay: 0.3s">
-                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                    <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate"
+                        style="animation-delay: 0.3s">
+                        <div
+                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-chess-knight text-gray-500 text-lg"></i>
                         </div>
                         <div class="flex flex-col">
@@ -78,8 +92,10 @@
                             <span class="text-[8px] text-gray-600 uppercase font-mono">Estratégia</span>
                         </div>
                     </div>
-                    <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate" style="animation-delay: 0.4s">
-                        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                    <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate"
+                        style="animation-delay: 0.4s">
+                        <div
+                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
                             <i class="fa-solid fa-satellite-dish text-gray-500 text-lg"></i>
                         </div>
                         <div class="flex flex-col">
@@ -88,58 +104,69 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="mt-8 px-4 mb-4">
-    <button id="btn-sos-protocol" 
-            class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-900/10 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden">
-        
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-        
-        <i class="fa-solid fa-tower-broadcast animate-pulse text-lg"></i>
-        
-        <div class="flex flex-col items-start">
-            <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100">Protocolo</span>
-            <span class="text-xs font-black tracking-widest group-hover:text-white">S.O.S.</span>
-        </div>
-    </button>
-</div>
+                <button id="btn-sos-protocol"
+                    class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-900/10 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden">
+
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700">
+                    </div>
+
+                    <i class="fa-solid fa-tower-broadcast animate-pulse text-lg"></i>
+
+                    <div class="flex flex-col items-start">
+                        <span
+                            class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100">Protocolo</span>
+                        <span class="text-xs font-black tracking-widest group-hover:text-white">S.O.S.</span>
+                    </div>
+                </button>
+            </div>
 
             <div class="mt-auto m-2 p-3 bg-[#111] rounded-xl border border-white/5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl" id="sidebarAvatar">?</div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl"
+                    id="sidebarAvatar">?</div>
                 <div class="overflow-hidden">
-                    <p class="text-xs font-black text-white truncate uppercase tracking-tighter" id="sidebarName">CARREGANDO...</p>
+                    <p class="text-xs font-black text-white truncate uppercase tracking-tighter" id="sidebarName">
+                        CARREGANDO...</p>
                     <div class="flex items-center gap-1.5">
-                         <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                         <span class="text-[8px] text-gray-500 font-black uppercase tracking-widest">Online</span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-[8px] text-gray-500 font-black uppercase tracking-widest">Online</span>
                     </div>
                 </div>
             </div>
-            
+
         </aside>
 
         <!-- MAIN CONTENT -->
         <main class="main-content relative flex flex-col h-full bg-black overflow-hidden">
 
             <!-- Mobile Header -->
-            <div class="md:hidden h-14 bg-black/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 z-40 shrink-0 sticky top-0">
-                <button onclick="window.toggleSidebar(true)" class="text-gray-400 hover:text-white p-2"><i class="fa-solid fa-bars-staggered"></i></button>
-                <span class="text-xs font-black tracking-[0.2em] text-white italic">SYNAPSE <span class="text-red-600">PRO</span></span>
+            <div
+                class="md:hidden h-14 bg-black/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 z-40 shrink-0 sticky top-0">
+                <button onclick="window.toggleSidebar(true)" class="text-gray-400 hover:text-white p-2"><i
+                        class="fa-solid fa-bars-staggered"></i></button>
+                <span class="text-xs font-black tracking-[0.2em] text-white italic">SYNAPSE <span
+                        class="text-red-600">PRO</span></span>
                 <div class="w-9"></div>
             </div>
 
             <!-- CHAT IA -->
             <div id="viewChat" class="view-section h-full flex flex-col hidden bg-black">
                 <div class="chat-area flex-grow flex flex-col relative overflow-hidden">
-                    <div class="chat-messages" id="chatContainer"> 
+                    <div class="chat-messages" id="chatContainer">
                         <div id="messagesArea"></div>
                     </div>
 
                     <div class="chat-input-container">
                         <div class="w-full max-w-2xl mx-auto px-4">
                             <div id="textInputWrapper" class="relative">
-                                <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter" placeholder="Comando neural..."></textarea>
-                                <button id="sendMessageBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
+                                <textarea id="chatInput" rows="1"
+                                    class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter"
+                                    placeholder="Comando neural..."></textarea>
+                                <button id="sendMessageBtn"
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
                                     <i data-lucide="arrow-up" class="w-5 h-5 text-white"></i>
                                 </button>
                             </div>
@@ -149,36 +176,30 @@
             </div>
 
             <!-- DASHBOARD -->
-            <div id="viewProtocolo" class="view-section h-full overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
-                
+            <div id="viewProtocolo"
+                class="view-section h-full overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
+
                 <div class="w-full max-w-6xl mx-auto">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 animate-fade-in-up">
+                    <div
+                        class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 animate-fade-in-up">
                         <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Quartel General</h2>
-                            <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName" class="text-white font-bold">...</span></p>
+                            <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Quartel General
+                            </h2>
+                            <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
+                                    class="text-white font-bold">...</span></p>
                         </div>
-                        <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="flex gap-3 mb-6">
     
-    <button onclick="window.features.startFocusMode()" 
-            class="group relative overflow-hidden bg-[#0d0d0d] border border-white/10 hover:border-red-600/50 rounded-xl p-4 transition-all duration-300">
-        <div class="absolute inset-0 bg-red-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <div class="relative z-10 flex flex-col items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center group-hover:border-red-500/50 transition-colors">
-                <i class="fa-solid fa-stopwatch text-gray-400 group-hover:text-red-500"></i>
-            </div>
-            <span class="text-xs font-bold tracking-widest text-gray-300 group-hover:text-white mt-1">MODO FOCO</span>
-        </div>
+    <button onclick="window.features.showWeeklyReport()" 
+            class="flex-1 bg-[#1a1a1a] hover:bg-[#222] border border-white/10 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 group">
+        <i class="fa-solid fa-chart-pie text-gray-500 group-hover:text-blue-500 transition-colors"></i> 
+        <span>RELATÓRIO</span>
     </button>
 
-    <button onclick="window.features.showWeeklyReport()" 
-            class="group relative overflow-hidden bg-[#0d0d0d] border border-white/10 hover:border-blue-500/50 rounded-xl p-4 transition-all duration-300">
-        <div class="absolute inset-0 bg-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <div class="relative z-10 flex flex-col items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
-                <i class="fa-solid fa-chart-pie text-gray-400 group-hover:text-blue-500"></i>
-            </div>
-            <span class="text-xs font-bold tracking-widest text-gray-300 group-hover:text-white mt-1">RELATÓRIOS</span>
-        </div>
+    <button onclick="window.features.startFocusMode()" 
+            class="flex-1 bg-[#CC0000] hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 active:scale-95">
+        <i class="fa-solid fa-stopwatch"></i> 
+        <span>INICIAR FOCO</span>
     </button>
 
 </div>
@@ -187,16 +208,19 @@
                     <div class="grid grid-cols-2 dashboard-grid-mobile md:grid-cols-4 gap-4 mb-8">
                         <div class="dashboard-card p-5 dopamine-card delay-100">
                             <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Nível</span>
-                            <div class="text-3xl font-black text-white italic mt-2"><span id="levelDisplay">1</span></div>
+                            <div class="text-3xl font-black text-white italic mt-2"><span id="levelDisplay">1</span>
+                            </div>
                             <div class="w-full bg-[#222] rounded-full h-1 mt-2 overflow-hidden shadow-inner">
                                 <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
                             </div>
-                            <div class="text-[9px] text-gray-500 mt-2 text-right font-mono"><span id="xpText">0</span> XP</div>
+                            <div class="text-[9px] text-gray-500 mt-2 text-right font-mono"><span id="xpText">0</span>
+                                XP</div>
                         </div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-200">
                             <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
-                            <div class="text-3xl font-black text-white italic mt-2"><span id="streakDisplay">0</span></div>
+                            <div class="text-3xl font-black text-white italic mt-2"><span id="streakDisplay">0</span>
+                            </div>
                         </div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-300">
@@ -206,12 +230,14 @@
 
                         <div class="dashboard-card p-5 flex items-center justify-between dopamine-card delay-400">
                             <div>
-                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões</div>
+                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões
+                                </div>
                                 <div class="text-2xl font-black text-white italic" id="dailyMetaText">0/0</div>
                             </div>
                             <!-- Gráfico Circular (Sem bug de bola preta) -->
                             <div class="circle-chart" style="width: 55px; height: 55px; --percentage: 0deg;">
-                                <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%</div>
+                                <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -219,24 +245,43 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
                         <div class="dashboard-card p-6 lg:col-span-1 min-h-[400px] flex flex-col">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6">Agenda</h3>
-                            <h4 id="calMonthYear" class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">...</h4>
-                            <div class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
+                            <h4 id="calMonthYear"
+                                class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">
+                                ...</h4>
+                            <div
+                                class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3">
+                                <div>D</div>
+                                <div>S</div>
+                                <div>T</div>
+                                <div>Q</div>
+                                <div>Q</div>
+                                <div>S</div>
+                                <div>S</div>
+                            </div>
                             <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
-                             <div class="mt-auto pt-6 border-t border-white/5">
+                            <div class="mt-auto pt-6 border-t border-white/5">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
-                                    <button id="addHabitBtn" class="text-red-500 hover:text-white transition"><i class="fa-solid fa-plus-circle"></i></button>
+                                    <span
+                                        class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
+                                    <button id="addHabitBtn" class="text-red-500 hover:text-white transition"><i
+                                            class="fa-solid fa-plus-circle"></i></button>
                                 </div>
-                                <div id="habitList" class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
-                             </div>
+                                <div id="habitList"
+                                    class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
+                            </div>
                         </div>
 
                         <div class="dashboard-card p-6 lg:col-span-2 flex flex-col min-h-[400px]">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6">Objetivos</h3>
-                            <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar"></div>
+                            <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar">
+                            </div>
                             <div class="flex gap-2 mt-6 pt-6 border-t border-white/5">
-                                <input id="newMissionInput" type="text" class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all" placeholder="Nova ordem...">
-                                <button id="addMissionBtn" class="bg-red-600 hover:bg-red-700 text-white px-6 rounded-xl transition-all shadow-lg active:scale-95"><i class="fa-solid fa-plus"></i></button>
+                                <input id="newMissionInput" type="text"
+                                    class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all"
+                                    placeholder="Nova ordem...">
+                                <button id="addMissionBtn"
+                                    class="bg-red-600 hover:bg-red-700 text-white px-6 rounded-xl transition-all shadow-lg active:scale-95"><i
+                                        class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                     </div>
@@ -246,20 +291,18 @@
 
         <!-- Navbar Spotify Mobile -->
         <nav class="bottom-nav md:hidden z-50">
-    <button id="tabJornada" class="nav-btn active" onclick="window.switchTab('protocolo')">
-        <i class="fa-solid fa-layer-group text-xl"></i>
-        <span>Jornada</span>
-    </button>
-    
-    <button id="tabChat" class="nav-btn" onclick="window.switchTab('chat')">
-        <i class="fa-solid fa-terminal text-xl"></i>
-        <span>Comando</span>
-    </button>
-</nav>onclick="window.features.startZenMode()
-        
+            <button id="tabJornada" class="nav-btn active" onclick="window.switchTab('protocolo')"> <i class="fa-solid fa-layer-group text-xl"></i>
+    <span>Jornada</span>
+</button>
+<button id="tabChat" class="nav-btn" onclick="window.switchTab('chat')"> <i class="fa-solid fa-terminal text-xl"></i>
+    <span>Comando</span>
+</button>
+       
+
     </div>
 
     <script type="module" src="js/main.js"></script>
     <script>lucide.createIcons();</script>
 </body>
+
 </html>
