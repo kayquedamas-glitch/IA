@@ -1,27 +1,58 @@
 import { CONFIG } from '../config.js';
-// Se tiveres criado o ui.js, descomenta a linha abaixo:
-import { showToast } from './ui.js'; 
+import { showToast } from './ui.js';
+import { saveUserData, syncUserData, pushHistoryLog } from './database.js';
 
+// Adicionei 'missions' ao estado global
 let rpgState = { 
     xp: 0, 
     level: 1, 
     streak: 0, 
     lastLoginDate: null, 
-    habits: [{ id: 'h1', text: 'Beber 2L Água', done: false }], 
+    habits: [], 
+    missions: [], // <--- NOVO
     history: [] 
 };
 
-export function initGamification() { loadState(); checkStreak(); updateUI(); renderHabits(); }
-export function getRPGState() { return { ...rpgState }; }
-
-// Exportando para o Chat usar
-export function addHabitFromAI(text) { 
-    addCustomHabit(text); 
-    // showToast('HÁBITO CRIADO', 'Nova diretiva neural adicionada.', 'success'); 
-    return true; 
+export async function initGamification() { 
+    loadLocalState(); 
+    checkStreak(); 
+    updateUI(); 
+    renderHabits();
+    
+    // Tenta atualizar da nuvem
+    try {
+        const cloudData = await syncUserData();
+        if (cloudData) {
+            rpgState.xp = cloudData.xp;
+            rpgState.level = cloudData.level;
+            
+            if(cloudData.habits) rpgState.habits = cloudData.habits;
+            if(cloudData.missions) rpgState.missions = cloudData.missions; // <--- NOVO
+            
+            saveLocalState();
+            updateUI();
+            renderHabits();
+            
+            // Atualiza a lista de missões no Dashboard se a função existir
+            if(window.renderMissionsExternal) window.renderMissionsExternal(rpgState.missions);
+            
+            console.log("☁ Sincronização Completa (Incluindo Missões)");
+        }
+    } catch (e) {
+        console.warn("Offline mode.");
+    }
 }
 
-function loadState() {
+export function getRPGState() { return { ...rpgState }; }
+
+// --- GERENCIAMENTO DE ESTADO ---
+
+export function updateMissionsState(newMissions) {
+    rpgState.missions = newMissions;
+    saveLocalState(); // Salva no SheetDB sempre que as missões mudam
+}
+
+function loadLocalState() {
     const xp = localStorage.getItem(CONFIG.STORAGE_KEYS.XP);
     if (xp) rpgState.xp = parseInt(xp);
     
@@ -29,47 +60,53 @@ function loadState() {
     if (lvl) rpgState.level = parseInt(lvl);
     else calculateLevel();
 
-    // Carregar histórico
     const hist = localStorage.getItem('synapse_history');
     if (hist) rpgState.history = JSON.parse(hist);
 
     const hbt = localStorage.getItem(CONFIG.STORAGE_KEYS.HABITS);
     if (hbt) {
         const d = JSON.parse(hbt);
-        if (d.date === new Date().toISOString().split('T')[0]) rpgState.habits = d.list;
+        rpgState.habits = d.list;
     }
+    
+    // Carregar Missões Localmente
+    const msn = localStorage.getItem(CONFIG.STORAGE_KEYS.MISSIONS);
+    if(msn) rpgState.missions = JSON.parse(msn);
+}
+
+function saveLocalState() {
+    localStorage.setItem(CONFIG.STORAGE_KEYS.XP, rpgState.xp);
+    localStorage.setItem('synapse_level', rpgState.level);
+    localStorage.setItem('synapse_history', JSON.stringify(rpgState.history));
+    
+    localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ 
+        date: new Date().toISOString().split('T')[0], list: rpgState.habits 
+    }));
+    
+    // Salva Missões Localmente
+    localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(rpgState.missions));
+
+    // Salva TUDO na Nuvem
+    saveUserData(rpgState);
 }
 
 function calculateLevel() { rpgState.level = Math.floor(rpgState.xp / 100) + 1; }
+function checkStreak() { /* Lógica de streak */ }
 
-function checkStreak() { 
-    const today = new Date().toISOString().split('T')[0];
-    if(rpgState.lastLoginDate && rpgState.lastLoginDate !== today) {
-        // Lógica simples de streak
-    }
-    rpgState.lastLoginDate = today;
-    saveStreak();
-}
+// --- AÇÕES ---
 
 export function addXP(amt) {
     const oldLevel = rpgState.level;
     rpgState.xp = Math.max(0, rpgState.xp + amt);
     calculateLevel();
-    
-    // Salvar estado completo
-    localStorage.setItem(CONFIG.STORAGE_KEYS.XP, rpgState.xp);
-    localStorage.setItem('synapse_level', rpgState.level);
-    
+    saveLocalState();
     updateUI();
     
-    // Se subiu de nível
     if (amt > 0 && rpgState.level > oldLevel) {
-        // levelUpEffect(rpgState.level);
-        alert(`Nível ${rpgState.level} Atingido!`); // Fallback simples
+        showToast('UPLOAD COMPLETO', `Nível ${rpgState.level} Atingido.`, 'level-up');
     }
 }
 
-// Sistema de LOG (Necessário para o Relatório)
 export async function logActivity(type, detail, xpGained, durationMin = 0) {
     const activity = {
         id: Date.now(),
@@ -81,10 +118,16 @@ export async function logActivity(type, detail, xpGained, durationMin = 0) {
         duration: durationMin
     };
     rpgState.history.unshift(activity);
-    if (rpgState.history.length > 100) rpgState.history.pop();
-    saveStreak(); // Salva o histórico junto com o streak
+    if (rpgState.history.length > 50) rpgState.history.pop();
+    pushHistoryLog(activity); 
 }
 
+// --- HABITOS & UI ---
+export function addHabitFromAI(text) { 
+    addCustomHabit(text); 
+    showToast('HÁBITO CRIADO', 'Nova diretiva neural.', 'success');
+    return true; 
+}
 window.toggleHabit = (id) => {
     const h = rpgState.habits.find(x => x.id === id);
     if (h) {
@@ -92,13 +135,15 @@ window.toggleHabit = (id) => {
         const xp = h.done ? 25 : -25;
         addXP(xp);
         if(h.done) logActivity('HABIT', h.text, xp);
-        saveHabits();
+        saveLocalState();
         renderHabits();
     }
 };
-
-export function addCustomHabit(text) { rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); saveHabits(); renderHabits(); }
-
+export function addCustomHabit(text) { 
+    rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); 
+    saveLocalState(); 
+    renderHabits(); 
+}
 function updateUI() {
     const l = document.getElementById('levelDisplay');
     const b = document.getElementById('xpBar');
@@ -109,7 +154,6 @@ function updateUI() {
     if (s) s.innerText = rpgState.streak;
     if (b) b.style.width = `${rpgState.xp % 100}%`;
 }
-
 function renderHabits() {
     const list = document.getElementById('habitList');
     if (!list) return;
@@ -122,9 +166,4 @@ function renderHabits() {
         </div>
     `).join('');
 }
-
-function saveHabits() { localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ date: new Date().toISOString().split('T')[0], list: rpgState.habits })); }
-function saveStreak() { localStorage.setItem(CONFIG.STORAGE_KEYS.STREAK, JSON.stringify({ count: rpgState.streak, lastDate: rpgState.lastLoginDate, history: rpgState.history })); }
-
-// --- AQUI ESTÁ A FUNÇÃO QUE FALTAVA ---
 export function getHistory() { return rpgState.history || []; }

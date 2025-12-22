@@ -188,21 +188,22 @@
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
                                     class="text-white font-bold">...</span></p>
                         </div>
-                        <div class="flex gap-3 mb-6">
-    
-    <button onclick="window.features.showWeeklyReport()" 
-            class="flex-1 bg-[#1a1a1a] hover:bg-[#222] border border-white/10 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 group">
-        <i class="fa-solid fa-chart-pie text-gray-500 group-hover:text-blue-500 transition-colors"></i> 
-        <span>RELATÓRIO</span>
-    </button>
+                            <div class="flex gap-3 mb-6">
 
-    <button onclick="window.features.startFocusMode()" 
-            class="flex-1 bg-[#CC0000] hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 active:scale-95">
-        <i class="fa-solid fa-stopwatch"></i> 
-        <span>INICIAR FOCO</span>
-    </button>
+                                <button onclick="window.features.showWeeklyReport()"
+                                    class="flex-1 bg-[#1a1a1a] hover:bg-[#222] border border-white/10 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 group">
+                                    <i
+                                        class="fa-solid fa-chart-pie text-gray-500 group-hover:text-blue-500 transition-colors"></i>
+                                    <span>RELATÓRIO</span>
+                                </button>
 
-</div>
+                                <button onclick="window.features.startFocusMode()"
+                                    class="flex-1 bg-[#CC0000] hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 active:scale-95">
+                                    <i class="fa-solid fa-stopwatch"></i>
+                                    <span>INICIAR FOCO</span>
+                                </button>
+
+                            </div>
                     </div>
 
                     <div class="grid grid-cols-2 dashboard-grid-mobile md:grid-cols-4 gap-4 mb-8">
@@ -275,13 +276,20 @@
                             <h3 class="text-xs font-black text-white uppercase italic mb-6">Objetivos</h3>
                             <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar">
                             </div>
-                            <div class="flex gap-2 mt-6 pt-6 border-t border-white/5">
+                            <div class="flex gap-2 mt-6 pt-6 border-t border-white/5 items-center">
                                 <input id="newMissionInput" type="text"
                                     class="bg-[#0d0d0d] text-sm text-white px-5 py-4 rounded-xl w-full outline-none placeholder-gray-700 border border-white/5 focus:border-red-600/30 transition-all"
-                                    placeholder="Nova ordem...">
+                                    placeholder="Nova ordem tática...">
+
+                                <div class="relative group">
+                                    <input id="newMissionDate" type="date"
+                                        class="bg-[#0d0d0d] text-white text-xs px-3 py-4 rounded-xl border border-white/5 focus:border-red-600/30 outline-none uppercase font-mono w-[130px] cursor-pointer">
+                                </div>
+
                                 <button id="addMissionBtn"
-                                    class="bg-red-600 hover:bg-red-700 text-white px-6 rounded-xl transition-all shadow-lg active:scale-95"><i
-                                        class="fa-solid fa-plus"></i></button>
+                                    class="bg-red-600 hover:bg-red-700 text-white px-5 py-4 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -291,13 +299,15 @@
 
         <!-- Navbar Spotify Mobile -->
         <nav class="bottom-nav md:hidden z-50">
-            <button id="tabJornada" class="nav-btn active" onclick="window.switchTab('protocolo')"> <i class="fa-solid fa-layer-group text-xl"></i>
-    <span>Jornada</span>
-</button>
-<button id="tabChat" class="nav-btn" onclick="window.switchTab('chat')"> <i class="fa-solid fa-terminal text-xl"></i>
-    <span>Comando</span>
-</button>
-       
+            <button id="tabJornada" class="nav-btn active" onclick="window.switchTab('protocolo')"> <i
+                    class="fa-solid fa-layer-group text-xl"></i>
+                <span>Jornada</span>
+            </button>
+            <button id="tabChat" class="nav-btn" onclick="window.switchTab('chat')"> <i
+                    class="fa-solid fa-terminal text-xl"></i>
+                <span>Comando</span>
+            </button>
+
 
     </div>
 

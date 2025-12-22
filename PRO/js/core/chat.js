@@ -61,7 +61,7 @@ async function sendMessage(text = null) {
     };
     
     try {
-        const res = await fetch(CONFIG.API_URL, {
+        const res = await fetch(CONFIG.AI_WORKER, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ model: CONFIG.API_MODEL, messages: [chatHistory[0], context, ...chatHistory.slice(1), { role: 'user', content: val }] })
