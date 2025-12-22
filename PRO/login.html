@@ -193,5 +193,86 @@
         }
     });
 </script>
+<script>
+    // Configuração da tua API SheetDB (Peguei do teu print)
+    const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/s0aa6ona2p4lb';
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('email');
+        // Garante que não tem espaços extras e converte para minúsculo para bater com a planilha
+        const email = emailInput.value.trim().toLowerCase(); 
+        
+        const btn = document.getElementById('btnSubmit');
+        const errorMsg = document.getElementById('errorMsg');
+        const errorText = errorMsg.querySelector('span');
+
+        // UI Loading (Feedback visual)
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ACESSANDO BASE DE DADOS...';
+        btn.disabled = true;
+        errorMsg.classList.add('hidden'); // Esconde erro anterior
+
+        try {
+            // 1. Busca o usuário pelo email na planilha
+            console.log(`🔍 Buscando: ${email}...`);
+            const response = await fetch(`${SHEETDB_API_URL}/search?email=${email}`);
+
+            // 2. Verifica se deu Erro 429 (Bloqueio temporário)
+            if (response.status === 429) {
+                throw new Error("⚠️ O servidor está sobrecarregado (Erro 429). Aguarde 5 minutos e tente novamente.");
+            }
+
+            // 3. Verifica outros erros de rede
+            if (!response.ok) {
+                throw new Error("Erro de conexão com a planilha.");
+            }
+
+            const data = await response.json();
+
+            // 4. Verifica se encontrou alguém
+            if (data.length > 0) {
+                const user = data[0];
+                console.log("✅ Usuário encontrado:", user);
+
+                // Salva a sessão no formato que o main.js espera
+                // Nota: O main.js procura 'synapse_user' ou 'synapse_session_v2'
+                localStorage.setItem('synapse_user', JSON.stringify(user));
+                localStorage.setItem('synapse_session_v2', JSON.stringify({
+                    user: user.nome,
+                    email: user.email,
+                    token: "session_valid"
+                }));
+
+                // Redireciona
+                btn.innerHTML = '<i class="fas fa-check"></i> SUCESSO!';
+                btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
+                
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1000);
+
+            } else {
+                // Não encontrou o email (agora sabemos que é verdade, pois não deu erro 429)
+                throw new Error("Email não encontrado. Verifique se digitou corretamente.");
+            }
+
+        } catch (error) {
+            console.error(error);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+            // Mostra a mensagem de erro na tela
+            errorText.innerText = error.message;
+            errorMsg.classList.remove('hidden');
+            
+            // Animação de tremor
+            const container = document.querySelector('.bg-grid-pattern');
+            container.classList.add('shake-anim');
+            setTimeout(() => container.classList.remove('shake-anim'), 500);
+        }
+    });
+</script>
 </body>
 </html>
