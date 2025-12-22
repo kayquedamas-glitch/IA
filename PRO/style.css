@@ -427,3 +427,31 @@ body {
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
     }
 }
+/* --- CORREÇÃO DE CHAT MOBILE (FINAL) --- */
+#chatContainer {
+    /* Garante rolagem suave */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    /* Espaço extra no final para o conteúdo não ficar escondido atrás do input */
+    padding-bottom: 180px !important; 
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 768px) {
+    #chatContainer {
+        /* Mais espaço ainda no mobile por causa da navbar + input */
+        padding-bottom: 220px !important; 
+    }
+    
+    /* Input Flutuante ACIMA da Navbar */
+    .chat-input-container {
+        position: fixed !important; /* Fixo na tela */
+        bottom: 75px !important;    /* 75px é a altura da sua Navbar, então fica logo acima dela */
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 160 !important;    /* Acima da Navbar (150), mas abaixo da Sidebar (200) */
+        background: linear-gradient(to top, #000 90%, transparent); /* Fundo para ler o texto */
+        padding-bottom: 15px;       /* Um respiro visual */
+    }
+}

@@ -188,22 +188,22 @@
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
                                     class="text-white font-bold">...</span></p>
                         </div>
-                            <div class="flex gap-3 mb-6">
+                        <div class="flex gap-3 mb-6">
 
-                                <button onclick="window.features.showWeeklyReport()"
-                                    class="flex-1 bg-[#1a1a1a] hover:bg-[#222] border border-white/10 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 group">
-                                    <i
-                                        class="fa-solid fa-chart-pie text-gray-500 group-hover:text-blue-500 transition-colors"></i>
-                                    <span>RELATÓRIO</span>
-                                </button>
+                            <button onclick="window.features.showWeeklyReport()"
+                                class="flex-1 bg-[#1a1a1a] hover:bg-[#222] border border-white/10 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 group">
+                                <i
+                                    class="fa-solid fa-chart-pie text-gray-500 group-hover:text-blue-500 transition-colors"></i>
+                                <span>RELATÓRIO</span>
+                            </button>
 
-                                <button onclick="window.features.startFocusMode()"
-                                    class="flex-1 bg-[#CC0000] hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 active:scale-95">
-                                    <i class="fa-solid fa-stopwatch"></i>
-                                    <span>INICIAR FOCO</span>
-                                </button>
+                            <button onclick="window.features.startFocusMode()"
+                                class="flex-1 bg-[#CC0000] hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 active:scale-95">
+                                <i class="fa-solid fa-stopwatch"></i>
+                                <span>INICIAR FOCO</span>
+                            </button>
 
-                            </div>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 dashboard-grid-mobile md:grid-cols-4 gap-4 mb-8">
@@ -264,8 +264,7 @@
                                 <div class="flex justify-between items-center mb-3">
                                     <span
                                         class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
-                                    <button id="addHabitBtn" class="text-red-500 hover:text-white transition"><i
-                                            class="fa-solid fa-plus-circle"></i></button>
+                                    <button onclick="window.openAddHabitModal()" class="text-red-500 hover:text-white transition"><i class="fa-solid fa-plus-circle"></i></button>
                                 </div>
                                 <div id="habitList"
                                     class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
@@ -286,9 +285,9 @@
                                         class="bg-[#0d0d0d] text-white text-xs px-3 py-4 rounded-xl border border-white/5 focus:border-red-600/30 outline-none uppercase font-mono w-[130px] cursor-pointer">
                                 </div>
 
-                                <button id="addMissionBtn"
-                                    class="bg-red-600 hover:bg-red-700 text-white px-5 py-4 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center">
-                                    <i class="fa-solid fa-plus"></i>
+                                <button onclick="window.openAddHabitModal()"
+                                    class="w-6 h-6 rounded flex items-center justify-center border border-white/20 text-white hover:bg-white/10 transition">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
                                 </button>
                             </div>
                         </div>

@@ -1,79 +1,86 @@
 import { CONFIG } from '../config.js';
-import { showToast } from './ui.js';
 
-function getUserEmail() {
-    const session = localStorage.getItem(CONFIG.STORAGE_KEYS.USER);
-    if (!session) return null;
-    try { return JSON.parse(session).email; } catch (e) { return null; }
+// Variável para controlar o "tempo de espera" (Debounce)
+let saveTimeout = null;
+
+// --- FUNÇÕES DE USUÁRIO ---
+export function getUserEmail() {
+    try {
+        const session = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
+        if (session) {
+            return JSON.parse(session).email;
+        }
+    } catch (e) { return null; }
+    return null;
 }
 
-// --- BAIXAR DADOS (Sync Down) ---
+// --- SALVAR DADOS (COM PROTEÇÃO ANTI-FLOOD/DEBOUNCE) ---
+// --- SALVAR DADOS (COM PROTEÇÃO ANTI-FLOOD/DEBOUNCE) ---
+export async function saveUserData(rpgState) {
+    const email = getUserEmail();
+    if (!email) return;
+
+    // 1. Cancela o envio anterior se o usuário clicou de novo rápido
+    if (saveTimeout) {
+        clearTimeout(saveTimeout);
+    }
+
+    // 2. Agenda um novo envio para daqui a 3 segundos
+    saveTimeout = setTimeout(async () => {
+        try {
+            // Prepara os dados
+            const payload = {
+                xp: rpgState.xp,
+                level: rpgState.level,
+                habits: rpgState.habits,
+                missions: rpgState.missions
+            };
+
+            console.log("💾 Salvando na Nuvem (Debounced)...");
+            
+            // --- CORREÇÃO DO ERRO 405 AQUI ---
+            // URL Correta: .../api/v1/ID/email/VALOR
+            // Body Correto: Apenas o objeto, sem o wrapper "data" para PATCH
+            await fetch(`${CONFIG.API_URL}/email/${email}`, {
+                method: 'PATCH', 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload) 
+            });
+
+        } catch (error) {
+            console.warn("Erro ao salvar (Cloud):", error);
+        }
+    }, 3000); 
+}
+
+// --- SINCRONIZAR (CARREGAR) ---
 export async function syncUserData() {
     const email = getUserEmail();
     if (!email) return null;
 
     try {
         const response = await fetch(`${CONFIG.API_URL}/search?email=${email}`);
+        if(!response.ok) throw new Error('Erro na busca');
+        
         const data = await response.json();
-
-        if (data && data.length > 0) {
-            const user = data[0];
-            console.log("☁ Nuvem carregada:", user);
-            
-            // Retorna o pacote completo (agora com missões)
+        if (data.length > 0) {
+            const userData = data[0]; 
             return {
-                xp: parseInt(user.xp) || 0,
-                level: parseInt(user.level) || 1,
-                habits: user.habits ? JSON.parse(user.habits) : [],
-                missions: user.missions ? JSON.parse(user.missions) : [], // <--- NOVO
-                lastLogin: user.last_login
+                xp: parseInt(userData.xp || 0),
+                level: parseInt(userData.level || 1),
+                habits: typeof userData.habits === 'string' ? JSON.parse(userData.habits) : userData.habits,
+                missions: typeof userData.missions === 'string' ? JSON.parse(userData.missions) : userData.missions
             };
         }
     } catch (error) {
-        console.warn("Erro sync:", error);
+        console.warn("Offline ou usuário novo.");
     }
     return null;
 }
 
-// --- SALVAR DADOS (Sync Up) ---
-export async function saveUserData(rpgState) {
-    const email = getUserEmail();
-    if (!email) return;
-
-    // Prepara o pacote para enviar
-    const payload = {
-        xp: rpgState.xp,
-        level: rpgState.level,
-        habits: JSON.stringify(rpgState.habits),
-        missions: JSON.stringify(rpgState.missions), // <--- NOVO
-        last_login: new Date().toISOString()
-    };
-
-    fetch(`${CONFIG.API_URL}/email/${email}?sheet=USERS`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: payload })
-    }).catch(e => console.warn("Erro save:", e));
-}
-
-// --- HISTÓRICO (Logs) ---
 export async function pushHistoryLog(activity) {
-    const email = getUserEmail();
-    if (!email) return;
-
-    const logItem = {
-        id: activity.id,
-        email: email,
-        date: activity.date,
-        type: activity.type,
-        detail: activity.detail,
-        xp_gained: activity.xp,
-        duration: activity.duration
-    };
-
-    fetch(`${CONFIG.API_URL}?sheet=HISTORY`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: logItem })
-    }).catch(e => console.warn("Erro log:", e));
+    // Implementação opcional de log
 }
