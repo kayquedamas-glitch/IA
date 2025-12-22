@@ -1,11 +1,11 @@
 import { CONFIG } from '../config.js';
 import { addXP, logActivity, updateMissionsState } from './gamification.js'; 
 import { showToast } from './ui.js';
+import { playSFX } from './audio.js'; // Importa sons
 
 let missions = [];
 
 export function initDashboard() {
-    // Tenta carregar backup local caso o gamification demore a sincronizar
     const stored = localStorage.getItem(CONFIG.STORAGE_KEYS.MISSIONS);
     if (stored) missions = JSON.parse(stored);
     
@@ -16,15 +16,11 @@ export function initDashboard() {
     const dateInput = document.getElementById('newMissionDate');
     
     if (btn && input) {
-        // Define a data de hoje como padrão no input
         if(dateInput) dateInput.valueAsDate = new Date();
-
         btn.onclick = () => createMission(input, dateInput);
         input.onkeypress = (e) => { if (e.key === 'Enter') createMission(input, dateInput); };
     }
 
-    // HOOK EXTERNO: Permite que o gamification.js atualize a lista 
-    // quando os dados chegarem da nuvem (Google Sheets)
     window.renderMissionsExternal = (newMissions) => {
         missions = newMissions || [];
         renderMissions();
@@ -33,7 +29,6 @@ export function initDashboard() {
 
 function createMission(input, dateInput) {
     const text = input.value.trim();
-    // Se existir input de data, pega o valor, senão null
     const date = dateInput ? dateInput.value : null; 
     
     if (!text) return;
@@ -41,27 +36,25 @@ function createMission(input, dateInput) {
     const mission = { 
         id: Date.now(), 
         text, 
-        date: date, // Formato YYYY-MM-DD
+        date: date, 
         done: false 
     };
     
     missions.push(mission);
+    playSFX('type'); // Som de digitar/entrar dados
     
-    save(); // Salva e Sincroniza
+    save();
     renderMissions();
     
     input.value = '';
-    // Não limpamos a data intencionalmente para facilitar inserções em massa no mesmo dia
-    
     showToast('MISSÃO AGENDADA', `Alvo definido para ${date ? formatDate(date) : 'hoje'}.`, 'neutral');
 }
 
-// Função usada pelo Agente de IA (Chat)
 export function addMissionFromAI(text) {
     missions.push({ 
         id: Date.now(), 
         text, 
-        date: new Date().toISOString().split('T')[0], // Define para hoje por padrão
+        date: new Date().toISOString().split('T')[0],
         done: false 
     });
     save();
@@ -74,28 +67,20 @@ window.completeMission = (id) => {
     if (index > -1) {
         const m = missions[index];
         
-        // Efeito Visual de Saída
-        const el = document.getElementById(`mission-${id}`);
-        if(el) {
-            el.style.transform = "scale(0.95)";
-            el.style.opacity = "0";
-        }
+        // Se já estava feita, desfaz. Se não, completa.
+        m.done = !m.done;
 
-        setTimeout(() => {
-            missions[index].done = true;
-            save(); // Salva e Sincroniza
-            renderMissions();
-            
-            // Recompensas
+        if(m.done) {
+            playSFX('success');
             addXP(50);
             logActivity('MISSION', m.text, 50);
             showToast('MISSÃO CUMPRIDA', '+50 XP. Objetivo eliminado.', 'success');
-            
-            // Confetis (se a biblioteca estiver carregada)
-            if(window.confetti) {
-                window.confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 }, colors: ['#cc0000', '#ffffff'] });
-            }
-        }, 300);
+        } else {
+            playSFX('click');
+        }
+
+        save();
+        renderMissions();
     }
 };
 
@@ -107,16 +92,47 @@ window.deleteMission = (id) => {
     }
 };
 
+// Nova função para limpar apenas as completas
+window.clearCompleted = () => {
+    missions = missions.filter(m => !m.done);
+    save();
+    renderMissions();
+    playSFX('click');
+    showToast('LIMPEZA', 'Missões concluídas arquivadas.', 'neutral');
+};
+
 function save() {
-    // 1. Salva Localmente (Backup instantâneo)
     localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(missions));
-    
-    // 2. Envia para o Gamification salvar na Nuvem (Google Sheets)
     updateMissionsState(missions);
 }
 
+// --- ATUALIZA O GRÁFICO (NOVO) ---
+function updateDashboardProgress() {
+    const total = missions.length;
+    const done = missions.filter(m => m.done).length;
+    
+    const textEl = document.getElementById('dailyMetaText');
+    const circleEl = document.querySelector('.circle-chart');
+    const percentEl = document.getElementById('dailyPercentage');
+
+    if (textEl) textEl.innerText = `${done}/${total}`;
+    
+    const percentage = total === 0 ? 0 : Math.round((done / total) * 100);
+    
+    if (percentEl) percentEl.innerText = `${percentage}%`;
+    
+    if (circleEl) {
+        // Pinta o gráfico dinamicamente
+        circleEl.style.background = `conic-gradient(#cc0000 ${percentage}%, #222 ${percentage}%)`;
+        circleEl.style.borderRadius = '50%';
+        // Adiciona um brilho se completar 100%
+        circleEl.style.boxShadow = percentage === 100 ? '0 0 15px rgba(204, 0, 0, 0.5)' : 'none';
+    }
+}
+
 function renderMissions() {
-    updateDashboardProgress();
+    updateDashboardProgress(); // Atualiza o gráfico sempre que renderizar
+
     const list = document.getElementById('missionList');
     if (!list) return;
 
@@ -129,34 +145,34 @@ function renderMissions() {
         return;
     }
 
-    // LÓGICA DE ORDENAÇÃO:
-    // 1. Atrasadas primeiro
-    // 2. Data mais próxima depois
-    // 3. Sem data por último
+    // Ordenação: Pendentes primeiro, depois feitas
     missions.sort((a, b) => {
-        if (!a.date) return 1;
-        if (!b.date) return -1;
-        return new Date(a.date) - new Date(b.date);
+        if (a.done === b.done) {
+            // Se o status for igual, ordena por data
+            if (!a.date) return 1;
+            if (!b.date) return -1;
+            return new Date(a.date) - new Date(b.date);
+        }
+        return a.done ? 1 : -1; // Feitas vão para o final
     });
 
-    list.innerHTML = missions.map(m => {
-        // Verifica se está atrasada (Data da missão < Hoje e não feita)
+    let html = missions.map(m => {
         const isLate = m.date && new Date(m.date) < new Date().setHours(0,0,0,0) && !m.done;
         
         return `
-        <div id="mission-${m.id}" class="group flex items-center justify-between p-4 bg-[#0a0a0a] border ${isLate ? 'border-red-900/60 shadow-[0_0_10px_rgba(200,0,0,0.1)]' : 'border-white/5'} rounded-xl hover:border-red-900/50 transition-all duration-300 animate-slide-in mb-2">
-            <div class="flex items-center gap-3 w-full">
-                <button onclick="window.completeMission(${m.id})" class="flex-shrink-0 w-6 h-6 rounded-full border border-gray-600 hover:border-red-500 hover:bg-red-500/20 transition flex items-center justify-center group-hover:shadow-[0_0_10px_rgba(200,0,0,0.2)]">
-                    <i class="fa-solid fa-check text-[10px] text-transparent group-hover:text-red-500 transition"></i>
-                </button>
+        <div id="mission-${m.id}" class="group flex items-center justify-between p-4 bg-[#0a0a0a] border ${m.done ? 'border-green-900/30 opacity-60' : (isLate ? 'border-red-900/60' : 'border-white/5')} rounded-xl hover:border-white/20 transition-all duration-300 animate-slide-in mb-2">
+            <div class="flex items-center gap-3 w-full cursor-pointer" onclick="window.completeMission(${m.id})">
+                <div class="flex-shrink-0 w-6 h-6 rounded-full border ${m.done ? 'bg-green-900/50 border-green-500' : 'border-gray-600 hover:border-red-500'} transition flex items-center justify-center">
+                    ${m.done ? '<i class="fa-solid fa-check text-[10px] text-green-400"></i>' : ''}
+                </div>
                 
                 <div class="flex flex-col w-full overflow-hidden">
-                    <span class="text-sm text-gray-300 font-medium truncate">${m.text}</span>
+                    <span class="text-sm ${m.done ? 'text-gray-500 line-through' : 'text-gray-200 font-medium'} truncate transition-colors">${m.text}</span>
                     ${m.date ? `
                         <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] font-mono flex items-center gap-1 ${isLate ? 'text-red-500 font-bold animate-pulse' : 'text-gray-600'}">
+                            <span class="text-[10px] font-mono flex items-center gap-1 ${isLate && !m.done ? 'text-red-500 font-bold animate-pulse' : 'text-gray-600'}">
                                 <i class="fa-regular fa-calendar"></i> 
-                                ${formatDate(m.date)} ${isLate ? '(ATRASADO)' : ''}
+                                ${formatDate(m.date)} ${isLate && !m.done ? '(ATRASADO)' : ''}
                             </span>
                         </div>
                     ` : ''}
@@ -168,39 +184,23 @@ function renderMissions() {
             </button>
         </div>
     `}).join('');
+
+    // Adiciona botão para limpar se tiver missões feitas
+    if(missions.some(m => m.done)) {
+        html += `
+            <div class="text-center mt-4">
+                <button onclick="window.clearCompleted()" class="text-[10px] text-gray-600 hover:text-white uppercase tracking-widest border border-white/5 hover:bg-white/5 px-4 py-2 rounded-lg transition">
+                    <i class="fa-solid fa-box-archive mr-2"></i> Arquivar Concluídas
+                </button>
+            </div>
+        `;
+    }
+
+    list.innerHTML = html;
 }
 
-// Auxiliar para formatar data (YYYY-MM-DD -> DD/MM)
 function formatDate(dateStr) {
     if(!dateStr) return '';
     const [y, m, d] = dateStr.split('-');
     return `${d}/${m}`;
-    
-}
-// --- ATUALIZA O GRÁFICO CIRCULAR DO DASHBOARD ---
-function updateDashboardProgress() {
-    // Pega todas as missões
-    const total = missions.length;
-    // Pega só as concluídas
-    const done = missions.filter(m => m.done).length; // Você precisará garantir que suas missões tenham a propriedade 'done' salva corretamente
-    
-    // Elementos do HTML
-    const textEl = document.getElementById('dailyMetaText');
-    const circleEl = document.querySelector('.circle-chart');
-    const percentEl = document.getElementById('dailyPercentage');
-
-    if (textEl) textEl.innerText = `${done}/${total}`;
-    
-    // Calcula porcentagem (evita divisão por zero)
-    const percentage = total === 0 ? 0 : Math.round((done / total) * 100);
-    
-    if (percentEl) percentEl.innerText = `${percentage}%`;
-    
-    // Atualiza o visual do gráfico (CSS var)
-    if (circleEl) {
-        // A lógica do gráfico circular depende de como o CSS está feito. 
-        // Geralmente usa conic-gradient. Vamos aplicar um estilo direto:
-        circleEl.style.background = `conic-gradient(#cc0000 ${percentage}%, #222 ${percentage}%)`;
-        circleEl.style.borderRadius = '50%';
-    }
 }

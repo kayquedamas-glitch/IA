@@ -407,3 +407,23 @@ body {
 }
 @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+/* --- SIDEBAR MOBILE RESPONSIVA --- */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 280px; /* Largura do menu */
+        transform: translateX(-110%); /* Esconde para a esquerda */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 70;
+        background-color: #000; /* Garante fundo preto */
+    }
+
+    /* Quando o JS adicionar esta classe, o menu aparece */
+    .sidebar.active {
+        transform: translateX(0);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+}
