@@ -1,7 +1,7 @@
 import { CONFIG } from '../config.js';
 import { showToast } from './ui.js';
 import { saveUserData, syncUserData, pushHistoryLog } from './database.js';
-import { playSFX } from './audio.js'; // <--- NOVO: Importa o áudio
+import { playSFX } from './audio.js'; 
 
 let rpgState = { 
     xp: 0, 
@@ -78,6 +78,8 @@ function calculateLevel() { rpgState.level = Math.floor(rpgState.xp / 100) + 1; 
 function checkStreak() { /* Lógica de streak futura */ }
 
 // --- AÇÕES ---
+// ... (seu código anterior do addXP) ...
+
 export function addXP(amt) {
     const oldLevel = rpgState.level;
     rpgState.xp = Math.max(0, rpgState.xp + amt);
@@ -85,12 +87,46 @@ export function addXP(amt) {
     saveLocalState();
     updateUI();
     
-    // SOM DE LEVEL UP
+    // LEVEL UP: Versão Pro
     if (amt > 0 && rpgState.level > oldLevel) {
-        playSFX('success'); // <--- TOCA SOM
+        playSFX('success'); 
+        
+        // CHAMA A NOVA FUNÇÃO AQUI
+        triggerLevelUpPro(rpgState.level); 
+        
         showToast('UPLOAD COMPLETO', `Nível ${rpgState.level} Atingido.`, 'level-up');
     }
 }
+
+// --- EFEITO VISUAL: HOLOGRAMA PRO (NOVO) ---
+function triggerLevelUpPro(newLevel) {
+    // 1. Cria o Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'level-up-overlay';
+    
+    // 2. Estrutura do Holograma
+    overlay.innerHTML = `
+        <div class="level-up-content">
+            <div class="holo-ring-outer"></div>
+            <div class="holo-ring-inner"></div>
+            
+            <div class="level-number-pro">${newLevel}</div>
+            <div class="level-label-pro">NOVA PATENTE</div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+
+    // 3. Remove suavemente após 3 segundos
+    setTimeout(() => {
+        overlay.style.transition = 'opacity 0.6s ease';
+        overlay.style.opacity = '0';
+        // Remove do DOM quando a transição acabar
+        setTimeout(() => overlay.remove(), 600);
+    }, 3000);
+}
+
+// ... (resto do código) ...
 
 export async function logActivity(type, detail, xpGained, durationMin = 0) {
     const activity = {
@@ -120,8 +156,7 @@ window.toggleHabit = (id) => {
         h.done = !h.done;
         const xp = h.done ? 25 : -25;
         
-        // SOM DE CONCLUSÃO
-        if(h.done) playSFX('success'); // <--- TOCA SOM
+        if(h.done) playSFX('success');
         else playSFX('click');
 
         addXP(xp);
@@ -151,6 +186,19 @@ function updateUI() {
 function renderHabits() {
     const list = document.getElementById('habitList');
     if (!list) return;
+
+    // ESTADO VAZIO (Bonito)
+    if (rpgState.habits.length === 0) {
+        list.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-6 opacity-40 border border-dashed border-white/10 rounded-xl">
+                <i class="fa-solid fa-seedling text-xl mb-2 text-gray-500"></i>
+                <p class="text-[9px] uppercase tracking-widest text-gray-500">Nenhum ritual ativo</p>
+                <p class="text-[8px] text-gray-600 mt-1">Clique em "+" para instalar</p>
+            </div>
+        `;
+        return;
+    }
+
     list.innerHTML = rpgState.habits.map(h => `
         <div class="flex items-center justify-between p-3 rounded-xl bg-[#0d0d0d] border border-white/5 cursor-pointer hover:border-white/10 transition group" onclick="window.toggleHabit('${h.id}')">
             <span class="text-[10px] font-bold uppercase tracking-wider transition-colors ${h.done ? 'text-gray-600 line-through' : 'text-gray-300 group-hover:text-white'}">${h.text}</span>

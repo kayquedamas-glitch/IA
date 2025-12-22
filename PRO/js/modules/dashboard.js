@@ -82,7 +82,7 @@ window.completeMission = (id) => {
         }
 
         setTimeout(() => {
-            missions.splice(index, 1); // Remove da lista
+            missions[index].done = true;
             save(); // Salva e Sincroniza
             renderMissions();
             
@@ -116,6 +116,7 @@ function save() {
 }
 
 function renderMissions() {
+    updateDashboardProgress();
     const list = document.getElementById('missionList');
     if (!list) return;
 
@@ -174,4 +175,32 @@ function formatDate(dateStr) {
     if(!dateStr) return '';
     const [y, m, d] = dateStr.split('-');
     return `${d}/${m}`;
+    
+}
+// --- ATUALIZA O GRÁFICO CIRCULAR DO DASHBOARD ---
+function updateDashboardProgress() {
+    // Pega todas as missões
+    const total = missions.length;
+    // Pega só as concluídas
+    const done = missions.filter(m => m.done).length; // Você precisará garantir que suas missões tenham a propriedade 'done' salva corretamente
+    
+    // Elementos do HTML
+    const textEl = document.getElementById('dailyMetaText');
+    const circleEl = document.querySelector('.circle-chart');
+    const percentEl = document.getElementById('dailyPercentage');
+
+    if (textEl) textEl.innerText = `${done}/${total}`;
+    
+    // Calcula porcentagem (evita divisão por zero)
+    const percentage = total === 0 ? 0 : Math.round((done / total) * 100);
+    
+    if (percentEl) percentEl.innerText = `${percentage}%`;
+    
+    // Atualiza o visual do gráfico (CSS var)
+    if (circleEl) {
+        // A lógica do gráfico circular depende de como o CSS está feito. 
+        // Geralmente usa conic-gradient. Vamos aplicar um estilo direto:
+        circleEl.style.background = `conic-gradient(#cc0000 ${percentage}%, #222 ${percentage}%)`;
+        circleEl.style.borderRadius = '50%';
+    }
 }
