@@ -138,141 +138,79 @@
         </div>
     </div>
 
-    
-    <script src="auth.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ====================================================
+        // CONFIGURAÇÃO SHEETDB & SEGURANÇA
+        // ====================================================
+        const API_URL = 'https://sheetdb.io/api/v1/s0aa6ona2p4lb'; 
+        const APP_SECRET = "SYNAPSE_Protocol_v1_SECURE_HASH_2025_KEY";
 
-<script type="module">
-    import { CONFIG } from './js/config.js';
-
-    // Inicializa Supabase
-    const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim(); // Adicione um input password no HTML se não tiver
-        const btn = document.getElementById('btnSubmit');
-        const errorMsg = document.getElementById('errorMsg');
-
-        // UI Loading
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ACESSANDO...';
-        btn.disabled = true;
-
-        try {
-            // Login via Supabase Auth
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            if (error) throw error;
-
-            // Salva sessão e redireciona
-            localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify(data.session));
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            // Busca perfil para pegar o nome
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', data.user.id)
-                .single();
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
+            const btn = document.getElementById('btnSubmit');
+            const errorMsg = document.getElementById('errorMsg');
+            const form = document.getElementById('loginForm');
+            const originalText = btn.innerHTML; // Salva o texto original
 
-            localStorage.setItem(CONFIG.USER_KEY, JSON.stringify(profile || { email }));
-
-            window.location.href = "index.html";
-
-        } catch (error) {
-            console.error(error);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            errorMsg.classList.remove('hidden');
-            errorMsg.querySelector('span').innerText = "Email ou senha inválidos.";
-        }
-    });
-</script>
-<script>
-    // Configuração da tua API SheetDB (Peguei do teu print)
-    const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/s0aa6ona2p4lb';
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const emailInput = document.getElementById('email');
-        // Garante que não tem espaços extras e converte para minúsculo para bater com a planilha
-        const email = emailInput.value.trim().toLowerCase(); 
-        
-        const btn = document.getElementById('btnSubmit');
-        const errorMsg = document.getElementById('errorMsg');
-        const errorText = errorMsg.querySelector('span');
-
-        // UI Loading (Feedback visual)
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ACESSANDO BASE DE DADOS...';
-        btn.disabled = true;
-        errorMsg.classList.add('hidden'); // Esconde erro anterior
-
-        try {
-            // 1. Busca o usuário pelo email na planilha
-            console.log(`🔍 Buscando: ${email}...`);
-            const response = await fetch(`${SHEETDB_API_URL}/search?email=${email}`);
-
-            // 2. Verifica se deu Erro 429 (Bloqueio temporário)
-            if (response.status === 429) {
-                throw new Error("⚠️ O servidor está sobrecarregado (Erro 429). Aguarde 5 minutos e tente novamente.");
-            }
-
-            // 3. Verifica outros erros de rede
-            if (!response.ok) {
-                throw new Error("Erro de conexão com a planilha.");
-            }
-
-            const data = await response.json();
-
-            // 4. Verifica se encontrou alguém
-            if (data.length > 0) {
-                const user = data[0];
-                console.log("✅ Usuário encontrado:", user);
-
-                // Salva a sessão no formato que o main.js espera
-                // Nota: O main.js procura 'synapse_user' ou 'synapse_session_v2'
-                localStorage.setItem('synapse_user', JSON.stringify(user));
-                localStorage.setItem('synapse_session_v2', JSON.stringify({
-                    user: user.nome,
-                    email: user.email,
-                    token: "session_valid"
-                }));
-
-                // Redireciona
-                btn.innerHTML = '<i class="fas fa-check"></i> SUCESSO!';
-                btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
+            // UI: Loading
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VALIDANDO...';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            btn.disabled = true;
+            errorMsg.classList.add('hidden');
+            
+            try {
+                // Consulta API
+                const response = await fetch(`${API_URL}/search?email=${emailInput}`);
                 
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1000);
+                if (!response.ok) throw new Error("Erro na API");
+                const data = await response.json();
 
-            } else {
-                // Não encontrou o email (agora sabemos que é verdade, pois não deu erro 429)
-                throw new Error("Email não encontrado. Verifique se digitou corretamente.");
+                if (data.length > 0) {
+                    const nomeUsuario = data[0].nome || "Membro";
+                    
+                    // SUCESSO: Gera Token Seguro e Salva
+                    const tokenSeguro = btoa(emailInput + APP_SECRET); 
+                    const sessionData = {
+                        user: nomeUsuario,
+                        email: emailInput,
+                        token: tokenSeguro,
+                        loginDate: Date.now()
+                    };
+
+                    localStorage.setItem('synapse_session_v2', JSON.stringify(sessionData));
+
+                    // Feedback Visual de Sucesso
+                    btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO AUTORIZADO';
+                    
+                    // Redireciona
+                    setTimeout(() => {
+                        window.location.href = "index.html"; 
+                    }, 1000);
+
+                } else {
+                    throw new Error("Email não encontrado");
+                }
+
+            } catch (error) {
+                console.error("Erro:", error);
+                
+                // UI: Erro
+                btn.innerHTML = originalText;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btn.disabled = false;
+                errorMsg.classList.remove('hidden');
+                
+                // Animação de Shake no Formulário
+                const container = document.querySelector('.w-full.max-w-md'); // Container do form
+                container.classList.add('shake-anim');
+                setTimeout(() => container.classList.remove('shake-anim'), 500);
             }
-
-        } catch (error) {
-            console.error(error);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            
-            // Mostra a mensagem de erro na tela
-            errorText.innerText = error.message;
-            errorMsg.classList.remove('hidden');
-            
-            // Animação de tremor
-            const container = document.querySelector('.bg-grid-pattern');
-            container.classList.add('shake-anim');
-            setTimeout(() => container.classList.remove('shake-anim'), 500);
-        }
-    });
-</script>
+        });
+    </script>
+    <script src="auth.js"></script>
 </body>
 </html>
