@@ -1,15 +1,15 @@
 import { CONFIG } from '../config.js';
 import { showToast } from './ui.js';
 import { saveUserData, syncUserData, pushHistoryLog } from './database.js';
+import { playSFX } from './audio.js'; // <--- NOVO: Importa o áudio
 
-// Adicionei 'missions' ao estado global
 let rpgState = { 
     xp: 0, 
     level: 1, 
     streak: 0, 
     lastLoginDate: null, 
     habits: [], 
-    missions: [], // <--- NOVO
+    missions: [], 
     history: [] 
 };
 
@@ -19,37 +19,29 @@ export async function initGamification() {
     updateUI(); 
     renderHabits();
     
-    // Tenta atualizar da nuvem
     try {
         const cloudData = await syncUserData();
         if (cloudData) {
             rpgState.xp = cloudData.xp;
             rpgState.level = cloudData.level;
-            
             if(cloudData.habits) rpgState.habits = cloudData.habits;
-            if(cloudData.missions) rpgState.missions = cloudData.missions; // <--- NOVO
+            if(cloudData.missions) rpgState.missions = cloudData.missions;
             
             saveLocalState();
             updateUI();
             renderHabits();
-            
-            // Atualiza a lista de missões no Dashboard se a função existir
             if(window.renderMissionsExternal) window.renderMissionsExternal(rpgState.missions);
-            
-            console.log("☁ Sincronização Completa (Incluindo Missões)");
+            console.log("☁ Sincronização Completa");
         }
-    } catch (e) {
-        console.warn("Offline mode.");
-    }
+    } catch (e) { console.warn("Offline mode."); }
 }
 
 export function getRPGState() { return { ...rpgState }; }
 
 // --- GERENCIAMENTO DE ESTADO ---
-
 export function updateMissionsState(newMissions) {
     rpgState.missions = newMissions;
-    saveLocalState(); // Salva no SheetDB sempre que as missões mudam
+    saveLocalState();
 }
 
 function loadLocalState() {
@@ -69,7 +61,6 @@ function loadLocalState() {
         rpgState.habits = d.list;
     }
     
-    // Carregar Missões Localmente
     const msn = localStorage.getItem(CONFIG.STORAGE_KEYS.MISSIONS);
     if(msn) rpgState.missions = JSON.parse(msn);
 }
@@ -78,23 +69,15 @@ function saveLocalState() {
     localStorage.setItem(CONFIG.STORAGE_KEYS.XP, rpgState.xp);
     localStorage.setItem('synapse_level', rpgState.level);
     localStorage.setItem('synapse_history', JSON.stringify(rpgState.history));
-    
-    localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ 
-        date: new Date().toISOString().split('T')[0], list: rpgState.habits 
-    }));
-    
-    // Salva Missões Localmente
+    localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ date: new Date().toISOString().split('T')[0], list: rpgState.habits }));
     localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(rpgState.missions));
-
-    // Salva TUDO na Nuvem
     saveUserData(rpgState);
 }
 
 function calculateLevel() { rpgState.level = Math.floor(rpgState.xp / 100) + 1; }
-function checkStreak() { /* Lógica de streak */ }
+function checkStreak() { /* Lógica de streak futura */ }
 
 // --- AÇÕES ---
-
 export function addXP(amt) {
     const oldLevel = rpgState.level;
     rpgState.xp = Math.max(0, rpgState.xp + amt);
@@ -102,7 +85,9 @@ export function addXP(amt) {
     saveLocalState();
     updateUI();
     
+    // SOM DE LEVEL UP
     if (amt > 0 && rpgState.level > oldLevel) {
+        playSFX('success'); // <--- TOCA SOM
         showToast('UPLOAD COMPLETO', `Nível ${rpgState.level} Atingido.`, 'level-up');
     }
 }
@@ -128,22 +113,30 @@ export function addHabitFromAI(text) {
     showToast('HÁBITO CRIADO', 'Nova diretiva neural.', 'success');
     return true; 
 }
+
 window.toggleHabit = (id) => {
     const h = rpgState.habits.find(x => x.id === id);
     if (h) {
         h.done = !h.done;
         const xp = h.done ? 25 : -25;
+        
+        // SOM DE CONCLUSÃO
+        if(h.done) playSFX('success'); // <--- TOCA SOM
+        else playSFX('click');
+
         addXP(xp);
         if(h.done) logActivity('HABIT', h.text, xp);
         saveLocalState();
         renderHabits();
     }
 };
+
 export function addCustomHabit(text) { 
     rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); 
     saveLocalState(); 
     renderHabits(); 
 }
+
 function updateUI() {
     const l = document.getElementById('levelDisplay');
     const b = document.getElementById('xpBar');
@@ -154,6 +147,7 @@ function updateUI() {
     if (s) s.innerText = rpgState.streak;
     if (b) b.style.width = `${rpgState.xp % 100}%`;
 }
+
 function renderHabits() {
     const list = document.getElementById('habitList');
     if (!list) return;

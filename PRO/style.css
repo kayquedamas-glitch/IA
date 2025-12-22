@@ -301,3 +301,18 @@ body {
 .breathing-animation {
     animation: breathe 8s ease-in-out infinite; /* 4s in + 4s out */
 }
+/* --- ANIMAÇÃO DO POLVO (RESPIRAÇÃO LENTA) --- */
+@keyframes pulse-slow {
+    0%, 100% { 
+        opacity: 0.3; /* Fica quase invisível */
+        transform: scale(0.98); 
+    }
+    50% { 
+        opacity: 1; /* Aparece totalmente */
+        transform: scale(1.02); 
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 5s ease-in-out infinite; /* 5 segundos = muito devagar */
+}

@@ -1,6 +1,7 @@
 // PRO/js/modules/features.js
 import { addXP, logActivity, getRPGState } from './gamification.js';
-import { showToast } from './ui.js'; // <--- IMPORTANTE: Importa do ui.js
+import { showToast } from './ui.js';
+import { playSFX } from './audio.js'; // <--- IMPORTA O AUDIO
 
 // --- MODO FOCO ---
 export function startFocusMode() {
@@ -28,11 +29,13 @@ export function startFocusMode() {
     window.adjustTime = (amount) => {
         minutes = Math.max(5, Math.min(120, minutes + amount));
         document.getElementById('focus-minutes').innerText = minutes;
+        playSFX('click'); // Som ao ajustar tempo
     };
 
     document.getElementById('btn-start-focus').onclick = () => {
         overlay.remove();
         runFocusTimer(minutes * 60);
+        playSFX('success'); // Som de início
     };
 }
 
@@ -62,9 +65,13 @@ function runFocusTimer(durationSeconds) {
         if (timeLeft <= 0) {
             clearInterval(interval);
             const xpGained = totalMinutes * 2;
+            
+            // --- SUCESSO ---
             addXP(xpGained);
+            playSFX('success'); // <--- SOM DE VITÓRIA AQUI
             logActivity('FOCUS', `Sessão de Foco (${totalMinutes}m)`, xpGained, totalMinutes);
             showToast('DADOS COMPUTADOS', `${totalMinutes}min adicionados ao histórico.`, 'success');
+            
             setTimeout(() => overlay.remove(), 3000);
         }
         timeLeft--;
@@ -73,6 +80,7 @@ function runFocusTimer(durationSeconds) {
     document.getElementById('exitFocus').onclick = () => {
         clearInterval(interval);
         overlay.remove();
+        playSFX('error'); // Som de falha
         showToast('FALHA DE DISCIPLINA', 'Sessão não registada.', 'warning');
     };
 }
@@ -121,7 +129,7 @@ export function showWeeklyReport() {
     document.body.appendChild(modal);
 }
 
-// --- PROTOCOLO SOS (O código que faltava) ---
+// --- PROTOCOLO SOS ---
 export function startSOSProtocol() {
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black z-[10000] flex flex-col items-center justify-center text-center p-6 animate-fade-in';
@@ -168,6 +176,7 @@ export function startSOSProtocol() {
     document.getElementById('close-sos').addEventListener('click', () => {
         isActive = false; clearInterval(breathInterval); overlay.remove();
         addXP(50); 
+        playSFX('success'); // <--- SOM DE SUCESSO AO COMPLETAR
         showToast('SISTEMA ESTABILIZADO', 'Recalibragem completa. +50 XP.', 'success');
     });
 }

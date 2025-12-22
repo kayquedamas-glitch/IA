@@ -1,6 +1,9 @@
 import { initChat, loadAgent } from './core/chat.js';
 import { initDashboard } from './modules/dashboard.js';
-import { initGamification } from './modules/gamification.js';
+import { initGamification, addCustomHabit } from './modules/gamification.js';
+import { showToast, showInputModal } from './modules/ui.js'; // <--- ADICIONE ESTA LINHA
+import { initAudio } from './modules/audio.js';
+
 import { initCalendar } from './modules/calendar.js';
 
 // --- IMPORTANTE: Importar as novas funcionalidades ---
@@ -72,14 +75,34 @@ window.features = {
 
 // --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v5.3 | MÓDULOS DE FOCO ATIVOS");
+    console.log("🚀 SYNAPSE CORE v5.3...");
 
     // Inicia os módulos
+    initChat();
+    initAudio(); // <--- ADICIONE ESTA LINHA
+    initDashboard();
+    // ... resto do código ...
+
+    // Inicia os módulos
+
     initChat();
     initDashboard();
     initGamification();
     initCalendar();
     loadUserProfile();
+    
+    // --- LÓGICA DO BOTÃO ADICIONAR HÁBITO ---
+// --- LÓGICA DO BOTÃO ADICIONAR HÁBITO (ATUALIZADO) ---
+    const btnAddHabit = document.getElementById('addHabitBtn');
+    if(btnAddHabit) {
+        btnAddHabit.onclick = () => {
+            // Abre o modal estiloso
+            showInputModal('Novo Ritual', 'Ex: Leitura Matinal...', (novoHabito) => {
+                addCustomHabit(novoHabito);
+                showToast('SUCESSO', 'Ritual adicionado.', 'success');
+            });
+        };
+    }
     
     // Forçar início na aba Jornada (Visual e Lógica)
     window.switchTab('protocolo');
