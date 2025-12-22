@@ -2,6 +2,8 @@ import { initChat, loadAgent } from './core/chat.js';
 import { initDashboard } from './modules/dashboard.js';
 import { initGamification } from './modules/gamification.js';
 import { initCalendar } from './modules/calendar.js';
+// NOVO: Importar o protocolo SOS
+import { startSOSProtocol } from './modules/features.js';
 
 // --- FUNÇÕES GLOBAIS (Para o HTML acessar) ---
 
@@ -55,8 +57,11 @@ window.toggleSidebar = function(forceState) {
     }
 };
 
+// Tornar features acessíveis globalmente (útil para debug ou botões inline)
+window.features = { startSOSProtocol };
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v5.0 | SISTEMA PRONTO");
+    console.log("🚀 SYNAPSE CORE v5.1 | PROTOCOLOS DE CURA ATIVOS");
 
     // Inicia os módulos
     initChat();
@@ -65,6 +70,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initCalendar();
     loadUserProfile();
     
+    // --- NOVO: LIGAÇÃO DO BOTÃO SOS ---
+    // Procura o botão pelo ID que definimos no HTML e adiciona o evento de clique
+    const btnSOS = document.getElementById('btn-sos-protocol');
+    if(btnSOS) {
+        btnSOS.addEventListener('click', () => {
+            console.log("⚠ INICIANDO PROTOCOLO DE EMERGÊNCIA...");
+            startSOSProtocol();
+            // Fecha sidebar em mobile se estiver aberta
+            if(window.innerWidth <= 768) window.toggleSidebar(false);
+        });
+    }
+
     // Botão de fechar no overlay
     const overlay = document.getElementById('sidebarOverlay');
     if(overlay) overlay.onclick = () => window.toggleSidebar(false);

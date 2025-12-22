@@ -4,6 +4,8 @@
     <link rel="shortcut icon" href="icone preto.png" type="image/png">
     <meta charset="UTF-8">
     <!-- Viewport ajustado para prevenir zoom e garantir renderização correta -->
+     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>Synapse PRO | Neural OS</title>
     
@@ -17,6 +19,7 @@
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
+    
 
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 
@@ -85,7 +88,22 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
+            <div class="mt-8 px-4 mb-4">
+    <button id="btn-sos-protocol" 
+            class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-900/10 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        
+        <i class="fa-solid fa-tower-broadcast animate-pulse text-lg"></i>
+        
+        <div class="flex flex-col items-start">
+            <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100">Protocolo</span>
+            <span class="text-xs font-black tracking-widest group-hover:text-white">S.O.S.</span>
+        </div>
+    </button>
+</div>
 
             <div class="mt-auto m-2 p-3 bg-[#111] rounded-xl border border-white/5 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl" id="sidebarAvatar">?</div>
@@ -97,6 +115,7 @@
                     </div>
                 </div>
             </div>
+            
         </aside>
 
         <!-- MAIN CONTENT -->
@@ -138,12 +157,34 @@
                             <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Quartel General</h2>
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName" class="text-white font-bold">...</span></p>
                         </div>
-                        <button id="btnZenMode" class="bg-[#111] hover:bg-red-600 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 flex items-center gap-2">
-                            <i class="fa-solid fa-expand"></i> Modo Zen
-                        </button>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+    
+    <button onclick="window.features.startFocusMode()" 
+            class="group relative overflow-hidden bg-[#0d0d0d] border border-white/10 hover:border-red-600/50 rounded-xl p-4 transition-all duration-300">
+        <div class="absolute inset-0 bg-red-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 flex flex-col items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center group-hover:border-red-500/50 transition-colors">
+                <i class="fa-solid fa-stopwatch text-gray-400 group-hover:text-red-500"></i>
+            </div>
+            <span class="text-xs font-bold tracking-widest text-gray-300 group-hover:text-white mt-1">MODO FOCO</span>
+        </div>
+    </button>
+
+    <button onclick="window.features.showWeeklyReport()" 
+            class="group relative overflow-hidden bg-[#0d0d0d] border border-white/10 hover:border-blue-500/50 rounded-xl p-4 transition-all duration-300">
+        <div class="absolute inset-0 bg-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 flex flex-col items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
+                <i class="fa-solid fa-chart-pie text-gray-400 group-hover:text-blue-500"></i>
+            </div>
+            <span class="text-xs font-bold tracking-widest text-gray-300 group-hover:text-white mt-1">RELATÓRIOS</span>
+        </div>
+    </button>
+
+</div>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="grid grid-cols-2 dashboard-grid-mobile md:grid-cols-4 gap-4 mb-8">
                         <div class="dashboard-card p-5 dopamine-card delay-100">
                             <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Nível</span>
                             <div class="text-3xl font-black text-white italic mt-2"><span id="levelDisplay">1</span></div>
@@ -205,15 +246,16 @@
 
         <!-- Navbar Spotify Mobile -->
         <nav class="bottom-nav md:hidden z-50">
-            <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')">
-                <i class="fa-solid fa-layer-group text-xl"></i>
-                <span>Jornada</span>
-            </button>
-            <button id="tabChat" class="nav-btn active" onclick="window.switchTab('chat')">
-                <i class="fa-solid fa-terminal text-xl"></i>
-                <span>Comando</span>
-            </button>
-        </nav>
+    <button id="tabJornada" class="nav-btn active" onclick="window.switchTab('protocolo')">
+        <i class="fa-solid fa-layer-group text-xl"></i>
+        <span>Jornada</span>
+    </button>
+    
+    <button id="tabChat" class="nav-btn" onclick="window.switchTab('chat')">
+        <i class="fa-solid fa-terminal text-xl"></i>
+        <span>Comando</span>
+    </button>
+</nav>onclick="window.features.startZenMode()
         
     </div>
 
