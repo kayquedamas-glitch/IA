@@ -15,7 +15,6 @@ const toolDefinitions = {
     'Diagnostico': {
         title: "Sessão de Diagnóstico",
         subtitle: "Analisando seu perfil...", 
-        typewriterExamples: [ "desabafa comigo...", "sem julgamentos...", "vamos resolver isso." ],
         initialMessage: "Olá. O que está travando a sua vida hoje?",
         initialButtons: ["Procrastinação", "Fadiga", "Ansiedade", "Vício"],
         
@@ -222,7 +221,7 @@ function resetChat(agentKey = 'Diagnostico') {
     const headerHTML = `
         <div class="w-full text-center mb-6 p-4 fade-in">
             <p class="text-gray-500 text-xs tracking-widest uppercase">
-                <span id="typewriter-text" class="text-red-500 font-bold"></span><span class="animate-pulse">|</span>
+               
             </p>
         </div>
     `;
