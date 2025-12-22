@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+    <link rel="shortcut icon" href="assets/icone preto.png" type="image/jpeg">
+    <link rel="icon" href="assets/icone preto.png" type="image/jpeg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>Synapse PRO | Neural OS</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1106367374246995');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1106367374246995&ev=PageView&noscript=1" /></noscript>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Padrão de Fundo Tático */
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+                              linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Efeitos Visuais */
+        .text-glow { text-shadow: 0 0 20px rgba(220, 38, 38, 0.6); }
+        .brutal-red { color: #CC0000; }
+        
+        /* Animação Reveal (Ao rolar a página) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Botão Play Pulsante */
+        .play-button {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(204, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0); }
+        }
+    </style>
+</head>
+
+<body class="antialiased bg-grid-pattern">
+
+    <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/5 bg-[#050505]/90 backdrop-blur-md">
+        <div class="container mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="assets/icone preto.png" alt="Logo" class="w-8 h-8 invert opacity-90">
+                <span class="font-bold tracking-tighter text-lg">SYNAPSE <span class="text-[#CC0000]">PRO</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="teste.html" class="text-sm font-medium text-gray-400 hover:text-white transition">Demo Grátis</a>
+                <a href="#arsenal" class="text-sm font-medium text-gray-400 hover:text-white transition">Recursos</a>
+                <a href="PRO/login.html" class="text-sm font-medium text-white hover:text-[#CC0000] transition">Entrar</a>
+                <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase px-6 py-2.5 rounded-lg transition shadow-[0_0_20px_rgba(204,0,0,0.4)] hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]">
+                    Acesso Vitalício
+                </a>
+            </div>
+
+            <button id="mobileMenuBtn" class="md:hidden text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-[#0a0a0a] border-b border-white/10 absolute w-full left-0 top-16 p-6 flex flex-col gap-4 shadow-2xl">
+            <a href="teste.html" class="text-gray-300 font-medium py-2 border-b border-white/5">Testar Demo</a>
+            <a href="PRO/login.html" class="text-gray-300 font-medium py-2 border-b border-white/5">Login Membros</a>
+            <a href="#planos" class="bg-[#CC0000] text-center text-white font-bold py-3 rounded-lg uppercase tracking-wide">Começar Agora</a>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#CC0000] rounded-full blur-[180px] opacity-15 pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 text-center relative z-10 reveal active">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8 hover:border-red-500/30 transition cursor-default">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Sistema V6.0 Online</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[1.1]">
+                Instale um Novo <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">Sistema Operacional</span> <br>
+                na Sua <span class="text-[#CC0000] text-glow">Mente.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                Pare de lutar contra a procrastinação com "força de vontade". Use <strong class="text-white">gamificação militar</strong> e <strong class="text-white">IA comportamental</strong> para forçar sua evolução.
+            </p>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <a href="teste.html" class="w-full md:w-auto px-8 py-4 rounded-xl border border-white/10 hover:bg-white/5 text-white font-bold transition flex items-center justify-center gap-2 group">
+                    <i class="fa-solid fa-gamepad text-gray-400 group-hover:text-white transition"></i>
+                    Testar Demo Grátis
+                </a>
+                <a href="#planos" class="w-full md:w-auto px-8 py-4 rounded-xl bg-[#CC0000] hover:bg-red-600 text-white font-bold transition shadow-[0_0_30px_rgba(204,0,0,0.3)] flex items-center justify-center gap-2 group">
+                    <i class="fa-solid fa-lock-open"></i>
+                    Desbloquear Acesso PRO
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+            
+            <p class="mt-6 text-xs text-gray-600 uppercase tracking-widest font-bold">
+                <i class="fa-solid fa-shield-halved mr-1"></i> Acesso Vitalício + Garantia de 7 Dias
+            </p>
+        </div>
+    </header>
+
+    <section class="py-10 container mx-auto px-6 reveal">
+        <div class="relative w-full max-w-5xl mx-auto aspect-video bg-[#0a0a0a] rounded-2xl border border-white/10 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] group cursor-pointer" id="videoContainer">
+            
+            <div id="videoOverlay" class="absolute inset-0 bg-[url('assets/S_synapse.jpeg')] bg-cover bg-center transition-all duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center transition-all duration-300 group-hover:bg-black/40">
+                    <div class="play-button w-24 h-24 bg-[#CC0000] rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition">
+                        <i class="fa-solid fa-play text-white text-3xl ml-2"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-8 left-8 text-left">
+                    <p class="text-xs font-bold text-[#CC0000] uppercase tracking-widest mb-2">Trailer Oficial</p>
+                    <h3 class="text-3xl font-bold text-white">Como o Synapse Funciona</h3>
+                </div>
+            </div>
+
+            <video id="meuVideo" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" playsinline>
+                <source src="assets/video_vendas.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+        </div>
+    </section>
+
+    <section class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-3xl md:text-5xl font-black mb-6 uppercase tracking-tighter leading-tight">
+                        Você não é preguiçoso. <br>
+                        Seu sistema está <span class="text-[#CC0000] text-glow">Hackeado.</span>
+                    </h2>
+                    <div class="w-24 h-1 bg-[#CC0000] mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center reveal">
+                    <div class="space-y-6 text-gray-300 leading-relaxed text-lg">
+                        <p>
+                            <strong class="text-white">O Cenário:</strong> Você acorda motivado. Faz uma lista mental do que precisa fazer. "Hoje vai ser diferente", você diz.
+                        </p>
+                        <p>
+                            <strong class="text-white">A Queda:</strong> Duas horas depois, você está rolando o feed do Instagram ou vendo vídeos aleatórios. A lista? Esquecida. A culpa? Esmagadora.
+                        </p>
+                        <p class="bg-white/5 p-6 rounded-xl border-l-4 border-[#CC0000]">
+                            <span class="text-[#CC0000] font-bold uppercase text-sm block mb-2">O Diagnóstico</span>
+                            Isso não é falta de caráter. É <strong class="text-white">Dopamina Barata</strong>. Seu cérebro foi treinado por algoritmos bilionários para buscar prazer imediato e fugir do esforço.
+                        </p>
+                    </div>
+
+                    <div class="relative bg-gradient-to-br from-[#111] to-black p-8 rounded-3xl border border-white/10">
+                        <div class="absolute -top-4 -right-4 bg-[#CC0000] text-white text-xs font-bold px-4 py-2 rounded-lg uppercase tracking-widest shadow-lg">
+                            Inimigo Identificado
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-[#CC0000]"></i> O Ciclo da Falha
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-4 text-gray-400">
+                                <div class="w-8 h-8 rounded-full bg-red-900/20 flex items-center justify-center text-[#CC0000] font-bold">1</div>
+                                <span>Estímulo Visual (Notificação/Celular)</span>
+                            </li>
+                            <li class="flex items-center gap-4 text-gray-400">
+                                <div class="w-8 h-8 rounded-full bg-red-900/20 flex items-center justify-center text-[#CC0000] font-bold">2</div>
+                                <span>Pico de Dopamina (Expectativa)</span>
+                            </li>
+                            <li class="flex items-center gap-4 text-gray-400">
+                                <div class="w-8 h-8 rounded-full bg-red-900/20 flex items-center justify-center text-[#CC0000] font-bold">3</div>
+                                <span>Consumo Passivo (Horas perdidas)</span>
+                            </li>
+                            <li class="flex items-center gap-4 text-white font-bold bg-red-900/10 p-3 rounded-lg border border-red-900/30">
+                                <div class="w-8 h-8 rounded-full bg-[#CC0000] flex items-center justify-center text-white font-bold">4</div>
+                                <span>Arrependimento & Paralisia</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="py-24 bg-[#080808] border-y border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                
+                <div class="w-full md:w-1/2 reveal">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                        <div class="absolute inset-0 bg-red-900/20 mix-blend-overlay group-hover:opacity-0 transition duration-500"></div>
+                        <img src="assets/Captura de tela 2025-12-09 224513.png" alt="Interface Synapse" class="w-full hover:scale-105 transition duration-700">
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 space-y-8 reveal delay-100">
+                    <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-tight">
+                        A Solução não é <br>
+                        "Força de Vontade". <br>
+                        É <span class="text-[#CC0000]">Engenharia.</span>
+                    </h2>
+                    
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        O Synapse PRO usa o conceito de <strong>Gamificação Militar</strong> para sequestrar o sistema de recompensa do seu cérebro.
+                    </p>
+
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Feedback Imediato</h4>
+                                <p class="text-sm text-gray-500">Cada ação gera XP e feedback visual/sonoro. Seu cérebro vicia em produzir, não em procrastinar.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Identidade Visual</h4>
+                                <p class="text-sm text-gray-500">Você deixa de ser "o procrastinador" e vira um Operador subindo de patente.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Consequência Real</h4>
+                                <p class="text-sm text-gray-500">Perder o Streak (Sequência) dói. O medo de perder o progresso mantém você na linha.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="arsenal" class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
+                    O Arsenal <span class="text-[#CC0000]">Completo</span>
+                </h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">
+                    Ferramentas desenhadas para eliminar a fricção entre pensar e fazer.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal">
+                    <i class="fa-solid fa-medal text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Sistema de Patentes</h3>
+                    <p class="text-gray-500 text-sm">Evolua de Recruta a Marechal. Transforme sua rotina chata em um RPG onde você é o protagonista.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-100">
+                    <i class="fa-solid fa-user-secret text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Conselho de Guerra (IA)</h3>
+                    <p class="text-gray-500 text-sm">Acesso aos Agentes: Comandante (Disciplina), General (Estratégia) e Tático (Finanças). Não é um chat genérico.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-200">
+                    <i class="fa-solid fa-calendar-days text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Heatmap Tático</h3>
+                    <p class="text-gray-500 text-sm">Visualização de consistência estilo GitHub. Veja seus dias ficarem verdes conforme você vence.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal">
+                    <i class="fa-solid fa-repeat text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Rituais & Hábitos</h3>
+                    <p class="text-gray-500 text-sm">Gestão completa de rotina. Crie, monitore e exclua hábitos. O sistema calcula sua taxa de sucesso diária.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-100">
+                    <i class="fa-solid fa-kit-medical text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Protocolo S.O.S.</h3>
+                    <p class="text-gray-500 text-sm">Botão de pânico para crises de ansiedade. Exercícios guiados de respiração tática para retomar o controle.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-200">
+                    <i class="fa-solid fa-cloud text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Sincronização Nuvem</h3>
+                    <p class="text-gray-500 text-sm">Comece no celular, termine no PC. Seus dados de XP e missões salvos em tempo real.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="planos" class="py-24 bg-[#080808]">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-6 uppercase tracking-tighter">
+                    Escolha Sua <span class="text-[#CC0000]">Missão</span>
+                </h2>
+            </div>
+
+            <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                
+                <div class="p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] opacity-50 hover:opacity-100 transition duration-500 reveal">
+                    <h3 class="text-xl font-bold text-gray-400 mb-2">Versão Demo</h3>
+                    <div class="text-4xl font-black text-white mb-6">R$ 0</div>
+                    <ul class="space-y-4 mb-8 text-sm text-gray-400">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check"></i> Apenas Agente Diagnóstico</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check"></i> Limite de 1 Hábito</li>
+                        <li class="flex items-center gap-3 text-red-900"><i class="fa-solid fa-xmark"></i> Sem Patentes</li>
+                        <li class="flex items-center gap-3 text-red-900"><i class="fa-solid fa-xmark"></i> Sem Salvamento</li>
+                    </ul>
+                    <a href="teste.html" class="block w-full py-4 rounded-xl border border-white/10 text-center font-bold text-gray-400 hover:text-white hover:bg-white/5 transition">
+                        Acessar Demo
+                    </a>
+                </div>
+
+                <div class="relative p-1 rounded-3xl bg-gradient-to-b from-[#CC0000] to-red-900/20 reveal delay-100 shadow-[0_0_50px_rgba(204,0,0,0.15)] transform md:scale-105">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#CC0000] text-white text-[10px] font-bold uppercase px-4 py-1 rounded-full tracking-widest shadow-lg">
+                        Oferta Especial
+                    </div>
+                    <div class="bg-[#0c0c0c] rounded-[22px] p-8 h-full">
+                        <h3 class="text-xl font-bold text-white mb-2">Synapse <span class="text-[#CC0000]">PRO</span></h3>
+                        <div class="text-5xl font-black text-white mb-1">R$ 29<span class="text-sm font-medium text-gray-500">,90</span></div>
+                        <p class="text-xs text-gray-500 mb-6">Pagamento único. Acesso vitalício.</p>
+
+                        <ul class="space-y-4 mb-8 text-sm text-gray-300">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-[#CC0000]"></i> Acesso a <strong>Todos os Agentes</strong></li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-[#CC0000]"></i> <strong>Gamificação Completa</strong></li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-[#CC0000]"></i> <strong>Heatmap & Rituais Ilimitados</strong></li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-[#CC0000]"></i> <strong>Sincronização Nuvem</strong></li>
+                        </ul>
+
+                        <a href="https://pay.kiwify.com.br/SEU_LINK_AQUI" class="block w-full py-4 rounded-xl bg-[#CC0000] hover:bg-red-600 text-white text-center font-bold uppercase tracking-widest transition shadow-lg shadow-red-900/20 group">
+                            Comprar Agora <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 border-t border-white/5">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <h2 class="text-3xl font-black text-center mb-12 uppercase">Perguntas Frequentes</h2>
+            
+            <div class="space-y-4">
+                <details class="group bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden">
+                    <summary class="flex justify-between items-center p-6 cursor-pointer font-bold hover:text-[#CC0000] transition">
+                        O acesso é realmente vitalício?
+                        <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
+                        Sim. Você paga uma única vez e tem acesso para sempre, incluindo todas as atualizações futuras da versão V6.0.
+                    </div>
+                </details>
+
+                <details class="group bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden">
+                    <summary class="flex justify-between items-center p-6 cursor-pointer font-bold hover:text-[#CC0000] transition">
+                        Funciona no celular?
+                        <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
+                        Perfeitamente. O Synapse é um WebApp responsivo. Você pode usar no navegador do seu iPhone ou Android e instalar como um aplicativo na tela inicial.
+                    </div>
+                </details>
+
+                <details class="group bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden">
+                    <summary class="flex justify-between items-center p-6 cursor-pointer font-bold hover:text-[#CC0000] transition">
+                        Tenho garantia?
+                        <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
+                        Absoluta. Se em 7 dias você achar que o sistema não aumentou sua produtividade, devolvemos 100% do seu dinheiro. Sem perguntas.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/5 bg-[#050505] text-center">
+        <div class="mb-6 opacity-50 grayscale hover:grayscale-0 transition duration-500">
+            <img src="assets/logo_synapse.png" alt="Synapse" class="h-8 mx-auto">
+        </div>
+        <p class="text-xs text-gray-600 font-medium">© 2025 Synapse Protocol. Todos os direitos reservados.</p>
+        <div class="mt-4 flex justify-center gap-4 text-[10px] text-gray-700 uppercase font-bold">
+            <a href="#" class="hover:text-white">Termos de Uso</a>
+            <a href="#" class="hover:text-white">Privacidade</a>
+            <a href="#" class="hover:text-white">Suporte</a>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializa ícones
+        if(typeof lucide !== 'undefined') lucide.createIcons();
+
+        // Player de Vídeo Personalizado
+        const videoContainer = document.getElementById('videoContainer');
+        const video = document.getElementById('meuVideo');
+        const overlay = document.getElementById('videoOverlay');
+
+        if(videoContainer && video && overlay) {
+            videoContainer.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                    video.muted = false;
+                    video.style.opacity = "1";
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                } else {
+                    video.pause();
+                    overlay.style.opacity = "1";
+                    overlay.style.pointerEvents = "auto";
+                    video.style.opacity = "0";
+                }
+            });
+        }
+        
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Menu Mobile
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if(menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+</body>
+</html>

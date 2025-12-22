@@ -117,29 +117,31 @@
 <body class="antialiased bg-dark-pattern selection:bg-red-900 selection:text-white pb-10 md:pb-0">
 
     <!-- NAVBAR DESKTOP (Integrada do seu código, mas com estilo Glass) -->
-    <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
-        <div class="bg-[#050505]/70 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-2xl hover:border-white/20 transition-all">
-            <div class="flex items-center gap-6 pl-4">
-                <a href="#" class="flex items-center gap-2 group">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
-                        <img src="assets/logo_synapse.png" alt="S" class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
-                    </div>
-                    <span class="text-white font-bold tracking-tight text-lg font-brand">Synapse</span>
-                </a>
-                <div class="h-6 w-px bg-white/10"></div>
-                <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
-                    <li><a href="#inicio" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Início</a></li>
-                    <li><a href="#metodo" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">O Método</a></li>
-                    <li><a href="#ferramentas" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Ferramentas</a></li>
-                    <li><a href="#depoimentos" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Resultados</a></li>
-                </ul>
+    <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/5 bg-[#050505]/90 backdrop-blur-md">
+        <div class="container mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="assets/icone preto.png" alt="Logo" class="w-8 h-8 invert opacity-90">
+                <span class="font-bold tracking-tighter text-lg">SYNAPSE <span class="text-[#CC0000]">PRO</span></span>
             </div>
-            <div class="flex items-center gap-4 pr-2">
-                <a href="PRO/login.html" class="text-sm font-bold text-gray-400 hover:text-white transition px-2">Login</a>
-                <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2 btn-pill">
-                    Desbloquear <i class="fas fa-arrow-right"></i>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="teste.html" class="text-sm font-medium text-gray-400 hover:text-white transition">Demo Grátis</a>
+                <a href="#arsenal" class="text-sm font-medium text-gray-400 hover:text-white transition">Recursos</a>
+                <a href="PRO/login.html" class="text-sm font-medium text-white hover:text-[#CC0000] transition">Entrar</a>
+                <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase px-6 py-2.5 rounded-lg transition shadow-[0_0_20px_rgba(204,0,0,0.4)] hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]">
+                    Acesso Vitalício
                 </a>
             </div>
+
+            <button id="mobileMenuBtn" class="md:hidden text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-[#0a0a0a] border-b border-white/10 absolute w-full left-0 top-16 p-6 flex flex-col gap-4 shadow-2xl">
+            <a href="teste.html" class="text-gray-300 font-medium py-2 border-b border-white/5">Testar Demo</a>
+            <a href="PRO/login.html" class="text-gray-300 font-medium py-2 border-b border-white/5">Login Membros</a>
+            <a href="#planos" class="bg-[#CC0000] text-center text-white font-bold py-3 rounded-lg uppercase tracking-wide">Começar Agora</a>
         </div>
     </nav>
 
@@ -175,9 +177,10 @@
 
         <div class="max-w-5xl mx-auto relative z-10">
             <!-- Título Reduzido -->
-            <h1 class="reveal delay-100 text-3xl md:text-5xl lg:text-6xl font-black font-brand uppercase leading-[1.1] tracking-tight mb-6">
-                A inteligência artificial <br class="hidden md:block"> que te coloca no <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-600 text-glow-red">Controle da sua própria mente.</span>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[1.1]">
+                Instale um Novo <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">Sistema Operacional</span> <br>
+                na Sua <span class="text-[#CC0000] text-glow">Mente.</span>
             </h1>
 
             <!-- Subtítulo Reduzido -->
@@ -330,61 +333,115 @@
 
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
-<section id="ferramentas" class="py-24 bg-[#050505]">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="reveal text-center mb-20">
-                <span class="text-[10px] font-mono-code text-red-500 uppercase tracking-widest mb-4 block">Arquitetura de Guerra</span>
-                <h3 class="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">O Arsenal PRO</h3>
-                <p class="text-gray-400 text-sm max-w-xl mx-auto mt-4">As ferramentas que vão transformar seu navegador em um centro de comando neural.</p>
+<section class="py-24 bg-[#080808] border-y border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                
+                <div class="w-full md:w-1/2 reveal">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                        <div class="absolute inset-0 bg-red-900/20 mix-blend-overlay group-hover:opacity-0 transition duration-500"></div>
+                        <img src="assets/Captura de tela 2025-12-09 224513.png" alt="Interface Synapse" class="w-full hover:scale-105 transition duration-700">
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 space-y-8 reveal delay-100">
+                    <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-tight">
+                        A Solução não é <br>
+                        "Força de Vontade". <br>
+                        É <span class="text-[#CC0000]">Engenharia.</span>
+                    </h2>
+                    
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        O Synapse PRO usa o conceito de <strong>Gamificação Militar</strong> para sequestrar o sistema de recompensa do seu cérebro.
+                    </p>
+
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Feedback Imediato</h4>
+                                <p class="text-sm text-gray-500">Cada ação gera XP e feedback visual/sonoro. Seu cérebro vicia em produzir, não em procrastinar.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Identidade Visual</h4>
+                                <p class="text-sm text-gray-500">Você deixa de ser "o procrastinador" e vira um Operador subindo de patente.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-6 h-6 rounded bg-[#CC0000] flex items-center justify-center mt-1 flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Consequência Real</h4>
+                                <p class="text-sm text-gray-500">Perder o Streak (Sequência) dói. O medo de perder o progresso mantém você na linha.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Diagnóstico -->
-                <div class="reveal delay-100 bg-[#0a0a0a] border border-white/5 p-8 rounded-[24px] hover:border-red-600/30 transition-all group">
-                    <div class="w-14 h-14 bg-red-600/10 border border-red-600/20 rounded-2xl flex items-center justify-center mb-6 text-red-500 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-brain text-2xl"></i>
-                    </div>
-                    <h4 class="font-black text-white text-lg mb-2 uppercase italic">Diagnóstico</h4>
-                    <p class="text-[10px] text-red-500 uppercase font-black tracking-widest mb-4">Mapeamento</p>
-                    <p class="text-xs text-gray-500 leading-relaxed">Identifica a causa raiz da sua procrastinação e gera o roteiro exato para quebrar o ciclo de dopamina barata.</p>
-                </div>
-
-                <!-- Comandante -->
-                <div class="reveal delay-200 bg-[#0a0a0a] border border-white/5 p-8 rounded-[24px] hover:border-red-600/30 transition-all group">
-                    <div class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-6 text-gray-400 group-hover:text-red-500 group-hover:border-red-500/20 transition-all">
-                        <i class="fa-solid fa-skull text-2xl"></i>
-                    </div>
-                    <h4 class="font-black text-white text-lg mb-2 uppercase italic">Comandante</h4>
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Disciplina</p>
-                    <p class="text-xs text-gray-500 leading-relaxed">O agente de execução agressiva. Protocolos de 2 minutos para colocar você em estado de fluxo imediato.</p>
-                </div>
-
-                <!-- General -->
-                <div class="reveal delay-300 bg-[#0a0a0a] border border-white/5 p-8 rounded-[24px] hover:border-red-600/30 transition-all group">
-                    <div class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-6 text-gray-400 group-hover:text-red-500 group-hover:border-red-500/20 transition-all">
-                        <i class="fa-solid fa-chess-knight text-2xl"></i>
-                    </div>
-                    <h4 class="font-black text-white text-lg mb-2 uppercase italic">General</h4>
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Estratégia</p>
-                    <p class="text-xs text-gray-500 leading-relaxed">Visão de longo prazo. Organiza suas metas de vida e carreira de forma tática e inabalável.</p>
-                </div>
-
-                <!-- Tático -->
-                <div class="reveal delay-400 bg-[#0a0a0a] border border-white/5 p-8 rounded-[24px] hover:border-red-600/30 transition-all group">
-                    <div class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-6 text-gray-400 group-hover:text-red-500 group-hover:border-red-500/20 transition-all">
-                        <i class="fa-solid fa-satellite-dish text-2xl"></i>
-                    </div>
-                    <h4 class="font-black text-white text-lg mb-2 uppercase italic">Tático</h4>
-                    <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-4">Prosperidade</p>
-                    <p class="text-xs text-gray-500 leading-relaxed">Mentor focado em resultados práticos, alavancagem financeira e hacks de produtividade monetizável.</p>
-                </div>
-            </div>
-
-            <!-- Botão do Pânico -->
-            
         </div>
     </section>
 
+    <section id="arsenal" class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
+                    O Arsenal <span class="text-[#CC0000]">Completo</span>
+                </h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">
+                    Ferramentas desenhadas para eliminar a fricção entre pensar e fazer.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal">
+                    <i class="fa-solid fa-medal text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Sistema de Patentes</h3>
+                    <p class="text-gray-500 text-sm">Evolua de Recruta a Marechal. Transforme sua rotina chata em um RPG onde você é o protagonista.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-100">
+                    <i class="fa-solid fa-user-secret text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Conselho de Guerra (IA)</h3>
+                    <p class="text-gray-500 text-sm">Acesso aos Agentes: Comandante (Disciplina), General (Estratégia) e Tático (Finanças). Não é um chat genérico.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-200">
+                    <i class="fa-solid fa-calendar-days text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Heatmap Tático</h3>
+                    <p class="text-gray-500 text-sm">Visualização de consistência estilo GitHub. Veja seus dias ficarem verdes conforme você vence.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal">
+                    <i class="fa-solid fa-repeat text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Rituais & Hábitos</h3>
+                    <p class="text-gray-500 text-sm">Gestão completa de rotina. Crie, monitore e exclua hábitos. O sistema calcula sua taxa de sucesso diária.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-100">
+                    <i class="fa-solid fa-kit-medical text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Protocolo S.O.S.</h3>
+                    <p class="text-gray-500 text-sm">Botão de pânico para crises de ansiedade. Exercícios guiados de respiração tática para retomar o controle.</p>
+                </div>
+
+                <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500/30 transition duration-500 group reveal delay-200">
+                    <i class="fa-solid fa-cloud text-4xl text-[#CC0000] mb-6 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold mb-3">Sincronização Nuvem</h3>
+                    <p class="text-gray-500 text-sm">Comece no celular, termine no PC. Seus dados de XP e missões salvos em tempo real.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
 
     <!-- Seção Depoimentos -->
     <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808]">
