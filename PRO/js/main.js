@@ -155,8 +155,28 @@ function toggleSidebar(show) {
     }
 }
 
+// PRO/js/main.js
+
 function loadUserProfile() {
     try {
+        // --- TRAVA DE ISOLAMENTO DA DEMO ---
+        // Se for Demo, ignora o localStorage real e cria um perfil fantasma
+        if (window.IS_DEMO) {
+            // Atualiza a UI para modo visitante
+            const sideName = document.getElementById('sidebarName');
+            const sideAvatar = document.getElementById('sidebarAvatar');
+            const dashName = document.getElementById('dashName');
+
+            if (sideName) sideName.innerText = "VISITANTE";
+            if (sideAvatar) sideAvatar.innerText = "V"; // Letra do Avatar
+            if (dashName) dashName.innerText = "OPERADOR CONVIDADO";
+            
+            console.log("👻 Modo Demo: Perfil de visitante carregado.");
+            return; // PARA AQUI! Não deixa carregar os dados reais.
+        }
+        // -----------------------------------
+
+        // Código Original (carrega o usuário real apenas se NÃO for demo)
         const sessionRaw = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
         if (sessionRaw) {
             const session = JSON.parse(sessionRaw);

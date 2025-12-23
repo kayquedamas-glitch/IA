@@ -2,10 +2,14 @@ import { CONFIG } from '../config.js';
 import { showToast } from './ui.js';
 import { saveUserData, syncUserData, pushHistoryLog } from './database.js';
 import { playSFX } from './audio.js'; 
-// Importante: Importa o renderCalendar para atualizar as cores em tempo real
 import { renderCalendar } from './calendar.js';
 
 console.log("🎮 Módulo de Gamificação Tático Iniciado...");
+
+// --- CONFIGURAÇÃO DE ISOLAMENTO (DEMO VS PRO) ---
+const IS_DEMO = window.IS_DEMO === true;
+const STORAGE = IS_DEMO ? sessionStorage : localStorage; // Demo usa memória temporária
+const KEY_PREFIX = IS_DEMO ? 'demo_' : 'synapse_';       // Demo usa prefixo diferente
 
 let rpgState = { 
     xp: 0, 
@@ -17,7 +21,7 @@ let rpgState = {
     habits: [], 
     missions: [], 
     history: [],
-    dailyScores: {} // Guarda a % de conclusão de cada dia
+    dailyScores: {} 
 };
 
 const RANKS = [
@@ -42,30 +46,34 @@ export async function initGamification() {
         updateUI(); 
         renderHabits();
         
-        // --- FUNÇÕES GLOBAIS ---
+        // Funções Globais
         window.openAddHabitModal = openAddHabitModal;
         window.toggleHabit = toggleHabit;
-        window.deleteHabit = deleteHabit; // Função de Deletar
+        window.deleteHabit = deleteHabit;
         
-        // Sincronização Nuvem (Protegida contra erro 429)
-        try {
-            const cloudData = await syncUserData();
-            if (cloudData) {
-                if (cloudData.xp) rpgState.xp = cloudData.xp;
-                if (cloudData.habits) rpgState.habits = cloudData.habits;
-                if (cloudData.missions) rpgState.missions = cloudData.missions;
-                if (cloudData.dailyScores) rpgState.dailyScores = cloudData.dailyScores;
-                
-                calculateRankAndLevel(); 
-                saveLocalState();
-                updateUI();
-                renderHabits();
-                
-                if(window.renderMissionsExternal) window.renderMissionsExternal(rpgState.missions);
-                renderCalendar(); // Atualiza cores
-                console.log("☁ Sincronizado");
-            }
-        } catch(cloudError) { console.warn("Modo Offline Ativo (429 ou sem net)."); }
+        // --- SINCRONIZAÇÃO (Bloqueada na Demo) ---
+        if (!IS_DEMO) {
+            try {
+                const cloudData = await syncUserData();
+                if (cloudData) {
+                    if (cloudData.xp) rpgState.xp = cloudData.xp;
+                    if (cloudData.habits) rpgState.habits = cloudData.habits;
+                    if (cloudData.missions) rpgState.missions = cloudData.missions;
+                    if (cloudData.dailyScores) rpgState.dailyScores = cloudData.dailyScores;
+                    
+                    calculateRankAndLevel(); 
+                    saveLocalState();
+                    updateUI();
+                    renderHabits();
+                    
+                    if(window.renderMissionsExternal) window.renderMissionsExternal(rpgState.missions);
+                    renderCalendar();
+                    console.log("☁ Sincronizado com a Nuvem.");
+                }
+            } catch(cloudError) { console.warn("Modo Offline Ativo."); }
+        } else {
+            console.log("👻 Modo Demo: Sincronização de nuvem desativada.");
+        }
 
     } catch (e) { console.error("Erro Gamificação:", e); }
 }
@@ -89,17 +97,17 @@ function toggleHabit(id) {
             addXP(-25); 
         }
         
-        updateDailyScore(); // Calcula % do dia
+        updateDailyScore(); 
         saveLocalState();
         renderHabits();
-        renderCalendar(); // Pinta o dia no calendário
+        renderCalendar(); 
     }
 }
 
 function updateDailyScore() {
     const today = new Date().toISOString().split('T')[0];
     if (rpgState.habits.length === 0) {
-        rpgState.dailyScores[today] = 0;
+        if(rpgState.dailyScores) rpgState.dailyScores[today] = 0;
         return;
     }
     const doneCount = rpgState.habits.filter(h => h.done).length;
@@ -111,7 +119,6 @@ function updateDailyScore() {
 }
 
 function deleteHabit(id) {
-    // Confirmação simples
     if(confirm("Remover este protocolo permanentemente?")) {
         rpgState.habits = rpgState.habits.filter(h => h.id !== id);
         updateDailyScore();
@@ -122,7 +129,6 @@ function deleteHabit(id) {
     }
 }
 
-// --- RENDERIZAÇÃO COM LIXEIRA ---
 function renderHabits() {
     const list = document.getElementById('habitList');
     if (!list) return;
@@ -134,23 +140,18 @@ function renderHabits() {
 
     list.innerHTML = rpgState.habits.map(h => `
         <div class="flex items-center gap-2 p-3 rounded-xl bg-[#0d0d0d] border border-white/5 cursor-pointer hover:border-white/10 transition group" onclick="window.toggleHabit('${h.id}')">
-            
             <div class="flex-grow flex items-center justify-between">
                 <span class="text-[10px] font-bold uppercase tracking-wider transition-colors ${h.done ? 'text-gray-600 line-through' : 'text-gray-300 group-hover:text-white'}">${h.text}</span>
                 <div class="w-4 h-4 rounded border flex items-center justify-center transition-all ${h.done ? 'bg-red-900 border-red-600 shadow-[0_0_10px_rgba(200,0,0,0.4)]' : 'border-gray-800 group-hover:border-gray-600'}">
                     <i class="fa-solid fa-check text-[8px] text-white ${h.done ? '' : 'hidden'}"></i>
                 </div>
             </div>
-
             <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-700 hover:text-red-500 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <i class="fa-solid fa-trash text-[10px]"></i>
             </button>
-
         </div>
     `).join('');
 }
-
-// --- OUTRAS FUNÇÕES ---
 
 function openAddHabitModal() {
     safePlaySFX('click');
@@ -238,7 +239,12 @@ export async function logActivity(type, detail, xpGained, durationMin = 0) {
         if(!rpgState.history) rpgState.history = [];
         rpgState.history.unshift(activity);
         if (rpgState.history.length > 50) rpgState.history.pop();
-        if(typeof pushHistoryLog === 'function') { try { pushHistoryLog(activity); } catch(e) {} }
+        
+        // Só salva log na nuvem se NÃO for demo
+        if (!IS_DEMO && typeof pushHistoryLog === 'function') { 
+            try { pushHistoryLog(activity); } catch(e) {} 
+        }
+        
         saveLocalState();
     } catch (e) {}
 }
@@ -252,31 +258,45 @@ function triggerLevelUpPro(newLevel, newRank) {
     setTimeout(() => { overlay.style.transition = 'opacity 0.6s ease'; overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 600); }, 3000);
 }
 
+// --- FUNÇÕES DE ESTADO (ISOLADAS) ---
+
 function loadLocalState() {
     try {
-        const xp = localStorage.getItem(CONFIG.STORAGE_KEYS.XP);
+        // Usa KEY_PREFIX para separar Demo de PRO
+        const xp = STORAGE.getItem(KEY_PREFIX + 'xp');
         if (xp && xp !== 'NaN') rpgState.xp = parseInt(xp);
+        
         calculateRankAndLevel();
-        const hist = localStorage.getItem('synapse_history');
+        
+        const hist = STORAGE.getItem(KEY_PREFIX + 'history');
         if (hist) rpgState.history = JSON.parse(hist);
-        const hbt = localStorage.getItem(CONFIG.STORAGE_KEYS.HABITS);
+        
+        const hbt = STORAGE.getItem(KEY_PREFIX + 'habits');
         if (hbt) { const d = JSON.parse(hbt); rpgState.habits = d.list || []; }
-        const msn = localStorage.getItem(CONFIG.STORAGE_KEYS.MISSIONS);
+        
+        const msn = STORAGE.getItem(KEY_PREFIX + 'missions');
         if(msn) rpgState.missions = JSON.parse(msn) || [];
-        const scores = localStorage.getItem('synapse_daily_scores');
+        
+        const scores = STORAGE.getItem(KEY_PREFIX + 'daily_scores');
         if(scores) rpgState.dailyScores = JSON.parse(scores);
-    } catch(e) {}
+        
+    } catch(e) { console.warn("Erro ao carregar estado local"); }
 }
 
 function saveLocalState() {
     try {
-        localStorage.setItem(CONFIG.STORAGE_KEYS.XP, rpgState.xp);
-        localStorage.setItem('synapse_level', rpgState.level);
-        localStorage.setItem('synapse_history', JSON.stringify(rpgState.history));
-        localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ date: new Date().toISOString().split('T')[0], list: rpgState.habits }));
-        localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(rpgState.missions));
-        localStorage.setItem('synapse_daily_scores', JSON.stringify(rpgState.dailyScores));
-        if(typeof saveUserData === 'function') saveUserData(rpgState);
+        // Usa STORAGE (Session ou Local) e KEY_PREFIX
+        STORAGE.setItem(KEY_PREFIX + 'xp', rpgState.xp);
+        STORAGE.setItem(KEY_PREFIX + 'level', rpgState.level);
+        STORAGE.setItem(KEY_PREFIX + 'history', JSON.stringify(rpgState.history));
+        STORAGE.setItem(KEY_PREFIX + 'habits', JSON.stringify({ date: new Date().toISOString().split('T')[0], list: rpgState.habits }));
+        STORAGE.setItem(KEY_PREFIX + 'missions', JSON.stringify(rpgState.missions));
+        STORAGE.setItem(KEY_PREFIX + 'daily_scores', JSON.stringify(rpgState.dailyScores));
+        
+        // Bloqueia salvamento na nuvem se for Demo
+        if (!IS_DEMO && typeof saveUserData === 'function') {
+            saveUserData(rpgState);
+        }
     } catch(e) {}
 }
 
@@ -297,8 +317,14 @@ function checkStreak() {
         if (!lastLogin) { rpgState.streak = 1; rpgState.lastLoginDate = today; } 
         else if (lastLogin !== today) {
             const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-            if (lastLogin === yesterday.toISOString().split('T')[0]) { rpgState.streak += 1; if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); } 
-            else { if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); rpgState.streak = 1; }
+            if (lastLogin === yesterday.toISOString().split('T')[0]) { 
+                rpgState.streak += 1; 
+                if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); 
+            } 
+            else { 
+                if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); 
+                rpgState.streak = 1; 
+            }
             rpgState.lastLoginDate = today;
         }
         saveLocalState();
