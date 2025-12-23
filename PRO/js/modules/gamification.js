@@ -153,49 +153,81 @@ function renderHabits() {
     `).join('');
 }
 
+// Dentro de PRO/js/modules/gamification.js
+
 function openAddHabitModal() {
-    safePlaySFX('click');
+    // Som de clique
+    if(typeof playSFX === 'function') playSFX('click');
+    
     const existing = document.getElementById('habit-modal');
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
-    overlay.className = 'fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-6 animate-fade-in';
+    overlay.className = 'fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-4 animate-fade-in';
     overlay.id = 'habit-modal';
     
+    // HTML Modificado para parecer um Chat (Input + Botão Enviar)
     overlay.innerHTML = `
-        <div class="bg-[#0a0a0a] border border-[#333] w-full max-w-sm rounded-2xl p-6 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative">
+        <div class="bg-[#0a0a0a] border border-[#333] w-full max-w-sm rounded-2xl p-6 shadow-2xl relative">
+            
+            <button id="closeHabitModalBtn" class="absolute top-4 right-4 text-gray-600 hover:text-white transition-colors p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
             <h3 class="text-red-500 font-bold text-xs tracking-[0.2em] uppercase mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-code-commit"></i> Novo Protocolo
+                <i class="fa-solid fa-code-commit"></i> Novo Objetivo
             </h3>
-            <input type="text" id="newHabitInput" placeholder="Ex: Leitura Tática (20min)" 
-                class="w-full bg-[#111] border border-[#333] text-white p-4 rounded-xl text-sm focus:border-red-500 outline-none transition-all mb-6 placeholder-gray-700">
-            <div class="flex justify-end gap-3">
-                <button id="cancelHabitBtn" class="text-gray-500 text-[10px] font-bold uppercase hover:text-white px-4 py-3 tracking-wider">Cancelar</button>
-                <button id="confirmHabitBtn" class="bg-red-900/20 text-red-500 border border-red-900/50 hover:bg-red-600 hover:text-white hover:border-red-500 px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(220,38,38,0.1)]">Confirmar</button>
+            
+            <div class="relative flex items-center group">
+                <input type="text" id="newHabitInput" placeholder="Digite seu novo protocolo..." 
+                    class="w-full bg-[#111] border border-[#333] text-white pl-4 pr-14 py-4 rounded-xl text-sm focus:border-red-500 focus:bg-black outline-none transition-all placeholder-gray-600 shadow-inner">
+                
+                <button id="confirmHabitBtn" class="absolute right-2 p-2 bg-red-900/20 text-red-500 rounded-lg hover:bg-red-600 hover:text-white transition-all active:scale-95">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
             </div>
+            
+            <p class="text-[10px] text-gray-600 mt-3 pl-1">
+                Tecle <span class="text-gray-400 font-bold">Enter</span> para enviar.
+            </p>
         </div>
     `;
     document.body.appendChild(overlay);
     
     const input = document.getElementById('newHabitInput');
-    setTimeout(() => input.focus(), 50);
+    // Pequeno delay para focar no mobile sem quebrar o layout
+    setTimeout(() => input.focus(), 100);
     
     const close = () => overlay.remove();
+    
     const confirm = () => {
         const text = input.value.trim();
         if(text) {
+            // Chama a função interna de adicionar
             addCustomHabit(text);
-            safePlaySFX('success');
-            if(typeof showToast === 'function') showToast('PROTOCOLO INICIADO', 'Novo hábito registrado.', 'success');
+            
+            if(typeof playSFX === 'function') playSFX('success');
+            if(typeof showToast === 'function') showToast('OBJETIVO TRAÇADO', 'Novo protocolo iniciado.', 'success');
+            
             close();
         } else {
+            // Feedback de erro (Borda vermelha)
             input.classList.add('border-red-500', 'animate-pulse');
-            safePlaySFX('error');
+            setTimeout(() => input.classList.remove('border-red-500', 'animate-pulse'), 500);
+            if(typeof playSFX === 'function') playSFX('error');
         }
     };
     
-    document.getElementById('cancelHabitBtn').onclick = close;
+    // Liga os eventos corretamente
+    document.getElementById('closeHabitModalBtn').onclick = close;
     document.getElementById('confirmHabitBtn').onclick = confirm;
+    
+    // Fechar ao clicar fora
+    overlay.onclick = (e) => {
+        if(e.target === overlay) close();
+    };
+
+    // Enviar com Enter
     input.onkeypress = (e) => { if(e.key === 'Enter') confirm(); };
 }
 

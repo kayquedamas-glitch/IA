@@ -4,80 +4,61 @@ import { initCalendar } from './modules/calendar.js';
 import { initChat, loadAgent } from './core/chat.js';
 import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
-// Importa as funções de funcionalidades extras
 import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
 
+// --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v6.3 (STABLE)...");
+    console.log("🚀 SYNAPSE CORE v6.5 (FIXED)...");
 
     try {
-        // 1. Carrega Perfil
+        // 1. Carrega Perfil (Visitante ou Real)
         loadUserProfile();
         
         // 2. Inicia Áudio
         initAudio();
         
-        // 3. Conecta Funções Globais (Resolve o erro "selectTool is not a function")
+        // 3. Conecta Funções Globais (Essencial para o HTML funcionar)
         window.selectTool = selectTool;
         window.switchTab = switchTab;
         window.toggleSidebar = toggleSidebar;
         
- // Conecta botões de funcionalidades
-        window.startFocusMode = startFocusMode;
-        
-        // --- ESTRATÉGIA DO DOSSIÊ BLOQUEADO ---
-        if (window.IS_DEMO) {
-            // Se for Demo, o botão Relatório abre o Modal de Vendas
-            window.showWeeklyReport = () => {
-                if(typeof playSFX === 'function') playSFX('error');
-                showDemoModal('DOSSIE'); // Chama nosso modal com o código 'DOSSIE'
-            };
-        } else {
-            // Se for PRO, abre o relatório normal
-            window.showWeeklyReport = showWeeklyReport;
-        }
-        // ---------------------------------------
+        // 4. CORREÇÃO DOS BOTÕES (Cria o objeto 'features' que o HTML procura)
+        window.features = {
+            startFocusMode: startFocusMode,
+            startSOSProtocol: startSOSProtocol,
+            // Lógica do Relatório: Se for Demo abre venda, se for Pro abre relatório
+            showWeeklyReport: window.IS_DEMO ? 
+                () => { if(typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } : 
+                showWeeklyReport
+        };
 
-        window.startSOSProtocol = startSOSProtocol;
+        // Mantém compatibilidade caso algum botão chame direto sem .features
+        window.startFocusMode = window.features.startFocusMode;
+        window.startSOSProtocol = window.features.startSOSProtocol;
+        window.showWeeklyReport = window.features.showWeeklyReport;
 
-        // 4. Liga o Botão SOS da Sidebar
+        // 5. Liga o Botão SOS da Sidebar (se existir)
         const btnSOS = document.getElementById('btn-sos-protocol');
         if (btnSOS) {
             btnSOS.onclick = () => {
                 if(typeof playSFX === 'function') playSFX('click');
-                startSOSProtocol();
+                window.features.startSOSProtocol();
                 toggleSidebar(false);
             };
         }
 
-        // 5. Inicia os Módulos Principais
+        // 6. Inicia os Módulos Principais
         initChat();
         initGamification();
         initDashboard();
         initCalendar();
         
-        // 6. Monitor de Status
+        // 7. Monitor de Status Online/Offline
         window.addEventListener('online', updateStatusIndicator);
         window.addEventListener('offline', updateStatusIndicator);
         updateStatusIndicator();
 
-    } catch (error) {
-        console.error("ERRO CRÍTICO NA INICIALIZAÇÃO:", error);
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v6.3 (STABLE)...");
-
-    try {
-        // ... (todo o código de carregamento de perfil, audio, etc que já existe) ...
-        
-        // ... (código existente) ...
-        initChat();
-        initGamification();
-        initDashboard();
-        initCalendar();
-        
-        // ADICIONE ISSO AQUI NO FINAL DO TRY:
-        // Se for DEMO, inicia o Briefing após 1 segundo
+        // 8. INICIA BRIEFING DE BOAS-VINDAS (Apenas na Demo e uma vez só)
         if (window.IS_DEMO) {
             setTimeout(() => startDemoBriefing(), 1000);
         }
@@ -86,26 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("ERRO CRÍTICO NA INICIALIZAÇÃO:", error);
     }
 });
-});
 
-// --- FUNÇÕES DE NAVEGAÇÃO (GLOBAL) ---
-
-// PRO/js/main.js
-
-// PRO/js/main.js - Atualize a função selectTool
+// --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
 
 function selectTool(toolName) {
-    // 1. LISTA VIP ATUALIZADA (Diagnóstico foi removido daqui, agora é livre)
+    // 1. Definição das ferramentas pagas
     const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
 
-    // 2. O SEGURANÇA
+    // 2. Bloqueio de Demo
     if (window.IS_DEMO && FERRAMENTAS_PRO.includes(toolName.toUpperCase())) {
         if(typeof playSFX === 'function') playSFX('error');
-        showDemoModal(toolName); // Abre a venda
+        showDemoModal(toolName); 
         return; 
     }
 
-    // 3. FLUXO LIBERADO (Para Diagnóstico ou usuários PRO)
+    // 3. Acesso Liberado
     switchTab('chat');
     if (typeof loadAgent === 'function') {
         loadAgent(toolName);
@@ -126,6 +102,9 @@ function switchTab(tabName) {
         
         const btn = document.getElementById('tabJornada');
         if(btn) btn.classList.add('active');
+        
+        // Atualiza calendário ao voltar
+        if(typeof renderCalendar === 'function') renderCalendar(); 
     } 
     else if (tabName === 'chat') {
         const view = document.getElementById('viewChat');
@@ -141,7 +120,6 @@ function switchTab(tabName) {
 function toggleSidebar(show) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    
     if(!sidebar || !overlay) return;
 
     if (show) {
@@ -155,32 +133,23 @@ function toggleSidebar(show) {
     }
 }
 
-// PRO/js/main.js
-
 function loadUserProfile() {
     try {
-        // --- TRAVA DE ISOLAMENTO DA DEMO ---
-        // Se for Demo, ignora o localStorage real e cria um perfil fantasma
         if (window.IS_DEMO) {
-            // Atualiza a UI para modo visitante
             const sideName = document.getElementById('sidebarName');
             const sideAvatar = document.getElementById('sidebarAvatar');
             const dashName = document.getElementById('dashName');
 
             if (sideName) sideName.innerText = "VISITANTE";
-            if (sideAvatar) sideAvatar.innerText = "V"; // Letra do Avatar
+            if (sideAvatar) sideAvatar.innerText = "V"; 
             if (dashName) dashName.innerText = "OPERADOR CONVIDADO";
-            
-            console.log("👻 Modo Demo: Perfil de visitante carregado.");
-            return; // PARA AQUI! Não deixa carregar os dados reais.
+            return;
         }
-        // -----------------------------------
 
-        // Código Original (carrega o usuário real apenas se NÃO for demo)
         const sessionRaw = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
         if (sessionRaw) {
             const session = JSON.parse(sessionRaw);
-            const userName = session.user || session.nome || session.name || (session.email ? session.email.split('@')[0] : 'OPERADOR');
+            const userName = session.user || session.nome || session.name || 'OPERADOR';
             const displayName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
             const firstLetter = displayName.charAt(0).toUpperCase();
 
@@ -213,27 +182,18 @@ function updateStatusIndicator() {
         }
     }
 }
-// --- SISTEMA DE VENDAS (DEMO) ---
 
-// PRO/js/main.js - Função showDemoModal Atualizada
-
-// PRO/js/main.js - Substitua a função showDemoModal inteira por esta:
+// --- MODAIS (BRIEFING E VENDAS) ---
 
 function showDemoModal(featureName) {
-    // ==============================================================================
-    // ESCOLHA O SEU MODELO AQUI (Mude o número para 1, 2 ou 3 para testar)
     const ESTILO_ESCOLHIDO = 1; 
-    // ==============================================================================
 
-    // --- 1. Configuração dos Textos Dinâmicos ---
     let title = "Recurso Pro";
     let subtitle = "Acesso Exclusivo";
-    // Usamos uma mensagem padrão caso não seja o Dossiê
     let message = `A funcionalidade <span class="text-white font-bold">${featureName}</span> está disponível apenas nos planos avançados.`;
     let btnText = "Fazer Upgrade Agora";
-    let iconClass = "fa-solid fa-lock"; // Ícone padrão
+    let iconClass = "fa-solid fa-lock";
 
-    // PERSONALIZAÇÃO ESTRATÉGICA PARA O DOSSIÊ
     if (featureName === 'DOSSIE') {
         title = "Análise Concluída";
         subtitle = "Documento Pronto";
@@ -242,181 +202,92 @@ function showDemoModal(featureName) {
         iconClass = "fa-solid fa-file-shield";
     }
     
-    // Link do seu checkout
-    const checkoutLink = "'https://SEU-LINK-DE-CHECKOUT.com'";
+    // ATENÇÃO: COLOQUE SEU LINK AQUI
+    const checkoutLink = "'https://pay.kiwify.com.br/SEU-LINK'"; 
 
-
-    // --- 2. Templates HTML dos Modais ---
-    let modalInnerHTML = '';
-
-    // --- OPÇÃO 1: Premium Upgrade (Sóbrio) ---
-    if (ESTILO_ESCOLHIDO === 1) {
-        modalInnerHTML = `
-            <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                <div class="p-8">
-                    <div class="flex items-start gap-5">
-                        <div class="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
-                            <i class="${iconClass} text-xl text-gray-300"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">${subtitle}</p>
-                            <h3 class="text-2xl font-bold text-white mb-3">${title}</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">${message}</p>
-                        </div>
+    let modalInnerHTML = `
+        <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-8">
+                <div class="flex items-start gap-5">
+                    <div class="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
+                        <i class="${iconClass} text-xl text-gray-300"></i>
                     </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-3">
-                        <button onclick="window.location.href=${checkoutLink}" 
-                            class="w-full py-3.5 bg-white text-black hover:bg-gray-200 font-bold rounded-lg transition-all flex items-center justify-center gap-2 group">
-                            <span>${btnText}</span>
-                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </button>
-                        <button onclick="closeDemoModal()" class="py-3 text-sm text-gray-500 hover:text-white transition-colors">
-                            Agora não, voltar para demo
-                        </button>
+                    <div>
+                        <p class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">${subtitle}</p>
+                        <h3 class="text-2xl font-bold text-white mb-3">${title}</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">${message}</p>
                     </div>
-                </div>
-            </div>`;
-    }
-    
-    // --- OPÇÃO 2: Tactical Briefing (Imersivo) ---
-    else if (ESTILO_ESCOLHIDO === 2) {
-        modalInnerHTML = `
-            <div class="relative bg-[#0a0a0a] border-y-2 border-red-900/70 rounded-lg overflow-hidden shadow-[0_0_30px_rgba(127,29,29,0.2)]">
-                <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAADCAYAAABS3WWLAAAADklEQVQYV2NkcHCoZwAC9gEha5K2aQAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
-                
-                <div class="p-1 bg-red-900/20 flex justify-between items-center px-4 py-2 border-b border-red-900/30">
-                    <span class="text-[10px] font-mono text-red-400 uppercase tracking-widest">/// SYSTEM OVERRIDE ///</span>
-                    <span class="text-[10px] font-mono text-red-500 animate-pulse">SECURE CHANNEL</span>
                 </div>
                 
-                <div class="p-8 text-center relative z-10">
-                    <div class="mb-6 inline-block p-4 border border-red-500/30 rounded-full bg-red-500/5">
-                        <i class="${iconClass} text-3xl text-red-500"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">${title}</h3>
-                    <p class="text-red-200/70 text-sm font-mono mb-8 border-l-2 border-red-800/50 pl-4 text-left">
-                        <span class="block text-xs text-red-500 mb-2 font-bold">[CLASSIFIED INFO]</span>
-                        ${message}
-                    </p>
-
+                <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-3">
                     <button onclick="window.location.href=${checkoutLink}" 
-                        class="w-full py-4 bg-red-700 hover:bg-red-600 text-white font-mono uppercase tracking-widest text-sm border-b-4 border-red-900 active:border-b-0 active:translate-y-[4px] transition-all mb-4">
-                        [ ${btnText} ]
+                        class="w-full py-3.5 bg-white text-black hover:bg-gray-200 font-bold rounded-lg transition-all flex items-center justify-center gap-2 group">
+                        <span>${btnText}</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                     <button onclick="closeDemoModal()" class="text-xs font-mono text-red-400 hover:text-red-300 tracking-widest">
-                        < DECLINE & RETURN >
+                    <button onclick="closeDemoModal()" class="py-3 text-sm text-gray-500 hover:text-white transition-colors">
+                        Agora não, voltar para demo
                     </button>
                 </div>
-            </div>`;
-    }
+            </div>
+        </div>`;
 
-    // --- OPÇÃO 3: Value Stack (Benefícios) ---
-    else if (ESTILO_ESCOLHIDO === 3) {
-         modalInnerHTML = `
-            <div class="relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl p-1">
-                <div class="bg-black/60 rounded-[20px] p-8">
-                    <div class="text-center mb-8">
-                        <div class="inline-flex items-center justify-center w-14 h-14 mb-5 bg-red-600/20 text-red-500 rounded-2xl">
-                            <i class="${iconClass} text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">${title}</h3>
-                        <p class="text-zinc-400 text-sm leading-relaxed">${message}</p>
-                    </div>
-
-                    <div class="bg-zinc-900/80 rounded-xl p-5 mb-8">
-                        <p class="text-xs font-bold text-zinc-500 uppercase mb-4">Incluso no plano PRO:</p>
-                        <ul class="space-y-3 text-sm text-zinc-300">
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Acesso ilimitado aos 3 Agentes</li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Relatórios e Dossiês completos</li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Modo Foco e Ferramentas Táticas</li>
-                        </ul>
-                    </div>
-                    
-                    <button onclick="window.location.href=${checkoutLink}" 
-                        class="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-bold text-lg rounded-xl transition-all shadow-lg shadow-red-600/20 mb-4">
-                        ${btnText}
-                    </button>
-                    <button onclick="closeDemoModal()" class="w-full py-2 text-sm text-zinc-500 hover:text-white transition-colors">
-                        Talvez mais tarde
-                    </button>
-                </div>
-            </div>`;
-    }
-
-
-    // --- 3. Lógica de Exibição (Não precisa mexer aqui) ---
-    
-    // Remove modal anterior se existir para garantir que o novo estilo seja aplicado
     const existingModal = document.getElementById('demo-modal');
-    if (existingModal) {
-        existingModal.remove();
-    }
+    if (existingModal) existingModal.remove();
 
-    // Cria a estrutura base do modal
     const modalBaseHTML = `
     <div id="demo-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
-        <div class="relative w-full max-w-md scale-95 opacity-0 transition-all duration-300 ease-out" id="demo-content">
+        <div class="relative w-full w-[95%] max-w-md scale-95 opacity-0 transition-all duration-300 ease-out max-h-[90vh] overflow-y-auto custom-scrollbar" id="demo-content">
             ${modalInnerHTML}
         </div>
     </div>`;
     
     document.body.insertAdjacentHTML('beforeend', modalBaseHTML);
 
-    // Animação de entrada
     setTimeout(() => {
         document.getElementById('demo-overlay').classList.remove('opacity-0');
         document.getElementById('demo-content').classList.remove('scale-95', 'opacity-0');
     }, 10);
 }
-// PRO/js/main.js
 
-// --- TUR DE BOAS-VINDAS (BRIEFING) ---
+function closeDemoModal() {
+    const modal = document.getElementById('demo-modal');
+    const overlay = document.getElementById('demo-overlay');
+    const content = document.getElementById('demo-content');
+    if(!modal) return;
+    overlay.classList.add('opacity-0');
+    content.classList.add('scale-90', 'opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+}
+
 function startDemoBriefing() {
-    // Se o usuário já viu o tour antes (salvo no navegador), não mostra de novo
+    // Evita duplicação checando se já existe
+    if (document.getElementById('demo-briefing')) return;
     if (localStorage.getItem('synapse_demo_seen')) return;
 
     const modalHTML = `
     <div id="demo-briefing" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
-        
-        <div class="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up">
-            
-            <div class="h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden">
+        <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
+            <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
                 <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
-                <div class="w-16 h-16 bg-black rounded-full border border-red-500/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
-                    <i class="fa-solid fa-eye text-2xl text-red-500"></i>
+                <div class="w-12 h-12 md:w-16 md:h-16 bg-black rounded-full border border-red-500/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+                    <i class="fa-solid fa-eye text-lg md:text-2xl text-red-500"></i>
                 </div>
             </div>
-
-            <div class="p-8 text-center -mt-4 relative z-10">
-                <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">
-                    Modo Visitante Ativo
-                </span>
-                
-                <h2 class="text-2xl font-black text-white italic uppercase tracking-tighter mb-4">
-                    Bem-vindo à Base, Soldado.
-                </h2>
-                
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                    Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.
-                    <br><br>
-                    <span class="text-white">✅ O que você PODE fazer:</span><br>
-                    Navegar pelos menus, ver a Dashboard e realizar seu <strong>Diagnóstico Inicial</strong> gratuitamente.
-                    <br><br>
-                    <span class="text-gray-500">🔒 O que é EXCLUSIVO:</span><br>
-                    As IAs de Elite (Comandante, General, Tático) e a geração de Dossiês exigem credenciais PRO.
+            <div class="p-6 md:p-8 text-center -mt-4 relative z-10 overflow-y-auto custom-scrollbar">
+                <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[9px] md:text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">Modo Visitante Ativo</span>
+                <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">Bem-vindo à Base.</h2>
+                <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6">
+                    Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.<br><br>
+                    <span class="text-white">✅ LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
+                    <span class="text-gray-500">🔒 RESTRITO:</span> IAs de Elite e Dossiês.
                 </p>
-
-                <button onclick="closeBriefing()" 
-                    class="w-full py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95">
-                    Entendido, Iniciar Tour
-                </button>
+                <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">Entendido, Iniciar Tour</button>
             </div>
         </div>
     </div>`;
-
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
@@ -426,31 +297,11 @@ function closeBriefing() {
         el.style.opacity = '0';
         el.style.transition = 'opacity 0.5s ease';
         setTimeout(() => el.remove(), 500);
-        
-        // Marca que o usuário já viu para não aparecer toda hora (opcional)
-        // localStorage.setItem('synapse_demo_seen', 'true');
     }
 }
 
-// Expõe para o HTML
-window.closeBriefing = closeBriefing;
-
-// (Mantenha a função closeDemoModal original logo abaixo desta)
-
-function closeDemoModal() {
-    const modal = document.getElementById('demo-modal');
-    const overlay = document.getElementById('demo-overlay');
-    const content = document.getElementById('demo-content');
-
-    if(!modal) return;
-
-    overlay.classList.add('opacity-0');
-    content.classList.add('scale-90', 'opacity-0');
-
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 300);
-}
-
-// Expõe a função de fechar para o HTML poder usar
+// Expõe funções necessárias globalmente
+window.showDemoModal = showDemoModal;
 window.closeDemoModal = closeDemoModal;
+window.startDemoBriefing = startDemoBriefing;
+window.closeBriefing = closeBriefing;
