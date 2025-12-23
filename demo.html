@@ -2,7 +2,7 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
-    <link rel="shortcut icon" href="icone preto.png" type="image/png">
+    <link rel="shortcut icon" href="preto.png" type="image/png">
     <meta charset="UTF-8">
     <!-- Viewport ajustado para prevenir zoom e garantir renderização correta -->
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
@@ -62,7 +62,7 @@
                     <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate"
                         style="animation-delay: 0.1s">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
+                            class="w-10 h-10 bg-gradient-to-br from-red-600 to-white-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
                             <i class="fa-solid fa-brain text-white text-lg"></i>
                         </div>
                         <div class="flex flex-col">
@@ -124,17 +124,32 @@
                 </button>
             </div>
 
-            <div class="mt-auto m-2 p-3 bg-[#111] rounded-xl border border-white/5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-black flex items-center justify-center text-xs font-black text-white shadow-xl"
-                    id="sidebarAvatar">?</div>
-                <div class="overflow-hidden">
-                    <p class="text-xs font-black text-white truncate uppercase tracking-tighter" id="sidebarName">
-                        CARREGANDO...</p>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                        <span class="text-[8px] text-gray-500 font-black uppercase tracking-widest">Online</span>
-                    </div>
+            <div class="p-4 border-t border-[#1a1a1a]">
+               <div class="mt-auto">
+        <div onclick="window.location.href='index.html#planos'" class="bg-gradient-to-r from-[#901c1c] to-[#b91c1c] p-[1px] rounded-lg cursor-pointer hover:scale-[1.02] transition shadow-[0_8px_16px_rgba(0,0,0,0.5)] group">
+            <div class="bg-[#000] p-3 rounded-[7px] h-full flex items-center gap-3 relative overflow-hidden">
+                <div class="w-10 h-10 bg-[#333] rounded shadow-lg flex-shrink-0 relative z-10 flex items-center justify-center">
+                    <img src="assets/icone preto.png" class="w-full h-full object-cover invert opacity-80 p-1">
                 </div>
+                
+                <div class="flex-grow z-10 overflow-hidden">
+                    <div class="flex items-center gap-2">
+                         <p class="text-white font-bold text-xs truncate">Synapse Premium</p>
+                         <span class="bg-white text-black text-[8px] font-black px-1 rounded uppercase">PRO</span>
+                    </div>
+                    <p class="text-gray-400 text-[10px] truncate group-hover:text-white transition-colors">
+                        Desbloquear 4 Agentes
+                    </p>
+                </div>
+                
+                <div class="z-10">
+                    <i class="fa-solid fa-chevron-up text-gray-400"></i>
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-r from-red-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            </div>
+        </div>
+    </div>
             </div>
 
         </aside>
@@ -310,8 +325,10 @@
 
     </div>
 
+</div> <script>
+        window.IS_DEMO = true; // Define que esta é a versão de Demonstração
+    </script>
     <script type="module" src="PRO/js/main.js"></script>
     <script>lucide.createIcons();</script>
 </body>
-
 </html>
