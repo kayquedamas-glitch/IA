@@ -203,7 +203,7 @@ function showDemoModal(featureName) {
     }
     
     // ATENÇÃO: COLOQUE SEU LINK AQUI
-    const checkoutLink = "'https://pay.kiwify.com.br/SEU-LINK'"; 
+    const checkoutLink = "https://pay.kiwify.com.br/YzOIskc"; 
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
