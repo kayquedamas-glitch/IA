@@ -11,20 +11,17 @@ export function initDashboard() {
     
     renderMissions();
 
-    const btn = document.getElementById('addMissionBtn');
-    const input = document.getElementById('newMissionInput');
-    const dateInput = document.getElementById('newMissionDate');
-    
-    if (btn && input) {
-        if(dateInput) dateInput.valueAsDate = new Date();
-        btn.onclick = () => createMission(input, dateInput);
-        input.onkeypress = (e) => { if (e.key === 'Enter') createMission(input, dateInput); };
-    }
-
-    window.renderMissionsExternal = (newMissions) => {
-        missions = newMissions || [];
-        renderMissions();
+    // --- ADICIONE ESTE BLOCO ---
+    // Isso conecta o botão do HTML com a função interna do JS
+    window.addNewMission = () => {
+        const input = document.getElementById('newMissionInput');
+        const dateInput = document.getElementById('newMissionDate');
+        createMission(input, dateInput);
     };
+    // ---------------------------
+
+    const btn = document.getElementById('addMissionBtn');
+    // ... resto do código ...
 }
 
 function createMission(input, dateInput) {
@@ -74,7 +71,7 @@ window.completeMission = (id) => {
             playSFX('success');
             addXP(50);
             logActivity('MISSION', m.text, 50);
-            showToast('MISSÃO CUMPRIDA', '+50 XP. Objetivo eliminado.', 'success');
+            showToast('MISSÃO CUMPRIDA', 'Objetivo eliminado.', 'success');
         } else {
             playSFX('click');
         }

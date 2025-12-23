@@ -175,9 +175,17 @@ export function addXP(amt) {
 }
 
 export function addHabitFromAI(habitName, category) {
-   // código...
-    rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); 
-    updateDailyScore(); saveLocalState(); renderHabits(); safeRenderCalendar();
+    // Note que mudamos 'text' para 'text: habitName'
+    rpgState.habits.push({ 
+        id: 'h' + Date.now(), 
+        text: habitName, 
+        done: false 
+    }); 
+    
+    updateDailyScore(); 
+    saveLocalState(); 
+    renderHabits(); 
+    safeRenderCalendar();
 }
 
 export async function logActivity(type, detail, xp, dur=0) {

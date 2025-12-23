@@ -177,6 +177,6 @@ export function startSOSProtocol() {
         isActive = false; clearInterval(breathInterval); overlay.remove();
         addXP(50); 
         playSFX('success'); // <--- SOM DE SUCESSO AO COMPLETAR
-        showToast('SISTEMA ESTABILIZADO', 'Recalibragem completa. +50 XP.', 'success');
+        showToast('SISTEMA ESTABILIZADO', 'Recalibragem completa. ', 'success');
     });
 }
