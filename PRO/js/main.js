@@ -203,7 +203,7 @@ function showDemoModal(featureName) {
     }
     
     // ATENÇÃO: COLOQUE SEU LINK AQUI
-    const checkoutLink = "https://pay.kiwify.com.br/YzOIskc"; 
+    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -272,7 +272,9 @@ function startDemoBriefing() {
         <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
             <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
                 <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
-               
+                <div class="w-12 h-12 md:w-16 md:h-16 bg-black rounded-full border border-red-500/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+                    
+                </div>
             </div>
             <div class="p-6 md:p-8 text-center -mt-4 relative z-10 overflow-y-auto custom-scrollbar">
                 <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[9px] md:text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">Modo Visitante Ativo</span>
