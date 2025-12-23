@@ -197,8 +197,8 @@ function showDemoModal(featureName) {
     if (featureName === 'DOSSIE') {
         title = "Análise Concluída";
         subtitle = "Documento Pronto";
-        message = `A IA processou suas respostas e gerou seu <span class="text-white font-bold">Dossiê Estratégico</span>. O relatório contém a análise dos seus pontos cegos e o plano de ação.<br><br>Desbloqueie sua conta para acessar o documento completo.`;
-        btnText = "Liberar Meu Dossiê";
+        message = `A IA processou suas respostas e gerou seu <span class="text-white font-bold"> Relatório </span>. O relatório contém a análise dos seus pontos cegos e o plano de ação.<br><br>Desbloqueie sua conta para acessar o documento completo.`;
+        btnText = "Liberar Meu Relatório";
         iconClass = "fa-solid fa-file-shield";
     }
     
@@ -282,7 +282,7 @@ function startDemoBriefing() {
                 <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6">
                     Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.<br><br>
                     <span class="text-white">✅ LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
-                    <span class="text-gray-500">🔒 RESTRITO:</span> IAs de Elite e Dossiês.
+                    <span class="text-gray-500">🔒 RESTRITO:</span> IAs de Elite e Relatórios.
                 </p>
                 <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">Entendido, Iniciar Tour</button>
             </div>
