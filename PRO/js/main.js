@@ -64,6 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
         console.error("ERRO CRÍTICO NA INICIALIZAÇÃO:", error);
     }
+    document.addEventListener('DOMContentLoaded', () => {
+    console.log("🚀 SYNAPSE CORE v6.3 (STABLE)...");
+
+    try {
+        // ... (todo o código de carregamento de perfil, audio, etc que já existe) ...
+        
+        // ... (código existente) ...
+        initChat();
+        initGamification();
+        initDashboard();
+        initCalendar();
+        
+        // ADICIONE ISSO AQUI NO FINAL DO TRY:
+        // Se for DEMO, inicia o Briefing após 1 segundo
+        if (window.IS_DEMO) {
+            setTimeout(() => startDemoBriefing(), 1000);
+        }
+
+    } catch (error) {
+        console.error("ERRO CRÍTICO NA INICIALIZAÇÃO:", error);
+    }
+});
 });
 
 // --- FUNÇÕES DE NAVEGAÇÃO (GLOBAL) ---
@@ -328,6 +350,70 @@ function showDemoModal(featureName) {
         document.getElementById('demo-content').classList.remove('scale-95', 'opacity-0');
     }, 10);
 }
+// PRO/js/main.js
+
+// --- TUR DE BOAS-VINDAS (BRIEFING) ---
+function startDemoBriefing() {
+    // Se o usuário já viu o tour antes (salvo no navegador), não mostra de novo
+    if (localStorage.getItem('synapse_demo_seen')) return;
+
+    const modalHTML = `
+    <div id="demo-briefing" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
+        
+        <div class="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up">
+            
+            <div class="h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
+                <div class="w-16 h-16 bg-black rounded-full border border-red-500/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+                    <i class="fa-solid fa-eye text-2xl text-red-500"></i>
+                </div>
+            </div>
+
+            <div class="p-8 text-center -mt-4 relative z-10">
+                <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">
+                    Modo Visitante Ativo
+                </span>
+                
+                <h2 class="text-2xl font-black text-white italic uppercase tracking-tighter mb-4">
+                    Bem-vindo à Base, Soldado.
+                </h2>
+                
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.
+                    <br><br>
+                    <span class="text-white">✅ O que você PODE fazer:</span><br>
+                    Navegar pelos menus, ver a Dashboard e realizar seu <strong>Diagnóstico Inicial</strong> gratuitamente.
+                    <br><br>
+                    <span class="text-gray-500">🔒 O que é EXCLUSIVO:</span><br>
+                    As IAs de Elite (Comandante, General, Tático) e a geração de Dossiês exigem credenciais PRO.
+                </p>
+
+                <button onclick="closeBriefing()" 
+                    class="w-full py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95">
+                    Entendido, Iniciar Tour
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeBriefing() {
+    const el = document.getElementById('demo-briefing');
+    if (el) {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => el.remove(), 500);
+        
+        // Marca que o usuário já viu para não aparecer toda hora (opcional)
+        // localStorage.setItem('synapse_demo_seen', 'true');
+    }
+}
+
+// Expõe para o HTML
+window.closeBriefing = closeBriefing;
 
 // (Mantenha a função closeDemoModal original logo abaixo desta)
 
