@@ -337,8 +337,9 @@ function showDemoModal(featureName) {
     const existingModal = document.getElementById('demo-modal');
     if (existingModal) existingModal.remove();
 
+    // CORREÇÃO AQUI: Alterado de z-[100] para z-[9999] para ficar acima da sidebar (que é 200)
     const modalBaseHTML = `
-    <div id="demo-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div id="demo-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
         <div class="relative w-full w-[95%] max-w-md scale-95 opacity-0 transition-all duration-300 ease-out max-h-[90vh] overflow-y-auto custom-scrollbar" id="demo-content">
             ${modalInnerHTML}
