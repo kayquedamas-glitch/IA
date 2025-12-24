@@ -8,67 +8,171 @@ import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/fe
 
 // --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v6.7 (MOBILE FIX)...");
+    // Verifica qual foi o último boot e inverte
+    const lastBoot = localStorage.getItem('synapse_boot_mode');
+    const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
+    
+    // Salva o atual para a próxima vez ser o outro
+    localStorage.setItem('synapse_boot_mode', currentMode);
 
-    try {
-        // 1. Carrega Perfil
-        loadUserProfile();
-        
-        // 2. Conecta Funções Globais
-        window.selectTool = selectTool;
-        window.switchTab = switchTab;
-        window.toggleSidebar = toggleSidebar;
-        
-        // 3. Configura Features
-        window.features = {
-            startFocusMode: startFocusMode,
-            startSOSProtocol: startSOSProtocol,
-            showWeeklyReport: window.IS_DEMO ? 
-                () => { if(typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } : 
-                showWeeklyReport
-        };
-        // Compatibilidade
-        window.startFocusMode = window.features.startFocusMode;
-        window.startSOSProtocol = window.features.startSOSProtocol;
-        window.showWeeklyReport = window.features.showWeeklyReport;
-
-        // 4. Configura Botão SOS
-        const btnSOS = document.getElementById('btn-sos-protocol');
-        if (btnSOS) {
-            btnSOS.onclick = () => {
-                if(typeof playSFX === 'function') playSFX('click');
-                window.features.startSOSProtocol();
-                toggleSidebar(false);
-            };
-        }
-
-        // 5. Inicia Módulos
-        // A ordem aqui é crucial
-        initChat();         // Já carrega o Diagnóstico internamente (Evita msg dupla)
-        initGamification(); 
-        
-        // CORREÇÃO: Força a ida para o Chat sem delay
-        switchTab('chat'); 
-        
-        // Inicia o resto em segundo plano
-        initDashboard();
-        initCalendar();
-        
-        // 6. Áudio e Status
-        initAudio();
-        window.addEventListener('online', updateStatusIndicator);
-        window.addEventListener('offline', updateStatusIndicator);
-        updateStatusIndicator();
-
-        // 7. Briefing Demo
-        if (window.IS_DEMO) {
-            setTimeout(() => startDemoBriefing(), 1000);
-        }
-
-    } catch (error) {
-        console.error("ERRO CRÍTICO NA INICIALIZAÇÃO:", error);
+    if (currentMode === 'BIO') {
+        runBootBiometria();
+    } else {
+        runBootNeural();
     }
 });
+
+// =================================================================
+// OPÇÃO 1: BIOMETRIA TÁTICA (Scanner)
+// =================================================================
+async function runBootBiometria() {
+    const bootOverlay = document.createElement('div');
+    bootOverlay.id = 'boot-overlay';
+    bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
+    
+    bootOverlay.innerHTML = `
+        <div class="relative w-32 h-32 mb-8">
+            <img src="logo_synapse.png" class="w-full h-full object-contain opacity-40 grayscale">
+            <div id="scanner-line" class="absolute top-0 left-0 w-full h-1 bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.8)] opacity-0"></div>
+            <div class="absolute inset-0 border border-red-900/30 rounded-lg"></div>
+            <div class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-red-600"></div>
+            <div class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-red-600"></div>
+            <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-red-600"></div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-red-600"></div>
+        </div>
+        <div class="text-center font-mono space-y-2">
+            <div id="bio-status" class="text-red-500 text-xs tracking-[0.3em] font-bold animate-pulse">AGUARDANDO BIOMETRIA...</div>
+            <div id="bio-detail" class="text-gray-600 text-[10px] uppercase tracking-widest h-4"></div>
+        </div>
+    `;
+    document.body.appendChild(bootOverlay);
+
+    const scanner = document.getElementById('scanner-line');
+    const status = document.getElementById('bio-status');
+    const detail = document.getElementById('bio-detail');
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+    try {
+        await wait(500);
+        // Fase 1: Escaneando
+        scanner.style.opacity = '1';
+        scanner.style.transition = 'top 1.5s ease-in-out';
+        status.innerText = "ESCANEANDO RETINA...";
+        scanner.style.top = '100%'; 
+        
+        // Carrega sistema em background
+        await initializeSystemCore();
+        
+        await wait(1000);
+        
+        // Fase 2: Identificado
+        scanner.style.transition = 'none';
+        scanner.style.top = '0';
+        scanner.style.opacity = '0';
+        
+        status.className = "text-green-500 text-xs tracking-[0.3em] font-bold";
+        status.innerText = "ACESSO AUTORIZADO";
+        detail.innerText = "IDENTIDADE CONFIRMADA";
+        
+        const img = bootOverlay.querySelector('img');
+        img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
+        
+        await wait(800);
+        finishBoot(bootOverlay);
+
+    } catch (error) { console.error(error); bootOverlay.remove(); }
+}
+
+// =================================================================
+// OPÇÃO 2: SINCRONIZAÇÃO NEURAL (Pulso)
+// =================================================================
+async function runBootNeural() {
+    const bootOverlay = document.createElement('div');
+    bootOverlay.id = 'boot-overlay';
+    bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
+    
+    bootOverlay.innerHTML = `
+        <div class="relative flex items-center justify-center mb-12">
+            <div class="absolute w-32 h-32 bg-red-600/20 rounded-full animate-ping"></div>
+            <div class="absolute w-32 h-32 bg-red-900/10 rounded-full animate-pulse"></div>
+            <img src="logo_synapse.png" class="relative w-24 h-24 object-contain drop-shadow-[0_0_20px_rgba(220,38,38,0.5)] z-10">
+        </div>
+        <div class="w-48 h-1 bg-gray-900 rounded-full overflow-hidden mb-4">
+            <div id="neural-bar" class="h-full bg-gradient-to-r from-red-900 to-red-600 w-0 transition-all duration-[2000ms] ease-out"></div>
+        </div>
+        <div id="neural-text" class="text-gray-500 text-[10px] uppercase tracking-[0.4em] font-medium">Sincronizando...</div>
+    `;
+    document.body.appendChild(bootOverlay);
+
+    const bar = document.getElementById('neural-bar');
+    const text = document.getElementById('neural-text');
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+    try {
+        setTimeout(() => { bar.style.width = '70%'; }, 100);
+
+        // Carrega sistema em background
+        await initializeSystemCore();
+
+        await wait(1500);
+        
+        bar.style.width = '100%';
+        text.innerText = "CONEXÃO ESTABELECIDA";
+        text.classList.remove('text-gray-500');
+        text.classList.add('text-white', 'font-bold', 'animate-pulse');
+
+        await wait(800);
+        finishBoot(bootOverlay);
+
+    } catch (e) { console.error(e); bootOverlay.remove(); }
+}
+
+// =================================================================
+// LÓGICA COMUM (CARREGAMENTO REAL)
+// =================================================================
+async function initializeSystemCore() {
+    loadUserProfile();
+    initAudio();
+    
+    window.selectTool = selectTool;
+    window.switchTab = switchTab;
+    window.toggleSidebar = toggleSidebar;
+    window.features = {
+        startFocusMode: startFocusMode,
+        startSOSProtocol: startSOSProtocol,
+        showWeeklyReport: window.IS_DEMO ? () => showDemoModal('DOSSIE') : showWeeklyReport
+    };
+    window.startFocusMode = window.features.startFocusMode;
+    window.startSOSProtocol = window.features.startSOSProtocol;
+    window.showWeeklyReport = window.features.showWeeklyReport;
+    
+    const btnSOS = document.getElementById('btn-sos-protocol');
+    if (btnSOS) btnSOS.onclick = () => { window.features.startSOSProtocol(); toggleSidebar(false); };
+
+    await initChat();
+    await initGamification();
+    initDashboard();
+    initCalendar();
+    
+    window.addEventListener('online', updateStatusIndicator);
+    window.addEventListener('offline', updateStatusIndicator);
+    updateStatusIndicator();
+}
+
+function finishBoot(overlay) {
+    overlay.style.transition = 'opacity 0.8s ease';
+    overlay.style.opacity = '0';
+    
+    setTimeout(() => {
+        overlay.remove();
+        switchTab('chat');
+        
+        setTimeout(() => {
+            if (typeof loadAgent === 'function') loadAgent('Diagnostico');
+            if (window.IS_DEMO) startDemoBriefing();
+        }, 100);
+    }, 800);
+}
 
 // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
 
@@ -84,36 +188,37 @@ function selectTool(toolName) {
     switchTab('chat');
     if (typeof loadAgent === 'function') {
         loadAgent(toolName);
+    } else {
+        console.error("loadAgent não encontrado.");
     }
 }
 
 function switchTab(tabName) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     
-    const viewProtocolo = document.getElementById('viewProtocolo');
-    const viewChat = document.getElementById('viewChat');
-    const btnJornada = document.getElementById('tabJornada');
-    const btnChat = document.getElementById('tabChat');
+    if(typeof playSFX === 'function') playSFX('click');
 
-    if (tabName === 'chat') {
-        if(viewProtocolo) viewProtocolo.classList.add('hidden');
-        if(viewChat) viewChat.classList.remove('hidden');
-        if(btnChat) btnChat.classList.add('active');
+    if (tabName === 'protocolo') {
+        const view = document.getElementById('viewProtocolo');
+        if(view) view.classList.remove('hidden');
         
-        // CORREÇÃO MOBILE: Só foca no input se for Desktop (> 768px)
-        const input = document.getElementById('chatInput');
-        if(input && window.innerWidth > 768) {
-            setTimeout(() => input.focus(), 100);
-        }
-
-    } else if (tabName === 'protocolo') {
-        if(viewChat) viewChat.classList.add('hidden');
-        if(viewProtocolo) viewProtocolo.classList.remove('hidden');
-        if(btnJornada) btnJornada.classList.add('active');
+        const btn = document.getElementById('tabJornada');
+        if(btn) btn.classList.add('active');
         
         if(typeof renderCalendar === 'function') renderCalendar(); 
+    } 
+    else if (tabName === 'chat') {
+        const view = document.getElementById('viewChat');
+        if(view) view.classList.remove('hidden');
+        
+        const btn = document.getElementById('tabChat');
+        if(btn) btn.classList.add('active');
+        
+        if(window.innerWidth > 768) {
+            setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
+        }
     }
-
     toggleSidebar(false);
 }
 
@@ -121,11 +226,6 @@ function toggleSidebar(show) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     if(!sidebar || !overlay) return;
-
-    if (show === undefined) {
-        const isActive = sidebar.classList.contains('active');
-        show = !isActive;
-    }
 
     if (show) {
         sidebar.classList.add('active');
@@ -173,7 +273,7 @@ function updateStatusIndicator() {
     const statusCards = document.querySelectorAll('.dashboard-card');
     let statusDot = null;
     statusCards.forEach(card => {
-        if(card.innerText && card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
+        if(card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
     });
 
     if (statusDot) {
@@ -191,7 +291,6 @@ function updateStatusIndicator() {
 // --- MODAIS (BRIEFING E VENDAS) ---
 
 function showDemoModal(featureName) {
-    const ESTILO_ESCOLHIDO = 1; 
     let title = "Recurso Pro";
     let subtitle = "Acesso Exclusivo";
     let message = `A funcionalidade <span class="text-white font-bold">${featureName}</span> está disponível apenas nos planos avançados.`;

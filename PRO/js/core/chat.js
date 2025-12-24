@@ -2,11 +2,13 @@ import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
+// AQUI ESTÁ A CORREÇÃO: Importando as funções que agora existem no database.js
+import { saveChatHistory, loadChatHistory } from '../modules/database.js'; 
 
 let chatHistory = [];
-let headerTypewriterInterval; // Variável para controlar o loop do cabeçalho
+let currentAgentKey = 'Diagnostico'; 
 
-export function initChat() {
+export async function initChat() {
     const btn = document.getElementById('sendMessageBtn');
     const input = document.getElementById('chatInput');
     
@@ -18,130 +20,88 @@ export function initChat() {
                 sendMessage(); 
             } 
         };
-        input.addEventListener('focus', () => {
-            setTimeout(scrollToBottom, 300);
-        });
+        
+        // Proteção para mobile: só foca se for desktop (largura > 768px)
+        if(window.innerWidth > 768) {
+             input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
+        }
     }
-
-    // Carrega o primeiro agente
-    loadAgent('Diagnostico');
 }
 
-export function loadAgent(key) {
+export async function loadAgent(key) {
     if (!AGENTS[key]) return;
+    currentAgentKey = key;
+
     const messagesArea = document.getElementById('messagesArea');
     if(messagesArea) messagesArea.innerHTML = '';
     
-    // 1. CRIA O CABEÇALHO COM O EFEITO DE DIGITAÇÃO (MENSAGEM INICIAL)
-    // 1. CABEÇALHO COM O POLVO PULSANTE + STATUS
+    // Cabeçalho Visual
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
-            
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
-                <img src="logo_synapse.png" 
-                     class="w-full h-full object-contain animate-pulse-slow drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" 
-                     alt="Synapse Octopus">
+                <img src="logo_synapse.png" class="w-full h-full object-contain animate-pulse-slow drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
             </div>
-
             <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
-                STATUS: <span id="header-dynamic-text" class="text-red-600 font-bold"></span><span class="animate-pulse text-red-600">_</span>
+                CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
             </p>
         </div>
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
 
-    // 2. INICIA O LOOP DAS 3 FRASES DE INSTRUÇÃO
-    // Você pode mudar as frases aqui embaixo
-    const instrucoes = [
-        "AGUARDANDO SEUS DADOS...",
-        "DIGA O QUE TE TRAVA HOJE...",
-        "SEM JULGAMENTOS. APENAS LÓGICA."
-    ];
-    startHeaderLoop(instrucoes);
+    // Tenta carregar histórico LOCAL
+    const savedHistory = await loadChatHistory(key);
 
-    // 3. CONFIGURA O RESTO DO CHAT
-    chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
-    
-    // Atualiza Sidebar
+    if (savedHistory && savedHistory.length > 0) {
+        // --- CENÁRIO A: TEM HISTÓRICO ---
+        chatHistory = savedHistory;
+        
+        chatHistory.forEach(msg => {
+            if (msg.role !== 'system') {
+                // False = Carrega instantâneo (sem digitar)
+                addMessageUI(msg.role === 'assistant' ? 'ai' : msg.role, msg.content, false);
+            }
+        });
+        
+        messagesArea.insertAdjacentHTML('beforeend', `<div class="w-full text-center my-4 opacity-50"><span class="text-[8px] text-gray-700 uppercase tracking-widest border-b border-gray-800 pb-1">Memória Restaurada</span></div>`);
+
+    } else {
+        // --- CENÁRIO B: NOVO CHAT ---
+        chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
+        
+        setTimeout(() => {
+            // True = Com animação de digitação
+            addMessageUI('ai', AGENTS[key].welcome, true); 
+            if (AGENTS[key].initialButtons) renderReplies(AGENTS[key].initialButtons);
+        }, 500);
+    }
+
+    // Atualiza a classe ativa no menu lateral
     document.querySelectorAll('.tool-item').forEach(el => {
         if(el.textContent.includes(AGENTS[key].name)) el.classList.add('active');
         else el.classList.remove('active');
     });
-
-    // Envia a mensagem de boas-vindas da IA
-    setTimeout(() => {
-        addMessageUI('ai', AGENTS[key].welcome);
-        if (AGENTS[key].initialButtons) renderReplies(AGENTS[key].initialButtons);
-    }, 800);
 }
 
-// --- FUNÇÃO DO LOOP DE CABEÇALHO (ESCREVE E APAGA) ---
-function startHeaderLoop(frases) {
-    const el = document.getElementById('header-dynamic-text');
-    if(!el) return;
-
-    // Limpa intervalos anteriores para não encavalar
-    if(window.headerInterval) clearTimeout(window.headerInterval);
-
-    let fraseIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    
-    const typeSpeed = 50;    // Velocidade escrevendo
-    const deleteSpeed = 20;  // Velocidade apagando (rápido)
-    const pauseEnd = 2000;   // Tempo lendo a frase
-    const pauseStart = 500;  // Tempo antes de começar a próxima
-
-    function loop() {
-        // Verifica se o elemento ainda existe (se mudou de página, para)
-        if(!document.getElementById('header-dynamic-text')) return;
-
-        const currentFrase = frases[fraseIndex];
-
-        if (isDeleting) {
-            el.innerText = currentFrase.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            el.innerText = currentFrase.substring(0, charIndex + 1);
-            charIndex++;
-        }
-
-        let nextSpeed = isDeleting ? deleteSpeed : typeSpeed;
-
-        if (!isDeleting && charIndex === currentFrase.length) {
-            isDeleting = true;
-            nextSpeed = pauseEnd;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            fraseIndex = (fraseIndex + 1) % frases.length;
-            nextSpeed = pauseStart;
-        }
-
-        window.headerInterval = setTimeout(loop, nextSpeed);
-    }
-
-    loop();
-}
-
-// --- FUNÇÕES DE CHAT PADRÃO ---
-
+// --- ENVIO DE MENSAGEM ---
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
     if (!val) return;
     
-    addMessageUI('user', val);
+    addMessageUI('user', val, false); 
     if(!text) input.value = '';
     
+    // Remove botões antigos
     const old = document.querySelector('.quick-reply-container');
     if(old) old.remove();
     
     const loadingId = showLoading();
     const rpg = getRPGState();
     
+    // Contexto do sistema
     const context = { 
         role: 'system', 
-        content: `[CONTEXTO] Usuário XP: ${rpg.xp} | Nível: ${rpg.level}. Responda curto e direto.` 
+        content: `[SISTEMA] Usuário Nível ${rpg.level} | Rank: ${rpg.currentRank}. Responda de acordo com sua persona.` 
     };
     
     try {
@@ -160,6 +120,7 @@ async function sendMessage(text = null) {
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
             
+            // Verifica botões dinâmicos no formato {{opcao1|opcao2}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -168,15 +129,20 @@ async function sendMessage(text = null) {
             }
 
             aiText = handleCommands(aiText);
-            addMessageUI('ai', aiText);
+            
+            // Exibe resposta da IA (com animação)
+            addMessageUI('ai', aiText, true);
             
             if(dynamicButtons.length > 0) renderReplies(dynamicButtons);
 
+            // SALVA NO LOCALSTORAGE
             chatHistory.push({ role: 'user', content: val }, { role: 'assistant', content: aiText });
+            saveChatHistory(currentAgentKey, chatHistory);
         }
     } catch (e) { 
         removeLoading(loadingId); 
-        addMessageUI('system', "FALHA NA CONEXÃO NEURAL."); 
+        addMessageUI('system', "ERRO DE CONEXÃO. TENTE NOVAMENTE.", false); 
+        console.error(e);
     }
 }
 
@@ -192,21 +158,28 @@ function handleCommands(text) {
     return clean;
 }
 
-function addMessageUI(role, text) {
+// --- INTERFACE (UI) ---
+function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if(!area) return;
     
     const div = document.createElement('div');
-    let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    
+    // 1. Apenas processamos negrito. NÃO substituímos \n por <br>.
+    let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>');
+
+    // 2. CSS MÁGICO: Isso faz o navegador respeitar os "Enters" do texto automaticamente
+    div.style.whiteSpace = 'pre-wrap'; 
 
     if (role === 'user') {
         div.className = 'chat-message-user';
         div.innerHTML = formattedText;
     } else if (role === 'ai') {
         div.className = 'chat-message-ia';
-        typeWriterBubble(div, formattedText); // Efeito de digitação da mensagem da IA
+        if (animate) typeWriterBubble(div, formattedText); 
+        else div.innerHTML = formattedText;
     } else {
-        div.className = 'self-center text-[10px] text-red-500 uppercase font-black my-2 animate-pulse';
+        div.className = 'self-center text-[10px] text-red-500 font-bold my-2 opacity-70';
         div.innerHTML = formattedText;
     }
 
@@ -214,19 +187,26 @@ function addMessageUI(role, text) {
     scrollToBottom();
 }
 
-// Efeito de digitação APENAS para o balão da IA (não é o loop)
-function typeWriterBubble(element, html, speed = 15) {
+function typeWriterBubble(element, html, speed = 10) { 
     let i = 0;
     element.innerHTML = '';
     function type() {
         if (i >= html.length) return;
         let char = html.charAt(i);
-        element.innerHTML += char;
+        
+        // Se encontrar tag HTML (como <b>), pula ela inteira para não quebrar a tag no meio
         if (char === '<') {
-            i++;
-            while (i < html.length && html.charAt(i) !== '>') { element.innerHTML += html.charAt(i); i++; }
-            if (i < html.length) element.innerHTML += '>';
+            let tag = '';
+            while (i < html.length && html.charAt(i) !== '>') { 
+                tag += html.charAt(i); 
+                i++; 
+            }
+            tag += '>';
+            element.innerHTML += tag;
+        } else {
+            element.innerHTML += char;
         }
+        
         i++;
         scrollToBottom();
         setTimeout(type, speed);
@@ -251,16 +231,22 @@ function renderReplies(btns) {
 
 function showLoading() {
     const id = 'l' + Date.now();
-    addMessageUI('system', `<i class="fa-solid fa-spinner fa-spin mr-2" id="${id}"></i> Processando...`);
-    return id;
+    addMessageUI('system', `<i class="fa-solid fa-microchip fa-pulse mr-2"></i> PROCESSANDO...`, false);
+    return id; 
 }
 
-function removeLoading(id) { const el = document.getElementById(id); if(el) el.parentElement.remove(); }
+function removeLoading(id) { 
+    const area = document.getElementById('messagesArea');
+    // Remove a última mensagem se for o loading
+    if(area.lastElementChild && area.lastElementChild.textContent.includes('PROCESSANDO')) {
+        area.lastElementChild.remove();
+    }
+}
 
 function scrollToBottom() {
-    const scroller = document.getElementById('chatContainer');
+    const scroller = document.getElementById('chatContainer'); 
     if(scroller) {
         scroller.scrollTop = scroller.scrollHeight;
-        window.scrollTo(0, document.body.scrollHeight);
     }
+    window.scrollTo(0, document.body.scrollHeight);
 }

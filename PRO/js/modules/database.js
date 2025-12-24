@@ -1,12 +1,9 @@
 import { CONFIG } from '../config.js';
 
-// Variável para controlar o "tempo de espera" (Debounce)
-let saveTimeout = null;
-
 // --- FUNÇÕES DE USUÁRIO ---
 export function getUserEmail() {
     try {
-        const session = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
+        const session = localStorage.getItem(CONFIG.STORAGE_KEYS.USER);
         if (session) {
             return JSON.parse(session).email;
         }
@@ -14,73 +11,48 @@ export function getUserEmail() {
     return null;
 }
 
-// --- SALVAR DADOS (COM PROTEÇÃO ANTI-FLOOD/DEBOUNCE) ---
-// --- SALVAR DADOS (COM PROTEÇÃO ANTI-FLOOD/DEBOUNCE) ---
+// --- SALVAR DADOS GERAIS (XP, Nível, Hábitos) ---
 export async function saveUserData(rpgState) {
-    const email = getUserEmail();
-    if (!email) return;
-
-    // 1. Cancela o envio anterior se o usuário clicou de novo rápido
-    if (saveTimeout) {
-        clearTimeout(saveTimeout);
-    }
-
-    // 2. Agenda um novo envio para daqui a 3 segundos
-    saveTimeout = setTimeout(async () => {
-        try {
-            // Prepara os dados
-            const payload = {
-                xp: rpgState.xp,
-                level: rpgState.level,
-                habits: rpgState.habits,
-                missions: rpgState.missions
-            };
-
-            console.log("💾 Salvando na Nuvem (Debounced)...");
-            
-            // --- CORREÇÃO DO ERRO 405 AQUI ---
-            // URL Correta: .../api/v1/ID/email/VALOR
-            // Body Correto: Apenas o objeto, sem o wrapper "data" para PATCH
-            await fetch(`${CONFIG.API_URL}/email/${email}`, {
-                method: 'PATCH', 
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload) 
-            });
-
-        } catch (error) {
-            console.warn("Erro ao salvar (Cloud):", error);
-        }
-    }, 3000); 
-}
-
-// --- SINCRONIZAR (CARREGAR) ---
-export async function syncUserData() {
-    const email = getUserEmail();
-    if (!email) return null;
-
     try {
-        const response = await fetch(`${CONFIG.API_URL}/search?email=${email}`);
-        if(!response.ok) throw new Error('Erro na busca');
-        
-        const data = await response.json();
-        if (data.length > 0) {
-            const userData = data[0]; 
-            return {
-                xp: parseInt(userData.xp || 0),
-                level: parseInt(userData.level || 1),
-                habits: typeof userData.habits === 'string' ? JSON.parse(userData.habits) : userData.habits,
-                missions: typeof userData.missions === 'string' ? JSON.parse(userData.missions) : userData.missions
-            };
-        }
-    } catch (error) {
-        console.warn("Offline ou usuário novo.");
-    }
-    return null;
+        localStorage.setItem(CONFIG.STORAGE_KEYS.XP, rpgState.xp);
+        localStorage.setItem(CONFIG.STORAGE_KEYS.HABITS, JSON.stringify({ list: rpgState.habits }));
+        localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(rpgState.missions));
+        console.log("💾 Dados salvos localmente.");
+    } catch (e) { console.warn("Erro ao salvar local:", e); }
 }
 
+// --- CARREGAR DADOS (Sincronização) ---
+export async function syncUserData() {
+    // Retorna null para indicar que deve usar o cache local do gamification.js
+    return null; 
+}
+
+// --- LOG DE ATIVIDADES ---
 export async function pushHistoryLog(activity) {
-    // Implementação opcional de log
+    // Função placeholder para evitar erros se for chamada
+    // No futuro, você pode salvar isso numa lista 'synapse_logs' se quiser
+}
+
+// --- SISTEMA DE CHAT (AS FUNÇÕES QUE FALTAVAM) ---
+
+export async function saveChatHistory(agentName, history) {
+    try {
+        // 1. Carrega o histórico de TODOS os agentes
+        let allChats = JSON.parse(localStorage.getItem('synapse_chat_history_v1') || '{}');
+        
+        // 2. Atualiza apenas o agente atual
+        allChats[agentName] = history;
+        
+        // 3. Salva de volta no LocalStorage
+        localStorage.setItem('synapse_chat_history_v1', JSON.stringify(allChats));
+        
+    } catch (e) { console.warn("Erro ao salvar chat local:", e); }
+}
+
+export async function loadChatHistory(agentName) {
+    try {
+        let allChats = JSON.parse(localStorage.getItem('synapse_chat_history_v1') || '{}');
+        // Retorna o array de mensagens ou null se estiver vazio
+        return allChats[agentName] || null;
+    } catch (e) { return null; }
 }
