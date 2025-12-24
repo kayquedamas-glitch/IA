@@ -368,8 +368,9 @@ function startDemoBriefing() {
     if (document.getElementById('demo-briefing')) return;
     if (localStorage.getItem('synapse_demo_seen')) return;
 
+    // CORREÇÃO AQUI: Alterado de z-[200] para z-[9999]
     const modalHTML = `
-    <div id="demo-briefing" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+    <div id="demo-briefing" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
         <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
             <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
