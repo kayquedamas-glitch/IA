@@ -8,57 +8,59 @@ import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/fe
 
 // --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 SYNAPSE CORE v6.5 (FIXED)...");
+    console.log("🚀 SYNAPSE CORE v6.7 (MOBILE FIX)...");
 
     try {
-        // 1. Carrega Perfil (Visitante ou Real)
+        // 1. Carrega Perfil
         loadUserProfile();
-
-        // 2. Inicia Áudio
-        initAudio();
-
-        // 3. Conecta Funções Globais (Essencial para o HTML funcionar)
+        
+        // 2. Conecta Funções Globais
         window.selectTool = selectTool;
         window.switchTab = switchTab;
         window.toggleSidebar = toggleSidebar;
-
-        // 4. CORREÇÃO DOS BOTÕES (Cria o objeto 'features' que o HTML procura)
+        
+        // 3. Configura Features
         window.features = {
             startFocusMode: startFocusMode,
             startSOSProtocol: startSOSProtocol,
-            // Lógica do Relatório: Se for Demo abre venda, se for Pro abre relatório
-            showWeeklyReport: window.IS_DEMO ?
-                () => { if (typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } :
+            showWeeklyReport: window.IS_DEMO ? 
+                () => { if(typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } : 
                 showWeeklyReport
         };
-
-        // Mantém compatibilidade caso algum botão chame direto sem .features
+        // Compatibilidade
         window.startFocusMode = window.features.startFocusMode;
         window.startSOSProtocol = window.features.startSOSProtocol;
         window.showWeeklyReport = window.features.showWeeklyReport;
 
-        // 5. Liga o Botão SOS da Sidebar (se existir)
+        // 4. Configura Botão SOS
         const btnSOS = document.getElementById('btn-sos-protocol');
         if (btnSOS) {
             btnSOS.onclick = () => {
-                if (typeof playSFX === 'function') playSFX('click');
+                if(typeof playSFX === 'function') playSFX('click');
                 window.features.startSOSProtocol();
                 toggleSidebar(false);
             };
         }
 
-        // 6. Inicia os Módulos Principais
-        initChat();
-        initGamification();
+        // 5. Inicia Módulos
+        // A ordem aqui é crucial
+        initChat();         // Já carrega o Diagnóstico internamente (Evita msg dupla)
+        initGamification(); 
+        
+        // CORREÇÃO: Força a ida para o Chat sem delay
+        switchTab('chat'); 
+        
+        // Inicia o resto em segundo plano
         initDashboard();
         initCalendar();
-
-        // 7. Monitor de Status Online/Offline
+        
+        // 6. Áudio e Status
+        initAudio();
         window.addEventListener('online', updateStatusIndicator);
         window.addEventListener('offline', updateStatusIndicator);
         updateStatusIndicator();
 
-        // 8. INICIA BRIEFING DE BOAS-VINDAS (Apenas na Demo e uma vez só)
+        // 7. Briefing Demo
         if (window.IS_DEMO) {
             setTimeout(() => startDemoBriefing(), 1000);
         }
@@ -71,56 +73,59 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
 
 function selectTool(toolName) {
-    // 1. Definição das ferramentas pagas
-    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO'];
+    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
 
-    // 2. Bloqueio de Demo
     if (window.IS_DEMO && FERRAMENTAS_PRO.includes(toolName.toUpperCase())) {
-        if (typeof playSFX === 'function') playSFX('error');
-        showDemoModal(toolName);
-        return;
+        if(typeof playSFX === 'function') playSFX('error');
+        showDemoModal(toolName); 
+        return; 
     }
 
-    // 3. Acesso Liberado
     switchTab('chat');
     if (typeof loadAgent === 'function') {
         loadAgent(toolName);
-    } else {
-        console.error("loadAgent não encontrado.");
     }
 }
 
 function switchTab(tabName) {
-    document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    
+    const viewProtocolo = document.getElementById('viewProtocolo');
+    const viewChat = document.getElementById('viewChat');
+    const btnJornada = document.getElementById('tabJornada');
+    const btnChat = document.getElementById('tabChat');
 
-    if (typeof playSFX === 'function') playSFX('click');
+    if (tabName === 'chat') {
+        if(viewProtocolo) viewProtocolo.classList.add('hidden');
+        if(viewChat) viewChat.classList.remove('hidden');
+        if(btnChat) btnChat.classList.add('active');
+        
+        // CORREÇÃO MOBILE: Só foca no input se for Desktop (> 768px)
+        const input = document.getElementById('chatInput');
+        if(input && window.innerWidth > 768) {
+            setTimeout(() => input.focus(), 100);
+        }
 
-    if (tabName === 'protocolo') {
-        const view = document.getElementById('viewProtocolo');
-        if (view) view.classList.remove('hidden');
-
-        const btn = document.getElementById('tabJornada');
-        if (btn) btn.classList.add('active');
-
-        // Atualiza calendário ao voltar
-        if (typeof renderCalendar === 'function') renderCalendar();
+    } else if (tabName === 'protocolo') {
+        if(viewChat) viewChat.classList.add('hidden');
+        if(viewProtocolo) viewProtocolo.classList.remove('hidden');
+        if(btnJornada) btnJornada.classList.add('active');
+        
+        if(typeof renderCalendar === 'function') renderCalendar(); 
     }
-    else if (tabName === 'chat') {
-        const view = document.getElementById('viewChat');
-        if (view) view.classList.remove('hidden');
 
-        const btn = document.getElementById('tabChat');
-        if (btn) btn.classList.add('active');
-        setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
-    }
     toggleSidebar(false);
 }
 
 function toggleSidebar(show) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    if (!sidebar || !overlay) return;
+    if(!sidebar || !overlay) return;
+
+    if (show === undefined) {
+        const isActive = sidebar.classList.contains('active');
+        show = !isActive;
+    }
 
     if (show) {
         sidebar.classList.add('active');
@@ -141,7 +146,7 @@ function loadUserProfile() {
             const dashName = document.getElementById('dashName');
 
             if (sideName) sideName.innerText = "VISITANTE";
-            if (sideAvatar) sideAvatar.innerText = "V";
+            if (sideAvatar) sideAvatar.innerText = "V"; 
             if (dashName) dashName.innerText = "OPERADOR CONVIDADO";
             return;
         }
@@ -168,7 +173,7 @@ function updateStatusIndicator() {
     const statusCards = document.querySelectorAll('.dashboard-card');
     let statusDot = null;
     statusCards.forEach(card => {
-        if (card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
+        if(card.innerText && card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
     });
 
     if (statusDot) {
@@ -178,7 +183,7 @@ function updateStatusIndicator() {
         } else {
             statusDot.classList.remove('bg-green-500', 'animate-pulse');
             statusDot.classList.add('bg-red-500');
-            if (typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
+            if(typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
         }
     }
 }
@@ -186,8 +191,7 @@ function updateStatusIndicator() {
 // --- MODAIS (BRIEFING E VENDAS) ---
 
 function showDemoModal(featureName) {
-    const ESTILO_ESCOLHIDO = 1;
-
+    const ESTILO_ESCOLHIDO = 1; 
     let title = "Recurso Pro";
     let subtitle = "Acesso Exclusivo";
     let message = `A funcionalidade <span class="text-white font-bold">${featureName}</span> está disponível apenas nos planos avançados.`;
@@ -201,9 +205,8 @@ function showDemoModal(featureName) {
         btnText = "Liberar Meu Relatório";
         iconClass = "fa-solid fa-file-shield";
     }
-
-    // ATENÇÃO: COLOQUE SEU LINK AQUI
-    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc';
+    
+    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -220,7 +223,7 @@ function showDemoModal(featureName) {
                 </div>
                 
                 <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-3">
-                    <button onclick="window.location.href=${checkoutLink}" 
+                    <button onclick="window.location.href='${checkoutLink}'" 
                         class="w-full py-3.5 bg-white text-black hover:bg-gray-200 font-bold rounded-lg transition-all flex items-center justify-center gap-2 group">
                         <span>${btnText}</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -242,7 +245,7 @@ function showDemoModal(featureName) {
             ${modalInnerHTML}
         </div>
     </div>`;
-
+    
     document.body.insertAdjacentHTML('beforeend', modalBaseHTML);
 
     setTimeout(() => {
@@ -255,14 +258,13 @@ function closeDemoModal() {
     const modal = document.getElementById('demo-modal');
     const overlay = document.getElementById('demo-overlay');
     const content = document.getElementById('demo-content');
-    if (!modal) return;
+    if(!modal) return;
     overlay.classList.add('opacity-0');
     content.classList.add('scale-90', 'opacity-0');
     setTimeout(() => { modal.classList.add('hidden'); }, 300);
 }
 
 function startDemoBriefing() {
-    // Evita duplicação checando se já existe
     if (document.getElementById('demo-briefing')) return;
     if (localStorage.getItem('synapse_demo_seen')) return;
 
@@ -272,9 +274,6 @@ function startDemoBriefing() {
         <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
             <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
                 <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
-                <div class=" justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
-                    
-                </div>
             </div>
             <div class="p-6 md:p-8 text-center -mt-4 relative z-10 overflow-y-auto custom-scrollbar">
                 <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[9px] md:text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">Modo Visitante Ativo</span>
@@ -300,7 +299,6 @@ function closeBriefing() {
     }
 }
 
-// Expõe funções necessárias globalmente
 window.showDemoModal = showDemoModal;
 window.closeDemoModal = closeDemoModal;
 window.startDemoBriefing = startDemoBriefing;
