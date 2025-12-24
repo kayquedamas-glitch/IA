@@ -7,11 +7,12 @@ import { saveChatHistory, loadChatHistory } from '../modules/database.js';
 let chatHistory = [];
 let currentAgentKey = 'Diagnostico'; 
 
+// --- INICIALIZAÇÃO ---
 export async function initChat() {
     const btn = document.getElementById('sendMessageBtn');
     const input = document.getElementById('chatInput');
     
-    // --- NOVO: LÓGICA DO BOTÃO RESET ---
+    // Botão de Reset (Lixeira)
     const resetBtn = document.getElementById('resetChatBtn');
     if (resetBtn) {
         resetBtn.onclick = () => resetCurrentChat();
@@ -25,42 +26,38 @@ export async function initChat() {
                 sendMessage(); 
             } 
         };
+        // Scroll ao focar no mobile/desktop
         if(window.innerWidth > 768) {
              input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
     }
 }
 
-// --- NOVA FUNÇÃO DE RESET ---
+// --- RESETAR CONVERSA ---
 async function resetCurrentChat() {
     const area = document.getElementById('messagesArea');
     
-    // 1. Efeito visual de limpeza (Fade out)
+    // Efeito visual (Fade out)
     if(area) {
         area.style.transition = 'opacity 0.3s';
         area.style.opacity = '0';
     }
 
     setTimeout(async () => {
-        // 2. Limpa memória RAM
-        chatHistory = [];
+        chatHistory = []; // Limpa RAM
+        await saveChatHistory(currentAgentKey, []); // Limpa Banco de Dados
         
-        // 3. Limpa memória do Navegador (Database)
-        // Salvamos um array vazio para sobrescrever o antigo
-        await saveChatHistory(currentAgentKey, []);
-        
-        // 4. Reinicia visual
         if(area) {
             area.innerHTML = '';
             area.style.opacity = '1';
         }
         
-        // 5. Recarrega o Agente (Vai disparar o Welcome + Botões de novo)
+        // Recarrega o Agente do zero
         await loadAgent(currentAgentKey);
-        
     }, 300);
 }
 
+// --- CARREGAR AGENTE ---
 export async function loadAgent(key) {
     if (!AGENTS[key]) return;
     currentAgentKey = key;
@@ -68,13 +65,14 @@ export async function loadAgent(key) {
     const messagesArea = document.getElementById('messagesArea');
     const viewChat = document.getElementById('viewChat');
     
-    // Tema Visual
+    // 1. Aplica Atmosfera (Skin)
     viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
     if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
 
+    // 2. Limpa Tela
     if(messagesArea) messagesArea.innerHTML = '';
     
-    // Cabeçalho
+    // 3. Cabeçalho
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
@@ -87,6 +85,7 @@ export async function loadAgent(key) {
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
 
+    // 4. Carrega Histórico
     const savedHistory = await loadChatHistory(key);
 
     if (savedHistory && savedHistory.length > 0) {
@@ -109,16 +108,14 @@ export async function loadAgent(key) {
         }, 500);
     }
 
+    // Atualiza Menu Lateral
     document.querySelectorAll('.tool-item').forEach(el => {
         if(el.textContent.includes(AGENTS[key].name)) el.classList.add('active');
         else el.classList.remove('active');
     });
 }
 
-// ... (MANTENHA AS OUTRAS FUNÇÕES: sendMessage, handleCommands, addMessageUI, renderReplies, showLoading, etc.) ...
-// Copie o restante do arquivo anterior aqui embaixo se precisar, ou apenas substitua a parte de cima e mantenha o final.
-// Para garantir, vou colocar as funções auxiliares aqui para você copiar tudo de uma vez:
-
+// --- ENVIAR MENSAGEM (Com Economia de Tokens) ---
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
@@ -135,16 +132,29 @@ async function sendMessage(text = null) {
     
     const context = { 
         role: 'system', 
-        content: `[SISTEMA] Usuário Nível ${rpg.level}. Responda curto e direto.` 
+        content: `[SISTEMA] Usuário Nível ${rpg.level} | Rank: ${rpg.currentRank}.` 
     };
     
     try {
+        // --- OTIMIZAÇÃO DE TOKENS ---
+        const MAX_CONTEXT = 15; // Lembra apenas das últimas 15 mensagens
+        // Pega o histórico recente (ignorando o system prompt antigo que está no índice 0)
+        const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
+        
+        // Reconstrói o array para a API: [System Atual, Contexto RPG, ...Mensagens Recentes, Nova Msg]
+        const apiMessages = [
+            chatHistory[0], 
+            context, 
+            ...recentHistory, 
+            { role: 'user', content: val }
+        ];
+
         const res = await fetch(CONFIG.AI_WORKER, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 model: CONFIG.API_MODEL, 
-                messages: [chatHistory[0], context, ...chatHistory.slice(1), { role: 'user', content: val }] 
+                messages: apiMessages
             })
         });
         
@@ -154,6 +164,7 @@ async function sendMessage(text = null) {
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
             
+            // Botões dinâmicos {{A|B}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -166,6 +177,7 @@ async function sendMessage(text = null) {
             addMessageUI('ai', aiText, true);
             if(dynamicButtons.length > 0) renderReplies(dynamicButtons);
 
+            // Salva histórico completo localmente
             chatHistory.push({ role: 'user', content: val }, { role: 'assistant', content: aiText });
             saveChatHistory(currentAgentKey, chatHistory);
         }
@@ -175,6 +187,7 @@ async function sendMessage(text = null) {
     }
 }
 
+// --- COMANDOS ESPECIAIS ---
 function handleCommands(text) {
     const regex = /\[\[(ADD_MISSION|ADD_HABIT):(.*?)\]\]/g;
     let match;
@@ -187,12 +200,35 @@ function handleCommands(text) {
     return clean;
 }
 
+// --- SEGURANÇA (Sanitização) ---
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag]));
+}
+
+// --- RENDERIZAÇÃO DE MENSAGENS (UI) ---
 function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if(!area) return;
     
     const div = document.createElement('div');
-    let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>');
+    
+    // 1. Sanitiza (Segurança)
+    let safeText = escapeHTML(text);
+
+    // 2. Formatação Rica (Markdown simples)
+    let formattedText = safeText
+        .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>') // Negrito
+        .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>') // Itálico
+        .replace(/^- (.*)/gm, '<li class="ml-4 list-disc text-gray-300">$1</li>'); // Listas
+
     div.style.whiteSpace = 'pre-wrap'; 
 
     if (role === 'user') {
@@ -211,12 +247,14 @@ function addMessageUI(role, text, animate = true) {
     scrollToBottom();
 }
 
+// --- ANIMAÇÃO DE DIGITAÇÃO ---
 function typeWriterBubble(element, html, speed = 10) { 
     let i = 0;
     element.innerHTML = '';
     function type() {
         if (i >= html.length) return;
         let char = html.charAt(i);
+        // Se for tag HTML, insere inteira
         if (char === '<') {
             let tag = '';
             while (i < html.length && html.charAt(i) !== '>') { tag += html.charAt(i); i++; }
@@ -260,8 +298,11 @@ function removeLoading(id) {
     }
 }
 
+// --- SCROLL INTELIGENTE ---
 function scrollToBottom() {
-    const scroller = document.getElementById('chatContainer'); 
-    if(scroller) scroller.scrollTop = scroller.scrollHeight;
-    window.scrollTo(0, document.body.scrollHeight);
+    const area = document.getElementById('messagesArea');
+    const lastMessage = area.lastElementChild;
+    if (lastMessage) {
+        lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
 }
