@@ -2,7 +2,6 @@ import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
-// AQUI ESTÁ A CORREÇÃO: Importando as funções que agora existem no database.js
 import { saveChatHistory, loadChatHistory } from '../modules/database.js'; 
 
 let chatHistory = [];
@@ -12,6 +11,12 @@ export async function initChat() {
     const btn = document.getElementById('sendMessageBtn');
     const input = document.getElementById('chatInput');
     
+    // --- NOVO: LÓGICA DO BOTÃO RESET ---
+    const resetBtn = document.getElementById('resetChatBtn');
+    if (resetBtn) {
+        resetBtn.onclick = () => resetCurrentChat();
+    }
+    
     if (btn && input) {
         btn.onclick = () => sendMessage();
         input.onkeydown = (e) => { 
@@ -20,12 +25,40 @@ export async function initChat() {
                 sendMessage(); 
             } 
         };
-        
-        // Proteção para mobile: só foca se for desktop (largura > 768px)
         if(window.innerWidth > 768) {
              input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
     }
+}
+
+// --- NOVA FUNÇÃO DE RESET ---
+async function resetCurrentChat() {
+    const area = document.getElementById('messagesArea');
+    
+    // 1. Efeito visual de limpeza (Fade out)
+    if(area) {
+        area.style.transition = 'opacity 0.3s';
+        area.style.opacity = '0';
+    }
+
+    setTimeout(async () => {
+        // 2. Limpa memória RAM
+        chatHistory = [];
+        
+        // 3. Limpa memória do Navegador (Database)
+        // Salvamos um array vazio para sobrescrever o antigo
+        await saveChatHistory(currentAgentKey, []);
+        
+        // 4. Reinicia visual
+        if(area) {
+            area.innerHTML = '';
+            area.style.opacity = '1';
+        }
+        
+        // 5. Recarrega o Agente (Vai disparar o Welcome + Botões de novo)
+        await loadAgent(currentAgentKey);
+        
+    }, 300);
 }
 
 export async function loadAgent(key) {
@@ -33,13 +66,19 @@ export async function loadAgent(key) {
     currentAgentKey = key;
 
     const messagesArea = document.getElementById('messagesArea');
+    const viewChat = document.getElementById('viewChat');
+    
+    // Tema Visual
+    viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
+    if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
+
     if(messagesArea) messagesArea.innerHTML = '';
     
-    // Cabeçalho Visual
+    // Cabeçalho
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
-                <img src="logo_synapse.png" class="w-full h-full object-contain animate-pulse-slow drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
+                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
             </div>
             <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
                 CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
@@ -48,41 +87,38 @@ export async function loadAgent(key) {
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
 
-    // Tenta carregar histórico LOCAL
     const savedHistory = await loadChatHistory(key);
 
     if (savedHistory && savedHistory.length > 0) {
-        // --- CENÁRIO A: TEM HISTÓRICO ---
         chatHistory = savedHistory;
-        
         chatHistory.forEach(msg => {
             if (msg.role !== 'system') {
-                // False = Carrega instantâneo (sem digitar)
                 addMessageUI(msg.role === 'assistant' ? 'ai' : msg.role, msg.content, false);
             }
         });
-        
         messagesArea.insertAdjacentHTML('beforeend', `<div class="w-full text-center my-4 opacity-50"><span class="text-[8px] text-gray-700 uppercase tracking-widest border-b border-gray-800 pb-1">Memória Restaurada</span></div>`);
-
     } else {
-        // --- CENÁRIO B: NOVO CHAT ---
+        // Novo Chat
         chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
         
         setTimeout(() => {
-            // True = Com animação de digitação
             addMessageUI('ai', AGENTS[key].welcome, true); 
-            if (AGENTS[key].initialButtons) renderReplies(AGENTS[key].initialButtons);
+            if (AGENTS[key].initialButtons) {
+                setTimeout(() => renderReplies(AGENTS[key].initialButtons), 1000);
+            }
         }, 500);
     }
 
-    // Atualiza a classe ativa no menu lateral
     document.querySelectorAll('.tool-item').forEach(el => {
         if(el.textContent.includes(AGENTS[key].name)) el.classList.add('active');
         else el.classList.remove('active');
     });
 }
 
-// --- ENVIO DE MENSAGEM ---
+// ... (MANTENHA AS OUTRAS FUNÇÕES: sendMessage, handleCommands, addMessageUI, renderReplies, showLoading, etc.) ...
+// Copie o restante do arquivo anterior aqui embaixo se precisar, ou apenas substitua a parte de cima e mantenha o final.
+// Para garantir, vou colocar as funções auxiliares aqui para você copiar tudo de uma vez:
+
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
@@ -91,17 +127,15 @@ async function sendMessage(text = null) {
     addMessageUI('user', val, false); 
     if(!text) input.value = '';
     
-    // Remove botões antigos
     const old = document.querySelector('.quick-reply-container');
     if(old) old.remove();
     
     const loadingId = showLoading();
     const rpg = getRPGState();
     
-    // Contexto do sistema
     const context = { 
         role: 'system', 
-        content: `[SISTEMA] Usuário Nível ${rpg.level} | Rank: ${rpg.currentRank}. Responda de acordo com sua persona.` 
+        content: `[SISTEMA] Usuário Nível ${rpg.level}. Responda curto e direto.` 
     };
     
     try {
@@ -120,7 +154,6 @@ async function sendMessage(text = null) {
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
             
-            // Verifica botões dinâmicos no formato {{opcao1|opcao2}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -130,19 +163,15 @@ async function sendMessage(text = null) {
 
             aiText = handleCommands(aiText);
             
-            // Exibe resposta da IA (com animação)
             addMessageUI('ai', aiText, true);
-            
             if(dynamicButtons.length > 0) renderReplies(dynamicButtons);
 
-            // SALVA NO LOCALSTORAGE
             chatHistory.push({ role: 'user', content: val }, { role: 'assistant', content: aiText });
             saveChatHistory(currentAgentKey, chatHistory);
         }
     } catch (e) { 
         removeLoading(loadingId); 
-        addMessageUI('system', "ERRO DE CONEXÃO. TENTE NOVAMENTE.", false); 
-        console.error(e);
+        addMessageUI('system', "ERRO DE CONEXÃO.", false); 
     }
 }
 
@@ -158,17 +187,12 @@ function handleCommands(text) {
     return clean;
 }
 
-// --- INTERFACE (UI) ---
 function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if(!area) return;
     
     const div = document.createElement('div');
-    
-    // 1. Apenas processamos negrito. NÃO substituímos \n por <br>.
     let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>');
-
-    // 2. CSS MÁGICO: Isso faz o navegador respeitar os "Enters" do texto automaticamente
     div.style.whiteSpace = 'pre-wrap'; 
 
     if (role === 'user') {
@@ -193,20 +217,14 @@ function typeWriterBubble(element, html, speed = 10) {
     function type() {
         if (i >= html.length) return;
         let char = html.charAt(i);
-        
-        // Se encontrar tag HTML (como <b>), pula ela inteira para não quebrar a tag no meio
         if (char === '<') {
             let tag = '';
-            while (i < html.length && html.charAt(i) !== '>') { 
-                tag += html.charAt(i); 
-                i++; 
-            }
+            while (i < html.length && html.charAt(i) !== '>') { tag += html.charAt(i); i++; }
             tag += '>';
             element.innerHTML += tag;
         } else {
             element.innerHTML += char;
         }
-        
         i++;
         scrollToBottom();
         setTimeout(type, speed);
@@ -237,7 +255,6 @@ function showLoading() {
 
 function removeLoading(id) { 
     const area = document.getElementById('messagesArea');
-    // Remove a última mensagem se for o loading
     if(area.lastElementChild && area.lastElementChild.textContent.includes('PROCESSANDO')) {
         area.lastElementChild.remove();
     }
@@ -245,8 +262,6 @@ function removeLoading(id) {
 
 function scrollToBottom() {
     const scroller = document.getElementById('chatContainer'); 
-    if(scroller) {
-        scroller.scrollTop = scroller.scrollHeight;
-    }
+    if(scroller) scroller.scrollTop = scroller.scrollHeight;
     window.scrollTo(0, document.body.scrollHeight);
 }

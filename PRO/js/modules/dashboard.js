@@ -102,6 +102,40 @@ function save() {
     localStorage.setItem(CONFIG.STORAGE_KEYS.MISSIONS, JSON.stringify(missions));
     updateMissionsState(missions);
 }
+function calculateDaysOnBase() {
+    const daysElement = document.getElementById('daysOnBase');
+    if (!daysElement) return;
+
+    try {
+        // 1. Tenta pegar a data do primeiro login do LocalStorage
+        let firstLogin = localStorage.getItem('synapse_first_login');
+        
+        // 2. Se não existir, define como HOJE e salva
+        if (!firstLogin) {
+            firstLogin = new Date().toISOString();
+            localStorage.setItem('synapse_first_login', firstLogin);
+        }
+
+        // 3. Calcula a diferença de dias
+        const start = new Date(firstLogin);
+        const now = new Date();
+        
+        // Zera as horas para comparar apenas as datas
+        start.setHours(0,0,0,0);
+        now.setHours(0,0,0,0);
+
+        // Diferença em milissegundos
+        const diffTime = Math.abs(now - start);
+        // Converte para dias (adiciona 1 porque o primeiro dia conta)
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        // 4. Atualiza a tela
+        daysElement.innerText = diffDays;
+    } catch (e) {
+        console.warn("Erro ao calcular dias:", e);
+        daysElement.innerText = "1"; // Fallback seguro
+    }
+}
 
 // --- ATUALIZA O GRÁFICO (NOVO) ---
 function updateDashboardProgress() {
