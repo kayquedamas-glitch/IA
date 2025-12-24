@@ -13,22 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         // 1. Carrega Perfil (Visitante ou Real)
         loadUserProfile();
-        
+
         // 2. Inicia Áudio
         initAudio();
-        
+
         // 3. Conecta Funções Globais (Essencial para o HTML funcionar)
         window.selectTool = selectTool;
         window.switchTab = switchTab;
         window.toggleSidebar = toggleSidebar;
-        
+
         // 4. CORREÇÃO DOS BOTÕES (Cria o objeto 'features' que o HTML procura)
         window.features = {
             startFocusMode: startFocusMode,
             startSOSProtocol: startSOSProtocol,
             // Lógica do Relatório: Se for Demo abre venda, se for Pro abre relatório
-            showWeeklyReport: window.IS_DEMO ? 
-                () => { if(typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } : 
+            showWeeklyReport: window.IS_DEMO ?
+                () => { if (typeof playSFX === 'function') playSFX('error'); showDemoModal('DOSSIE'); } :
                 showWeeklyReport
         };
 
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnSOS = document.getElementById('btn-sos-protocol');
         if (btnSOS) {
             btnSOS.onclick = () => {
-                if(typeof playSFX === 'function') playSFX('click');
+                if (typeof playSFX === 'function') playSFX('click');
                 window.features.startSOSProtocol();
                 toggleSidebar(false);
             };
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initGamification();
         initDashboard();
         initCalendar();
-        
+
         // 7. Monitor de Status Online/Offline
         window.addEventListener('online', updateStatusIndicator);
         window.addEventListener('offline', updateStatusIndicator);
@@ -72,13 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function selectTool(toolName) {
     // 1. Definição das ferramentas pagas
-    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
+    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO'];
 
     // 2. Bloqueio de Demo
     if (window.IS_DEMO && FERRAMENTAS_PRO.includes(toolName.toUpperCase())) {
-        if(typeof playSFX === 'function') playSFX('error');
-        showDemoModal(toolName); 
-        return; 
+        if (typeof playSFX === 'function') playSFX('error');
+        showDemoModal(toolName);
+        return;
     }
 
     // 3. Acesso Liberado
@@ -93,25 +93,25 @@ function selectTool(toolName) {
 function switchTab(tabName) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-    
-    if(typeof playSFX === 'function') playSFX('click');
+
+    if (typeof playSFX === 'function') playSFX('click');
 
     if (tabName === 'protocolo') {
         const view = document.getElementById('viewProtocolo');
-        if(view) view.classList.remove('hidden');
-        
+        if (view) view.classList.remove('hidden');
+
         const btn = document.getElementById('tabJornada');
-        if(btn) btn.classList.add('active');
-        
+        if (btn) btn.classList.add('active');
+
         // Atualiza calendário ao voltar
-        if(typeof renderCalendar === 'function') renderCalendar(); 
-    } 
+        if (typeof renderCalendar === 'function') renderCalendar();
+    }
     else if (tabName === 'chat') {
         const view = document.getElementById('viewChat');
-        if(view) view.classList.remove('hidden');
-        
+        if (view) view.classList.remove('hidden');
+
         const btn = document.getElementById('tabChat');
-        if(btn) btn.classList.add('active');
+        if (btn) btn.classList.add('active');
         setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
     }
     toggleSidebar(false);
@@ -120,7 +120,7 @@ function switchTab(tabName) {
 function toggleSidebar(show) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    if(!sidebar || !overlay) return;
+    if (!sidebar || !overlay) return;
 
     if (show) {
         sidebar.classList.add('active');
@@ -141,7 +141,7 @@ function loadUserProfile() {
             const dashName = document.getElementById('dashName');
 
             if (sideName) sideName.innerText = "VISITANTE";
-            if (sideAvatar) sideAvatar.innerText = "V"; 
+            if (sideAvatar) sideAvatar.innerText = "V";
             if (dashName) dashName.innerText = "OPERADOR CONVIDADO";
             return;
         }
@@ -168,7 +168,7 @@ function updateStatusIndicator() {
     const statusCards = document.querySelectorAll('.dashboard-card');
     let statusDot = null;
     statusCards.forEach(card => {
-        if(card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
+        if (card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
     });
 
     if (statusDot) {
@@ -178,7 +178,7 @@ function updateStatusIndicator() {
         } else {
             statusDot.classList.remove('bg-green-500', 'animate-pulse');
             statusDot.classList.add('bg-red-500');
-            if(typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
+            if (typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
         }
     }
 }
@@ -186,7 +186,7 @@ function updateStatusIndicator() {
 // --- MODAIS (BRIEFING E VENDAS) ---
 
 function showDemoModal(featureName) {
-    const ESTILO_ESCOLHIDO = 1; 
+    const ESTILO_ESCOLHIDO = 1;
 
     let title = "Recurso Pro";
     let subtitle = "Acesso Exclusivo";
@@ -201,9 +201,9 @@ function showDemoModal(featureName) {
         btnText = "Liberar Meu Relatório";
         iconClass = "fa-solid fa-file-shield";
     }
-    
+
     // ATENÇÃO: COLOQUE SEU LINK AQUI
-    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
+    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc';
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -242,7 +242,7 @@ function showDemoModal(featureName) {
             ${modalInnerHTML}
         </div>
     </div>`;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalBaseHTML);
 
     setTimeout(() => {
@@ -255,7 +255,7 @@ function closeDemoModal() {
     const modal = document.getElementById('demo-modal');
     const overlay = document.getElementById('demo-overlay');
     const content = document.getElementById('demo-content');
-    if(!modal) return;
+    if (!modal) return;
     overlay.classList.add('opacity-0');
     content.classList.add('scale-90', 'opacity-0');
     setTimeout(() => { modal.classList.add('hidden'); }, 300);
@@ -272,7 +272,7 @@ function startDemoBriefing() {
         <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
             <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
                 <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
-                <div class="w-12 h-12 md:w-16 md:h-16 bg-black rounded-full border border-red-500/30 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+                <div class=" justify-center relative z-10 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
                     
                 </div>
             </div>
