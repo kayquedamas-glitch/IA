@@ -50,23 +50,27 @@ body {
 
 /* --- CHAT AREA (CORREÇÃO MOBILE) --- */
 .chat-area { 
-    background-image: radial-gradient(#1a1a1a 1px, transparent 1px); 
-    background-size: 32px 32px; 
     height: 100%; 
     position: relative; 
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Garante que nada saia daqui */
 }
 
+/* ONDE A MÁGICA ACONTECE */
 .chat-messages { 
     flex-grow: 1; 
-    overflow-y: auto; 
+    overflow-y: scroll; /* Força comportamento de scroll */
     display: flex; 
     flex-direction: column; 
     padding: 20px; 
-    padding-bottom: 100px; /* Espaço extra para o input não cobrir */
+    
+    /* AUMENTO DO RESPIRO NO FINAL */
+    /* Isso garante que a última mensagem suba ACIMA da barra de input */
+    padding-bottom: 180px; 
+    
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 #messagesArea { 
@@ -607,3 +611,20 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 50% { opacity: 0.5; } }
+@media (max-width: 768px) {
+    .chat-messages {
+        /* No mobile, precisamos de mais espaço por causa da Bottom Nav + Input */
+        padding-bottom: 250px !important; 
+    }
+
+    /* Garante que o input fique fixo e visível */
+    .chat-input-container {
+        position: fixed;
+        bottom: 75px; /* Altura da navbar */
+        left: 0;
+        right: 0;
+        z-index: 60;
+        /* Gradiente mais forte para esconder o texto que passa por trás */
+        background: linear-gradient(to top, #000 90%, rgba(0,0,0,0.9) 95%, transparent);
+    }
+}

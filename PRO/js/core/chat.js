@@ -10,7 +10,7 @@ let currentAgentKey = 'Diagnostico';
 
 // --- NOVAS VARIÁVEIS ---
 let messageCount = 0; 
-const DEMO_LIMIT = 3; // O usuário troca 3 mensagens e depois bloqueia
+const DEMO_LIMIT = 6; // O usuário troca 3 mensagens e depois bloqueia
 const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
 
 // --- INICIALIZAÇÃO ---
@@ -183,8 +183,17 @@ async function sendMessage(text = null) {
         const data = await res.json();
         removeLoading(loadingId);
         
+        // ... dentro de sendMessage ...
+        
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
+            
+            // 1. DETECTOR DE GATILHO DE BLOQUEIO (A Correção)
+            let forceBlock = false;
+            if (aiText.includes('[[BLOCK_NOW]]')) {
+                aiText = aiText.replace('[[BLOCK_NOW]]', ''); // Remove o código da visão do usuário
+                forceBlock = true; // Ativa a trava manual
+            }
             
             // Botões dinâmicos {{A|B}}
             let dynamicButtons = [];
@@ -199,10 +208,13 @@ async function sendMessage(text = null) {
             // Exibe resposta da IA
             addMessageUI('ai', aiText, true);
             
+            // LÓGICA DE DECISÃO DO BLOQUEIO
+            // Bloqueia se: (É Demo E passou do limite) OU (A IA mandou o código de bloqueio)
+            const isLimitReached = (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            const shouldBlockNow = (isLimitReached || forceBlock) && typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
+
             // Renderiza botões apenas se NÃO for bloquear agora
-            const isBlockingNow = (IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
-            
-            if(dynamicButtons.length > 0 && !isBlockingNow) {
+            if(dynamicButtons.length > 0 && !shouldBlockNow) {
                 renderReplies(dynamicButtons);
             }
 
@@ -211,13 +223,16 @@ async function sendMessage(text = null) {
             saveChatHistory(currentAgentKey, chatHistory);
 
             // 5. GATILHO DO PAYWALL (O Grande Final)
-            // Se for modo Demo, no agente Diagnóstico, e atingiu o limite:
-            if (isBlockingNow) {
-                console.log("Limite de Demo atingido. Iniciando protocolo de bloqueio...");
-                // Espera 2.5s (tempo da pessoa ler o começo da resposta) e trava
+            if (shouldBlockNow) {
+                console.log("🔒 Bloqueio ativado via " + (forceBlock ? "Gatilho IA" : "Limite de Mensagens"));
+                
+                // Trava o input IMEDIATAMENTE para o usuário não mandar "cade?"
+                disableInput(); 
+
+                // Inicia a animação após um breve delay para leitura
                 setTimeout(() => {
                     triggerPaywallSequence(); 
-                }, 2500);
+                }, 2000);
             }
         }
     } catch (e) { 
@@ -257,6 +272,11 @@ function escapeHTML(str) {
 function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if(!area) return;
+        if (text) {
+        text = text.replace(/&quot;/g, '"')  // Corrige aspas duplas
+                   .replace(/&#39;/g, "'")   // Corrige aspas simples
+                   .replace(/&amp;/g, "&");  // Corrige o E comercial
+    }
     
     const div = document.createElement('div');
     
@@ -270,6 +290,8 @@ function addMessageUI(role, text, animate = true) {
         .replace(/^- (.*)/gm, '<li class="ml-4 list-disc text-gray-300">$1</li>'); // Listas
 
     div.style.whiteSpace = 'pre-wrap'; 
+
+    
 
     if (role === 'user') {
         div.className = 'chat-message-user';
@@ -288,23 +310,23 @@ function addMessageUI(role, text, animate = true) {
 }
 
 // --- ANIMAÇÃO DE DIGITAÇÃO ---
+// Verifique se sua função typeWriterBubble está assim:
 function typeWriterBubble(element, html, speed = 10) { 
     let i = 0;
     element.innerHTML = '';
+    
     function type() {
         if (i >= html.length) return;
-        let char = html.charAt(i);
-        // Se for tag HTML, insere inteira
-        if (char === '<') {
-            let tag = '';
-            while (i < html.length && html.charAt(i) !== '>') { tag += html.charAt(i); i++; }
-            tag += '>';
-            element.innerHTML += tag;
-        } else {
-            element.innerHTML += char;
-        }
+        
+        // ... lógica de caracteres ...
+        element.innerHTML += html.charAt(i); // (Simplificado)
+        
         i++;
-        scrollToBottom();
+        
+        // ESTA LINHA É CRÍTICA:
+        // A cada letra, forçamos o scroll para acompanhar
+        scrollToBottom(); 
+        
         setTimeout(type, speed);
     }
     type();
@@ -370,10 +392,176 @@ function removeLoading(id) {
 }
 
 // --- SCROLL INTELIGENTE ---
+// --- SCROLL INTELIGENTE (VERSÃO CORRIGIDA) ---
 function scrollToBottom() {
+    const messagesContainer = document.querySelector('.chat-messages'); // Pega o container, não a área interna
     const area = document.getElementById('messagesArea');
-    const lastMessage = area.lastElementChild;
-    if (lastMessage) {
-        lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    
+    if (messagesContainer) {
+        // Opção 1: Tenta scroll suave nativo
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth'
+        });
+
+        // Opção 2 (Fallback): Força bruta caso o suave falhe (com pequeno delay)
+        setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 100);
     }
+}
+// --- FUNÇÕES DE UI AUXILIARES (Mantenha apenas uma vez!) ---
+
+function disableInput() {
+    const input = document.getElementById('chatInput');
+    const btn = document.getElementById('sendMessageBtn');
+    if(input) {
+        input.disabled = true;
+        input.placeholder = "SISTEMA BLOQUEADO // AGUARDANDO UPGRADE";
+    }
+    if(btn) btn.disabled = true;
+}
+
+function enableInput() {
+    const input = document.getElementById('chatInput');
+    const btn = document.getElementById('sendMessageBtn');
+    if(input) {
+        input.disabled = false;
+        input.placeholder = "Digite sua mensagem...";
+    }
+    if(btn) btn.disabled = false;
+}
+
+// --- FUNÇÃO DO PAYWALL ---
+
+// =========================================================================
+// NOVA SEQUÊNCIA DE PAYWALL PROFISSIONAL (COLE NO FINAL DO CHAT.JS)
+// =========================================================================
+
+// =========================================================================
+// SEQUÊNCIA DE GERAÇÃO DE PLANO + PAYWALL INSPIRADOR
+// =========================================================================
+
+// =========================================================================
+// SEQUÊNCIA VISUAL "NEURAL CORE" (COM O POLVO PULSANDO)
+// =========================================================================
+
+function triggerPaywallSequence() {
+    disableInput();
+    
+    const area = document.getElementById('messagesArea');
+    
+    // Remove qualquer loading anterior
+    const oldLoad = document.querySelector('.synapse-loader-wrapper');
+    if(oldLoad) oldLoad.parentElement.remove();
+
+    // ID único para manipular
+    const sequenceId = 'seq-' + Date.now();
+
+    // HTML: O Polvo centralizado com texto mudando embaixo
+    // Usamos as mesmas classes de animação que criamos antes, mas maiores (text-lg)
+    const sequenceHTML = `
+        <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in transition-all duration-500">
+            
+            <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
+                <div class="absolute inset-0 bg-red-600 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
+                
+                <img src="logo_synapse.png" 
+                     class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" 
+                     style="animation-duration: 1s;"
+                     alt="Synapse Core">
+            </div>
+
+            <div id="status-text-${sequenceId}" class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase">
+                <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Sincronizando...
+            </div>
+
+            <div class="w-48 h-1 bg-gray-900 rounded-full mt-3 overflow-hidden border border-gray-800">
+                <div id="progress-bar-${sequenceId}" class="h-full bg-red-600 w-0 transition-all duration-[3000ms] ease-out"></div>
+            </div>
+
+        </div>
+    `;
+    
+    const div = document.createElement('div');
+    div.innerHTML = sequenceHTML;
+    area.appendChild(div);
+    scrollToBottom();
+
+    // --- A COREOGRAFIA DA ANIMAÇÃO ---
+    
+    // 1. Inicia a barra de progresso
+    setTimeout(() => {
+        document.getElementById(`progress-bar-${sequenceId}`).style.width = "100%";
+    }, 100);
+
+    // 2. Muda o Texto: "Compilando"
+    setTimeout(() => {
+        const textEl = document.getElementById(`status-text-${sequenceId}`);
+        if(textEl) {
+            textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-yellow-500 text-center uppercase";
+            textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Compilando Dossiê...`;
+        }
+    }, 1500);
+
+    // 3. Muda o Texto: "Concluído"
+    setTimeout(() => {
+        const textEl = document.getElementById(`status-text-${sequenceId}`);
+        if(textEl) {
+            textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-green-500 text-center uppercase";
+            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Protocolo Pronto.`;
+            
+            // Explosão visual (Scale Up e Fade Out)
+            const container = document.getElementById(sequenceId);
+            container.style.transform = "scale(1.1)";
+            container.style.opacity = "0";
+        }
+
+        // 4. Mostra o Card Final
+        setTimeout(() => {
+            document.getElementById(sequenceId).remove(); // Remove a animação
+            showPaywallCard(); // Mostra o card
+        }, 800);
+
+    }, 3500);
+}
+
+function showPaywallCard() {
+    const area = document.getElementById('messagesArea');
+    const CHECKOUT_LINK = "../index.html#planos"; 
+
+    const cardHTML = `
+        <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
+            
+            <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-red-600 to-gray-900"></div>
+
+                <div class="relative z-10 text-center">
+                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Relatório Finalizado</p>
+                    
+                    <h2 class="text-2xl text-white font-serif italic mb-6">"Você está a um passo de <span class="text-red-500 not-italic font-bold">quebrar o ciclo.</span>"</h2>
+                    
+                    <div class="bg-gray-900/50 rounded-lg p-4 text-left mb-6 border-l-2 border-red-500">
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            <i class="fa-solid fa-quote-left text-gray-600 mr-2 text-xs"></i>
+                            Identifiquei exatamente onde você falha. Não é falta de capacidade, é falta de método. O protocolo que gerei corrige isso em 3 dias.
+                        </p>
+                    </div>
+
+                    <a href="${CHECKOUT_LINK}" class="block w-full bg-white text-black font-extrabold py-4 rounded hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] text-sm tracking-wide uppercase">
+                        Ver meu Plano de Ação
+                    </a>
+                    
+                    <p class="mt-4 text-xs text-gray-600">
+                        <i class="fa-solid fa-clock mr-1"></i> Oferta por tempo limitado
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const div = document.createElement('div');
+    div.innerHTML = cardHTML;
+    area.appendChild(div);
+    setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(); }, 300);
 }
