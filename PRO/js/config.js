@@ -1,7 +1,7 @@
 export const CONFIG = {
     // --- BANCO DE DADOS (Google Sheets / SheetDB) ---
     // Usado pelo database.js para salvar histórico e login
-    API_URL: "",
+    API_URL: "https://sheetdb.io/api/v1/zzt2i6lo7kuwn",
 
     // --- INTELIGÊNCIA ARTIFICIAL (Worker) ---
     // Usado pelo chat.js (IMPORTANTE: Verifica a nota abaixo)
