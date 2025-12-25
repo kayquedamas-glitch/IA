@@ -534,3 +534,76 @@ body {
     0%, 100% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.05); opacity: 1; }
 }
+/* --- ANIMAÇÕES DE LOADING (ESCOLHA UMA) --- */
+
+/* OPÇÃO 1: NEURAL PULSE (Discreto e Elegante) */
+.loading-neural {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px 20px 20px 4px; /* Formato de balão da IA */
+    width: fit-content;
+}
+.loading-neural span {
+    width: 8px;
+    height: 8px;
+    background-color: #CC0000;
+    border-radius: 50%;
+    animation: neuralBounce 1.4s infinite ease-in-out both;
+}
+.loading-neural span:nth-child(1) { animation-delay: -0.32s; }
+.loading-neural span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes neuralBounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px #CC0000; }
+}
+
+/* OPÇÃO 2: TACTICAL TERMINAL (Estilo Hacker/Militar) */
+.loading-tactical {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #CC0000;
+    letter-spacing: 2px;
+    background: black;
+    border: 1px solid #CC0000;
+    padding: 8px 12px;
+    display: inline-block;
+}
+.loading-tactical::after {
+    content: '';
+    animation: textScan 2s infinite;
+}
+@keyframes textScan {
+    0% { content: 'PROCESSANDO_'; }
+    25% { content: 'ANALISANDO_'; }
+    50% { content: 'DECODIFICANDO_'; }
+    75% { content: 'GERANDO_RESPOSTA_'; }
+    100% { content: 'PROCESSANDO_'; }
+}
+
+/* OPÇÃO 3: SYNAPSE RING (Futurista/Sci-Fi) */
+.loading-ring-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+.loading-ring {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(204, 0, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: #CC0000;
+    animation: spin 1s ease-in-out infinite;
+}
+.loading-text {
+    font-size: 10px;
+    color: #666;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: pulse 1.5s infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 50% { opacity: 0.5; } }

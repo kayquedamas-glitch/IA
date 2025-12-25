@@ -4,8 +4,14 @@ import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
 import { saveChatHistory, loadChatHistory } from '../modules/database.js'; 
 
+// chat.js
 let chatHistory = [];
 let currentAgentKey = 'Diagnostico'; 
+
+// --- NOVAS VARIÁVEIS ---
+let messageCount = 0; 
+const DEMO_LIMIT = 3; // O usuário troca 3 mensagens e depois bloqueia
+const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
 
 // --- INICIALIZAÇÃO ---
 export async function initChat() {
@@ -45,6 +51,8 @@ async function resetCurrentChat() {
 
     setTimeout(async () => {
         chatHistory = []; // Limpa RAM
+        messageCount = 0; // <--- ADICIONE ISSO: Reseta o contador
+        enableInput();    // <--- ADICIONE ISSO: Garante que o input volte a funcionar
         await saveChatHistory(currentAgentKey, []); // Limpa Banco de Dados
         
         if(area) {
@@ -116,16 +124,32 @@ export async function loadAgent(key) {
 }
 
 // --- ENVIAR MENSAGEM (Com Economia de Tokens) ---
+// --- ENVIAR MENSAGEM (Com Economia de Tokens + Lógica de Demo) ---
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
-    if (!val) return;
     
+    // 1. VALIDAÇÃO DE INPUT
+    if (!val) return;
+
+    // 2. BLOQUEIO DE SEGURANÇA (DEMO) 
+    // Se já atingiu o limite, não deixa enviar mais nada antes mesmo de processar
+    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
+        return; 
+    }
+    
+    // 3. UI DO USUÁRIO
     addMessageUI('user', val, false); 
     if(!text) input.value = '';
     
+    // Remove botões antigos
     const old = document.querySelector('.quick-reply-container');
     if(old) old.remove();
+
+    // 4. INCREMENTA O CONTADOR (Apenas se for o Diagnóstico)
+    if (currentAgentKey === 'Diagnostico') {
+        messageCount++;
+    }
     
     const loadingId = showLoading();
     const rpg = getRPGState();
@@ -137,11 +161,9 @@ async function sendMessage(text = null) {
     
     try {
         // --- OTIMIZAÇÃO DE TOKENS ---
-        const MAX_CONTEXT = 15; // Lembra apenas das últimas 15 mensagens
-        // Pega o histórico recente (ignorando o system prompt antigo que está no índice 0)
+        const MAX_CONTEXT = 15; 
         const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
         
-        // Reconstrói o array para a API: [System Atual, Contexto RPG, ...Mensagens Recentes, Nova Msg]
         const apiMessages = [
             chatHistory[0], 
             context, 
@@ -174,15 +196,33 @@ async function sendMessage(text = null) {
 
             aiText = handleCommands(aiText);
             
+            // Exibe resposta da IA
             addMessageUI('ai', aiText, true);
-            if(dynamicButtons.length > 0) renderReplies(dynamicButtons);
+            
+            // Renderiza botões apenas se NÃO for bloquear agora
+            const isBlockingNow = (IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            
+            if(dynamicButtons.length > 0 && !isBlockingNow) {
+                renderReplies(dynamicButtons);
+            }
 
-            // Salva histórico completo localmente
+            // Salva histórico
             chatHistory.push({ role: 'user', content: val }, { role: 'assistant', content: aiText });
             saveChatHistory(currentAgentKey, chatHistory);
+
+            // 5. GATILHO DO PAYWALL (O Grande Final)
+            // Se for modo Demo, no agente Diagnóstico, e atingiu o limite:
+            if (isBlockingNow) {
+                console.log("Limite de Demo atingido. Iniciando protocolo de bloqueio...");
+                // Espera 2.5s (tempo da pessoa ler o começo da resposta) e trava
+                setTimeout(() => {
+                    triggerPaywallSequence(); 
+                }, 2500);
+            }
         }
     } catch (e) { 
         removeLoading(loadingId); 
+        console.error(e); // Bom para debug
         addMessageUI('system', "ERRO DE CONEXÃO.", false); 
     }
 }
@@ -285,17 +325,48 @@ function renderReplies(btns) {
     scrollToBottom();
 }
 
+// --- ANIMAÇÃO DE LOADING ---
 function showLoading() {
+    const area = document.getElementById('messagesArea');
     const id = 'l' + Date.now();
-    addMessageUI('system', `<i class="fa-solid fa-microchip fa-pulse mr-2"></i> PROCESSANDO...`, false);
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = "animate-fade-in my-2"; // Animação de entrada suave
+    
+    // ESCOLHA SUA VERSÃO AQUI (1, 2 ou 3):
+    const VERSION = 1; 
+
+    if (VERSION === 1) {
+        // OPÇÃO 1: Neural Pulse (3 bolinhas vermelhas)
+        div.innerHTML = `
+            <div class="loading-neural">
+                <span></span><span></span><span></span>
+            </div>`;
+    } 
+    else if (VERSION === 2) {
+        // OPÇÃO 2: Tactical Terminal (Texto mudando)
+        div.innerHTML = `
+            <div class="loading-tactical">
+                <i class="fa-solid fa-terminal mr-2"></i>SYSTEM
+            </div>`;
+    } 
+    else if (VERSION === 3) {
+        // OPÇÃO 3: Synapse Ring (Anel girando)
+        div.innerHTML = `
+            <div class="loading-ring-container">
+                <div class="loading-ring"></div>
+                <span class="loading-text">Sincronizando Neural...</span>
+            </div>`;
+    }
+
+    area.appendChild(div);
+    scrollToBottom();
     return id; 
 }
 
 function removeLoading(id) { 
-    const area = document.getElementById('messagesArea');
-    if(area.lastElementChild && area.lastElementChild.textContent.includes('PROCESSANDO')) {
-        area.lastElementChild.remove();
-    }
+    const el = document.getElementById(id);
+    if (el) el.remove();
 }
 
 // --- SCROLL INTELIGENTE ---

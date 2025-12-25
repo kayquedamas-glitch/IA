@@ -138,12 +138,16 @@
         </div>
     </div>
 
-    <script>
+<script>
         // ====================================================
-        // CONFIGURAÇÃO SHEETDB & SEGURANÇA
+        // CONFIGURAÇÃO SHEETDB
         // ====================================================
+        // CERTIFIQUE-SE QUE ESTE É O LINK DA SUA PLANILHA:
         const API_URL = 'https://sheetdb.io/api/v1/zzt2i6lo7kuwn'; 
         const APP_SECRET = "SYNAPSE_Protocol_v1_SECURE_HASH_2025_KEY";
+
+        // Limpa qualquer acesso anterior ao carregar a página de login
+        localStorage.removeItem('synapse_access'); 
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -151,8 +155,7 @@
             const emailInput = document.getElementById('email').value.trim().toLowerCase();
             const btn = document.getElementById('btnSubmit');
             const errorMsg = document.getElementById('errorMsg');
-            const form = document.getElementById('loginForm');
-            const originalText = btn.innerHTML; // Salva o texto original
+            const originalText = btn.innerHTML;
 
             // UI: Loading
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VALIDANDO...';
@@ -161,16 +164,17 @@
             errorMsg.classList.add('hidden');
             
             try {
-                // Consulta API
+                // Consulta API para ver se o email existe na planilha
                 const response = await fetch(`${API_URL}/search?email=${emailInput}`);
                 
-                if (!response.ok) throw new Error("Erro na API");
+                if (!response.ok) throw new Error("Erro na conexão com o Banco de Dados");
                 const data = await response.json();
 
+                // SE O EMAIL EXISTIR NA PLANILHA:
                 if (data.length > 0) {
-                    const nomeUsuario = data[0].nome || "Membro";
+                    const nomeUsuario = data[0].nome || "Membro"; // Tenta pegar o nome, se tiver coluna 'nome'
                     
-                    // SUCESSO: Gera Token Seguro e Salva
+                    // 1. Cria Sessão de Usuário
                     const tokenSeguro = btoa(emailInput + APP_SECRET); 
                     const sessionData = {
                         user: nomeUsuario,
@@ -178,10 +182,14 @@
                         token: tokenSeguro,
                         loginDate: Date.now()
                     };
-
                     localStorage.setItem('synapse_session_v2', JSON.stringify(sessionData));
 
-                    // Feedback Visual de Sucesso
+                    // 2. LIBERA O ACESSO PRO (Para o chat.js reconhecer)
+                    // --- AQUI ESTÁ A CORREÇÃO CRÍTICA ---
+                    localStorage.setItem('synapse_access', 'PRO');
+                    // ------------------------------------
+
+                    // Feedback Visual
                     btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
                     btn.classList.add('bg-green-600', 'hover:bg-green-700');
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO AUTORIZADO';
@@ -204,13 +212,13 @@
                 btn.disabled = false;
                 errorMsg.classList.remove('hidden');
                 
-                // Animação de Shake no Formulário
-                const container = document.querySelector('.w-full.max-w-md'); // Container do form
+                // Animação de erro
+                const container = document.querySelector('.w-full.max-w-md');
                 container.classList.add('shake-anim');
                 setTimeout(() => container.classList.remove('shake-anim'), 500);
             }
         });
     </script>
-    <script src="auth.js"></script>
-</body>
+    
+    </body>
 </html>
