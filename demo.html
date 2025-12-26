@@ -377,6 +377,251 @@
 
     <script type="module" src="PRO/js/main.js"></script>
     <script>lucide.createIcons();</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        localStorage.removeItem('synapse_demo_seen'); // Reset para testes
+
+        if (window.innerWidth > 768) return; // Só Mobile
+
+        const originalCloseBriefing = window.closeBriefing;
+        window.closeBriefing = function() {
+            if(originalCloseBriefing) originalCloseBriefing(); 
+            setTimeout(startTourSequence, 600);
+        };
+
+        // --- SEQUÊNCIA DO TOUR ---
+
+        function startTourSequence() {
+            // PASSO 1: COMANDO (CHAT)
+            window.switchTab('chat');
+
+            setTimeout(() => {
+                const inputArea = document.querySelector('.chat-input-container');
+                
+                showSynapseHud({
+                    target: inputArea,
+                    icon: "fa-solid fa-brain",
+                    title: "NÚCLEO DE INTELIGÊNCIA",
+                    text: "Fale com a IA aqui. Conte seus problemas, planos ou sentimentos. Ela processa tudo para gerar sua estratégia.",
+                    position: "top-center",
+                    offsetY: -10,
+                    nextAction: () => startStep2()
+                });
+            }, 500);
+        }
+
+        function startStep2() {
+            // PASSO 2: IR PARA JORNADA
+            window.switchTab('protocolo');
+            
+            setTimeout(() => {
+                const tabJornada = document.getElementById('tabJornada');
+                
+                showSynapseHud({
+                    target: tabJornada,
+                    icon: "fa-solid fa-route",
+                    title: "BASE DE COMANDO",
+                    text: "Tudo o que a IA planeja aparece nesta aba. É o seu painel de controle.",
+                    position: "top-right",
+                    offsetY: -20,
+                    offsetX: 10,
+                    nextAction: () => startStep3()
+                });
+            }, 600);
+        }
+
+        function startStep3() {
+            // PASSO 3: TOPO (Status e Nível)
+            const statsArea = document.querySelector('.dashboard-card');
+            if(statsArea) statsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            setTimeout(() => {
+                showSynapseHud({
+                    target: statsArea,
+                    icon: "fa-solid fa-chart-line",
+                    title: "METRÍCAS REAIS",
+                    text: "Sua evolução é gamificada. Acompanhe seu <b>Nível</b> e acesse seu <b>Relatório</b> de performance aqui no topo.",
+                    position: "bottom-center",
+                    offsetY: 10,
+                    nextAction: () => startStep4()
+                });
+            }, 600);
+        }
+
+        function startStep4() {
+            // PASSO 4: AGENDA E RITUAIS (Corrigido)
+            const agendaCard = document.getElementById('calendarGrid')?.parentElement;
+            
+            if(agendaCard) agendaCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            setTimeout(() => {
+                showSynapseHud({
+                    target: agendaCard,
+                    icon: "fa-solid fa-calendar-days",
+                    title: "AGENDA & RITUAIS",
+                    text: "Aqui fica sua rotina. Os <b>Rituais</b> são hábitos inegociáveis que a IA define para fortalecer sua disciplina.",
+                    position: "top-center", // Mostra EM CIMA do card
+                    offsetY: -30, // Sobe mais um pouco para garantir
+                    nextAction: () => startStep5()
+                });
+            }, 800);
+        }
+        function startStep5() {
+            // PASSO 5: OBJETIVOS (Scroll Mais Baixo)
+            const missionList = document.getElementById('missionList')?.parentElement?.parentElement; // Pega o card inteiro dos objetivos
+            
+            if(missionList) missionList.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            setTimeout(() => {
+                showSynapseHud({
+                    target: missionList,
+                    icon: "fa-solid fa-bullseye",
+                    title: "OBJETIVOS DA IA",
+                    text: "Esta é a parte mais importante: <b>Tudo o que você conversa no chat vira um Objetivo aqui.</b> Você fala, a IA transforma em plano prático.",
+                    position: "top-center",
+                    offsetY: -20,
+                    nextAction: () => startStep6()
+                });
+            }, 800);
+        }
+
+        function startStep6() {
+            // PASSO 6: VOLTAR E SIDEBAR
+            window.switchTab('chat');
+
+            setTimeout(() => {
+                window.toggleSidebar(true);
+                
+                setTimeout(() => {
+                    const toolsList = document.querySelector('.sidebar .overflow-y-auto');
+                    
+                    showSynapseHud({
+                        target: toolsList,
+                        icon: "fa-solid fa-layer-group",
+                        title: "ARSENAL SECRETO",
+                        text: "Acesse seus Agentes Especialistas (General, Tático) e o <b>Protocolo SOS</b> neste menu.",
+                        position: "right-center",
+                        nextAction: () => {
+                            window.toggleSidebar(false);
+                            // Efeito Final: Digitação
+                            setTimeout(() => {
+                                const input = document.getElementById('chatInput');
+                                const text = "Quero organizar minha rotina...";
+                                input.focus();
+                                let i = 0;
+                                const typeWriter = setInterval(() => {
+                                    if (i < text.length) {
+                                        input.value += text.charAt(i);
+                                        i++;
+                                    } else {
+                                        clearInterval(typeWriter);
+                                        const sendBtn = document.getElementById('sendMessageBtn');
+                                        sendBtn.classList.add('animate-pulse');
+                                    }
+                                }, 50);
+                            }, 500);
+                        }
+                    });
+                }, 500);
+            }, 600);
+        }
+
+
+        // --- ENGINE DO HUD (LÓGICA DE POSICIONAMENTO) ---
+     // --- ENGINE DO HUD (COM TRAVA DE SEGURANÇA) ---
+        let currentHud = null;
+        let overlay = null;
+
+        function showSynapseHud({ target, icon, title, text, position, offsetY=0, offsetX=0, nextAction }) {
+            // Limpa anteriores
+            if(currentHud) currentHud.remove();
+            document.querySelectorAll('.target-highlight').forEach(el => el.classList.remove('target-highlight'));
+
+            if(!target) return;
+
+            // Overlay para Z-Index
+            if(!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'synapse-overlay';
+                document.body.appendChild(overlay);
+            }
+
+            target.classList.add('target-highlight');
+
+            // Cria o Card
+            const hud = document.createElement('div');
+            hud.className = 'synapse-hud';
+            hud.innerHTML = `
+                <div class="synapse-title"><i class="${icon}"></i> ${title}</div>
+                <div class="synapse-text">${text}</div>
+                <div class="synapse-btn">${nextAction ? 'PRÓXIMO' : 'FINALIZAR'}</div>
+            `;
+            
+            document.body.appendChild(hud); 
+            hud.style.zIndex = "2147483642"; 
+
+            currentHud = hud;
+
+            // --- CÁLCULOS DE POSICIONAMENTO ---
+            const rect = target.getBoundingClientRect();
+            
+            // Força o navegador a calcular o tamanho real da caixa antes de mostrar
+            const hW = 260; // Largura aproximada
+            const hH = 180; // Altura segura (um pouco maior para garantir)
+            
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+            
+            let top, left;
+
+            // 1. Tenta posicionar onde pedimos
+            if (position === 'top-center' || position === 'top-right') {
+                top = rect.top - hH + offsetY;
+            } else {
+                top = rect.bottom + offsetY;
+            }
+
+            if (position === 'top-right') left = rect.right - hW + offsetX;
+            else if (position === 'right-center') left = rect.right + 10;
+            else left = rect.left + (rect.width/2) - (hW/2);
+
+            // 2. LÓGICA DE CORREÇÃO (O "Clamping")
+            // Se a caixa estiver saindo pelo TOPO da tela
+            if (top < 20) {
+                top = 20; // Trava no topo
+            }
+            
+            // Se a caixa estiver saindo pelo FUNDO da tela (botão escondido)
+            if (top + hH > screenH - 20) {
+                top = screenH - hH - 20; // Trava no fundo
+            }
+
+            // Se a caixa estiver saindo pelas LATERAIS
+            if (left < 10) left = 10;
+            if (left + hW > screenW - 10) left = screenW - hW - 10;
+
+            // Aplica as posições corrigidas
+            hud.style.top = `${top}px`;
+            hud.style.left = `${left}px`;
+
+            // Mostra
+            requestAnimationFrame(() => hud.classList.add('visible'));
+
+            // Ação do Botão
+            const btn = hud.querySelector('.synapse-btn');
+            btn.onclick = (e) => {
+                e.stopPropagation(); 
+                hud.classList.remove('visible');
+                target.classList.remove('target-highlight');
+                setTimeout(() => {
+                    hud.remove();
+                    if(nextAction) nextAction();
+                    else overlay.remove();
+                }, 300);
+            };
+        }
+    });
+</script>
 </body>
 
 </html>
