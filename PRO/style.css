@@ -700,66 +700,48 @@ body {
 
 @keyframes slideUp { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
-/* MANTIDO O ESTILO VISUAL "SYNAPSE" QUE VOCÊ GOSTOU */
-    .synapse-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 2147483640; pointer-events: none;
-    }
+.synapse-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2147483640; pointer-events: none; }
 
-    .synapse-hud {
-        position: absolute;
-        background: rgba(12, 12, 12, 0.95);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: 2px solid #cc0000;
-        border-radius: 16px;
-        padding: 16px;
-        max-width: 260px;
-        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.8), 0 0 20px rgba(204, 0, 0, 0.15);
-        color: #eee;
-        opacity: 0; transform: scale(0.95) translateY(10px);
+    /* MOLDURA DE DESTAQUE */
+    .synapse-highlight-box {
+        position: fixed; pointer-events: none; z-index: 2147483641;
+        box-shadow: 0 0 0 2px #cc0000, 0 0 30px rgba(204, 0, 0, 0.5);
+        background: rgba(204, 0, 0, 0.05);
         transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        pointer-events: auto;
+        animation: pulse-border 2s infinite;
     }
-    .synapse-hud.visible { opacity: 1; transform: scale(1) translateY(0); }
+    @keyframes pulse-border {
+        0% { box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.8), 0 0 10px rgba(204, 0, 0, 0.2); }
+        50% { box-shadow: 0 0 0 4px rgba(204, 0, 0, 0), 0 0 30px rgba(204, 0, 0, 0.6); }
+        100% { box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.8), 0 0 10px rgba(204, 0, 0, 0.2); }
+    }
 
-    .synapse-hud::before {
-        content: ''; position: absolute; top: -10px; right: -10px;
-        width: 80px; height: 80px;
-        background-image: url('assets/polvo_synapse.png');
-        background-size: contain; background-repeat: no-repeat;
-        opacity: 0.15; pointer-events: none; mix-blend-mode: screen;
+    /* CARD DE TEXTO (HUD) */
+    .synapse-hud {
+        position: fixed; background: rgba(12, 12, 12, 0.98); backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 2px solid #cc0000;
+        border-radius: 12px; padding: 16px; max-width: 260px;
+        color: #eee; opacity: 0; transform: translateY(10px) scale(0.95);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.9); z-index: 2147483642;
     }
+    .synapse-hud.visible { opacity: 1; transform: translateY(0) scale(1); }
 
     .synapse-title {
         font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 11px;
         text-transform: uppercase; letter-spacing: 0.5px; color: white;
-        margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+        margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;
     }
-    .synapse-title i { color: #cc0000; }
+    .synapse-title i { color: #cc0000; font-size: 12px; }
 
-    .synapse-text {
-        font-family: 'Inter', sans-serif; font-size: 11px; color: #9ca3af;
-        line-height: 1.5; margin-bottom: 12px; position: relative; z-index: 2;
-    }
+    .synapse-text { font-family: 'Inter', sans-serif; font-size: 11px; color: #a1a1aa; line-height: 1.5; margin-bottom: 16px; }
     .synapse-text b { color: white; font-weight: 700; }
 
     .synapse-btn {
-        background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
-        border: 1px solid rgba(255,255,255,0.1); color: white;
-        border-radius: 8px; padding: 8px 0; text-align: center;
+        background: linear-gradient(90deg, #1f1f1f, #2a2a2a); border: 1px solid rgba(255,255,255,0.1);
+        color: white; border-radius: 6px; padding: 10px 0; text-align: center;
         font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
         text-transform: uppercase; cursor: pointer; transition: all 0.2s;
     }
     .synapse-btn:active { background: #cc0000; border-color: #cc0000; }
-
-    .target-highlight {
-        position: relative; z-index: 2147483641 !important;
-        box-shadow: 0 0 0 2px #cc0000, 0 0 30px rgba(204, 0, 0, 0.4) !important;
-        animation: pulse-synapse 2s infinite; border-radius: 8px;
-    }
-    @keyframes pulse-synapse {
-        0% { box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.6); }
-        50% { box-shadow: 0 0 0 6px rgba(204, 0, 0, 0); }
-        100% { box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.6); }
-    }
