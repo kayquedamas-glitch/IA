@@ -159,61 +159,67 @@
     </nav>
 
     <!-- Header / Hero Section -->
-    <header id="inicio" class="relative pt-24 pb-16 md:pt-32 md:pb-24 px-4 overflow-hidden min-h-[90vh] flex items-center">
+<header id="inicio" class="relative pt-24 pb-12 md:pt-40 md:pb-32 px-4 overflow-x-hidden min-h-[100dvh] flex items-center justify-center bg-[#050505]">
 
-    <div class="max-w-7xl mx-auto w-full relative z-20">
+    <div class="md:hidden absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
+        <div class="absolute w-[250px] h-[250px] bg-red-600/30 blur-[80px] rounded-full animate-pulse-slow"></div>
+        <img src="assets/polvo_synapse.png" 
+             alt="Background" 
+             class="w-[110%] max-w-none opacity-20 mix-blend-screen">
+    </div>
+
+    <div class="max-w-7xl mx-auto w-full relative z-10">
         
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
 
-            <div class="md:col-span-7 flex flex-col items-center md:items-start text-center md:text-left order-2 md:order-1">
+            <div class="md:col-span-7 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
                 
-                <div class="reveal delay-100 inline-flex items-center gap-3 mb-6 backdrop-blur-sm py-2 px-4 rounded-full bg-white/5 border border-white/5">
-                    <div class="flex -space-x-3">
-                        <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m0hc54c4vcld5c_tn">
-                        <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m8pns16tp3wi4e_tn">
-                        <img class="w-8 h-8 rounded-full border-2 border-[#050505]" src="https://down-br.img.susercontent.com/file/1a406f49f255ed6cf0d8557592c80e50_tn">
+                <div class="reveal delay-100 inline-flex items-center gap-2 mb-4 backdrop-blur-md py-1.5 px-4 rounded-full bg-white/5 border border-white/10 shadow-xl scale-90 md:scale-100 origin-center md:origin-left">
+                    <div class="flex -space-x-2">
+                        <img class="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m0hc54c4vcld5c_tn">
+                        <img class="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m8pns16tp3wi4e_tn">
+                        <img class="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black" src="https://down-br.img.susercontent.com/file/1a406f49f255ed6cf0d8557592c80e50_tn">
                     </div>
-                    <span class="text-[10px] md:text-xs text-gray-400 uppercase tracking-widest font-mono-code leading-tight">
-                        <span class="text-white font-bold block">+25.000</span> pessoas evoluindo
+                    <span class="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-mono-code">
+                        +25.000 membros
                     </span>
                 </div>
 
-                <h1 class="reveal delay-200 text-4xl md:text-6xl lg:text-7xl font-black font-brand uppercase leading-[1.1] tracking-tight mb-4">
-                    A inteligência artificial que te coloca no <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-red-700 text-glow-red">Controle da sua mente.</span>
+                <h1 class="reveal delay-200 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-brand uppercase leading-tight tracking-tight mb-4 drop-shadow-2xl">
+                    A inteligência artificial <br class="hidden md:block"> que te coloca no <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-br from-red-500 via-red-600 to-red-800 text-glow-red">Controle da sua mente.</span>
                 </h1>
 
-                <p class="reveal delay-300 text-base md:text-lg text-gray-400 max-w-xl font-medium leading-relaxed mb-8">
-                    O primeiro Sistema Operacional que utiliza modelos de linguagem para modular sua neuroquímica em tempo real.
+                <p class="reveal delay-300 text-xs sm:text-sm md:text-lg text-gray-400 max-w-xl font-medium leading-relaxed mb-8 px-2 md:px-0">
+                    O primeiro Sistema Operacional que modula sua neuroquímica em tempo real. Foco e disciplina sem esforço.
                 </p>
 
-                <div class="reveal delay-300 relative w-full max-w-lg mb-8 group cursor-pointer">
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-red-600/20 blur-[50px] rounded-full pointer-events-none group-hover:bg-red-600/30 transition-all"></div>
-                    
-                    <img src="IA.png" 
-                         alt="Sistema Synapse em dispositivos" 
-                         class="relative z-10 w-full h-auto object-contain drop-shadow-2xl transform transition-transform duration-500 hover:scale-[1.02] hover:-rotate-1">
+                <div class="reveal delay-400 relative w-48 md:w-full md:max-w-lg mb-8 group cursor-pointer transition-transform hover:scale-105 duration-500">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-red-600/10 blur-[40px] rounded-full pointer-events-none"></div>
+                    <img src="assets/IA.png" alt="Sistema Synapse" class="relative z-10 w-full h-auto object-contain drop-shadow-2xl">
                 </div>
 
-                <div class="reveal delay-400 flex flex-col w-full max-w-sm md:max-w-none md:flex-row gap-4">
-                    <a href="#planos" class="flex-1 md:flex-none bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 px-10 rounded-full shadow-[0_0_30px_-5px_rgba(204,0,0,0.5)] btn-pill flex items-center justify-center gap-2 border border-red-500/20 uppercase tracking-widest text-xs transition-all hover:scale-105">
-                        Quero Acessar Agora
+                <div class="reveal delay-500 flex flex-col w-full max-w-[260px] md:max-w-none md:flex-row gap-3 md:gap-4">
+                    <a href="#planos" class="bg-[#CC0000] hover:bg-red-700 text-white font-bold py-3.5 px-8 md:py-4 md:px-10 rounded-full shadow-[0_0_30px_-5px_rgba(204,0,0,0.5)] btn-pill flex items-center justify-center gap-2 border border-red-500/30 uppercase tracking-widest text-[10px] md:text-xs transition-all w-full md:w-auto hover:scale-105">
+                        QUERO ACESSAR AGORA
                     </a>
-                    <a href="demo.html" class="flex-1 md:flex-none bg-transparent hover:bg-white/5 text-white border border-white/20 font-bold py-4 px-8 rounded-full btn-pill flex items-center justify-center gap-2 backdrop-blur-sm uppercase tracking-widest text-xs transition-all">
-                        <i class="fas fa-play text-[10px] text-red-500"></i> Tour Rápido
+                    <a href="demo.html" class="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-3.5 px-8 md:py-4 md:px-8 rounded-full btn-pill flex items-center justify-center gap-2 backdrop-blur-sm uppercase tracking-widest text-[10px] md:text-xs transition-all w-full md:w-auto">
+                        <i class="fas fa-play text-[9px] text-red-500"></i> VER DEMONSTRAÇÃO
                     </a>
                 </div>
             </div>
 
-            <div class="md:col-span-5 flex justify-center md:justify-end relative order-1 md:order-2 mb-8 md:mb-0">
+            <div class="hidden md:flex md:col-span-5 relative justify-end items-center h-full min-h-[500px]">
                 
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-red-600/20 blur-[100px] rounded-full pointer-events-none mix-blend-screen"></div>
-
-                <div class="relative z-10 animate-float-slow w-[280px] md:w-[450px] lg:w-[600px] transform hover:scale-105 transition-transform duration-700 ease-out">
+                <div class="relative w-[130%] -mr-[15%] transform hover:scale-105 transition-transform duration-700 ease-out animate-float-slow">
+                    
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-red-600/40 blur-[120px] rounded-full pointer-events-none mix-blend-screen"></div>
+                    
                     <img src="assets/polvo_synapse.png" 
-                         alt="Synapse AI Core" 
-                         class="w-full h-auto object-contain drop-shadow-[0_0_50px_rgba(204,0,0,0.4)]">
+                         alt="Synapse Core AI" 
+                         class="w-full h-auto object-contain drop-shadow-[0_0_60px_rgba(200,0,0,0.3)] contrast-110 saturate-110 relative z-10">
                 </div>
+
             </div>
 
         </div>

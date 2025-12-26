@@ -381,8 +381,8 @@ function startDemoBriefing() {
                 <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">Bem-vindo à Base.</h2>
                 <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6">
                     Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.<br><br>
-                    <span class="text-white">✅ LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
-                    <span class="text-gray-500">🔒 RESTRITO:</span> IAs de Elite e Relatórios.
+                    <span class="text-white"> LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
+                    <span class="text-gray-500"> RESTRITO:</span> IAs de Elite e Relatórios.
                 </p>
                 <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">Entendido, Iniciar Tour</button>
             </div>
