@@ -4,8 +4,7 @@ import { initCalendar } from './modules/calendar.js';
 import { initChat, loadAgent } from './core/chat.js';
 import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
-// ADICIONEI startTour AQUI NOS IMPORTS
-import { startSOSProtocol, startFocusMode, showWeeklyReport, startTour } from './modules/features.js';
+import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
 
 // --- INICIALIZAÇÃO DO SISTEMA ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,7 +32,7 @@ async function runBootBiometria() {
     
     bootOverlay.innerHTML = `
         <div class="relative w-32 h-32 mb-8">
-            <img src="PRO/logo_synapse.png" onerror="this.src='logo_synapse.png'" class="w-full h-full object-contain opacity-40 grayscale">
+            <img src="logo_synapse.png" class="w-full h-full object-contain opacity-40 grayscale">
             <div id="scanner-line" class="absolute top-0 left-0 w-full h-1 bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.8)] opacity-0"></div>
             <div class="absolute inset-0 border border-red-900/30 rounded-lg"></div>
             <div class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-red-600"></div>
@@ -76,7 +75,7 @@ async function runBootBiometria() {
         detail.innerText = "IDENTIDADE CONFIRMADA";
         
         const img = bootOverlay.querySelector('img');
-        if(img) img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
+        img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
         
         await wait(800);
         finishBoot(bootOverlay);
@@ -96,7 +95,7 @@ async function runBootNeural() {
         <div class="relative flex items-center justify-center mb-12">
             <div class="absolute w-32 h-32 bg-red-600/20 rounded-full animate-ping"></div>
             <div class="absolute w-32 h-32 bg-red-900/10 rounded-full animate-pulse"></div>
-            <img src="PRO/logo_synapse.png" onerror="this.src='logo_synapse.png'" class="relative w-24 h-24 object-contain drop-shadow-[0_0_20px_rgba(220,38,38,0.5)] z-10">
+            <img src="logo_synapse.png" class="relative w-24 h-24 object-contain drop-shadow-[0_0_20px_rgba(220,38,38,0.5)] z-10">
         </div>
         <div class="w-48 h-1 bg-gray-900 rounded-full overflow-hidden mb-4">
             <div id="neural-bar" class="h-full bg-gradient-to-r from-red-900 to-red-600 w-0 transition-all duration-[2000ms] ease-out"></div>
@@ -132,32 +131,20 @@ async function runBootNeural() {
 // LÓGICA COMUM (CARREGAMENTO REAL)
 // =================================================================
 async function initializeSystemCore() {
-    // --- CORREÇÃO DE ACESSO PRO ---
-    const sessionExists = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
-    window.IS_DEMO = !sessionExists; 
-    
     loadUserProfile();
     initAudio();
     
     window.selectTool = selectTool;
     window.switchTab = switchTab;
     window.toggleSidebar = toggleSidebar;
-    
-    // Configura features
     window.features = {
         startFocusMode: startFocusMode,
         startSOSProtocol: startSOSProtocol,
-        // Adicionei startTour aqui também para garantir
-        startTour: startTour,
         showWeeklyReport: window.IS_DEMO ? () => showDemoModal('DOSSIE') : showWeeklyReport
     };
-    
-    // Atalhos globais
     window.startFocusMode = window.features.startFocusMode;
     window.startSOSProtocol = window.features.startSOSProtocol;
     window.showWeeklyReport = window.features.showWeeklyReport;
-    // Nova função de sequência do tour
-    window.startTourSequence = startTourSequence;
     
     const btnSOS = document.getElementById('btn-sos-protocol');
     if (btnSOS) btnSOS.onclick = () => { window.features.startSOSProtocol(); toggleSidebar(false); };
@@ -182,25 +169,9 @@ function finishBoot(overlay) {
         
         setTimeout(() => {
             if (typeof loadAgent === 'function') loadAgent('Diagnostico');
-            // Só mostra o briefing se for DEMO e ainda não tiver visto
             if (window.IS_DEMO) startDemoBriefing();
         }, 100);
     }, 800);
-}
-
-// --- FUNÇÕES DE SEQUÊNCIA DE TOUR ---
-function startTourSequence() {
-    closeBriefing();
-    setTimeout(() => {
-        // Tenta chamar de todas as formas possíveis
-        if (typeof window.features.startTour === 'function') {
-            window.features.startTour();
-        } else if (typeof startTour === 'function') {
-            startTour();
-        } else {
-            console.error("ERRO: Módulo Tour não carregado.");
-        }
-    }, 600);
 }
 
 // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
@@ -366,6 +337,7 @@ function showDemoModal(featureName) {
     const existingModal = document.getElementById('demo-modal');
     if (existingModal) existingModal.remove();
 
+    // CORREÇÃO AQUI: Alterado de z-[100] para z-[9999] para ficar acima da sidebar (que é 200)
     const modalBaseHTML = `
     <div id="demo-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
@@ -394,10 +366,9 @@ function closeDemoModal() {
 
 function startDemoBriefing() {
     if (document.getElementById('demo-briefing')) return;
-    // Se o user já viu o tour, não mostra o briefing. 
-    // Se quiser que o briefing apareça mesmo assim, comente a linha abaixo.
     if (localStorage.getItem('synapse_demo_seen')) return;
 
+    // CORREÇÃO AQUI: Alterado de z-[200] para z-[9999]
     const modalHTML = `
     <div id="demo-briefing" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
@@ -413,10 +384,7 @@ function startDemoBriefing() {
                     <span class="text-white"> LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
                     <span class="text-gray-500"> RESTRITO:</span> IAs de Elite e Relatórios.
                 </p>
-                
-                <button onclick="startTourSequence()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">
-                    Entendido, Iniciar Tour
-                </button>
+                <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">Entendido, Iniciar Tour</button>
             </div>
         </div>
     </div>`;

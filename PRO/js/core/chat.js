@@ -1,3 +1,4 @@
+// ARQUIVO: PRO/js/core/chat.js
 import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
@@ -9,10 +10,12 @@ let chatHistory = [];
 let currentAgentKey = 'Diagnostico';
 let messageCount = 0;
 
-// TIMING DO PLANO (DEMO)
-const DEMO_LIMIT = 7;     // Limite de mensagens para visitantes
-const DIAGNOSE_PHASE = 3; 
-const SELL_PHASE = 5;
+// TIMING DO PLANO (Ajustado)
+const DEMO_LIMIT = 7;    // O bloqueio acontece na mensagem 7
+const DIAGNOSE_PHASE = 3; // Até msg 3: Conversa natural
+const SELL_PHASE = 5;     // Msg 5 e 6: Começa a falar do plano
+
+const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
 
 // --- INICIALIZAÇÃO ---
 export async function initChat() {
@@ -30,22 +33,10 @@ export async function initChat() {
                 sendMessage();
             }
         };
-        
-        // Ajuste para mobile/teclado
         if (window.innerWidth > 768) {
             input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
     }
-}
-
-// --- CHECAGEM DE STATUS (DINÂMICA) ---
-function isDemoUser() {
-    // 1. Tenta usar a variável global definida no main.js
-    if (typeof window.IS_DEMO !== 'undefined') return window.IS_DEMO;
-    
-    // 2. Fallback: verifica se não tem sessão salva
-    const hasSession = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
-    return !hasSession;
 }
 
 // --- RESETAR ---
@@ -76,17 +67,16 @@ export async function loadAgent(key) {
     const messagesArea = document.getElementById('messagesArea');
     const viewChat = document.getElementById('viewChat');
 
-    // Limpa temas antigos
-    viewChat.className = viewChat.className.replace(/theme-\w+/g, '').trim();
+    viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
     if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
 
     if (messagesArea) messagesArea.innerHTML = '';
 
-    // HEADER VISUAL
+    // HEADER VISUAL (Mantendo seu design)
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
-                <img src="PRO/logo_synapse.png" onerror="this.src='logo_synapse.png'" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse AI">
+                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
             </div>
             <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
                 CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
@@ -102,7 +92,6 @@ export async function loadAgent(key) {
             if (msg.role !== 'system') addMessageUI(msg.role === 'assistant' ? 'ai' : msg.role, msg.content, false);
         });
         messagesArea.insertAdjacentHTML('beforeend', `<div class="w-full text-center my-4 opacity-50"><span class="text-[8px] text-gray-700 uppercase tracking-widest border-b border-gray-800 pb-1">Memória Restaurada</span></div>`);
-        scrollToBottom();
     } else {
         chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
         setTimeout(() => {
@@ -121,35 +110,37 @@ async function sendMessage(text = null) {
 
     if (!val) return;
 
-    // Trava de segurança numérica para DEMO
-    if (isDemoUser() && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
-        return; // Já deveria estar bloqueado, mas garante
+    // Trava de segurança numérica
+    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
+        return;
     }
 
     addMessageUI('user', val, false);
     if (!text) input.value = '';
 
-    // Remove botões de resposta rápida anteriores
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
     if (currentAgentKey === 'Diagnostico') messageCount++;
 
     // --- O DIRETOR DA CONVERSA (Instruções Naturais) ---
-    // Injeção de sistema apenas para o fluxo de Diagnóstico
     let systemInjection = "";
     if (currentAgentKey === 'Diagnostico') {
         if (messageCount <= DIAGNOSE_PHASE) {
-            systemInjection = `(Contexto: Fase de Sondagem. Faça apenas 1 pergunta curta sobre a rotina.)`;
+            // Fase 1: Conversa
+            systemInjection = `(INSTRUÇÃO: Pergunte algo sobre a rotina dele. Seja natural, como uma conversa no WhatsApp. Uma pergunta só.)`;
         } 
         else if (messageCount <= SELL_PHASE) {
-            systemInjection = `(Contexto: Fase de Identificação. Valide a dor dele. Diga que é falta de método.)`;
+            // Fase 2: Diagnóstico suave
+            systemInjection = `(INSTRUÇÃO: Mostre que entende o problema dele. Diga que falta organização, mas sem culpar ele. Sugira que existe um jeito mais fácil.)`;
         } 
         else if (messageCount < DEMO_LIMIT) {
-            systemInjection = `(Contexto: Oferta. Diga: "Criei um plano pra você resolver isso. Quer ver?")`;
+            // Fase 3: Oferecer ajuda
+            systemInjection = `(INSTRUÇÃO: Diga: "Eu montei um plano pra te ajudar com isso. Quer dar uma olhada?". Gere curiosidade.)`;
         } 
         else {
-            systemInjection = `(Contexto: Fechamento. Diga que o plano está pronto. Encerre com [[LOCKED_DIAGNOSIS]].)`;
+            // Fase 4: Fechamento
+            systemInjection = `(INSTRUÇÃO FINAL: Diga: "Seu plano está pronto. O Synapse vai te mostrar agora." Encerre OBRIGATORIAMENTE com [[LOCKED_DIAGNOSIS]].)`;
         }
     }
 
@@ -158,13 +149,11 @@ async function sendMessage(text = null) {
     
     try {
         const MAX_CONTEXT = 12;
-        const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT); // Pega as últimas mensagens ignorando o prompt inicial antigo
-        
-        // Monta o payload para a API
+        const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
         const apiMessages = [
-            chatHistory[0], // Prompt original (System)
+            chatHistory[0], 
             { role: 'system', content: systemInjection }, 
-            { role: 'system', content: `[User Level: ${rpg.level}]` }, 
+            { role: 'system', content: `[User Lvl ${rpg.level}]` }, 
             ...recentHistory, 
             { role: 'user', content: val }
         ];
@@ -183,18 +172,18 @@ async function sendMessage(text = null) {
 
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
-            
-            // --- VERIFICAÇÃO DE COMANDOS ESPECIAIS ---
-            let triggerLock = false;
+            let forceBlock = false;
 
-            // 1. Detecta Tag de Bloqueio
+            // --- REGEX BLINDADO ---
+            // Aceita LOCKED_DIAGNOSIS, LOCKED_DIGESTION ou qualquer variação que comece com LOCKED_
+            // Isso resolve o problema da "alucinação" da IA
             const lockRegex = /(\[\[|\()LOCKED_.*?(\]\]|\))/i;
+            
             if (lockRegex.test(aiText)) {
-                triggerLock = true;
-                aiText = aiText.replace(lockRegex, ''); // Remove a tag do texto visível
+                aiText = aiText.replace(lockRegex, ''); 
+                forceBlock = true;
             }
             
-            // 2. Detecta Botões Dinâmicos {{Opção1|Opção2}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -202,46 +191,33 @@ async function sendMessage(text = null) {
                 aiText = aiText.replace(btnMatch[0], '').trim();
             }
 
-            // 3. Processa Missões e Hábitos
             aiText = handleCommands(aiText);
             
-            // Exibe a resposta
             if (aiText.trim() !== "") {
                 addMessageUI('ai', aiText, true);
-                
-                // Salva no histórico
                 chatHistory.push({ role: 'user', content: val });
                 chatHistory.push({ role: 'assistant', content: aiText });
-                
-                // Persiste no banco de dados (apenas se não for demo ou se quiser salvar demo também)
-                saveChatHistory(currentAgentKey, chatHistory);
             }
             
-            // --- LÓGICA DE BLOQUEIO / AÇÃO ---
-            
-            // Se for DEMO e a IA mandou bloquear (ou atingiu limite) -> BLOQUEIA
-            const shouldBlock = isDemoUser() && (triggerLock || (currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT));
+            // Verifica Bloqueio
+            const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
+            const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            const shouldBlockNow = (isLimitReached) || forceBlock;
 
-            if (shouldBlock) {
-                console.log("🔒 Paywall Ativado (Modo Demo)");
-                disableInput(); 
-                setTimeout(() => { triggerPaywallSequence(); }, 1500);
-            } 
-            else if (triggerLock && !isDemoUser()) {
-                // Se for PRO e a IA mandou bloquear -> IGNORA O BLOQUEIO
-                console.log("🔓 Usuário PRO: Tag de bloqueio ignorada.");
-                // Opcional: Mostrar um toast dizendo "Plano Atualizado"
-            }
-
-            // Renderiza botões se não bloqueou
-            if(dynamicButtons.length > 0 && !shouldBlock) {
+            if(dynamicButtons.length > 0 && !shouldBlockNow) {
                 renderReplies(dynamicButtons);
+            }
+
+            if (shouldBlockNow) {
+                console.log("🔒 Paywall Ativado!");
+                disableInput(); 
+                setTimeout(() => { triggerPaywallSequence(); }, 2000);
             }
         }
     } catch (e) {
         removeLoading(loadingId);
         console.error(e);
-        addMessageUI('system', "FALHA NA CONEXÃO NEURAL. TENTE NOVAMENTE.", false);
+        addMessageUI('system', "ERRO DE CONEXÃO.", false);
     }
 }
 
@@ -250,20 +226,10 @@ function handleCommands(text) {
     const regex = /\[\[(ADD_MISSION|ADD_HABIT):(.*?)\]\]/g;
     let match;
     let clean = text;
-    
     while ((match = regex.exec(text)) !== null) {
-        const type = match[1];
-        const value = match[2].trim();
-        
-        if (type === 'ADD_MISSION') {
-            addMissionFromAI(value);
-            // Opcional: Avisar no chat que adicionou
-        }
-        if (type === 'ADD_HABIT') {
-            addHabitFromAI(value);
-        }
-        
-        clean = clean.replace(match[0], ''); // Remove do texto final
+        if (match[1] === 'ADD_MISSION') addMissionFromAI(match[2]);
+        if (match[1] === 'ADD_HABIT') addHabitFromAI(match[2]);
+        clean = clean.replace(match[0], '');
     }
     return clean;
 }
@@ -279,17 +245,19 @@ function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if (!area) return;
 
-    // Normaliza texto
-    if (typeof text !== 'string') text = String(text);
+    if (text) {
+        const txt = document.createElement('textarea');
+        txt.innerHTML = text;
+        text = txt.value;
+    }
 
     const div = document.createElement('div');
-    
-    // Formatação simples Markdown-like
     let safeText = escapeHTML(text);
     let formattedText = safeText
-        .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>') // Negrito
-        .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>') // Itálico
+        .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>')
+        .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>')
         .replace(/\n/g, '<br>');
+    div.style.whiteSpace = 'pre-wrap';
 
     if (role === 'user') {
         div.className = 'chat-message-user';
@@ -299,38 +267,31 @@ function addMessageUI(role, text, animate = true) {
         if (animate) typeWriterBubble(div, formattedText);
         else div.innerHTML = formattedText;
     } else {
-        // System message
-        div.className = 'self-center text-[10px] text-red-500 font-bold my-2 opacity-70 border border-red-900/30 px-3 py-1 rounded bg-red-900/10';
-        div.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${formattedText}`;
+        div.className = 'self-center text-[10px] text-red-500 font-bold my-2 opacity-70';
+        div.innerHTML = formattedText;
     }
 
     area.appendChild(div);
     scrollToBottom();
 }
 
-function typeWriterBubble(element, html, speed = 8) {
+function typeWriterBubble(element, html, speed = 10) {
     let i = 0;
     element.innerHTML = '';
-    
-    // Detecta se é HTML para não quebrar tags
     function type() {
         if (i >= html.length) return;
-        
         const char = html.charAt(i);
-        
         if (char === '<') {
-            const tagEnd = html.indexOf('>', i);
+            let tagEnd = html.indexOf('>', i);
             if (tagEnd !== -1) {
                 element.innerHTML += html.substring(i, tagEnd + 1);
                 i = tagEnd + 1;
-                setTimeout(type, 0); // Tags renderizam instantaneamente
+                setTimeout(type, 0);
                 return;
             }
         }
-        
-        // Tratamento de entidades html (&amp;, etc)
         if (char === '&') {
-            const entityEnd = html.indexOf(';', i);
+            let entityEnd = html.indexOf(';', i);
             if (entityEnd !== -1 && entityEnd - i < 10) {
                 element.innerHTML += html.substring(i, entityEnd + 1);
                 i = entityEnd + 1;
@@ -338,13 +299,9 @@ function typeWriterBubble(element, html, speed = 8) {
                 return;
             }
         }
-
         element.innerHTML += char;
         i++;
-        
-        // Scrolla conforme digita
-        if (i % 5 === 0) scrollToBottom(); 
-        
+        scrollToBottom();
         setTimeout(type, speed);
     }
     type();
@@ -354,16 +311,13 @@ function renderReplies(btns) {
     const area = document.getElementById('messagesArea');
     const div = document.createElement('div');
     div.className = "quick-reply-container animate-fade-in-up";
-    
     btns.forEach(b => {
-        if(!b) return;
         const btn = document.createElement('button');
         btn.className = "cyber-btn";
         btn.innerText = b.trim();
         btn.onclick = () => sendMessage(b.trim());
         div.appendChild(btn);
     });
-    
     area.appendChild(div);
     scrollToBottom();
 }
@@ -373,8 +327,7 @@ function showLoading() {
     const id = 'l' + Date.now();
     const div = document.createElement('div');
     div.id = id;
-    div.className = "animate-fade-in my-2 ml-1";
-    // Loading estilo "Digitando..." mais clean
+    div.className = "animate-fade-in my-2";
     div.innerHTML = `
         <div class="loading-neural">
             <span></span><span></span><span></span>
@@ -392,46 +345,43 @@ function removeLoading(id) {
 function scrollToBottom() {
     const messagesContainer = document.querySelector('.chat-messages');
     if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+        setTimeout(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; }, 100);
     }
 }
 
 function disableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if (input) { 
-        input.disabled = true; 
-        input.placeholder = "PROCESSAMENTO CONCLUÍDO."; 
-        input.parentElement.classList.add('opacity-50', 'grayscale');
-    }
+    if (input) { input.disabled = true; input.placeholder = "PLANO GERADO"; }
     if (btn) btn.disabled = true;
 }
 
 function enableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if (input) { 
-        input.disabled = false; 
-        input.placeholder = "Comando neural..."; 
-        input.parentElement.classList.remove('opacity-50', 'grayscale');
-        input.focus();
-    }
+    if (input) { input.disabled = false; input.placeholder = "Digite sua mensagem..."; }
     if (btn) btn.disabled = false;
 }
 
-// --- SEQUÊNCIA DE BLOQUEIO (PAYWALL) ---
+// --- SEQUÊNCIA DO PAYWALL (Visual do Polvo) ---
 function triggerPaywallSequence() {
+    disableInput();
     const area = document.getElementById('messagesArea');
+    const oldLoad = document.querySelector('.synapse-loader-wrapper');
+    if (oldLoad) oldLoad.parentElement.remove();
+
     const sequenceId = 'seq-' + Date.now();
     
+    // Seu HTML Original (Polvo)
     const sequenceHTML = `
         <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in transition-all duration-500">
             <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
                 <div class="absolute inset-0 bg-red-600 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
-                <img src="PRO/logo_synapse.png" onerror="this.src='logo_synapse.png'" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" alt="Synapse Locked">
+                <img src="logo_synapse.png" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" style="animation-duration: 1s;" alt="Synapse Core">
             </div>
             <div id="status-text-${sequenceId}" class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase">
-                <i class="fa-solid fa-lock mr-2"></i>Compilando Dossiê...
+                <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Gerando Plano...
             </div>
             <div class="w-48 h-1 bg-gray-900 rounded-full mt-3 overflow-hidden border border-gray-800">
                 <div id="progress-bar-${sequenceId}" class="h-full bg-red-600 w-0 transition-all duration-[3000ms] ease-out"></div>
@@ -444,61 +394,56 @@ function triggerPaywallSequence() {
     area.appendChild(div);
     scrollToBottom();
 
-    // Animação da barra
-    setTimeout(() => { 
-        const bar = document.getElementById(`progress-bar-${sequenceId}`);
-        if(bar) bar.style.width = "100%"; 
-    }, 100);
+    setTimeout(() => { document.getElementById(`progress-bar-${sequenceId}`).style.width = "100%"; }, 100);
+
+    setTimeout(() => {
+        const textEl = document.getElementById(`status-text-${sequenceId}`);
+        if (textEl) {
+            textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-yellow-500 text-center uppercase";
+            textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Finalizando...`;
+        }
+    }, 1500);
 
     setTimeout(() => {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
         if (textEl) {
             textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-green-500 text-center uppercase";
-            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Plano Pronto.`;
-            
+            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Tudo pronto.`;
             const container = document.getElementById(sequenceId);
-            if(container) {
-                container.style.transform = "scale(0.95)";
-                container.style.opacity = "0";
-            }
+            container.style.transform = "scale(1.1)";
+            container.style.opacity = "0";
         }
         setTimeout(() => {
-            const container = document.getElementById(sequenceId);
-            if(container) container.remove();
+            document.getElementById(sequenceId).remove();
             showPaywallCard();
-        }, 600);
-    }, 3200);
+        }, 800);
+    }, 3500);
 }
 
-// --- CARD DE VENDA (HUMANIZADO) ---
+// --- MODAL CARD (Texto Natural e Direto) ---
 function showPaywallCard() {
     const area = document.getElementById('messagesArea');
-    const CHECKOUT_LINK = "https://pay.kiwify.com.br/YzOIskc"; // Seu link
+    const CHECKOUT_LINK = "../index.html#planos";
 
+    // Design original, mas texto humanizado e persuasivo
     const cardHTML = `
-        <div class="w-full max-w-md mx-auto mt-4 mb-24 relative z-0 animate-fade-in-up">
-            <div class="bg-[#0a0a0a] rounded-xl border border-white/10 p-6 shadow-2xl relative overflow-hidden group hover:border-red-500/30 transition-colors">
-                
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50"></div>
-                
+        <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
+            <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-red-600 to-gray-900"></div>
                 <div class="relative z-10 text-center">
-                    <div class="inline-block p-3 rounded-full bg-red-900/10 mb-4 text-red-500 border border-red-500/20">
-                        <i class="fa-solid fa-file-shield text-xl"></i>
+                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Análise Concluída</p>
+                    <h2 class="text-2xl text-white font-serif italic mb-6">"Chega de viver no <span class="text-red-500 not-italic font-bold">automático.</span>"</h2>
+                    <div class="bg-gray-900/50 rounded-lg p-4 text-left mb-6 border-l-2 border-red-500">
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            <i class="fa-solid fa-quote-left text-gray-600 mr-2 text-xs"></i>
+                            O problema não é você, é a falta de método. Criei um plano passo a passo pra você assumir o controle da sua rotina de vez.
+                        </p>
                     </div>
-                    
-                    <h2 class="text-xl text-white font-bold italic mb-2 tracking-tight">SEU PLANO ESTÁ PRONTO</h2>
-                    
-                    <p class="text-gray-400 text-xs mb-6 leading-relaxed px-4">
-                        A análise identificou seus pontos cegos. O <b class="text-white">Synapse PRO</b> gerou um protocolo personalizado para eliminar sua procrastinação.
-                    </p>
-
-                    <a href="${CHECKOUT_LINK}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-white text-black font-black py-4 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] text-xs tracking-widest uppercase active:scale-95">
-                        <span>Desbloquear Meu Plano</span>
-                        <i class="fa-solid fa-arrow-right"></i>
+                    <a href="${CHECKOUT_LINK}" class="block w-full bg-white text-black font-extrabold py-4 rounded hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] text-sm tracking-wide uppercase">
+                        Ver meu Plano
                     </a>
-                    
-                    <p class="mt-4 text-[10px] text-gray-600 uppercase tracking-wider">
-                        <i class="fa-solid fa-lock mr-1"></i> Acesso Seguro & Imediato
+                    <p class="mt-4 text-xs text-gray-600">
+                        <i class="fa-solid fa-clock mr-1"></i> Acesso imediato
                     </p>
                 </div>
             </div>
@@ -508,5 +453,5 @@ function showPaywallCard() {
     const div = document.createElement('div');
     div.innerHTML = cardHTML;
     area.appendChild(div);
-    scrollToBottom();
+    if (typeof scrollToBottom === 'function') scrollToBottom();
 }
