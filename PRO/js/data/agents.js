@@ -9,7 +9,7 @@ export const AGENTS = {
         ROTEIRO OBRIGATÓRIO (Siga à risca):
         
         FASE 1 - INVESTIGAÇÃO (Primeiras 3 a 5 mensagens):
-        - Faça perguntas curtas para entender a dor (procrastinação, ansiedade, etc).
+        - Faça 1 pergunta curta para cada resposta do usuário  para entender a dor (procrastinação, ansiedade, etc).
         - Aprofunde a dor. Ex: "Isso te custa dinheiro?", "Como se sente depois?".
         
         FASE 2 - O FECHAMENTO (O Momento Crítico):
