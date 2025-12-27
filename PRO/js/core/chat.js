@@ -272,10 +272,13 @@ function escapeHTML(str) {
 function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
     if(!area) return;
-        if (text) {
-        text = text.replace(/&quot;/g, '"')  // Corrige aspas duplas
-                   .replace(/&#39;/g, "'")   // Corrige aspas simples
-                   .replace(/&amp;/g, "&");  // Corrige o E comercial
+
+    // --- LIMPEZA PROFUNDA ---
+    if (text) {
+        // Transforma códigos quebrados de volta em texto real antes de processar
+        const txt = document.createElement('textarea');
+        txt.innerHTML = text;
+        text = txt.value;
     }
     
     const div = document.createElement('div');
@@ -287,8 +290,7 @@ function addMessageUI(role, text, animate = true) {
     let formattedText = safeText
         .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>') // Negrito
         .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>') // Itálico
-        .replace(/^- (.*)/gm, '<li class="ml-4 list-disc text-gray-300">$1</li>'); // Listas
-
+        .replace(/\n/g, '<br>'); // Quebra de linha (Importante para listas)
     div.style.whiteSpace = 'pre-wrap'; 
 
     
@@ -311,24 +313,50 @@ function addMessageUI(role, text, animate = true) {
 
 // --- ANIMAÇÃO DE DIGITAÇÃO ---
 // Verifique se sua função typeWriterBubble está assim:
-function typeWriterBubble(element, html, speed = 10) { 
+// --- ANIMAÇÃO DE DIGITAÇÃO (VERSÃO CORRIGIDA) ---
+// --- ANIMAÇÃO DE DIGITAÇÃO BLINDADA (Tags + Símbolos) ---
+function typeWriterBubble(element, html, speed = 10) {
     let i = 0;
-    element.innerHTML = '';
+    element.innerHTML = ''; // Limpa antes de começar
     
     function type() {
         if (i >= html.length) return;
         
-        // ... lógica de caracteres ...
-        element.innerHTML += html.charAt(i); // (Simplificado)
+        const char = html.charAt(i);
+
+        // 1. DETECTA TAGS HTML (<b class="...">, </b>, etc)
+        if (char === '<') {
+            let tagEnd = html.indexOf('>', i);
+            if (tagEnd !== -1) {
+                // Cola a tag inteira (invisível para o usuário, mas ativa o estilo)
+                element.innerHTML += html.substring(i, tagEnd + 1);
+                i = tagEnd + 1;
+                setTimeout(type, 0); // Sem pausa
+                return;
+            }
+        }
         
+        // 2. DETECTA CÓDIGOS ESPECIAIS (&quot;, &amp;, &#39;)
+        if (char === '&') {
+            let entityEnd = html.indexOf(';', i);
+            // Se encontrar um ; perto (máx 10 chars), assume que é um código
+            if (entityEnd !== -1 && entityEnd - i < 10) {
+                element.innerHTML += html.substring(i, entityEnd + 1);
+                i = entityEnd + 1;
+                setTimeout(type, 0); // Sem pausa
+                return;
+            }
+        }
+
+        // 3. TEXTO NORMAL (Digita letra por letra)
+        element.innerHTML += char;
         i++;
         
-        // ESTA LINHA É CRÍTICA:
-        // A cada letra, forçamos o scroll para acompanhar
-        scrollToBottom(); 
-        
+        // Mantém o scroll descendo
+        scrollToBottom();
         setTimeout(type, speed);
     }
+    
     type();
 }
 
