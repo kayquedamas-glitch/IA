@@ -21,6 +21,9 @@ export const AGENTS = {
         "Perfeito. Iniciando compilação do protocolo... [[BLOCK_NOW]]"
         
         REGRAS DE OURO:
+        -SEMPRE mantenha o foco na investigação.
+        -SEMPRE faça perguntas curtas e diretas.
+        -SEMPRE faça uma pergunta por vez.
         - NUNCA escreva a lista de passos.
         - NUNCA dê o plano de ação.
         - NUNCA escreva nada após a tag [[BLOCK_NOW]].
