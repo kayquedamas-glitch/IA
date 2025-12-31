@@ -55,51 +55,45 @@
                     <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
                 </div>
                 <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar">
-                    <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate"
-                        style="animation-delay: 0.1s">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
-                            <i class="fa-solid fa-brain text-white text-lg"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs font-black uppercase tracking-tight">Diagnóstico</span>
-                            <span class="text-[8px] text-gray-500 uppercase font-mono">Análise</span>
-                        </div>
-                    </div>
-                    <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate"
-                        style="animation-delay: 0.2s">
-                        <div
-                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                            <i class="fa-solid fa-skull text-gray-500 text-lg"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs font-black uppercase tracking-tight">Comandante</span>
-                            <span class="text-[8px] text-gray-600 uppercase font-mono">Disciplina</span>
-                        </div>
-                    </div>
-                    <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate"
-                        style="animation-delay: 0.3s">
-                        <div
-                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                            <i class="fa-solid fa-chess-knight text-gray-500 text-lg"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs font-black uppercase tracking-tight">General</span>
-                            <span class="text-[8px] text-gray-600 uppercase font-mono">Estratégia</span>
-                        </div>
-                    </div>
-                    <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate"
-                        style="animation-delay: 0.4s">
-                        <div
-                            class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                            <i class="fa-solid fa-satellite-dish text-gray-500 text-lg"></i>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs font-black uppercase tracking-tight">Tático</span>
-                            <span class="text-[8px] text-gray-600 uppercase font-mono">Prosperidade</span>
-                        </div>
-                    </div>
-                </div>
+    
+    <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate" style="animation-delay: 0.1s">
+        <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
+            <i class="fa-solid fa-eye text-white text-lg"></i> </div>
+        <div class="flex flex-col">
+            <span class="text-xs font-black uppercase tracking-tight">CONSCIÊNCIA</span>
+            <span class="text-[8px] text-gray-500 uppercase font-mono">Clareza</span>
+        </div>
+    </div>
+
+    <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate" style="animation-delay: 0.2s">
+        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+            <i class="fa-solid fa-brain text-gray-500 text-lg"></i> </div>
+        <div class="flex flex-col">
+            <span class="text-xs font-black uppercase tracking-tight">CÓRTEX</span>
+            <span class="text-[8px] text-gray-600 uppercase font-mono">Controle</span>
+        </div>
+    </div>
+
+    <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate" style="animation-delay: 0.3s">
+        <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+            <i class="fa-solid fa-chess text-gray-500 text-lg"></i>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-xs font-black uppercase tracking-tight">RAZÃO</span>
+            <span class="text-[8px] text-gray-600 uppercase font-mono">Lógica</span>
+        </div>
+    </div>
+
+    <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate" style="animation-delay: 0.4s">
+    <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+        <i class="fa-solid fa-wind text-gray-500 text-lg"></i>
+    </div>
+    <div class="flex flex-col">
+        <span class="text-xs font-black uppercase tracking-tight">FLUXO</span>
+        <span class="text-[8px] text-gray-600 uppercase font-mono">Ação</span>
+    </div>
+</div>
+</div>
             </div>
 
             <div class="mt-8 px-4 mb-4">
@@ -256,13 +250,17 @@
                         </div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-200 relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-6xl text-orange-900/20"><i
-                                    class="fa-solid fa-fire"></i></div>
-                            <span
-                                class="text-[9px] text-gray-500 font-black uppercase tracking-widest relative z-10">Sequência</span>
-                            <div class="text-3xl font-black text-white italic mt-2 relative z-10"><span
-                                    id="streakDisplay">0</span></div>
-                        </div>
+     <div class="absolute -right-4 -bottom-4 text-6xl text-orange-900/20"><i class="fa-solid fa-fire"></i></div>
+    
+    <div class="flex items-center gap-2 relative z-10">
+        <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
+        <i id="streak-fire" class="fa-solid fa-fire text-gray-700 transition-all duration-500"></i>
+    </div>
+    
+    <div class="text-3xl font-black text-white italic mt-2 relative z-10">
+        <span id="streakDisplay">0</span> <span class="text-xs text-gray-600 font-mono not-italic">DIAS</span>
+    </div>
+</div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-300 relative overflow-hidden">
                             <div class="absolute -right-4 -bottom-4 text-6xl text-green-900/20"><i

@@ -264,20 +264,38 @@ function triggerLevelUpPro(newLevel, newRank) {
 
 // --- FUNÇÕES DE ESTADO ---
 
+// Localize a função loadLocalState (quase no final do arquivo) e substitua por esta versão:
+
 function loadLocalState() {
     try {
         const xp = STORAGE.getItem(KEY_PREFIX + 'xp');
         if (xp && xp !== 'NaN') rpgState.xp = parseInt(xp);
         
-        // Carrega nível salvo ou recalcula
         const lvl = STORAGE.getItem(KEY_PREFIX + 'level');
         if (lvl) previousLevel = parseInt(lvl);
         
         const hist = STORAGE.getItem(KEY_PREFIX + 'history');
         if (hist) rpgState.history = JSON.parse(hist);
         
+        // --- CORREÇÃO DO RESET DIÁRIO DOS RITUAIS ---
         const hbt = STORAGE.getItem(KEY_PREFIX + 'habits');
-        if (hbt) { const d = JSON.parse(hbt); rpgState.habits = d.list || []; }
+        if (hbt) { 
+            const d = JSON.parse(hbt); 
+            const savedDate = d.date;
+            const today = new Date().toISOString().split('T')[0];
+            
+            let list = d.list || [];
+
+            // Se a data salva for diferente de hoje, reseta o status 'done'
+            if (savedDate !== today) {
+                console.log("🔄 Novo dia detectado. Reiniciando Rituais...");
+                list = list.map(h => ({ ...h, done: false }));
+                // O salvamento ocorrerá na próxima ação ou podemos forçar um save depois
+            }
+
+            rpgState.habits = list; 
+        }
+        // ---------------------------------------------
         
         const msn = STORAGE.getItem(KEY_PREFIX + 'missions');
         if(msn) rpgState.missions = JSON.parse(msn) || [];
@@ -285,7 +303,10 @@ function loadLocalState() {
         const scores = STORAGE.getItem(KEY_PREFIX + 'daily_scores');
         if(scores) rpgState.dailyScores = JSON.parse(scores);
         
-    } catch(e) { console.warn("Erro ao carregar estado local"); }
+        // Força salvar o estado limpo se houve reset
+        saveLocalState();
+        
+    } catch(e) { console.warn("Erro ao carregar estado local", e); }
 }
 
 function saveLocalState() {

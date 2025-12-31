@@ -2,6 +2,7 @@ import { CONFIG } from '../config.js';
 import { addXP, logActivity, updateMissionsState } from './gamification.js'; 
 import { showToast } from './ui.js';
 import { playSFX } from './audio.js'; // Importa sons
+import { getRPGState } from './gamification.js';
 
 let missions = [];
 
@@ -10,6 +11,7 @@ export function initDashboard() {
     if (stored) missions = JSON.parse(stored);
     
     renderMissions();
+    updateStreakUI();
 
     // --- ADICIONE ESTE BLOCO ---
     // Isso conecta o botão do HTML com a função interna do JS
@@ -21,7 +23,45 @@ export function initDashboard() {
     // ---------------------------
 
     const btn = document.getElementById('addMissionBtn');
+    
     // ... resto do código ...
+}
+export function updateStreakUI() {
+    const state = getRPGState();
+    const streak = state.streak || 0;
+    
+    // Atualiza o número
+    const display = document.getElementById('streakDisplay');
+    if(display) display.innerText = streak;
+
+    // Atualiza o Fogo
+    const fireIcon = document.getElementById('streak-fire');
+    if (!fireIcon) return;
+
+    // Reset das classes (mantém a base)
+    fireIcon.className = 'fa-solid fa-fire transition-all duration-500';
+
+    if (streak > 0) {
+        // Acende a chama (classe CSS personalizada)
+        fireIcon.classList.add('animate-flicker');
+
+        if (streak < 7) {
+            // Fogo Laranja (Iniciante)
+            fireIcon.classList.add('text-orange-500', 'drop-shadow-[0_0_5px_rgba(249,115,22,0.5)]');
+        } else if (streak >= 7 && streak < 30) {
+            // Fogo Vermelho (Semanal)
+            fireIcon.classList.add('text-red-600', 'scale-125', 'drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]');
+        } else if (streak >= 30 && streak < 180) {
+            // Chama Azul (Mensal - Alta temperatura)
+            fireIcon.classList.add('text-blue-400', 'scale-125', 'drop-shadow-[0_0_20px_rgba(96,165,250,0.8)]');
+        } else {
+            // Chama Roxa (Lendária)
+            fireIcon.classList.add('text-purple-500', 'scale-150', 'drop-shadow-[0_0_25px_rgba(168,85,247,0.8)]');
+        }
+    } else {
+        // Apagado
+        fireIcon.classList.add('text-gray-700', 'opacity-30');
+    }
 }
 
 function createMission(input, dateInput) {

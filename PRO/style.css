@@ -745,3 +745,13 @@ body {
         text-transform: uppercase; cursor: pointer; transition: all 0.2s;
     }
     .synapse-btn:active { background: #cc0000; border-color: #cc0000; }
+    /* --- ANIMAÇÃO DO FOGO (STREAK) --- */
+@keyframes flicker {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.95); }
+    25%, 75% { opacity: 0.9; transform: scale(1.05) rotate(-2deg); }
+}
+
+.animate-flicker {
+    animation: flicker 2.5s infinite linear; /* Velocidade do tremeluzir */
+}

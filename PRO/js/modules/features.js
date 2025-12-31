@@ -130,38 +130,116 @@ export function showWeeklyReport() {
 }
 
 // --- PROTOCOLO SOS ---
+const SOS_QUOTES = [
+    "A vontade passa. O arrependimento fica.",
+    "Você não é o seu desejo. Você é quem decide.",
+    "Neurociência: Um impulso dura apenas 15 minutos. Resista e o cérebro desiste.",
+    "Não troque o que você mais quer pelo que você quer agora.",
+    "O prazer imediato é o inimigo da felicidade eterna.",
+    "Quem é escravo dos seus desejos nunca será livre.",
+    "A dor da disciplina é menor que a dor do fracasso.",
+    "Seu cérebro está apenas pedindo dopamina. Não dê de graça.",
+    "Isso não é uma necessidade. É apenas um hábito morrendo.",
+    "Seja o Comandante da sua mente, não o passageiro.",
+    "O conforto é uma armadilha. Abrace o desconforto.",
+    "A cada 'NÃO' que você diz ao vício, sua força de vontade sobe de nível.",
+    "Lembre-se do porquê você começou.",
+    "A única saída é através. Respire e aguente.",
+    "Não negocie com a fraqueza.",
+    "Sêneca dizia: 'Sofremos mais na imaginação do que na realidade'.",
+    "Você já venceu 100% dos seus dias ruins. Vai vencer este também.",
+    "O vício mente. Ele diz que vai aliviar, mas só vai aprisionar.",
+    "Assuma o controle. O piloto automático está desligado.",
+    "Calma. É apenas uma onda química no seu cérebro. Deixe passar.",
+    "A liberdade custa caro. O preço é dizer não a si mesmo.",
+    "Respire fundo. Onde está sua atenção, está sua energia.",
+    "Não destrua seu progresso por 5 minutos de prazer.",
+    "Você é mais forte do que essa vontade passageira.",
+    "O triunfo sobre si mesmo é a maior de todas as vitórias."
+];
+
+// --- PROTOCOLO SOS ATUALIZADO ---
 export function startSOSProtocol() {
+    let currentQuoteIndex = Math.floor(Math.random() * SOS_QUOTES.length);
+
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black z-[10000] flex flex-col items-center justify-center text-center p-6 animate-fade-in';
     overlay.id = 'sos-overlay';
     
     overlay.innerHTML = `
-        <h1 class="text-4xl font-bold text-red-600 mb-2 tracking-widest animate-pulse">ALERTA DE SISTEMA</h1>
-        <p class="text-gray-400 text-sm mb-12 uppercase tracking-widest">Recalibragem Neural em Progresso</p>
-        <div class="relative flex items-center justify-center mb-16">
-            <div id="breath-circle" class="w-48 h-48 border-4 border-red-600 rounded-full flex items-center justify-center transition-all shadow-[0_0_30px_rgba(200,0,0,0.3)]">
-                <span id="breath-text" class="text-white text-2xl font-mono font-bold tracking-wider">PREPARE</span>
-            </div>
-            <div class="absolute w-48 h-48 border border-red-900 rounded-full animate-ping opacity-30"></div>
+        <h1 class="text-3xl md:text-4xl font-black text-red-600 mb-2 tracking-widest animate-pulse pointer-events-none">ALERTA DE CONTROLE</h1>
+        <p class="text-gray-500 text-xs md:text-sm mb-8 uppercase tracking-widest pointer-events-none">Recalibrando Córtex Pré-Frontal...</p>
+        
+        <div class="h-24 md:h-32 flex items-center justify-center mb-8 px-4 w-full max-w-2xl pointer-events-none">
+            <p id="sos-quote-display" class="text-white text-lg md:text-2xl font-serif italic leading-relaxed transition-opacity duration-1000 opacity-100">
+                "${SOS_QUOTES[currentQuoteIndex]}"
+            </p>
         </div>
-        <button id="close-sos" class="px-8 py-4 border border-gray-800 text-gray-500 hover:text-white hover:border-white hover:bg-white/5 transition-all uppercase tracking-[0.2em] text-xs font-bold rounded-lg">Retornar ao Controlo</button>
+
+        <div class="relative flex items-center justify-center mb-12 pointer-events-none">
+            <div id="breath-circle" class="w-48 h-48 md:w-64 md:h-64 border-4 border-red-600 rounded-full flex items-center justify-center transition-all shadow-[0_0_30px_rgba(200,0,0,0.3)] z-10">
+                <span id="breath-text" class="text-white text-2xl font-mono font-black tracking-wider">PREPARE</span>
+            </div>
+            <div class="absolute w-48 h-48 md:w-64 md:h-64 border border-red-900 rounded-full animate-ping opacity-30 pointer-events-none"></div>
+        </div>
+
+        <button id="close-sos" class="relative z-50 cursor-pointer px-8 py-4 border border-gray-800 text-gray-500 hover:text-white hover:border-white hover:bg-white/5 transition-all uppercase tracking-[0.2em] text-xs font-bold rounded-lg active:scale-95">
+            Vontade Controlada (Sair)
+        </button>
     `;
 
     document.body.appendChild(overlay);
 
+    // Lógica do botão
+    const closeBtn = document.getElementById('close-sos');
+    closeBtn.onclick = () => {
+        isActive = false; 
+        clearInterval(breathInterval); 
+        overlay.remove();
+        
+        addXP(100); 
+        playSFX('success'); 
+        showToast('NEUROPLASTICIDADE ATIVADA', 'Impulso vencido. Você ficou mais forte.', 'success');
+    };
+
+    // ... (O restante da lógica de respiração permanece igual) ...
     const circle = document.getElementById('breath-circle');
     const text = document.getElementById('breath-text');
+    const quoteDisplay = document.getElementById('sos-quote-display');
     let isActive = true;
+
+    const rotateQuote = () => {
+        if (!isActive) return;
+        quoteDisplay.style.opacity = '0';
+        setTimeout(() => {
+            if (!isActive) return;
+            currentQuoteIndex = (currentQuoteIndex + 1) % SOS_QUOTES.length;
+            quoteDisplay.innerText = `"${SOS_QUOTES[currentQuoteIndex]}"`;
+            quoteDisplay.style.opacity = '1';
+        }, 1000);
+    };
 
     const runCycle = () => {
         if (!isActive) return;
-        text.innerText = "INSPIRE"; circle.style.transform = "scale(1.5)"; circle.style.borderColor = "#ffffff"; circle.style.transition = "all 4s ease-in-out";
+        rotateQuote(); 
+        text.innerText = "INSPIRE"; 
+        circle.style.transform = "scale(1.3)"; 
+        circle.style.borderColor = "#ffffff"; 
+        circle.style.boxShadow = "0 0 50px rgba(255,255,255,0.2)";
+        circle.style.transition = "all 4s ease-in-out";
+        
         setTimeout(() => {
             if (!isActive) return;
-            text.innerText = "SEGURE"; circle.style.borderColor = "#cc0000"; 
+            text.innerText = "SEGURE"; 
+            circle.style.borderColor = "#cc0000"; 
+            circle.style.boxShadow = "0 0 20px rgba(200,0,0,0.5)";
+            
             setTimeout(() => {
                 if (!isActive) return;
-                text.innerText = "EXPIRE"; circle.style.transform = "scale(1.0)"; circle.style.transition = "all 4s ease-in-out";
+                text.innerText = "EXPIRE"; 
+                circle.style.transform = "scale(1.0)"; 
+                circle.style.transition = "all 4s ease-in-out";
+                
                 setTimeout(() => {
                     if (!isActive) return;
                     text.innerText = "MANTENHA";
@@ -172,11 +250,4 @@ export function startSOSProtocol() {
 
     runCycle();
     const breathInterval = setInterval(runCycle, 16000);
-
-    document.getElementById('close-sos').addEventListener('click', () => {
-        isActive = false; clearInterval(breathInterval); overlay.remove();
-        addXP(50); 
-        playSFX('success'); // <--- SOM DE SUCESSO AO COMPLETAR
-        showToast('SISTEMA ESTABILIZADO', 'Recalibragem completa. ', 'success');
-    });
 }
