@@ -222,14 +222,17 @@ async function sendMessage(text = null) {
             
             let aiText = data.choices[0].message.content;
             
-            // 1. DETECTOR DE GATILHO (CORRIGIDO)
-            let forceBlock = false;
+     
             
-            // Agora procuramos a tag CERTA que está no agents.js
+            let forceBlock = false;
+
+            // ESSA É A PARTE CRÍTICA:
             if (aiText.includes('[[LOCKED_DIAGNOSIS]]')) {
-                aiText = aiText.replace('[[LOCKED_DIAGNOSIS]]', ''); // Apaga a senha
-                forceBlock = true; // Força o bloqueio
+                aiText = aiText.replace('[[LOCKED_DIAGNOSIS]]', ''); // Remove a senha
+                forceBlock = true; // ATIVA O MODAL
             }
+            
+            // ... (resto do código) ...
             
             // (Mantenha o código de botões dinâmicos aqui...)
             let dynamicButtons = [];
