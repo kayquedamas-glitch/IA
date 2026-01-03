@@ -2,49 +2,54 @@ import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
-import { saveChatHistory, loadChatHistory } from '../modules/database.js'; 
+import { saveChatHistory, loadChatHistory } from '../modules/database.js';
+import { showPaywallModal } from '../modules/features.js';
 
 // chat.js
 let chatHistory = [];
-let currentAgentKey = 'Diagnostico'; 
+let currentAgentKey = 'Diagnostico';
 
 // --- NOVAS VARIÁVEIS ---
-let messageCount = 0; 
+let messageCount = 0;
 const DEMO_LIMIT = 6; // O usuário troca 3 mensagens e depois bloqueia
 const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
+// ARQUIVO: PRO/js/core/chat.js (Topo)
+const MIN_QUESTIONS = 3;  // Mínimo para criar engajamento
+const MAX_QUESTIONS = 8;  // Máximo para não ficar chato
 
 // --- INICIALIZAÇÃO ---
 export async function initChat() {
     const btn = document.getElementById('sendMessageBtn');
     const input = document.getElementById('chatInput');
-    
+
     // Botão de Reset (Lixeira)
     const resetBtn = document.getElementById('resetChatBtn');
     if (resetBtn) {
         resetBtn.onclick = () => resetCurrentChat();
     }
-    
+
     if (btn && input) {
         btn.onclick = () => sendMessage();
-        input.onkeydown = (e) => { 
-            if (e.key === 'Enter' && !e.shiftKey) { 
-                e.preventDefault(); 
-                sendMessage(); 
-            } 
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         };
         // Scroll ao focar no mobile/desktop
-        if(window.innerWidth > 768) {
-             input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
+        if (window.innerWidth > 768) {
+            input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
     }
 }
 
+
 // --- RESETAR CONVERSA ---
 async function resetCurrentChat() {
     const area = document.getElementById('messagesArea');
-    
+
     // Efeito visual (Fade out)
-    if(area) {
+    if (area) {
         area.style.transition = 'opacity 0.3s';
         area.style.opacity = '0';
     }
@@ -54,12 +59,12 @@ async function resetCurrentChat() {
         messageCount = 0; // <--- ADICIONE ISSO: Reseta o contador
         enableInput();    // <--- ADICIONE ISSO: Garante que o input volte a funcionar
         await saveChatHistory(currentAgentKey, []); // Limpa Banco de Dados
-        
-        if(area) {
+
+        if (area) {
             area.innerHTML = '';
             area.style.opacity = '1';
         }
-        
+
         // Recarrega o Agente do zero
         await loadAgent(currentAgentKey);
     }, 300);
@@ -72,14 +77,14 @@ export async function loadAgent(key) {
 
     const messagesArea = document.getElementById('messagesArea');
     const viewChat = document.getElementById('viewChat');
-    
+
     // 1. Aplica Atmosfera (Skin)
     viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
     if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
 
     // 2. Limpa Tela
-    if(messagesArea) messagesArea.innerHTML = '';
-    
+    if (messagesArea) messagesArea.innerHTML = '';
+
     // 3. Cabeçalho
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
@@ -107,9 +112,9 @@ export async function loadAgent(key) {
     } else {
         // Novo Chat
         chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
-        
+
         setTimeout(() => {
-            addMessageUI('ai', AGENTS[key].welcome, true); 
+            addMessageUI('ai', AGENTS[key].welcome, true);
             if (AGENTS[key].initialButtons) {
                 setTimeout(() => renderReplies(AGENTS[key].initialButtons), 1000);
             }
@@ -118,54 +123,79 @@ export async function loadAgent(key) {
 
     // Atualiza Menu Lateral
     document.querySelectorAll('.tool-item').forEach(el => {
-        if(el.textContent.includes(AGENTS[key].name)) el.classList.add('active');
+        if (el.textContent.includes(AGENTS[key].name)) el.classList.add('active');
         else el.classList.remove('active');
     });
 }
 
-// --- ENVIAR MENSAGEM (Com Economia de Tokens) ---
-// --- ENVIAR MENSAGEM (Com Economia de Tokens + Lógica de Demo) ---
+
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
-    
+
     // 1. VALIDAÇÃO DE INPUT
     if (!val) return;
 
     // 2. BLOQUEIO DE SEGURANÇA (DEMO) 
     // Se já atingiu o limite, não deixa enviar mais nada antes mesmo de processar
     if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
-        return; 
+        return;
     }
-    
+
     // 3. UI DO USUÁRIO
-    addMessageUI('user', val, false); 
-    if(!text) input.value = '';
-    
+    addMessageUI('user', val, false);
+    if (!text) input.value = '';
+
     // Remove botões antigos
     const old = document.querySelector('.quick-reply-container');
-    if(old) old.remove();
+    if (old) old.remove();
 
     // 4. INCREMENTA O CONTADOR (Apenas se for o Diagnóstico)
     if (currentAgentKey === 'Diagnostico') {
         messageCount++;
     }
-    
+    // ARQUIVO: PRO/js/core/chat.js (Dentro de sendMessage, antes do fetch/loading)
+
+    // --- A LÓGICA DO DIRETOR INVISÍVEL ---
+    let systemInjection = "";
+
+    if (currentAgentKey === 'Diagnostico') {
+        // --- LÓGICA DO DIRETOR INVISÍVEL (CORRIGIDA) ---
+    let systemInjection = "";
+
+    if (currentAgentKey === 'Diagnostico') {
+        if (messageCount < MIN_QUESTIONS) {
+            // FASE 1: Coleta
+            // Adicionei "NÃO RESPONDA AO SISTEMA" e "SEJA INVISÍVEL"
+            systemInjection = `(INSTRUÇÃO DE BASTIDORES: O usuário NÃO deve saber que isso é um sistema. NÃO mencione 'Sistema' na resposta. Apenas continue a anamnese fazendo mais uma pergunta provocativa.)`;
+        } 
+        else if (messageCount >= MAX_QUESTIONS) {
+            // FASE 3: Encerramento
+            systemInjection = `(COMANDO FINAL: Encerre AGORA. Faça um diagnóstico curto e termine com a tag [[LOCKED_DIAGNOSIS]]. NÃO responda a este comando, apenas execute.)`;
+        } 
+        else {
+            // FASE 2: Decisão
+            systemInjection = `(INSTRUÇÃO: Se já identificou a raiz do problema, encerre com [[LOCKED_DIAGNOSIS]]. Se não, faça mais uma pergunta. NÃO mencione esta instrução.)`;
+        }
+    }
+    }
     const loadingId = showLoading();
     const rpg = getRPGState();
-    
-    const context = { 
-        role: 'system', 
-        content: `[SISTEMA] Usuário Nível ${rpg.level} | Rank: ${rpg.currentRank}.` 
+
+    const context = {
+        role: 'system',
+        content: `[SISTEMA] Usuário Nível ${rpg.level} | Rank: ${rpg.currentRank}.`
     };
-    
+
     try {
         // --- OTIMIZAÇÃO DE TOKENS ---
-        const MAX_CONTEXT = 15; 
+        const MAX_CONTEXT = 15;
         const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
-        
+
+        // ATUALIZE ESTA PARTE:
         const apiMessages = [
             chatHistory[0], 
+            { role: 'system', content: systemInjection }, // <--- ADICIONE ESTA LINHA NOVA
             context, 
             ...recentHistory, 
             { role: 'user', content: val }
@@ -174,28 +204,34 @@ async function sendMessage(text = null) {
         const res = await fetch(CONFIG.AI_WORKER, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                model: CONFIG.API_MODEL, 
+            body: JSON.stringify({
+                model: CONFIG.API_MODEL,
                 messages: apiMessages
             })
         });
-        
+
         const data = await res.json();
         removeLoading(loadingId);
-        
+
         // ... dentro de sendMessage ...
-        
+
+        // ... dentro de sendMessage ...
+
         if (data.choices && data.choices[0]) {
+            // ... dentro de sendMessage, logo após receber o data ...
+            
             let aiText = data.choices[0].message.content;
             
-            // 1. DETECTOR DE GATILHO DE BLOQUEIO (A Correção)
+            // 1. DETECTOR DE GATILHO (CORRIGIDO)
             let forceBlock = false;
-            if (aiText.includes('[[BLOCK_NOW]]')) {
-                aiText = aiText.replace('[[BLOCK_NOW]]', ''); // Remove o código da visão do usuário
-                forceBlock = true; // Ativa a trava manual
+            
+            // Agora procuramos a tag CERTA que está no agents.js
+            if (aiText.includes('[[LOCKED_DIAGNOSIS]]')) {
+                aiText = aiText.replace('[[LOCKED_DIAGNOSIS]]', ''); // Apaga a senha
+                forceBlock = true; // Força o bloqueio
             }
             
-            // Botões dinâmicos {{A|B}}
+            // (Mantenha o código de botões dinâmicos aqui...)
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -206,39 +242,38 @@ async function sendMessage(text = null) {
             aiText = handleCommands(aiText);
             
             // Exibe resposta da IA
-            addMessageUI('ai', aiText, true);
+            if (aiText.trim() !== "") {
+                addMessageUI('ai', aiText, true);
+            }
             
-            // LÓGICA DE DECISÃO DO BLOQUEIO
-            // Bloqueia se: (É Demo E passou do limite) OU (A IA mandou o código de bloqueio)
-            const isLimitReached = (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
-            const shouldBlockNow = (isLimitReached || forceBlock) && typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
+            // 2. LÓGICA DE BLOQUEIO (CORRIGIDA)
+            // Permite testar o bloqueio mesmo se não estiver em modo DEMO, caso a IA mande o comando
+            const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
+            const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            
+            // AQUI ESTAVA O ERRO: forceBlock deve funcionar independente do modo demo para você testar
+            const shouldBlockNow = (isLimitReached) || forceBlock;
 
             // Renderiza botões apenas se NÃO for bloquear agora
             if(dynamicButtons.length > 0 && !shouldBlockNow) {
                 renderReplies(dynamicButtons);
             }
 
-            // Salva histórico
-            chatHistory.push({ role: 'user', content: val }, { role: 'assistant', content: aiText });
-            saveChatHistory(currentAgentKey, chatHistory);
+            // ... (salvar histórico) ...
 
-            // 5. GATILHO DO PAYWALL (O Grande Final)
+            // 3. DISPARAR PAYWALL
             if (shouldBlockNow) {
-                console.log("🔒 Bloqueio ativado via " + (forceBlock ? "Gatilho IA" : "Limite de Mensagens"));
-                
-                // Trava o input IMEDIATAMENTE para o usuário não mandar "cade?"
+                console.log("🔒 Bloqueio ativado!");
                 disableInput(); 
-
-                // Inicia a animação após um breve delay para leitura
                 setTimeout(() => {
                     triggerPaywallSequence(); 
                 }, 2000);
             }
         }
-    } catch (e) { 
-        removeLoading(loadingId); 
+    } catch (e) {
+        removeLoading(loadingId);
         console.error(e); // Bom para debug
-        addMessageUI('system', "ERRO DE CONEXÃO.", false); 
+        addMessageUI('system', "ERRO DE CONEXÃO.", false);
     }
 }
 
@@ -258,7 +293,7 @@ function handleCommands(text) {
 // --- SEGURANÇA (Sanitização) ---
 function escapeHTML(str) {
     if (!str) return '';
-    return str.replace(/[&<>'"]/g, 
+    return str.replace(/[&<>'"]/g,
         tag => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -271,7 +306,7 @@ function escapeHTML(str) {
 // --- RENDERIZAÇÃO DE MENSAGENS (UI) ---
 function addMessageUI(role, text, animate = true) {
     const area = document.getElementById('messagesArea');
-    if(!area) return;
+    if (!area) return;
 
     // --- LIMPEZA PROFUNDA ---
     if (text) {
@@ -280,9 +315,9 @@ function addMessageUI(role, text, animate = true) {
         txt.innerHTML = text;
         text = txt.value;
     }
-    
+
     const div = document.createElement('div');
-    
+
     // 1. Sanitiza (Segurança)
     let safeText = escapeHTML(text);
 
@@ -291,16 +326,16 @@ function addMessageUI(role, text, animate = true) {
         .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>') // Negrito
         .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>') // Itálico
         .replace(/\n/g, '<br>'); // Quebra de linha (Importante para listas)
-    div.style.whiteSpace = 'pre-wrap'; 
+    div.style.whiteSpace = 'pre-wrap';
 
-    
+
 
     if (role === 'user') {
         div.className = 'chat-message-user';
         div.innerHTML = formattedText;
     } else if (role === 'ai') {
         div.className = 'chat-message-ia';
-        if (animate) typeWriterBubble(div, formattedText); 
+        if (animate) typeWriterBubble(div, formattedText);
         else div.innerHTML = formattedText;
     } else {
         div.className = 'self-center text-[10px] text-red-500 font-bold my-2 opacity-70';
@@ -318,10 +353,10 @@ function addMessageUI(role, text, animate = true) {
 function typeWriterBubble(element, html, speed = 10) {
     let i = 0;
     element.innerHTML = ''; // Limpa antes de começar
-    
+
     function type() {
         if (i >= html.length) return;
-        
+
         const char = html.charAt(i);
 
         // 1. DETECTA TAGS HTML (<b class="...">, </b>, etc)
@@ -335,7 +370,7 @@ function typeWriterBubble(element, html, speed = 10) {
                 return;
             }
         }
-        
+
         // 2. DETECTA CÓDIGOS ESPECIAIS (&quot;, &amp;, &#39;)
         if (char === '&') {
             let entityEnd = html.indexOf(';', i);
@@ -351,12 +386,12 @@ function typeWriterBubble(element, html, speed = 10) {
         // 3. TEXTO NORMAL (Digita letra por letra)
         element.innerHTML += char;
         i++;
-        
+
         // Mantém o scroll descendo
         scrollToBottom();
         setTimeout(type, speed);
     }
-    
+
     type();
 }
 
@@ -382,9 +417,9 @@ function showLoading() {
     const div = document.createElement('div');
     div.id = id;
     div.className = "animate-fade-in my-2"; // Animação de entrada suave
-    
+
     // ESCOLHA SUA VERSÃO AQUI (1, 2 ou 3):
-    const VERSION = 1; 
+    const VERSION = 1;
 
     if (VERSION === 1) {
         // OPÇÃO 1: Neural Pulse (3 bolinhas vermelhas)
@@ -392,14 +427,14 @@ function showLoading() {
             <div class="loading-neural">
                 <span></span><span></span><span></span>
             </div>`;
-    } 
+    }
     else if (VERSION === 2) {
         // OPÇÃO 2: Tactical Terminal (Texto mudando)
         div.innerHTML = `
             <div class="loading-tactical">
                 <i class="fa-solid fa-terminal mr-2"></i>SYSTEM
             </div>`;
-    } 
+    }
     else if (VERSION === 3) {
         // OPÇÃO 3: Synapse Ring (Anel girando)
         div.innerHTML = `
@@ -411,10 +446,10 @@ function showLoading() {
 
     area.appendChild(div);
     scrollToBottom();
-    return id; 
+    return id;
 }
 
-function removeLoading(id) { 
+function removeLoading(id) {
     const el = document.getElementById(id);
     if (el) el.remove();
 }
@@ -424,7 +459,7 @@ function removeLoading(id) {
 function scrollToBottom() {
     const messagesContainer = document.querySelector('.chat-messages'); // Pega o container, não a área interna
     const area = document.getElementById('messagesArea');
-    
+
     if (messagesContainer) {
         // Opção 1: Tenta scroll suave nativo
         messagesContainer.scrollTo({
@@ -443,21 +478,21 @@ function scrollToBottom() {
 function disableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if(input) {
+    if (input) {
         input.disabled = true;
-        input.placeholder = "SISTEMA BLOQUEADO // AGUARDANDO UPGRADE";
+        input.placeholder = "AGUARDANDO UPGRADE";
     }
-    if(btn) btn.disabled = true;
+    if (btn) btn.disabled = true;
 }
 
 function enableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if(input) {
+    if (input) {
         input.disabled = false;
         input.placeholder = "Digite sua mensagem...";
     }
-    if(btn) btn.disabled = false;
+    if (btn) btn.disabled = false;
 }
 
 // --- FUNÇÃO DO PAYWALL ---
@@ -476,12 +511,12 @@ function enableInput() {
 
 function triggerPaywallSequence() {
     disableInput();
-    
+
     const area = document.getElementById('messagesArea');
-    
+
     // Remove qualquer loading anterior
     const oldLoad = document.querySelector('.synapse-loader-wrapper');
-    if(oldLoad) oldLoad.parentElement.remove();
+    if (oldLoad) oldLoad.parentElement.remove();
 
     // ID único para manipular
     const sequenceId = 'seq-' + Date.now();
@@ -510,14 +545,14 @@ function triggerPaywallSequence() {
 
         </div>
     `;
-    
+
     const div = document.createElement('div');
     div.innerHTML = sequenceHTML;
     area.appendChild(div);
     scrollToBottom();
 
     // --- A COREOGRAFIA DA ANIMAÇÃO ---
-    
+
     // 1. Inicia a barra de progresso
     setTimeout(() => {
         document.getElementById(`progress-bar-${sequenceId}`).style.width = "100%";
@@ -526,7 +561,7 @@ function triggerPaywallSequence() {
     // 2. Muda o Texto: "Compilando"
     setTimeout(() => {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
-        if(textEl) {
+        if (textEl) {
             textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-yellow-500 text-center uppercase";
             textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Compilando Dossiê...`;
         }
@@ -535,10 +570,10 @@ function triggerPaywallSequence() {
     // 3. Muda o Texto: "Concluído"
     setTimeout(() => {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
-        if(textEl) {
+        if (textEl) {
             textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-green-500 text-center uppercase";
             textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Protocolo Pronto.`;
-            
+
             // Explosão visual (Scale Up e Fade Out)
             const container = document.getElementById(sequenceId);
             container.style.transform = "scale(1.1)";
@@ -556,7 +591,7 @@ function triggerPaywallSequence() {
 
 function showPaywallCard() {
     const area = document.getElementById('messagesArea');
-    const CHECKOUT_LINK = "../index.html#planos"; 
+    const CHECKOUT_LINK = "../index.html#planos";
 
     const cardHTML = `
         <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
@@ -592,4 +627,38 @@ function showPaywallCard() {
     div.innerHTML = cardHTML;
     area.appendChild(div);
     setTimeout(() => { if (typeof scrollToBottom === 'function') scrollToBottom(); }, 300);
+}
+async function processAIResponse(aiText) {
+    const chatHistory = document.getElementById('chatHistory');
+
+    // 1. VERIFICAÇÃO DE COMANDO OCULTO
+    if (aiText.includes('[[LOCKED_DIAGNOSIS]]')) {
+
+        // Remove a tag do texto para o usuário não ver "[[LOCKED...]]"
+        const cleanText = aiText.replace('[[LOCKED_DIAGNOSIS]]', '');
+
+        // Mostra a mensagem final da IA (se houver texto antes da tag)
+        if (cleanText.trim().length > 0) {
+            appendMessage('ai', cleanText);
+        }
+
+        // 2. DISPARA O MODAL (Gatilho)
+        console.log("🔒 Diagnóstico Bloqueado Detectado - Abrindo Modal");
+
+        setTimeout(() => {
+            // Tenta chamar a função importada ou global
+            if (typeof showPaywallModal === 'function') {
+                showPaywallModal();
+            } else if (window.showPaywallModal) {
+                window.showPaywallModal();
+            } else {
+                console.error("Erro: Função showPaywallModal não encontrada!");
+            }
+        }, 1500); // Delay dramático de 1.5s para ele ler a última frase
+
+        return; // Para a execução aqui, não faz mais nada
+    }
+
+    // Se não tiver a tag, segue normal
+    appendMessage('ai', aiText);
 }

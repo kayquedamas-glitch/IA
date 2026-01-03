@@ -251,3 +251,74 @@ export function startSOSProtocol() {
     runCycle();
     const breathInterval = setInterval(runCycle, 16000);
 }
+// PRO/js/modules/features.js
+window.showPaywallModal = showPaywallModal;
+export function showPaywallModal() {
+    // 1. Cria o Overlay Escuro
+    const overlay = document.createElement('div');
+    overlay.className = 'fixed inset-0 bg-black/90 z-[99999] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm';
+    
+    // 2. O Conteúdo do Modal (Estilo "Relatório Confidencial")
+    overlay.innerHTML = `
+        <div class="bg-[#0a0a0a] border border-red-900/50 w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(204,0,0,0.2)] relative">
+            
+            <div class="bg-red-900/10 p-6 border-b border-red-900/30 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-file-medical-alt text-red-500 text-xl animate-pulse"></i>
+                    <div>
+                        <h3 class="text-white font-bold uppercase tracking-widest text-sm">Diagnóstico Finalizado</h3>
+                        <p class="text-red-400 text-[10px] font-mono">ID: USER_NEURAL_FAIL_01</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 space-y-6">
+                
+                <div>
+                    <p class="text-gray-500 text-xs uppercase font-bold mb-2">Problema Identificado:</p>
+                    <h2 class="text-2xl text-white font-black font-brand leading-none">
+                        Dopamina <span class="text-red-500">Resistente</span>
+                    </h2>
+                    <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                        Seu sistema límbico assumiu o controle. Você perdeu a capacidade biológica de sentir prazer no esforço.
+                    </p>
+                </div>
+
+                <div class="bg-[#111] p-4 rounded-lg border border-white/5">
+                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <span>Nível de Gravidade</span>
+                        <span class="text-red-500 font-bold">CRÍTICO (89%)</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-red-600 w-[89%] animate-[width_1s_ease-out]"></div>
+                    </div>
+                </div>
+
+                <div class="relative group cursor-pointer" onclick="window.location.href='#planos'"> <p class="text-gray-500 text-xs uppercase font-bold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-lock text-red-500"></i> Protocolo de Cura:
+                    </p>
+                    
+                    <div class="filter blur-sm select-none opacity-50 text-sm text-gray-300 space-y-2">
+                        <p>1. Iniciar o jejum de dopamina de 12h para resetar receptores.</p>
+                        <p>2. Ativar o módulo Córtex para bloquear redes sociais.</p>
+                        <p>3. Usar a técnica de respiração 4-7-8 para...</p>
+                    </div>
+
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent">
+                        <button class="bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase py-3 px-6 rounded-full shadow-[0_0_20px_rgba(204,0,0,0.5)] tracking-widest transition-all transform hover:scale-105 flex items-center gap-2">
+                            Desbloquear Solução <i class="fa-solid fa-lock-open"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-[#050505] p-4 text-center border-t border-white/5">
+                <p class="text-[10px] text-gray-600">Apenas membros PRO têm acesso aos protocolos neurocientíficos.</p>
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+}
