@@ -129,6 +129,9 @@ export async function loadAgent(key) {
 }
 
 
+// ARQUIVO: PRO/js/core/chat.js
+// Substitua a função sendMessage inteira por esta versão corrigida:
+
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
@@ -137,7 +140,6 @@ async function sendMessage(text = null) {
     if (!val) return;
 
     // 2. BLOQUEIO DE SEGURANÇA (DEMO) 
-    // Se já atingiu o limite, não deixa enviar mais nada antes mesmo de processar
     if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
         return;
     }
@@ -150,35 +152,33 @@ async function sendMessage(text = null) {
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
-    // 4. INCREMENTA O CONTADOR (Apenas se for o Diagnóstico)
+    // 4. INCREMENTA O CONTADOR
     if (currentAgentKey === 'Diagnostico') {
         messageCount++;
     }
-    // ARQUIVO: PRO/js/core/chat.js (Dentro de sendMessage, antes do fetch/loading)
 
-    // --- A LÓGICA DO DIRETOR INVISÍVEL ---
+    // --- A LÓGICA DO DIRETOR INVISÍVEL (CORRIGIDA) ---
     let systemInjection = "";
 
     if (currentAgentKey === 'Diagnostico') {
-        // --- LÓGICA DO DIRETOR INVISÍVEL (CORRIGIDA) ---
-    let systemInjection = "";
-
-    if (currentAgentKey === 'Diagnostico') {
-        if (messageCount < MIN_QUESTIONS) {
-            // FASE 1: Coleta
-            // Adicionei "NÃO RESPONDA AO SISTEMA" e "SEJA INVISÍVEL"
-            systemInjection = `(INSTRUÇÃO DE BASTIDORES: O usuário NÃO deve saber que isso é um sistema. NÃO mencione 'Sistema' na resposta. Apenas continue a anamnese fazendo mais uma pergunta provocativa.)`;
+        if (messageCount < 3) {
+            // FASE 1: ESCUTA (O usuário fala, IA valida)
+            systemInjection = `(INSTRUÇÃO: Apenas ouça e valide a dor do usuário. Mostre que você entende o problema. Faça uma pergunta curta para ele falar mais.)`;
         } 
-        else if (messageCount >= MAX_QUESTIONS) {
-            // FASE 3: Encerramento
-            systemInjection = `(COMANDO FINAL: Encerre AGORA. Faça um diagnóstico curto e termine com a tag [[LOCKED_DIAGNOSIS]]. NÃO responda a este comando, apenas execute.)`;
+        else if (messageCount < 6) {
+            // FASE 2: TIRAR A CULPA (A IA explica que o problema é o método)
+            systemInjection = `(INSTRUÇÃO: Agora tire a culpa das costas dele. Diga que o cérebro humano falha sem organização externa. Use lógica para acalmá-lo.)`;
+        } 
+        else if (messageCount < 9) {
+            // FASE 3: A INDUÇÃO (Preparando a venda)
+            systemInjection = `(INSTRUÇÃO: Comece a perguntar: "E se você tivesse um sistema que lembrasse de tudo por você?". Faça ele desejar a organização.)`;
         } 
         else {
-            // FASE 2: Decisão
-            systemInjection = `(INSTRUÇÃO: Se já identificou a raiz do problema, encerre com [[LOCKED_DIAGNOSIS]]. Se não, faça mais uma pergunta. NÃO mencione esta instrução.)`;
+            // FASE 4: O FECHAMENTO (Bloqueio)
+            systemInjection = `(INSTRUÇÃO FINAL: Diga que o Synapse é a solução exata para isso. Encerre com a tag [[LOCKED_DIAGNOSIS]].)`;
         }
     }
-    }
+
     const loadingId = showLoading();
     const rpg = getRPGState();
 
@@ -188,14 +188,12 @@ async function sendMessage(text = null) {
     };
 
     try {
-        // --- OTIMIZAÇÃO DE TOKENS ---
         const MAX_CONTEXT = 15;
         const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
 
-        // ATUALIZE ESTA PARTE:
         const apiMessages = [
             chatHistory[0], 
-            { role: 'system', content: systemInjection }, // <--- ADICIONE ESTA LINHA NOVA
+            { role: 'system', content: systemInjection }, 
             context, 
             ...recentHistory, 
             { role: 'user', content: val }
@@ -213,28 +211,22 @@ async function sendMessage(text = null) {
         const data = await res.json();
         removeLoading(loadingId);
 
-        // ... dentro de sendMessage ...
-
-        // ... dentro de sendMessage ...
-
         if (data.choices && data.choices[0]) {
-            // ... dentro de sendMessage, logo após receber o data ...
-            
             let aiText = data.choices[0].message.content;
-            
-     
-            
+            // (Logo após receber 'aiText')
+
             let forceBlock = false;
 
-            // ESSA É A PARTE CRÍTICA:
-            if (aiText.includes('[[LOCKED_DIAGNOSIS]]')) {
-                aiText = aiText.replace('[[LOCKED_DIAGNOSIS]]', ''); // Remove a senha
-                forceBlock = true; // ATIVA O MODAL
+            // --- CORREÇÃO DO BUG AQUI ---
+            // Essa linha aceita tanto [[LOCKED...]] quanto (LOCKED...)
+            const lockRegex = /(\[\[|\()LOCKED_DIAGNOSIS(\]\]|\))/i;
+
+            if (lockRegex.test(aiText)) {
+                aiText = aiText.replace(lockRegex, ''); // Apaga a tag do texto visual
+                forceBlock = true; // Ativa o modal
             }
             
-            // ... (resto do código) ...
-            
-            // (Mantenha o código de botões dinâmicos aqui...)
+            // Tratamento de botões (JSON)
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -244,30 +236,29 @@ async function sendMessage(text = null) {
 
             aiText = handleCommands(aiText);
             
-            // Exibe resposta da IA
+            // Exibe a resposta (sem a tag LOCKED)
             if (aiText.trim() !== "") {
                 addMessageUI('ai', aiText, true);
             }
             
-            // 2. LÓGICA DE BLOQUEIO (CORRIGIDA)
-            // Permite testar o bloqueio mesmo se não estiver em modo DEMO, caso a IA mande o comando
+            // Verifica se deve bloquear
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
             const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
-            
-            // AQUI ESTAVA O ERRO: forceBlock deve funcionar independente do modo demo para você testar
             const shouldBlockNow = (isLimitReached) || forceBlock;
 
-            // Renderiza botões apenas se NÃO for bloquear agora
             if(dynamicButtons.length > 0 && !shouldBlockNow) {
                 renderReplies(dynamicButtons);
             }
 
-            // ... (salvar histórico) ...
+            // Salva histórico (opcional, adicione sua função de salvar aqui se necessário)
+            // chatHistory.push({ role: 'assistant', content: aiText });
 
-            // 3. DISPARAR PAYWALL
+            // DISPARAR PAYWALL
             if (shouldBlockNow) {
-                console.log("🔒 Bloqueio ativado!");
+                console.log("🔒 Bloqueio ativado via Tag ou Limite!");
                 disableInput(); 
+                
+                // Pequeno delay para o usuário ler a última frase antes da animação
                 setTimeout(() => {
                     triggerPaywallSequence(); 
                 }, 2000);
@@ -275,7 +266,7 @@ async function sendMessage(text = null) {
         }
     } catch (e) {
         removeLoading(loadingId);
-        console.error(e); // Bom para debug
+        console.error(e);
         addMessageUI('system', "ERRO DE CONEXÃO.", false);
     }
 }
