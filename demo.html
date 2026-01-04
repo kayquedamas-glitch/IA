@@ -377,27 +377,35 @@
     <script>lucide.createIcons();</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const PADDING_HIGHLIGHT = 4;
+        const PADDING_HIGHLIGHT = 6; 
         localStorage.removeItem('synapse_demo_seen');
 
-        if (window.innerWidth > 768) return;
+        // Se quiser testar no PC, comente a linha abaixo
+        if (window.innerWidth > 768) return; 
 
+        // --- INÍCIO INTELIGENTE ---
         const originalCloseBriefing = window.closeBriefing;
         window.closeBriefing = function() {
             if(originalCloseBriefing) originalCloseBriefing(); 
-            setTimeout(startTourSequence, 700);
+            // Começa o tour logo após fechar o briefing inicial
+            setTimeout(startTourSequence, 800);
         };
+        
+        // Fallback caso não tenha briefing
+        if (!window.closeBriefing) setTimeout(startTourSequence, 1500);
 
+        // --- ROTEIRO DE VENDAS (A JORNADA) ---
+        
         function startTourSequence() {
-            // PASSO 1: CHAT
+            // PASSO 1: CHAT (Foco: Alívio Mental)
             window.switchTab('chat');
             setTimeout(() => {
                 const inputWrapper = document.getElementById('textInputWrapper'); 
                 showSynapseHud({
                     target: inputWrapper, 
                     icon: "fa-solid fa-brain",
-                    title: "NÚCLEO DE INTELIGÊNCIA",
-                    text: "Digite aqui. A IA processa seus pensamentos e sentimentos para criar estratégias.",
+                    title: "SEU SEGUNDO CÉREBRO",
+                    text: "Sua mente não foi feita para guardar tudo. <b class='text-white'>Despeje seu caos aqui</b> e deixe o sistema organizar sua vida por você.",
                     position: "top",
                     nextAction: () => startStep2()
                 });
@@ -405,184 +413,188 @@
         }
 
         function startStep2() {
-            // PASSO 2: JORNADA
+            // PASSO 2: VISÃO (Foco: Controle)
             window.switchTab('protocolo');
             setTimeout(() => {
                 const tabJornada = document.getElementById('tabJornada');
                 showSynapseHud({
                     target: tabJornada,
-                    icon: "fa-solid fa-route",
-                    title: "BASE DE COMANDO",
-                    text: "Acesse seus planos aqui. É o painel onde a estratégia vira ação.",
-                    position: "top-right",
-                    offsetX: 10,
+                    icon: "fa-solid fa-map",
+                    title: "O FIM DO IMPROVISO",
+                    text: "Chega de acordar perdido. Na aba <b class='text-white'>Jornada</b>, você visualiza o mapa exato entre onde você está e onde quer chegar.",
+                    position: "top", 
                     nextAction: () => startStep3()
                 });
-            }, 600);
+            }, 800);
         }
 
         function startStep3() {
-            // PASSO 3: RELATÓRIO
+            // PASSO 3: MÉTRICAS (Foco: Dopamina/Vício)
             const statsArea = document.querySelector('.dashboard-card');
             if(statsArea) statsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             setTimeout(() => {
                 showSynapseHud({
                     target: statsArea,
-                    icon: "fa-solid fa-chart-pie",
-                    title: "MÉTRICAS & EVOLUÇÃO",
-                    text: "Acompanhe seu Nível e acesse o Relatório Completo no topo da tela.",
+                    icon: "fa-solid fa-fire",
+                    title: "VICIE EM PROGREDIR",
+                    text: "Hackeamos sua motivação. Ver seu Nível e Sequência subirem vai tornar a <b class='text-white'>disciplina viciante</b>.",
                     position: "bottom",
                     nextAction: () => startStep4()
                 });
-            }, 800);
+            }, 1000);
         }
 
         function startStep4() {
-            // PASSO 4: AGENDA (Ajustado)
+            // PASSO 4: AGENDA (Foco: Facilidade)
             const agendaCard = document.getElementById('calendarGrid')?.parentElement;
-            
-            // Alterado para 'start' para garantir que o topo do card esteja visível
             if(agendaCard) agendaCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             setTimeout(() => {
                 showSynapseHud({
                     target: agendaCard,
-                    icon: "fa-solid fa-calendar-check",
-                    title: "RITUAIS DIÁRIOS",
-                    text: "Sua rotina inegociável fica aqui. A IA define rituais para blindar sua disciplina.",
-                    position: "top", // Tenta ficar em cima
-                    offsetY: -10,
+                    icon: "fa-regular fa-calendar-check",
+                    title: "DISCIPLINA AUTOMÁTICA",
+                    text: "Não dependa de força de vontade. Seus <b class='text-white'>Rituais</b> blindam sua rotina para você nunca mais esquecer o importante.",
+                    position: "top",
                     nextAction: () => startStep5()
                 });
-            }, 800);
+            }, 1000);
         }
 
         function startStep5() {
-            // PASSO 5: OBJETIVOS
-            const objetivosCard = document.getElementById('missionList')?.parentElement;
-            
-            if(objetivosCard) objetivosCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            setTimeout(() => {
-                showSynapseHud({
-                    target: objetivosCard,
-                    icon: "fa-solid fa-bullseye",
-                    title: "OBJETIVOS DINÂMICOS",
-                    text: "O output da sua conversa. Tudo o que você combina com a IA vira uma missão aqui.",
-                    position: "top",
-                    nextAction: () => startStep6()
-                });
-            }, 800);
-        }
-
-        function startStep6() {
-            // PASSO 6: SIDEBAR
+            // PASSO 5: ARSENAL (Foco: Suporte/Poder)
             window.switchTab('chat');
+            
             setTimeout(() => {
-                window.toggleSidebar(true);
+                window.toggleSidebar(true); // Abre sidebar
+                
                 setTimeout(() => {
-                    const arsenalCard = document.querySelector('.sidebar .overflow-y-auto').parentElement;
+                    const arsenalArea = document.querySelector('.sidebar .overflow-y-auto');
                     
                     showSynapseHud({
-                        target: arsenalCard,
-                        icon: "fa-solid fa-mask",
-                        title: "ARSENAL SECRETO",
-                        text: "Seus 4 Agentes (General, Tático...) e ferramentas de elite ficam neste bloco.",
+                        target: arsenalArea,
+                        icon: "fa-solid fa-users",
+                        title: "SUA EQUIPE PESSOAL",
+                        text: "Por que pensar sozinho? Você tem <b class='text-white'>4 Especialistas</b> prontos para trabalhar por você 24h/dia.",
                         position: "right", 
+                        offsetX: 20,
                         nextAction: () => {
                             window.toggleSidebar(false);
                             finishTour();
                         }
                     });
                 }, 600);
-            }, 600);
+            }, 800);
         }
 
         function finishTour() {
+            if(highlightBox) highlightBox.style.opacity = '0';
+            
             setTimeout(() => {
+                if(highlightBox) highlightBox.remove();
+                if(currentHud) currentHud.remove();
+
                 const input = document.getElementById('chatInput');
+                const btn = document.getElementById('sendMessageBtn');
+                
+                // --- A CEREJA DO BOLO: INDUÇÃO ---
+                // O sistema digita sozinho para quebrar o gelo
                 const text = "Quero organizar minha rotina...";
+                input.value = "";
                 input.focus();
+                
                 let i = 0;
-                const typeWriter = setInterval(() => {
-                    if (i < text.length) input.value += text.charAt(i), i++;
-                    else {
-                        clearInterval(typeWriter);
-                        document.getElementById('sendMessageBtn').classList.add('animate-pulse');
+                function typeWriter() {
+                    if (i < text.length) {
+                        input.value += text.charAt(i);
+                        i++;
+                        // Varia a velocidade para parecer humano (mais natural)
+                        let randomSpeed = Math.floor(Math.random() * 50) + 40;
+                        setTimeout(typeWriter, randomSpeed);
+                    } else {
+                        btn.classList.add('animate-pulse');
+                        btn.style.boxShadow = "0 0 20px #cc0000";
                     }
-                }, 50);
+                }
+                typeWriter();
+
             }, 500);
         }
 
-        // --- ENGINE GRÁFICA CORRIGIDA (TRAVA DE TELA) ---
+        // --- ENGINE GRÁFICA (SPOTLIGHT + HUD) ---
         let currentHud = null;
         let highlightBox = null;
 
         function showSynapseHud({ target, icon, title, text, position, offsetY=0, offsetX=0, nextAction }) {
             if(currentHud) currentHud.remove();
-            if(highlightBox) highlightBox.remove();
+            
+            if(!highlightBox) {
+                highlightBox = document.createElement('div');
+                highlightBox.className = 'synapse-highlight-box';
+                document.body.appendChild(highlightBox);
+            }
+
             if(!target) return;
 
-            // 1. HIGHLIGHT PRECISO
             const rect = target.getBoundingClientRect();
             const computedStyle = window.getComputedStyle(target);
-            const borderRadius = computedStyle.borderRadius;
+            const borderRadius = computedStyle.borderRadius === '0px' ? '12px' : computedStyle.borderRadius;
 
-            highlightBox = document.createElement('div');
-            highlightBox.className = 'synapse-highlight-box';
+            // Posiciona o Holofote
             highlightBox.style.width = `${rect.width + (PADDING_HIGHLIGHT * 2)}px`;
             highlightBox.style.height = `${rect.height + (PADDING_HIGHLIGHT * 2)}px`;
             highlightBox.style.top = `${rect.top - PADDING_HIGHLIGHT}px`;
             highlightBox.style.left = `${rect.left - PADDING_HIGHLIGHT}px`;
-            highlightBox.style.borderRadius = borderRadius === '0px' ? '8px' : borderRadius;
-            document.body.appendChild(highlightBox);
+            highlightBox.style.borderRadius = borderRadius;
+            highlightBox.style.opacity = '1';
 
-            // 2. HUD
+            // Cria o HUD
             const hud = document.createElement('div');
             hud.className = 'synapse-hud';
             hud.innerHTML = `
+                <div class="synapse-skip-btn">Pular</div>
                 <div class="synapse-title"><i class="${icon}"></i> ${title}</div>
                 <div class="synapse-text">${text}</div>
-                <div class="synapse-btn">${nextAction ? 'PRÓXIMO' : 'FINALIZAR'}</div>
+                <div class="synapse-btn">${nextAction ? 'CONTINUAR' : 'COMEÇAR'}</div>
             `;
             document.body.appendChild(hud);
             currentHud = hud;
 
-            // 3. CÁLCULO DE POSIÇÃO BLINDADO
-            // Usamos dimensões fixas estimadas para garantir o cálculo antes da renderização
-            const hudW = 260; 
-            const hudH = 180; // Altura segura
+            hud.querySelector('.synapse-skip-btn').onclick = (e) => {
+                e.stopPropagation();
+                endTourNow();
+            };
+
+            // Posicionamento Inteligente
+            const hudRect = { width: 260, height: 160 }; 
             const screenW = window.innerWidth;
             const screenH = window.innerHeight;
             
             let top, left;
 
-            // Preferência inicial
-            if (position === 'top' || position === 'top-right') {
-                top = rect.top - hudH + offsetY;
+            if (position === 'top') {
+                top = rect.top - hudRect.height - 10 + offsetY;
+                left = rect.left + (rect.width/2) - (hudRect.width/2) + offsetX;
+            } else if (position === 'bottom') {
+                top = rect.bottom + 10 + offsetY;
+                left = rect.left + (rect.width/2) - (hudRect.width/2) + offsetX;
             } else if (position === 'right') {
-                top = rect.top;
+                top = rect.top + (rect.height/2) - (hudRect.height/2) + offsetY;
+                left = rect.right + 10 + offsetX;
+            } else if (position === 'top-right') {
+                top = rect.top - hudRect.height + offsetY;
+                left = rect.right - hudRect.width + offsetX;
             } else {
-                top = rect.bottom + offsetY;
+                top = rect.bottom + 10; left = rect.left;
             }
 
-            // Centralização Horizontal
-            if (position === 'top-right' || position === 'right') left = rect.right - hudW + offsetX;
-            else left = rect.left + (rect.width/2) - (hudW/2);
-
-            // --- TRAVA DE SEGURANÇA (CLAMPING) ---
-            // Isso impede que a caixa saia da tela, forçando-a a ficar visível
-            
-            // 1. Trava Vertical (Topo e Fundo)
-            if (top < 20) top = 20; // Nunca sobe mais que 20px do topo
-            if (top + hudH > screenH - 20) top = screenH - hudH - 20; // Nunca desce além do fundo
-
-            // 2. Trava Horizontal (Laterais)
+            // Trava de tela (Clamp)
             if (left < 10) left = 10;
-            if (left + hudW > screenW - 10) left = screenW - hudW - 10;
+            if (left + hudRect.width > screenW - 10) left = screenW - hudRect.width - 10;
+            if (top < 10) top = 10;
+            if (top + hudRect.height > screenH - 10) top = screenH - hudRect.height - 10;
 
-            // Aplica posições corrigidas
             hud.style.top = `${top}px`;
             hud.style.left = `${left}px`;
 
@@ -591,13 +603,18 @@
             const btn = hud.querySelector('.synapse-btn');
             btn.onclick = (e) => {
                 e.stopPropagation();
-                hud.classList.remove('visible');
-                highlightBox.style.opacity = '0';
-                setTimeout(() => {
-                    hud.remove(); highlightBox.remove();
-                    if(nextAction) nextAction();
-                }, 300);
+                if(nextAction) nextAction();
+                else endTourNow();
             };
+        }
+
+        function endTourNow() {
+            if(highlightBox) highlightBox.style.opacity = '0';
+            if(currentHud) currentHud.classList.remove('visible');
+            setTimeout(() => {
+                if(highlightBox) highlightBox.remove();
+                if(currentHud) currentHud.remove();
+            }, 300);
         }
     });
 </script>
