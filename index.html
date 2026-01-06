@@ -3,30 +3,30 @@
 
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CPT9PTG129"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPT9PTG129"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-  gtag('config', 'G-CPT9PTG129');
-</script>
+        gtag('config', 'G-CPT9PTG129');
+    </script>
     <link rel="shortcut icon" href="assets/icone preto.png" type="image/jpeg">
     <link rel="icon" href="assets/icone preto.png" type="image/jpeg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>Synapse - O Sistema Operacional da Sua Mente</title>
-    
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    
+
     <!-- Scripts de Rastreamento -->
     <script>
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
@@ -36,44 +36,53 @@
         fbq('init', '1912088396392621');
         fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1" /></noscript>
-    
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1912088396392621&ev=PageView&noscript=1" /></noscript>
+
     <!-- Adicionando Poppins conforme seu código -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Poppins:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
     <style>
         /* --- ESTILO DARK MODE PREMIUM --- */
-        body { 
-            background-color: #050505; 
+        body {
+            background-color: #050505;
             color: #e5e5e5;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        
+
         /* Fontes Personalizadas */
-        .font-mono-code { font-family: 'JetBrains Mono', monospace; }
-        .font-brand { font-family: 'Poppins', sans-serif; }
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .font-brand {
+            font-family: 'Poppins', sans-serif;
+        }
 
         /* NOVO PATTERN DE FUNDO (Do código anterior que você gostou) */
         .bg-dark-pattern {
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(204, 0, 0, 0.15), transparent 70%), 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(204, 0, 0, 0.15), transparent 70%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
             background-position: center top, center, center;
             background-repeat: no-repeat, repeat, repeat;
         }
-        
+
         /* Botões com Glow e Pílula */
         .btn-pill {
             border-radius: 9999px;
             font-weight: 600;
             transition: all 0.3s ease;
         }
+
         .btn-pill:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(204, 0, 0, 0.4); 
+            box-shadow: 0 0 20px rgba(204, 0, 0, 0.4);
         }
 
         /* Cards Dark Mode (Vidro Escuro Premium) */
@@ -84,9 +93,10 @@
             border-radius: 24px;
             transition: all 0.3s ease;
         }
+
         .clean-card:hover {
             background-color: rgba(30, 30, 30, 0.8);
-            border-color: #CC0000; 
+            border-color: #CC0000;
             box-shadow: 0 0 30px -5px rgba(204, 0, 0, 0.15);
             transform: translateY(-4px);
         }
@@ -95,57 +105,116 @@
         .text-glow {
             text-shadow: 0 0 20px rgba(204, 0, 0, 0.5);
         }
+
         .text-glow-red {
             text-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
         }
 
         /* FAQ Styling */
-        details summary::-webkit-details-marker { display: none; }
-        details > summary { list-style: none; }
-        details[open] summary ~ * { animation: slideDown 0.3s ease-in-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details>summary {
+            list-style: none;
+        }
+
+        details[open] summary~* {
+            animation: slideDown 0.3s ease-in-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .faq-card {
             background-color: rgba(20, 20, 20, 0.4);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             transition: all 0.2s;
         }
-        .faq-card:hover { border-color: rgba(255,255,255,0.15); }
-        details[open] .faq-card { border-color: rgba(204, 0, 0, 0.4); background-color: rgba(22, 5, 5, 0.8); }
+
+        .faq-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        details[open] .faq-card {
+            border-color: rgba(204, 0, 0, 0.4);
+            background-color: rgba(22, 5, 5, 0.8);
+        }
 
         /* Animações */
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 0.1s; }
-        .delay-200 { transition-delay: 0.2s; }
-        .delay-300 { transition-delay: 0.3s; }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 {
+            transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
+
+        .delay-300 {
+            transition-delay: 0.3s;
+        }
+        
     </style>
+    
 </head>
 
 <body class="antialiased bg-dark-pattern selection:bg-red-900 selection:text-white pb-10 md:pb-0">
 
     <!-- NAVBAR DESKTOP (Integrada do seu código, mas com estilo Glass) -->
     <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
-        <div class="bg-[#050505]/70 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-2xl hover:border-white/20 transition-all">
+        <div
+            class="bg-[#050505]/70 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-2xl hover:border-white/20 transition-all">
             <div class="flex items-center gap-6 pl-4">
                 <a href="#" class="flex items-center gap-2 group">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
-                        <img src="assets/logo_synapse.png" alt="S" class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
+                        <img src="assets/logo_synapse.png" alt="S"
+                            class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
                     </div>
                     <span class="text-white font-bold tracking-tight text-lg font-brand">Synapse</span>
                 </a>
                 <div class="h-6 w-px bg-white/10"></div>
                 <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
-                    <li><a href="#inicio" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Início</a></li>
-                    <li><a href="#metodo" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">O Método</a></li>
-                    <li><a href="#ferramentas" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Ferramentas</a></li>
-                    <li><a href="#depoimentos" class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Resultados</a></li>
+                    <li><a href="#inicio"
+                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Início</a>
+                    </li>
+                    <li><a href="#metodo"
+                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">O
+                            Método</a></li>
+                    <li><a href="#ferramentas"
+                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Ferramentas</a>
+                    </li>
+                    <li><a href="#depoimentos"
+                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Resultados</a>
+                    </li>
                 </ul>
             </div>
             <div class="flex items-center gap-4 pr-2">
-                <a href="PRO/login.html" class="text-sm font-bold text-gray-400 hover:text-white transition px-2">Login</a>
-                <a href="#planos" class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2 btn-pill">
+                <a href="PRO/login.html"
+                    class="text-sm font-bold text-gray-400 hover:text-white transition px-2">Login</a>
+                <a href="#planos"
+                    class="bg-[#CC0000] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(204,0,0,0.3)] hover:shadow-[0_0_30px_rgba(204,0,0,0.5)] hover:-translate-y-0.5 flex items-center gap-2 btn-pill">
                     Desbloquear <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -155,35 +224,37 @@
     <!-- NAVBAR MOBILE (Estilo Flutuante do seu código) -->
     <nav class="fixed top-4 left-4 right-4 z-50 md:hidden flex justify-between items-start pointer-events-none">
         <!-- Logo Flutuante (Esquerda) -->
-        <a href="#" class="pointer-events-auto w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-lg active:scale-95 transition">
+        <a href="#"
+            class="pointer-events-auto w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-lg active:scale-95 transition">
             <img src="assets/logo_synapse.png" alt="Synapse" class="w-full h-full rounded-full opacity-90 p-1">
         </a>
 
         <!-- Cápsula Login (Direita) -->
-        <div class="pointer-events-auto bg-black/60 backdrop-blur-xl border border-white/20 rounded-full px-4 py-2.5 flex items-center gap-3 shadow-2xl">
-            <a href="PRO/login.html" class="text-[10px] font-bold text-gray-200 hover:text-white transition flex items-center gap-1.5">
+        <div
+            class="pointer-events-auto bg-black/60 backdrop-blur-xl border border-white/20 rounded-full px-4 py-2.5 flex items-center gap-3 shadow-2xl">
+            <a href="PRO/login.html"
+                class="text-[10px] font-bold text-gray-200 hover:text-white transition flex items-center gap-1.5">
                 <i class="fas fa-sign-in-alt text-gray-500 text-[9px]"></i> <span>LOGIN</span>
             </a>
         </div>
     </nav>
 
     <!-- Header / Hero Section -->
-<header id="inicio" class="relative pt-16 pb-8 md:pt-28 md:pb-20 px-4 overflow-x-hidden min-h-[100dvh] flex items-center justify-center bg-[#050505]">
+    <header id="inicio"
+    class="relative pt-10 pb-8 md:pt-28 md:pb-20 px-4 overflow-x-hidden min-h-[100dvh] flex items-center justify-center bg-[#050505]">
 
     <div class="md:hidden absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
         <div class="absolute w-[250px] h-[250px] bg-red-600/30 blur-[80px] rounded-full animate-pulse-slow"></div>
-        <img src="assets/polvo_synapse.png" 
-             alt="Background" 
-             class="w-[110%] max-w-none opacity-20 mix-blend-screen">
+        <img src="assets/polvo_synapse.png" alt="Background" class="w-[110%] max-w-none opacity-20 mix-blend-screen">
     </div>
 
     <div class="max-w-7xl mx-auto w-full relative z-10">
-        
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-center">
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-8 items-center">
 
             <div class="md:col-span-7 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
-                
-                <div class="reveal delay-100 inline-flex items-center gap-2 mb-2 backdrop-blur-md py-1.5 px-4 rounded-full bg-white/5 border border-white/10 shadow-xl scale-90 md:scale-100 origin-center md:origin-left">
+
+                <div class="reveal delay-100 inline-flex items-center gap-2 mb-1 backdrop-blur-md py-1 px-3 rounded-full bg-white/5 border border-white/10 shadow-xl scale-90 md:scale-100 origin-center md:origin-left">
                     <div class="flex -space-x-2">
                         <img class="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m0hc54c4vcld5c_tn">
                         <img class="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black" src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-m8pns16tp3wi4e_tn">
@@ -194,21 +265,21 @@
                     </span>
                 </div>
 
-                <h1 class="reveal delay-200 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-brand uppercase leading-tight tracking-tight mb-2 drop-shadow-2xl">
+                <h1 class="reveal delay-200 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-brand uppercase leading-tight tracking-tight mb-1 drop-shadow-2xl">
                     A inteligência artificial <br class="hidden md:block"> que te coloca no <br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-br from-red-500 via-red-600 to-red-800 text-glow-red">Controle da sua mente.</span>
                 </h1>
 
-                <p class="reveal delay-300 text-xs sm:text-sm md:text-lg text-gray-400 max-w-xl font-medium leading-relaxed mb-5 px-2 md:px-0">
-                    O primeiro Sistema Operacional que modula sua neuroquímica em tempo real. Foco e disciplina sem esforço.
+                 <p class="reveal delay-300 text-xs sm:text-sm md:text-base text-gray-400 max-w-xl font-medium leading-relaxed mb-1 px-1 md:px-0 relative z-30">
+                    Transforme sua rotina em um videogame. O Synapse usa IA para fazer você <strong>viciar em bater metas</strong>. <span class="text-gray-200">Foco total sem sofrimento.</span>
                 </p>
 
-                <div class="reveal delay-400 relative w-48 md:w-full md:max-w-lg mb-6 group cursor-pointer transition-transform hover:scale-105 duration-500">
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-red-600/10 blur-[40px] rounded-full pointer-events-none"></div>
-                    <img src="assets/IA.png" alt="Sistema Synapse" class="relative z-10 w-full h-auto object-contain drop-shadow-2xl">
+                <div class="reveal delay-400 relative w-[90%] sm:w-[400px] md:w-[115%] md:max-w-2xl -mt-4 -mb-6 md:-mt-0 md:-mb-0 md:-ml-8 group cursor-pointer transition-transform hover:scale-105 duration-500 z-10">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-red-600/10 blur-[50px] rounded-full pointer-events-none"></div>
+                    <img src="assets/IA.png" alt="Sistema Synapse Dashboard" class="relative z-10 w-full h-auto object-contain drop-shadow-2xl">
                 </div>
 
-                <div class="reveal delay-500 flex flex-col w-full max-w-[260px] md:max-w-none md:flex-row gap-3 md:gap-4">
+                <div class="reveal delay-500 flex flex-col w-full max-w-[260px] md:max-w-none md:flex-row gap-3 md:gap-4 relative z-20">
                     <a href="#planos" class="bg-[#CC0000] hover:bg-red-700 text-white font-bold py-3.5 px-8 md:py-4 md:px-10 rounded-full shadow-[0_0_30px_-5px_rgba(204,0,0,0.5)] btn-pill flex items-center justify-center gap-2 border border-red-500/30 uppercase tracking-widest text-[10px] md:text-xs transition-all w-full md:w-auto hover:scale-105">
                         QUERO ACESSAR AGORA
                     </a>
@@ -221,475 +292,607 @@
             <div class="hidden md:flex md:col-span-5 relative justify-end items-center h-full min-h-[500px]">
                 <div class="relative w-[130%] -mr-[15%] transform hover:scale-105 transition-transform duration-700 ease-out animate-float-slow">
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-red-600/40 blur-[120px] rounded-full pointer-events-none mix-blend-screen"></div>
-                    <img src="assets/polvo_synapse.png" 
-                         alt="Synapse Core AI" 
-                         class="w-full h-auto object-contain drop-shadow-[0_0_60px_rgba(200,0,0,0.3)] contrast-110 saturate-110 relative z-10">
+                    <img src="assets/polvo_synapse.png" alt="Synapse Core AI" class="w-full h-auto object-contain drop-shadow-[0_0_60px_rgba(200,0,0,0.3)] contrast-110 saturate-110 relative z-10">
                 </div>
             </div>
 
         </div>
     </div>
 </header>
-<section class="py-24 md:py-32 bg-black relative overflow-hidden border-b border-white/5">
-    
-    <div class="absolute top-20 left-10 w-32 h-32 bg-red-900/10 rounded-full blur-[50px] animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-64 h-64 bg-red-900/5 rounded-full blur-[80px]"></div>
+    <section class="py-24 md:py-32 bg-black relative overflow-hidden border-b border-white/5">
 
-    <div class="container mx-auto px-4 relative z-10">
-        
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            
-            <div class="lg:w-1/2 reveal">
-                <div class="inline-flex items-center gap-2 mb-6">
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                    </span>
-                    <span class="text-red-500 font-mono text-xs font-bold uppercase tracking-[0.2em]">Problema Detectado</span>
+        <div class="absolute top-20 left-10 w-32 h-32 bg-red-900/10 rounded-full blur-[50px] animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-64 h-64 bg-red-900/5 rounded-full blur-[80px]"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+
+                <div class="lg:w-1/2 reveal">
+                    <div class="inline-flex items-center gap-2 mb-6">
+                        <span class="relative flex h-3 w-3">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                        <span class="text-red-500 font-mono text-xs font-bold uppercase tracking-[0.2em]">Problema
+                            Detectado</span>
+                    </div>
+
+                    <h2 class="text-4xl md:text-6xl font-black text-white uppercase leading-[0.95] font-brand mb-8">
+                        Seu cérebro foi <br>
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-900">Sequestrado.</span>
+                    </h2>
+
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6">
+                        Não é falta de caráter. É química. Engenheiros do Vale do Silício criaram algoritmos que
+                        funcionam como <strong>Superestímulos</strong>. Eles estragaram seu sistema de dopamina.
+                    </p>
+
+                    <div class="space-y-4 mb-8">
+                        <div
+                            class="p-4 bg-[#080808] border-l-4 border-red-600 rounded-r-xl hover:bg-[#111] transition-colors group">
+                            <h4 class="text-white font-bold text-sm uppercase mb-1 group-hover:text-red-500 transition">
+                                O Sintoma</h4>
+                            <p class="text-gray-500 text-xs">Você pega o celular "só por um segundo" e perde 2 horas.
+                                Você sente uma "coceira" mental quando tenta focar.</p>
+                        </div>
+                        <div
+                            class="p-4 bg-[#080808] border-l-4 border-gray-700 rounded-r-xl hover:bg-[#111] transition-colors group">
+                            <h4 class="text-white font-bold text-sm uppercase mb-1 group-hover:text-white transition">A
+                                Consequência</h4>
+                            <p class="text-gray-500 text-xs">Sua "Bateria de Vontade" vicia. Tarefas simples parecem
+                                montanhas. Você vive no modo de sobrevivência.</p>
+                        </div>
+                    </div>
+
+                    <a href="#planos"
+                        class="text-white text-xs font-bold uppercase tracking-widest border-b border-red-500 pb-1 hover:text-red-500 transition-colors">
+                        Eu quero minha mente de volta <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
                 </div>
 
-                <h2 class="text-4xl md:text-6xl font-black text-white uppercase leading-[0.95] font-brand mb-8">
-                    Seu cérebro foi <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-900">Sequestrado.</span>
-                </h2>
-                
-                <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6">
-                    Não é falta de caráter. É química. Engenheiros do Vale do Silício criaram algoritmos que funcionam como <strong>Superestímulos</strong>. Eles estragaram seu sistema de dopamina.
-                </p>
-                
-                <div class="space-y-4 mb-8">
-                    <div class="p-4 bg-[#080808] border-l-4 border-red-600 rounded-r-xl hover:bg-[#111] transition-colors group">
-                        <h4 class="text-white font-bold text-sm uppercase mb-1 group-hover:text-red-500 transition">O Sintoma</h4>
-                        <p class="text-gray-500 text-xs">Você pega o celular "só por um segundo" e perde 2 horas. Você sente uma "coceira" mental quando tenta focar.</p>
-                    </div>
-                    <div class="p-4 bg-[#080808] border-l-4 border-gray-700 rounded-r-xl hover:bg-[#111] transition-colors group">
-                        <h4 class="text-white font-bold text-sm uppercase mb-1 group-hover:text-white transition">A Consequência</h4>
-                        <p class="text-gray-500 text-xs">Sua "Bateria de Vontade" vicia. Tarefas simples parecem montanhas. Você vive no modo de sobrevivência.</p>
-                    </div>
-                </div>
+                <div class="lg:w-1/2 w-full reveal delay-200">
+                    <div class="relative bg-[#050505] border border-white/10 rounded-3xl p-8 overflow-hidden group">
 
-                <a href="#planos" class="text-white text-xs font-bold uppercase tracking-widest border-b border-red-500 pb-1 hover:text-red-500 transition-colors">
-                    Eu quero minha mente de volta <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-
-            <div class="lg:w-1/2 w-full reveal delay-200">
-                <div class="relative bg-[#050505] border border-white/10 rounded-3xl p-8 overflow-hidden group">
-                    
-                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-
-                    <h3 class="relative z-10 text-center text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-12 font-mono">Níveis de Dopamina (24h)</h3>
-
-                    <div class="relative h-64 w-full flex items-end gap-1 z-10 px-4">
-                        
-                        <div class="w-1/4 h-[30%] bg-white/5 rounded-t relative group-hover:opacity-50 transition">
-                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 w-full text-center">Foco Real</span>
-                        </div>
-                        
-                        <div class="w-1/4 h-[95%] bg-gradient-to-t from-red-900 to-red-500 rounded-t relative animate-pulse shadow-[0_0_30px_rgba(220,38,38,0.4)]">
-                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-red-500 font-bold w-full text-center animate-bounce">TikTok/Reels</span>
+                        <div
+                            class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]">
                         </div>
 
-                        <div class="w-1/4 h-[10%] bg-white/5 rounded-t relative group-hover:opacity-50 transition">
-                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 w-full text-center">Crash (Depressão)</span>
-                        </div>
-                        
-                        <div class="absolute top-[40%] left-0 w-full h-0.5 border-t-2 border-dashed border-green-500 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-300">
-                            <div class="bg-black text-green-500 text-[9px] font-bold px-2 border border-green-500/30 rounded ml-4 shadow-[0_0_10px_rgba(34,197,94,0.5)]">
-                                SYNAPSE FLOW (Estável)
+                        <h3
+                            class="relative z-10 text-center text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-12 font-mono">
+                            Níveis de Dopamina (24h)</h3>
+
+                        <div class="relative h-64 w-full flex items-end gap-1 z-10 px-4">
+
+                            <div class="w-1/4 h-[30%] bg-white/5 rounded-t relative group-hover:opacity-50 transition">
+                                <span
+                                    class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 w-full text-center">Foco
+                                    Real</span>
                             </div>
+
+                            <div
+                                class="w-1/4 h-[95%] bg-gradient-to-t from-red-900 to-red-500 rounded-t relative animate-pulse shadow-[0_0_30px_rgba(220,38,38,0.4)]">
+                                <span
+                                    class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-red-500 font-bold w-full text-center animate-bounce">TikTok/Reels</span>
+                            </div>
+
+                            <div class="w-1/4 h-[10%] bg-white/5 rounded-t relative group-hover:opacity-50 transition">
+                                <span
+                                    class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 w-full text-center">Crash
+                                    (Depressão)</span>
+                            </div>
+
+                            <div
+                                class="absolute top-[40%] left-0 w-full h-0.5 border-t-2 border-dashed border-green-500 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-300">
+                                <div
+                                    class="bg-black text-green-500 text-[9px] font-bold px-2 border border-green-500/30 rounded ml-4 shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+                                    SYNAPSE FLOW (Estável)
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="relative z-10 mt-8 text-center">
+                            <p class="text-gray-400 text-xs italic">
+                                "O Synapse regula esse gráfico. Ele elimina os picos e previne os vales."
+                            </p>
                         </div>
 
                     </div>
-
-                    <div class="relative z-10 mt-8 text-center">
-                        <p class="text-gray-400 text-xs italic">
-                            "O Synapse regula esse gráfico. Ele elimina os picos e previne os vales."
-                        </p>
-                    </div>
-
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <section id="mecanismo" class="py-20 border-b border-white/5 bg-[#080808]">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16 reveal">
-                <span class="text-red-500 font-mono-code text-xs font-bold tracking-widest uppercase mb-2 block">O Mecanismo</span>
-                <h3 class="text-3xl font-black text-white uppercase font-brand">Como o Synapse muda seu estado mental</h3>
+                <span class="text-red-500 font-mono-code text-xs font-bold tracking-widest uppercase mb-2 block">O
+                    Mecanismo</span>
+                <h3 class="text-3xl font-black text-white uppercase font-brand">Como o Synapse muda seu estado mental
+                </h3>
                 <p class="text-gray-400 text-sm mt-4">Não é mágica. É neurociência aplicada via algoritmo.</p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
                 <!-- Passo 1 -->
                 <div class="reveal delay-100 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-red-500 text-xl font-bold">1</div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-red-500 text-xl font-bold">
+                        1</div>
                     <h5 class="text-white text-sm font-bold mb-2">Detecção</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">A IA identifica qual dos 4 sabotadores está ativo na sua mente agora.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">A IA identifica qual dos 4 sabotadores está
+                        ativo na sua mente agora.</p>
+                    <div
+                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
+                    </div>
                 </div>
 
                 <!-- Passo 2 -->
                 <div class="reveal delay-200 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">2</div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
+                        2</div>
                     <h5 class="text-white text-sm font-bold mb-2">Protocolo</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">O sistema gera uma intervenção específica para quebrar o padrão.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">O sistema gera uma intervenção específica para
+                        quebrar o padrão.</p>
+                    <div
+                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
+                    </div>
                 </div>
 
                 <!-- Passo 3 -->
                 <div class="reveal delay-300 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">3</div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
+                        3</div>
                     <h5 class="text-white text-sm font-bold mb-2">Modulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Estímulos audiovisuais ajustam seu foco emocional em segundos.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">Estímulos audiovisuais ajustam seu foco
+                        emocional em segundos.</p>
+                    <div
+                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
+                    </div>
                 </div>
 
                 <!-- Passo 4 -->
                 <div class="reveal delay-400 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">4</div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
+                        4</div>
                     <h5 class="text-white text-sm font-bold mb-2">Regulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Sua dopamina é redirecionada do prazer barato para a execução.</p>
-                    <div class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0"></div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">Sua dopamina é redirecionada do prazer barato
+                        para a execução.</p>
+                    <div
+                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
+                    </div>
                 </div>
 
                 <!-- Passo 5 -->
                 <div class="reveal delay-500 flex flex-col items-center text-center relative">
-                    <div class="w-14 h-14 rounded-2xl bg-red-600 border border-red-500 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(204,0,0,0.4)] text-white text-xl font-bold"><i class="fas fa-check"></i></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-red-600 border border-red-500 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(204,0,0,0.4)] text-white text-xl font-bold">
+                        <i class="fas fa-check"></i></div>
                     <h5 class="text-white text-sm font-bold mb-2">Execução</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Você entra em estado de fluxo e realiza a tarefa sem dor.</p>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">Você entra em estado de fluxo e realiza a
+                        tarefa sem dor.</p>
                 </div>
             </div>
         </div>
     </section>
-    
+
 
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
-<section class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
-    <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style="background-image: radial-gradient(#cc0000 1px, transparent 1px); background-size: 24px 24px;"></div>
-    
-    <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center mb-16 reveal">
-            <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase italic">
-                Sua Nova <span class="text-red-600">Mente</span>
-            </h2>
-            <p class="text-gray-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-                Chega de lutar contra seu cérebro. Nós hackeamos sua biologia para você viciar em fazer o que precisa ser feito.
-            </p>
-        </div>
+    <section class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
+        <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none"
+            style="background-image: radial-gradient(#cc0000 1px, transparent 1px); background-size: 24px 24px;"></div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                
-                <div class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                    <i class="fa-solid fa-trophy text-red-500 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Vício em Evoluir</h3>
-                <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                    Transformamos sua vida em um jogo. Você começa como <strong class="text-white">Recruta</strong> e sobe de nível a cada tarefa cumprida. É dopamina real para fazer você querer trabalhar.
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase italic">
+                    Sua Nova <span class="text-red-600">Mente</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+                    Chega de lutar contra seu cérebro. Nós ajustamos sua biologia para você viciar em fazer o que
+                    precisa ser feito.
                 </p>
             </div>
 
-            <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
-                 <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <div class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                    <i class="fa-solid fa-users text-red-500 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Sua Equipe Pessoal</h3>
-                
-                <div class="space-y-3 relative z-10">
-                    <p class="text-gray-400 text-xs">Pare de pensar sozinho. Você terá 4 especialistas de IA trabalhando por você 24h:</p>
-                    <div class="flex items-start gap-3">
-                        <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
-                        <p class="text-gray-300 text-xs"><strong>CONSCIÊNCIA:</strong> Tira sua culpa e te acalma.</p>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
-                        <p class="text-gray-300 text-xs"><strong>CÓRTEX:</strong> Te dá ordens claras do que fazer.</p>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
-                        <p class="text-gray-300 text-xs"><strong>RAZÃO:</strong> Planeja sua semana inteira.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-200 hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-
-                <div class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                    <i class="fa-solid fa-fire text-red-500 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Não Quebre a Corrente</h3>
-                <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                    Veja seu progresso visualmente. Seus dias ganham cor quando você vence. Mantenha a chama da <strong class="text-white">Sequência</strong> acesa e nunca mais desista no meio do caminho.
-                </p>
-            </div>
-
-            <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-
-                <div class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                    <i class="fa-solid fa-repeat text-red-500 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Rotina Automática</h3>
-                <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                    Defina o que é obrigatório no seu dia (treino, leitura, trabalho). Todo dia o sistema reseta e te cobra. Sem bagunça, sem esquecimentos. É só seguir o plano.
-                </p>
-            </div>
-
-            <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
-                <div class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-
-                <div class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                    <i class="fa-solid fa-life-ring text-red-500 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Botão de Pânico</h3>
-                <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                    Bateu ansiedade? Travou? Aperte um botão e a IA te guia com respiração e técnicas para acalmar a mente e voltar ao foco em minutos.
-                </p>
-            </div>
-
-            <div class="bg-black border border-red-900/40 p-8 rounded-2xl hover:scale-[1.02] transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.15)]" onclick="window.location.href='#planos'">
-                <div class="absolute inset-0 bg-red-900/10 animate-pulse-slow"></div>
-                
-                <div class="relative z-10">
-                    <h3 class="text-3xl font-black text-white mb-2 italic uppercase">Versão PRO</h3>
-                    <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest font-bold">Chega de viver no "quase".</p>
-                    
-                    <span class="inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white font-bold rounded-lg text-xs uppercase tracking-[0.2em] hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] hover:scale-105">
-                        Liberar Meu Acesso <i class="fa-solid fa-lock-open"></i>
-                    </span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-    <!-- Seção Depoimentos -->
-    <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808] relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
-        
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 reveal">
-            <div>
-                <h3 class="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
-                    Quem usa, <span class="text-red-600">Vicia.</span>
-                </h3>
-                <p class="text-gray-400 text-sm mt-2 font-medium">Sem papo furado. O que a galera tá falando no grupo:</p>
-            </div>
-            
-            <div class="mt-6 md:mt-0 flex items-center gap-4 bg-[#111] border border-white/10 px-5 py-3 rounded-full hover:border-red-600/30 transition">
-                <div class="flex -space-x-3">
-                    <img class="w-8 h-8 rounded-full border-2 border-[#111]" src="https://down-br.img.susercontent.com/file/fbbfd61255488c41af9899d6a38cf741_tn">
-                    <img class="w-8 h-8 rounded-full border-2 border-[#111]" src="https://down-br.img.susercontent.com/file/br-11134233-81z1k-mgtt2at1t1xh29_tn">
-                    <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-[#111] flex items-center justify-center text-[10px] font-bold text-white">+1000</div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-xs font-bold text-white">Membros Ativos</span>
-                    <span class="text-[9px] text-gray-500 uppercase tracking-wider">Comunidade Elite</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="reveal delay-100 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex gap-4">
-                        <img src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lzrys2g6qis528_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
-                        <div>
-                            <p class="text-sm font-bold text-white flex items-center gap-2">Renan C. <i class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Compra Verificada</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
-                </div>
-                
-                <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-                    O bgl é bizarro kkkk, o diagnóstico inicial já me deu um tapa na cara que eu precisava. <strong class="text-white">Parei de dar desculpa</strong> e comecei a fazer. Vale cada centavo.
-                </p>
-                
-                <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-
-            <div class="reveal delay-200 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex gap-4">
-                        <img src="https://down-br.img.susercontent.com/file/12d7cea7f05165ec80151afdab869c0f_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
-                        <div>
-                            <p class="text-sm font-bold text-white flex items-center gap-2">Lucas M. <i class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro Verificado</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
-                </div>
-                
-                <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-                    Tenho TDAH e nd funcionava pra mim. O modo <strong class="text-white">Fluxo</strong> é surreal, hj consegui estudar 3h direto sem pegar no celular. Quem tem dificuldade de foco só vai, salva demais.
-                </p>
-                
-                <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-
-            <div class="reveal delay-300 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex gap-4">
-                        <img src="https://down-br.img.susercontent.com/file/880052fd019089a0eb398ed9d268b847_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
-                        <div>
-                            <p class="text-sm font-bold text-white flex items-center gap-2">Juliana S. <i class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro Elite</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
-                </div>
-                
-                <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-                    Tô viciada em manter o foguinho da sequência. Antes eu empurrava tudo com a barriga, agora fico agoniada se n bato a meta do dia. <strong class="text-white">Melhor investimento</strong> q fiz no ano.
-                </p>
-                
-                <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-    <!-- Seção Planos -->
-<section id="planos" class="py-20 md:py-32 px-4 bg-black relative flex justify-center items-center overflow-hidden">
-    
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-    <div class="w-full max-w-sm md:max-w-4xl relative z-10 reveal">
-        
-        <div class="bg-[#050505] border border-[#222] rounded-3xl p-6 md:p-12 flex flex-col md:flex-row items-center md:justify-between gap-8 md:gap-16 shadow-2xl relative group hover:border-red-900/30 transition-colors duration-500">
-            
-            <div class="text-center md:text-left flex-1 border-b md:border-b-0 md:border-r border-[#222] md:pr-12 md:mr-4 pb-8 md:pb-0 h-full flex flex-col justify-center">
-                <div class="relative inline-block">
-                    <img src="assets/polvo_synapse.png" class="w-24 md:w-48 mx-auto md:mx-0 mb-6 opacity-90 invert drop-shadow-[0_0_25px_rgba(204,0,0,0.2)] transform group-hover:scale-105 transition-transform duration-500">
-                    
-                    <div class="hidden md:block absolute -top-2 -right-16 bg-[#CC0000] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg rotate-12 whitespace-nowrap">
-                        SEM MENSALIDADE
-                    </div>
-                </div>
-                
-                <h3 class="text-white text-xl md:text-5xl font-black font-brand uppercase italic tracking-tighter mb-2">
-                    Synapse <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">PRO</span>
-                </h3>
-                
-                <p class="text-gray-400 text-sm md:text-lg font-bold mb-6">
-                    Seu Segundo Cérebro Digital
-                </p>
-
-                <div class="flex flex-col gap-3 text-left max-w-[250px] mx-auto md:mx-0">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-500"></i>
-                        <span class="text-gray-400 text-xs md:text-sm">Organize rotina e tarefas</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-500"></i>
-                        <span class="text-gray-400 text-xs md:text-sm">IAs que planejam por você</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-500"></i>
-                        <span class="text-gray-400 text-xs md:text-sm">Acesso vitalício ao sistema</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full md:w-[400px] text-center flex flex-col justify-between">
-                
-                <div class="mb-6 relative">
-                    <span class="text-gray-600 line-through text-xs md:text-sm absolute -top-4 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2">R$ 97,00</span>
-                    
-                    <div class="flex items-start justify-center leading-none text-white">
-                        <span class="text-lg text-gray-500 font-bold mt-2 mr-1">R$</span>
-                        <span class="text-6xl md:text-8xl font-black tracking-tighter">27</span>
-                        <span class="text-2xl md:text-3xl font-bold text-[#CC0000] mt-2">,90</span>
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
                     </div>
 
-                    <div class="flex items-center justify-center gap-2 mt-3 mb-2">
-                        <div class="bg-[#111] border border-[#222] rounded-lg px-3 py-1.5 flex items-center gap-2">
-                            <span class="text-gray-400 text-[10px] uppercase font-bold">Ou até</span>
-                            <span class="text-white text-sm font-black">4x de R$ 7,72*</span>
-                        </div>
+                    <div
+                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                        <i class="fa-solid fa-trophy text-red-500 text-xl"></i>
                     </div>
-                    
-                    <p class="text-[#CC0000] text-[10px] font-bold uppercase tracking-widest animate-pulse">
-                        Pagamento Único • Sem taxas extras
+                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Vício em Evoluir</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
+                        Transformamos sua vida em um jogo. Você começa como <strong class="text-white">Recruta</strong>
+                        e sobe de nível a cada tarefa cumprida. É dopamina real para fazer você querer trabalhar.
                     </p>
                 </div>
 
-                <a href="https://pay.kiwify.com.br/YzOIskc" id="btn-checkout" onclick="fbq('track', 'InitiateCheckout');" class="group relative block w-full bg-[#CC0000] hover:bg-red-600 text-white font-black py-4 md:py-5 rounded-2xl md:rounded-xl uppercase tracking-widest shadow-[0_0_30px_rgba(204,0,0,0.3)] hover:shadow-[0_0_60px_rgba(204,0,0,0.6)] hover:scale-[1.02] transition-all duration-300 overflow-hidden mb-6 border border-white/10">
-                    <div class="relative z-10 flex flex-col items-center justify-center leading-tight">
-                        <span class="text-sm md:text-lg flex items-center gap-2">
-                            QUERO ME ORGANIZAR <i class="fas fa-arrow-right text-xs opacity-70"></i>
-                        </span>
-                        <span class="text-[9px] md:text-[10px] opacity-80 font-medium tracking-normal normal-case mt-0.5">
-                            Acesso imediato no seu e-mail
-                        </span>
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
                     </div>
-                    <div class="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[30deg] group-hover:animate-[shine_0.8s_ease-in-out]"></div>
-                </a>
-                <div class="flex md:hidden justify-center gap-4 opacity-40 grayscale">
-                    <i class="fab fa-cc-visa text-xl"></i>
-                    <i class="fab fa-cc-mastercard text-xl"></i>
-                    <i class="fas fa-qrcode text-xl"></i>
+
+                    <div
+                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                        <i class="fa-solid fa-users text-red-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Sua Equipe Pessoal</h3>
+
+                    <div class="space-y-3 relative z-10">
+                        <p class="text-gray-400 text-xs">Pare de pensar sozinho. Você terá 4 especialistas de IA
+                            trabalhando por você 24h:</p>
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
+                            <p class="text-gray-300 text-xs"><strong>CONSCIÊNCIA:</strong> Tira sua culpa e te acalma.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
+                            <p class="text-gray-300 text-xs"><strong>CÓRTEX:</strong> Te dá ordens claras do que fazer.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-red-600 text-xs mt-1"></i>
+                            <p class="text-gray-300 text-xs"><strong>RAZÃO:</strong> Planeja sua semana inteira.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="md:hidden mt-6 flex flex-col gap-2 items-center justify-center">
-                    <div class="flex items-center gap-2 text-[10px] text-gray-500 bg-[#0f0f0f] border border-[#222] px-3 py-1.5 rounded-full">
-                        <i class="fas fa-shield-alt text-green-500"></i>
-                        <span>Ambiente 100% Seguro (SSL)</span>
+
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-200 hover:-translate-y-1 relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
+                    </div>
+
+                    <div
+                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                        <i class="fa-solid fa-fire text-red-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Não Quebre a Corrente</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
+                        Veja seu progresso visualmente. Seus dias ganham cor quando você vence. Mantenha a chama da
+                        <strong class="text-white">Sequência</strong> acesa e nunca mais desista no meio do caminho.
+                    </p>
+                </div>
+
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
+                    </div>
+
+                    <div
+                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                        <i class="fa-solid fa-repeat text-red-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Rotina Automática</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
+                        Defina o que é obrigatório no seu dia (treino, leitura, trabalho). Todo dia o sistema reseta e
+                        te cobra. Sem bagunça, sem esquecimentos. É só seguir o plano.
+                    </p>
+                </div>
+
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
+                    </div>
+
+                    <div
+                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+                        <i class="fa-solid fa-life-ring text-red-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Botão de Pânico</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
+                        Bateu ansiedade? Travou? Aperte um botão e a IA te guia com respiração e técnicas para acalmar a
+                        mente e voltar ao foco em minutos.
+                    </p>
+                </div>
+
+                <div class="bg-black border border-red-900/40 p-8 rounded-2xl hover:scale-[1.02] transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.15)]"
+                    onclick="window.location.href='#planos'">
+                    <div class="absolute inset-0 bg-red-900/10 animate-pulse-slow"></div>
+
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black text-white mb-2 italic uppercase">Versão PRO</h3>
+                        <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest font-bold">Chega de viver no
+                            "quase".</p>
+
+                        <span
+                            class="inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white font-bold rounded-lg text-xs uppercase tracking-[0.2em] hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] hover:scale-105">
+                            Liberar Meu Acesso <i class="fa-solid fa-lock-open"></i>
+                        </span>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<style>
-    @keyframes shine {
-        0% { left: -100%; }
-        100% { left: 200%; }
-    }
-</style>
+    <!-- Seção Depoimentos -->
+    <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808] relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] pointer-events-none">
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 reveal">
+                <div>
+                    <h3 class="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
+                        Quem usa, <span class="text-red-600">Vicia.</span>
+                    </h3>
+                    <p class="text-gray-400 text-sm mt-2 font-medium">Sem papo furado. O que a galera tá falando no
+                        grupo:</p>
+                </div>
+
+                <div
+                    class="mt-6 md:mt-0 flex items-center gap-4 bg-[#111] border border-white/10 px-5 py-3 rounded-full hover:border-red-600/30 transition">
+                    <div class="flex -space-x-3">
+                        <img class="w-8 h-8 rounded-full border-2 border-[#111]"
+                            src="https://down-br.img.susercontent.com/file/fbbfd61255488c41af9899d6a38cf741_tn">
+                        <img class="w-8 h-8 rounded-full border-2 border-[#111]"
+                            src="https://down-br.img.susercontent.com/file/br-11134233-81z1k-mgtt2at1t1xh29_tn">
+                        <div
+                            class="w-8 h-8 rounded-full bg-red-600 border-2 border-[#111] flex items-center justify-center text-[10px] font-bold text-white">
+                            +1000</div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-white">Membros Ativos</span>
+                        <span class="text-[9px] text-gray-500 uppercase tracking-wider">Comunidade Elite</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div
+                    class="reveal delay-100 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lzrys2g6qis528_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">Renan C. <i
+                                        class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Compra
+                                    Verificada</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        O bgl é bizarro kkkk, o diagnóstico inicial já me deu um tapa na cara que eu precisava. <strong
+                            class="text-white">Parei de dar desculpa</strong> e comecei a fazer. Vale cada centavo.
+                    </p>
+
+                    <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="reveal delay-200 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/12d7cea7f05165ec80151afdab869c0f_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">Lucas M. <i
+                                        class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro
+                                    Verificado</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        Tenho TDAH e nd funcionava pra mim. O modo <strong class="text-white">Fluxo</strong> é surreal,
+                        hj consegui estudar 3h direto sem pegar no celular. Quem tem dificuldade de foco só vai, salva
+                        demais.
+                    </p>
+
+                    <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="reveal delay-300 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition duration-300 relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/880052fd019089a0eb398ed9d268b847_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">Juliana S. <i
+                                        class="fas fa-check-circle text-red-600 text-[10px]"></i></p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro Elite
+                                </p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        Tô viciada em manter o foguinho da sequência. Antes eu empurrava tudo com a barriga, agora fico
+                        agoniada se n bato a meta do dia. <strong class="text-white">Melhor investimento</strong> q fiz
+                        no ano.
+                    </p>
+
+                    <div class="flex text-red-600 text-[10px] gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Planos -->
+    <section id="planos" class="py-20 md:py-32 px-4 bg-black relative flex justify-center items-center overflow-hidden">
+
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[120px] pointer-events-none">
+        </div>
+
+        <div class="w-full max-w-sm md:max-w-4xl relative z-10 reveal">
+
+            <div
+                class="bg-[#050505] border border-[#222] rounded-3xl p-6 md:p-12 flex flex-col md:flex-row items-center md:justify-between gap-8 md:gap-16 shadow-2xl relative group hover:border-red-900/30 transition-colors duration-500">
+
+                <div
+                    class="text-center md:text-left flex-1 border-b md:border-b-0 md:border-r border-[#222] md:pr-12 md:mr-4 pb-8 md:pb-0 h-full flex flex-col justify-center">
+                    <div class="relative inline-block">
+                        <img src="assets/polvo_synapse.png"
+                            class="w-24 md:w-48 mx-auto md:mx-0 mb-6 opacity-90 invert drop-shadow-[0_0_25px_rgba(204,0,0,0.2)] transform group-hover:scale-105 transition-transform duration-500">
+
+                        <div
+                            class="hidden md:block absolute -top-2 -right-16 bg-[#CC0000] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg rotate-12 whitespace-nowrap">
+                            SEM MENSALIDADE
+                        </div>
+                    </div>
+
+                    <h3
+                        class="text-white text-xl md:text-5xl font-black font-brand uppercase italic tracking-tighter mb-2">
+                        Synapse <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">PRO</span>
+                    </h3>
+
+                    <p class="text-gray-400 text-sm md:text-lg font-bold mb-6">
+                        Seu Segundo Cérebro Digital
+                    </p>
+
+                    <div class="flex flex-col gap-3 text-left max-w-[250px] mx-auto md:mx-0">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-400 text-xs md:text-sm">Organize rotina e tarefas</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-400 text-xs md:text-sm">IAs que planejam por você</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-400 text-xs md:text-sm">Acesso vitalício ao sistema</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-[400px] text-center flex flex-col justify-between">
+
+                    <div class="mb-6 relative">
+                        <span
+                            class="text-gray-600 line-through text-xs md:text-sm absolute -top-4 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2">R$
+                            97,00</span>
+
+                        <div class="flex items-start justify-center leading-none text-white">
+                            <span class="text-lg text-gray-500 font-bold mt-2 mr-1">R$</span>
+                            <span class="text-6xl md:text-8xl font-black tracking-tighter">27</span>
+                            <span class="text-2xl md:text-3xl font-bold text-[#CC0000] mt-2">,90</span>
+                        </div>
+
+                        <div class="flex items-center justify-center gap-2 mt-3 mb-2">
+                            <div class="bg-[#111] border border-[#222] rounded-lg px-3 py-1.5 flex items-center gap-2">
+                                <span class="text-gray-400 text-[10px] uppercase font-bold">Ou até</span>
+                                <span class="text-white text-sm font-black">4x de R$ 7,72*</span>
+                            </div>
+                        </div>
+
+                        <p class="text-[#CC0000] text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                            Pagamento Único • Sem taxas extras
+                        </p>
+                    </div>
+
+                    <a href="https://pay.kiwify.com.br/YzOIskc" id="btn-checkout"
+                        onclick="fbq('track', 'InitiateCheckout');"
+                        class="group relative block w-full bg-[#CC0000] hover:bg-red-600 text-white font-black py-4 md:py-5 rounded-2xl md:rounded-xl uppercase tracking-widest shadow-[0_0_30px_rgba(204,0,0,0.3)] hover:shadow-[0_0_60px_rgba(204,0,0,0.6)] hover:scale-[1.02] transition-all duration-300 overflow-hidden mb-6 border border-white/10">
+                        <div class="relative z-10 flex flex-col items-center justify-center leading-tight">
+                            <span class="text-sm md:text-lg flex items-center gap-2">
+                                QUERO ME ORGANIZAR <i class="fas fa-arrow-right text-xs opacity-70"></i>
+                            </span>
+                            <span
+                                class="text-[9px] md:text-[10px] opacity-80 font-medium tracking-normal normal-case mt-0.5">
+                                Acesso imediato no seu e-mail
+                            </span>
+                        </div>
+                        <div
+                            class="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[30deg] group-hover:animate-[shine_0.8s_ease-in-out]">
+                        </div>
+                    </a>
+                    <div class="flex md:hidden justify-center gap-4 opacity-40 grayscale">
+                        <i class="fab fa-cc-visa text-xl"></i>
+                        <i class="fab fa-cc-mastercard text-xl"></i>
+                        <i class="fas fa-qrcode text-xl"></i>
+                    </div>
+                    <div class="md:hidden mt-6 flex flex-col gap-2 items-center justify-center">
+                        <div
+                            class="flex items-center gap-2 text-[10px] text-gray-500 bg-[#0f0f0f] border border-[#222] px-3 py-1.5 rounded-full">
+                            <i class="fas fa-shield-alt text-green-500"></i>
+                            <span>Ambiente 100% Seguro (SSL)</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 200%;
+            }
+        }
+    </style>
 
     <!-- FAQ (Adicionada) -->
     <section id="faq" class="py-16 max-w-2xl mx-auto px-4 border-t border-white/5">
         <h3 class="text-lg font-bold text-white text-center uppercase mb-8 font-brand">Dúvidas Frequentes</h3>
-        
+
         <div class="space-y-3">
             <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
+                <summary
+                    class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
                     Como recebo o acesso?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                    <span class="text-red-500 transition-transform group-open:rotate-180"><i
+                            class="fas fa-chevron-down"></i></span>
                 </summary>
                 <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-                    Imediatamente após a confirmação do pagamento. No seu e-mail que você inseriu no pagamento receberá o acesso ao painel web.
+                    Imediatamente após a confirmação do pagamento. No seu e-mail que você inseriu no pagamento receberá
+                    o acesso ao painel web.
                 </div>
             </details>
 
             <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
+                <summary
+                    class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
                     Preciso pagar mensalidade?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                    <span class="text-red-500 transition-transform group-open:rotate-180"><i
+                            class="fas fa-chevron-down"></i></span>
                 </summary>
                 <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
                     Não. Esta oferta é de acesso vitalício. Você paga uma única vez e o sistema é seu para sempre.
@@ -697,12 +900,15 @@
             </details>
 
             <details class="group faq-card overflow-hidden">
-                <summary class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
+                <summary
+                    class="flex justify-between items-center p-5 cursor-pointer text-xs font-bold text-gray-300 select-none hover:text-white transition">
                     Funciona no celular?
-                    <span class="text-red-500 transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                    <span class="text-red-500 transition-transform group-open:rotate-180"><i
+                            class="fas fa-chevron-down"></i></span>
                 </summary>
                 <div class="px-5 pb-5 text-gray-400 text-xs leading-relaxed border-t border-white/5 pt-3">
-                    Sim. O Synapse é um Web App otimizado que funciona perfeitamente no navegador do seu celular (iPhone ou Android) e no computador.
+                    Sim. O Synapse é um Web App otimizado que funciona perfeitamente no navegador do seu celular (iPhone
+                    ou Android) e no computador.
                 </div>
             </details>
         </div>
@@ -721,7 +927,7 @@
         const video = document.getElementById('meuVideo');
         const overlay = document.getElementById('videoOverlay');
 
-        if(videoContainer && video && overlay) {
+        if (videoContainer && video && overlay) {
             videoContainer.addEventListener('click', () => {
                 if (video.paused) {
                     video.play();
@@ -737,7 +943,7 @@
                 }
             });
         }
-        
+
         // Animação Reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -749,12 +955,13 @@
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
     <script>
-  document.getElementById('btn-checkout').addEventListener('click', function() {
-    gtag('event', 'begin_checkout', {
-      'event_category': 'engagement',
-      'event_label': 'Botao Principal'
-    });
-  });
-</script>
+        document.getElementById('btn-checkout').addEventListener('click', function () {
+            gtag('event', 'begin_checkout', {
+                'event_category': 'engagement',
+                'event_label': 'Botao Principal'
+            });
+        });
+    </script>
 </body>
+
 </html>
