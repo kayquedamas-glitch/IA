@@ -386,219 +386,249 @@
     <script>lucide.createIcons();</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const PADDING_HIGHLIGHT = 6; 
+        // --- CONFIGURAÇÕES TURBO ---
+        const PADDING_HIGHLIGHT = 8;
+        const HIGHLIGHT_COLOR = '#cc0000';
+        const FADE_SPEED = 150; // Tempo para sumir (muito rápido)
+        
         localStorage.removeItem('synapse_demo_seen');
 
-        // Se quiser testar no PC, comente a linha abaixo
-        if (window.innerWidth > 768) return; 
-
-        // --- INÍCIO INTELIGENTE ---
+        // --- INICIALIZAÇÃO ---
         const originalCloseBriefing = window.closeBriefing;
         window.closeBriefing = function() {
             if(originalCloseBriefing) originalCloseBriefing(); 
-            // Começa o tour logo após fechar o briefing inicial
-            setTimeout(startTourSequence, 800);
+            setTimeout(startTourSequence, 300); // Começa rápido
         };
         
-        // Fallback caso não tenha briefing
-        if (!window.closeBriefing) setTimeout(startTourSequence, 1500);
+        if (!window.closeBriefing) setTimeout(startTourSequence, 1000);
 
-        // --- ROTEIRO DE VENDAS (A JORNADA) ---
+        // --- NAVEGAÇÃO ---
+        function getNavElement(type) {
+            const isMobile = window.innerWidth <= 768;
+            if (type === 'protocolo') {
+                return isMobile ? document.getElementById('tabJornada') : document.querySelector('div[onclick*="protocolo"]');
+            }
+            if (type === 'arsenal') {
+                return document.querySelector('.sidebar .overflow-y-auto');
+            }
+            return null;
+        }
+
+        // --- ROTEIRO OTIMIZADO ---
         
         function startTourSequence() {
-            // PASSO 1: CHAT (Foco: Alívio Mental)
             window.switchTab('chat');
+            // Delay pequeno apenas para garantir que a DOM carregou
             setTimeout(() => {
-                const inputWrapper = document.getElementById('textInputWrapper'); 
+                const inputWrapper = document.getElementById('textInputWrapper');
+                if(!inputWrapper) return;
+
                 showSynapseHud({
-                    target: inputWrapper, 
+                    target: inputWrapper,
                     icon: "fa-solid fa-brain",
-                    title: "SEU SEGUNDO CÉREBRO",
-                    text: "Sua mente não foi feita para guardar tudo. <b class='text-white'>Despeje seu caos aqui</b> e deixe o sistema organizar sua vida por você.",
+                    title: "1. SEU SEGUNDO CÉREBRO",
+                    text: "Sua mente serve para criar, não para armazenar. <br><br><b class='text-white'>Despeje suas ideias e caos aqui.</b>",
                     position: "top",
                     nextAction: () => startStep2()
                 });
-            }, 600);
+            }, 300);
         }
 
         function startStep2() {
-            // PASSO 2: VISÃO (Foco: Controle)
-            window.switchTab('protocolo');
+            // PASSO 2: BOTÃO JORNADA
+            // Quase instantâneo pois já estamos na tela certa, só precisa esperar o FADE_SPEED
             setTimeout(() => {
-                const tabJornada = document.getElementById('tabJornada');
+                const targetBtn = getNavElement('protocolo');
+                if(!targetBtn) return endTourNow();
+
                 showSynapseHud({
-                    target: tabJornada,
+                    target: targetBtn,
                     icon: "fa-solid fa-map",
-                    title: "O FIM DO IMPROVISO",
-                    text: "Chega de acordar perdido. Na aba <b class='text-white'>Jornada</b>, você visualiza o mapa exato entre onde você está e onde quer chegar.",
-                    position: "top", 
-                    nextAction: () => startStep3()
+                    title: "2. O MAPA",
+                    text: "Chega de improviso. Clique aqui para acessar sua <b class='text-white'>Base de Comando</b>.",
+                    position: window.innerWidth > 768 ? "right" : "top",
+                    nextAction: () => {
+                        // Ação de troca de tela
+                        hideAllTourElements();
+                        window.switchTab('protocolo');
+                        // Delay reduzido para 400ms (tempo mínimo para a aba renderizar)
+                        setTimeout(startStep3, 400); 
+                    }
                 });
-            }, 800);
+            }, 50); 
         }
 
         function startStep3() {
-            // PASSO 3: MÉTRICAS (Foco: Dopamina/Vício)
-            const statsArea = document.querySelector('.dashboard-card');
+            // PASSO 3: XP / NÍVEL
+            const statsArea = document.querySelector('.dashboard-card'); 
             if(statsArea) statsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            setTimeout(() => {
-                showSynapseHud({
-                    target: statsArea,
-                    icon: "fa-solid fa-fire",
-                    title: "VICIE EM PROGREDIR",
-                    text: "Hackeamos sua motivação. Ver seu Nível e Sequência subirem vai tornar a <b class='text-white'>disciplina viciante</b>.",
-                    position: "bottom",
-                    nextAction: () => startStep4()
-                });
-            }, 1000);
+            // Executa assim que a rolagem começa
+            showSynapseHud({
+                target: statsArea || document.body,
+                icon: "fa-solid fa-fire",
+                title: "3. VICIE EM PROGREDIR",
+                text: "O sistema hackeia sua dopamina. <b class='text-white'>Ganhe XP e suba de nível</b> cumprindo tarefas.",
+                position: "bottom",
+                nextAction: () => startStep4()
+            });
         }
 
         function startStep4() {
-            // PASSO 4: AGENDA (Foco: Facilidade)
-            const agendaCard = document.getElementById('calendarGrid')?.parentElement;
-            if(agendaCard) agendaCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
+            // PASSO 4: AGENDA
+            // Instantâneo (mesma tela)
             setTimeout(() => {
+                const agendaCard = document.getElementById('calendarGrid')?.parentElement;
+                if(agendaCard) agendaCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
                 showSynapseHud({
-                    target: agendaCard,
+                    target: agendaCard || document.body,
                     icon: "fa-regular fa-calendar-check",
-                    title: "DISCIPLINA AUTOMÁTICA",
-                    text: "Não dependa de força de vontade. Seus <b class='text-white'>Rituais</b> blindam sua rotina para você nunca mais esquecer o importante.",
+                    title: "4. ROTINA BLINDADA",
+                    text: "Defina seus <b class='text-white'>Rituais</b>. O sistema garante que você nunca mais esqueça o importante.",
                     position: "top",
                     nextAction: () => startStep5()
                 });
-            }, 1000);
+            }, 50);
         }
 
         function startStep5() {
-            // PASSO 5: ARSENAL (Foco: Suporte/Poder)
+            // PASSO 5: ARSENAL
+            hideAllTourElements();
             window.switchTab('chat');
             
+            // Troca de tela rápida
             setTimeout(() => {
-                window.toggleSidebar(true); // Abre sidebar
+                if (window.innerWidth <= 768) window.toggleSidebar(true);
                 
+                // Espera mínima para a sidebar abrir (transição CSS geralmente é 300ms)
                 setTimeout(() => {
-                    const arsenalArea = document.querySelector('.sidebar .overflow-y-auto');
-                    
+                    const arsenalArea = getNavElement('arsenal');
                     showSynapseHud({
-                        target: arsenalArea,
+                        target: arsenalArea || document.body,
                         icon: "fa-solid fa-users",
-                        title: "SUA EQUIPE PESSOAL",
-                        text: "Por que pensar sozinho? Você tem <b class='text-white'>4 Especialistas</b> prontos para trabalhar por você 24h/dia.",
-                        position: "right", 
+                        title: "5. EQUIPE DE ELITE",
+                        text: "Você não está sozinho. <b class='text-white'>Especialistas</b> prontos para trabalhar por você.",
+                        position: "right",
                         offsetX: 20,
                         nextAction: () => {
-                            window.toggleSidebar(false);
+                            if (window.innerWidth <= 768) window.toggleSidebar(false);
                             finishTour();
                         }
                     });
-                }, 600);
-            }, 800);
+                }, 350); 
+            }, 100);
         }
 
         function finishTour() {
-            if(highlightBox) highlightBox.style.opacity = '0';
+            endTourNow();
+            const input = document.getElementById('chatInput');
+            const btn = document.getElementById('sendMessageBtn');
             
-            setTimeout(() => {
-                if(highlightBox) highlightBox.remove();
-                if(currentHud) currentHud.remove();
-
-                const input = document.getElementById('chatInput');
-                const btn = document.getElementById('sendMessageBtn');
-                
-                // --- A CEREJA DO BOLO: INDUÇÃO ---
-                // O sistema digita sozinho para quebrar o gelo
-                const text = "Quero organizar minha rotina...";
-                input.value = "";
+            if(input) {
                 input.focus();
-                
+                const text = "Como organizar minha semana?";
                 let i = 0;
+                input.value = "";
+                // Digitação acelerada
                 function typeWriter() {
                     if (i < text.length) {
                         input.value += text.charAt(i);
                         i++;
-                        // Varia a velocidade para parecer humano (mais natural)
-                        let randomSpeed = Math.floor(Math.random() * 50) + 40;
-                        setTimeout(typeWriter, randomSpeed);
+                        setTimeout(typeWriter, 30);
                     } else {
-                        btn.classList.add('animate-pulse');
-                        btn.style.boxShadow = "0 0 20px #cc0000";
+                        if(btn) {
+                            btn.classList.add('animate-pulse');
+                            btn.style.boxShadow = `0 0 20px ${HIGHLIGHT_COLOR}`;
+                        }
                     }
                 }
                 typeWriter();
-
-            }, 500);
+            }
         }
 
-        // --- ENGINE GRÁFICA (SPOTLIGHT + HUD) ---
+        // --- SISTEMA GRÁFICO VELOZ ---
         let currentHud = null;
         let highlightBox = null;
 
+        function hideAllTourElements() {
+            if(highlightBox) highlightBox.style.opacity = '0';
+            if(currentHud) currentHud.classList.remove('visible');
+        }
+
         function showSynapseHud({ target, icon, title, text, position, offsetY=0, offsetX=0, nextAction }) {
-            if(currentHud) currentHud.remove();
-            
+            // Lógica de Troca Rápida
+            if (highlightBox && currentHud) {
+                // 1. Apaga rápido
+                highlightBox.style.opacity = '0';
+                currentHud.classList.remove('visible');
+                
+                // 2. Move assim que apagar
+                setTimeout(() => {
+                    if(currentHud) currentHud.remove();
+                    renderNewStep(target, icon, title, text, position, offsetY, offsetX, nextAction);
+                }, FADE_SPEED);
+            } else {
+                renderNewStep(target, icon, title, text, position, offsetY, offsetX, nextAction);
+            }
+        }
+
+        function renderNewStep(target, icon, title, text, position, offsetY, offsetX, nextAction) {
             if(!highlightBox) {
                 highlightBox = document.createElement('div');
                 highlightBox.className = 'synapse-highlight-box';
+                // Transição rápida apenas na opacidade
+                highlightBox.style.transition = `opacity ${FADE_SPEED}ms ease`; 
+                highlightBox.style.boxShadow = `0 0 0 2px ${HIGHLIGHT_COLOR}, 0 0 30px rgba(204, 0, 0, 0.5), 0 0 0 9999px rgba(0, 0, 0, 0.85)`;
                 document.body.appendChild(highlightBox);
             }
 
             if(!target) return;
-
             const rect = target.getBoundingClientRect();
-            const computedStyle = window.getComputedStyle(target);
-            const borderRadius = computedStyle.borderRadius === '0px' ? '12px' : computedStyle.borderRadius;
+            if(rect.width === 0) return; // Elemento invisível, aborta
 
-            // Posiciona o Holofote
+            const borderRadius = window.getComputedStyle(target).borderRadius || '12px';
+
+            // REPOSICIONAMENTO INSTANTÂNEO (enquanto está invisível)
             highlightBox.style.width = `${rect.width + (PADDING_HIGHLIGHT * 2)}px`;
             highlightBox.style.height = `${rect.height + (PADDING_HIGHLIGHT * 2)}px`;
             highlightBox.style.top = `${rect.top - PADDING_HIGHLIGHT}px`;
             highlightBox.style.left = `${rect.left - PADDING_HIGHLIGHT}px`;
-            highlightBox.style.borderRadius = borderRadius;
-            highlightBox.style.opacity = '1';
+            highlightBox.style.borderRadius = borderRadius === '0px' ? '12px' : borderRadius;
 
-            // Cria o HUD
+            // NOVO HUD
             const hud = document.createElement('div');
             hud.className = 'synapse-hud';
             hud.innerHTML = `
                 <div class="synapse-skip-btn">Pular</div>
                 <div class="synapse-title"><i class="${icon}"></i> ${title}</div>
                 <div class="synapse-text">${text}</div>
-                <div class="synapse-btn">${nextAction ? 'CONTINUAR' : 'COMEÇAR'}</div>
+                <div class="synapse-btn">${nextAction ? 'CONTINUAR' : 'FIM'}</div>
             `;
             document.body.appendChild(hud);
             currentHud = hud;
 
-            hud.querySelector('.synapse-skip-btn').onclick = (e) => {
-                e.stopPropagation();
-                endTourNow();
-            };
+            hud.querySelector('.synapse-skip-btn').onclick = (e) => { e.stopPropagation(); endTourNow(); };
+            hud.querySelector('.synapse-btn').onclick = (e) => { e.stopPropagation(); nextAction ? nextAction() : endTourNow(); };
 
-            // Posicionamento Inteligente
-            const hudRect = { width: 260, height: 160 }; 
-            const screenW = window.innerWidth;
-            const screenH = window.innerHeight;
-            
+            // Posição HUD
+            const hudRect = { width: 280, height: 200 };
+            const screenW = window.innerWidth, screenH = window.innerHeight;
             let top, left;
 
             if (position === 'top') {
-                top = rect.top - hudRect.height - 10 + offsetY;
+                top = rect.top - hudRect.height - 20 + offsetY;
                 left = rect.left + (rect.width/2) - (hudRect.width/2) + offsetX;
             } else if (position === 'bottom') {
-                top = rect.bottom + 10 + offsetY;
+                top = rect.bottom + 20 + offsetY;
                 left = rect.left + (rect.width/2) - (hudRect.width/2) + offsetX;
             } else if (position === 'right') {
                 top = rect.top + (rect.height/2) - (hudRect.height/2) + offsetY;
-                left = rect.right + 10 + offsetX;
-            } else if (position === 'top-right') {
-                top = rect.top - hudRect.height + offsetY;
-                left = rect.right - hudRect.width + offsetX;
+                left = rect.right + 20 + offsetX;
             } else {
-                top = rect.bottom + 10; left = rect.left;
+                top = rect.bottom + 20; left = rect.left;
             }
 
-            // Trava de tela (Clamp)
             if (left < 10) left = 10;
             if (left + hudRect.width > screenW - 10) left = screenW - hudRect.width - 10;
             if (top < 10) top = 10;
@@ -607,23 +637,21 @@
             hud.style.top = `${top}px`;
             hud.style.left = `${left}px`;
 
-            requestAnimationFrame(() => hud.classList.add('visible'));
-
-            const btn = hud.querySelector('.synapse-btn');
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                if(nextAction) nextAction();
-                else endTourNow();
-            };
+            // FADE IN
+            requestAnimationFrame(() => {
+                highlightBox.style.opacity = '1';
+                hud.classList.add('visible');
+            });
         }
 
         function endTourNow() {
-            if(highlightBox) highlightBox.style.opacity = '0';
-            if(currentHud) currentHud.classList.remove('visible');
+            hideAllTourElements();
             setTimeout(() => {
                 if(highlightBox) highlightBox.remove();
                 if(currentHud) currentHud.remove();
-            }, 300);
+                highlightBox = null;
+                currentHud = null;
+            }, FADE_SPEED);
         }
     });
 </script>
