@@ -27,6 +27,7 @@ const Database = {
             console.error("Usuário não logado!");
             return;
         }
+        
 
         try {
             // Baixa tudo do Supabase
@@ -80,6 +81,25 @@ const Database = {
             ultimosDadosSalvos = dadosAtuais;
             console.log("✅ Dados salvos na nuvem.");
         }
+    },
+    async logEvent(nomeEvento, detalhe = "") {
+        // 1. Pega o usuário atual
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user || !user.email) return;
+
+        // 2. Manda para o Supabase "em silêncio" (sem await para não travar a tela)
+        window._supabase
+            .from('analytics_eventos')
+            .insert({
+                email: user.email,
+                evento: nomeEvento,
+                detalhe: detalhe
+            })
+            .then(({ error }) => {
+                if (error) console.warn("Erro ao logar métrica:", error);
+            });
+            
+        console.log(`📡 Métrica: ${nomeEvento} -> ${detalhe}`);
     },
 
     iniciarAutoSave() {

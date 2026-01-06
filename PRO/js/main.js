@@ -171,7 +171,11 @@ async function initializeSystemCore() {
     window.addEventListener('online', updateStatusIndicator);
     window.addEventListener('offline', updateStatusIndicator);
     updateStatusIndicator();
+    if (window.Database) {
+        window.Database.logEvent("LOGIN_SISTEMA", "App Iniciado");
+    }
 }
+
 
 function finishBoot(overlay) {
     overlay.style.transition = 'opacity 0.8s ease';
@@ -198,6 +202,7 @@ function selectTool(toolName) {
         showDemoModal(toolName); 
         return; 
     }
+    if (window.Database) window.Database.logEvent("USO_FERRAMENTA", toolName);
 
     switchTab('chat');
     if (typeof loadAgent === 'function') {
