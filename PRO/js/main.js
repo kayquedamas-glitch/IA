@@ -1,6 +1,7 @@
 import { initGamification } from './modules/gamification.js';
 import { initDashboard } from './modules/dashboard.js';
 import { initCalendar } from './modules/calendar.js';
+import './modules/database.js';
 import { initChat, loadAgent } from './core/chat.js';
 import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
@@ -132,8 +133,8 @@ async function runBootNeural() {
 // =================================================================
 async function initializeSystemCore() {
     loadUserProfile();
-    initAudio();
     
+    // Define funções globais PRIMEIRO para não dar erro de "switchTab is not a function"
     window.selectTool = selectTool;
     window.switchTab = switchTab;
     window.toggleSidebar = toggleSidebar;
@@ -149,6 +150,19 @@ async function initializeSystemCore() {
     const btnSOS = document.getElementById('btn-sos-protocol');
     if (btnSOS) btnSOS.onclick = () => { window.features.startSOSProtocol(); toggleSidebar(false); };
 
+    // --- CARREGA O BANCO DE DADOS AGORA ---
+    try {
+        if (window.Database) {
+            await window.Database.init();
+        } else {
+            console.warn("⚠️ Banco de dados não carregado.");
+        }
+    } catch (e) {
+        console.error("Erro ao iniciar banco:", e);
+    }
+    // --------------------------------------
+
+    initAudio();
     await initChat();
     await initGamification();
     initDashboard();

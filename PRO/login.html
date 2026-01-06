@@ -147,87 +147,81 @@
         </div>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-        // ====================================================
-        // CONFIGURAÇÃO SHEETDB
-        // ====================================================
-        // CERTIFIQUE-SE QUE ESTE É O LINK DA SUA PLANILHA:
-        const API_URL = 'https://sheetdb.io/api/v1/zzt2i6lo7kuwn'; 
-        const APP_SECRET = "SYNAPSE_Protocol_v1_SECURE_HASH_2025_KEY";
+    // --- SUAS CREDENCIAIS ---
+    const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
+    const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
+    
+    window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY)
 
-        // Limpa qualquer acesso anterior ao carregar a página de login
-        localStorage.removeItem('synapse_access'); 
+    // Limpa acessos anteriores ao abrir a tela de login
+    localStorage.removeItem('synapse_user');
 
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const emailInput = document.getElementById('email').value.trim().toLowerCase();
-            const btn = document.getElementById('btnSubmit');
-            const errorMsg = document.getElementById('errorMsg');
-            const originalText = btn.innerHTML;
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('email').value.trim(); // Remove espaços extras
+        const btn = document.getElementById('btnSubmit');
+        const errorMsg = document.getElementById('errorMsg');
+        const originalText = btn.innerHTML;
 
-            // UI: Loading
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VALIDANDO...';
-            btn.classList.add('opacity-80', 'cursor-not-allowed');
-            btn.disabled = true;
-            errorMsg.classList.add('hidden');
-            
-            try {
-                // Consulta API para ver se o email existe na planilha
-                const response = await fetch(`${API_URL}/search?email=${emailInput}`);
-                
-                if (!response.ok) throw new Error("Erro na conexão com o Banco de Dados");
-                const data = await response.json();
+        // Efeito de Carregando
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VERIFICANDO ACESSO...';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        btn.disabled = true;
+        errorMsg.classList.add('hidden');
+        
+        try {
+            // 1. CONSULTA NO BANCO DE DADOS (Usando ilike para ignorar maiúsculas/minúsculas)
+            const { data: cliente, error } = await _supabase
+                .from('clientes_vip')
+                .select('*')
+                .ilike('email', emailInput)
+                .single();
 
-                // SE O EMAIL EXISTIR NA PLANILHA:
-                if (data.length > 0) {
-                    const nomeUsuario = data[0].nome || "Membro"; // Tenta pegar o nome, se tiver coluna 'nome'
-                    
-                    // 1. Cria Sessão de Usuário
-                    const tokenSeguro = btoa(emailInput + APP_SECRET); 
-                    const sessionData = {
-                        user: nomeUsuario,
-                        email: emailInput,
-                        token: tokenSeguro,
-                        loginDate: Date.now()
-                    };
-                    localStorage.setItem('synapse_session_v2', JSON.stringify(sessionData));
-
-                    // 2. LIBERA O ACESSO PRO (Para o chat.js reconhecer)
-                    // --- AQUI ESTÁ A CORREÇÃO CRÍTICA ---
-                    localStorage.setItem('synapse_access', 'PRO');
-                    // ------------------------------------
-
-                    // Feedback Visual
-                    btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
-                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ACESSO AUTORIZADO';
-                    
-                    // Redireciona
-                    setTimeout(() => {
-                        window.location.href = "index.html"; 
-                    }, 1000);
-
-                } else {
-                    throw new Error("Email não encontrado");
-                }
-
-            } catch (error) {
-                console.error("Erro:", error);
-                
-                // UI: Erro
-                btn.innerHTML = originalText;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                btn.disabled = false;
-                errorMsg.classList.remove('hidden');
-                
-                // Animação de erro
-                const container = document.querySelector('.w-full.max-w-md');
-                container.classList.add('shake-anim');
-                setTimeout(() => container.classList.remove('shake-anim'), 500);
+            // 2. SE NÃO ACHOU OU DEU ERRO
+            if (error || !cliente) {
+                throw new Error("E-mail não encontrado na base de clientes.");
             }
-        });
-    </script>
+
+            // 3. SE ACHOU: LIBERA O ACESSO DIRETO!
+            // Salvamos os dados do cliente no navegador para a próxima página ler
+            const sessaoUsuario = {
+                email: cliente.email,
+                status: cliente.status,
+                entrada: new Date().toISOString()
+            };
+            
+            localStorage.setItem('synapse_user', JSON.stringify(sessaoUsuario));
+
+            // Sucesso Visual
+            btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
+            btn.classList.add('bg-green-600');
+            btn.innerHTML = '<i class="fas fa-check"></i> ACESSO PERMITIDO!';
+
+            // Redireciona imediatamente para o painel
+            setTimeout(() => {
+                window.location.href = "index.html"; 
+            }, 1000); // Espera 1 segundo só para o usuário ver o "check" verde
+
+        } catch (error) {
+            console.error(error);
+            
+            // Volta botão ao normal
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.classList.remove('opacity-80', 'cursor-not-allowed', 'bg-green-600');
+            btn.classList.add('bg-[#CC0000]');
+            
+            // Mensagem de erro
+            let msg = "Acesso Negado: E-mail não encontrado ou assinatura inativa.";
+            errorMsg.innerHTML = '<i class="fas fa-lock"></i> ' + msg;
+            errorMsg.classList.remove('hidden');
+        }
+    });
+</script>
     
     </body>
 </html>

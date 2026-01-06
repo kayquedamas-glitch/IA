@@ -1,19 +1,17 @@
-// ARQUIVO: PRO/js/core/chat.js
 import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
-import { saveChatHistory, loadChatHistory } from '../modules/database.js';
+// REMOVIDO: import { saveChatHistory... } (Isso causava a tela preta)
 
 // --- CONFIGURAÇÕES ---
 let chatHistory = [];
 let currentAgentKey = 'Diagnostico';
 let messageCount = 0;
 
-// TIMING DO PLANO (Ajustado)
-const DEMO_LIMIT = 7;    // O bloqueio acontece na mensagem 7
-const DIAGNOSE_PHASE = 3; // Até msg 3: Conversa natural
-const SELL_PHASE = 5;     // Msg 5 e 6: Começa a falar do plano
+const DEMO_LIMIT = 7;    
+const DIAGNOSE_PHASE = 3; 
+const SELL_PHASE = 5;     
 
 const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
 
@@ -50,7 +48,12 @@ async function resetCurrentChat() {
         chatHistory = [];
         messageCount = 0;
         enableInput();
-        await saveChatHistory(currentAgentKey, []);
+        
+        // USANDO O NOVO BANCO DE DADOS
+        if (window.Database) {
+            await window.Database.saveChatHistory(currentAgentKey, []);
+        }
+        
         if (area) {
             area.innerHTML = '';
             area.style.opacity = '1';
@@ -72,7 +75,6 @@ export async function loadAgent(key) {
 
     if (messagesArea) messagesArea.innerHTML = '';
 
-    // HEADER VISUAL (Mantendo seu design)
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
@@ -85,7 +87,12 @@ export async function loadAgent(key) {
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
 
-    const savedHistory = await loadChatHistory(key);
+    // CARREGA HISTÓRICO DO SUPABASE (Via window.Database)
+    let savedHistory = [];
+    if (window.Database) {
+        savedHistory = await window.Database.loadChatHistory(key);
+    }
+
     if (savedHistory && savedHistory.length > 0) {
         chatHistory = savedHistory;
         chatHistory.forEach(msg => {
@@ -110,7 +117,6 @@ async function sendMessage(text = null) {
 
     if (!val) return;
 
-    // Trava de segurança numérica
     if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
         return;
     }
@@ -123,29 +129,21 @@ async function sendMessage(text = null) {
 
     if (currentAgentKey === 'Diagnostico') messageCount++;
 
-    // --- O DIRETOR DA CONVERSA (Instruções Naturais) ---
     let systemInjection = "";
     if (currentAgentKey === 'Diagnostico') {
         if (messageCount <= DIAGNOSE_PHASE) {
-            // Fase 1: Conversa
             systemInjection = `(INSTRUÇÃO: Pergunte algo sobre a rotina dele. Seja natural, como uma conversa no WhatsApp. Uma pergunta só.)`;
-        } 
-        else if (messageCount <= SELL_PHASE) {
-            // Fase 2: Diagnóstico suave
+        } else if (messageCount <= SELL_PHASE) {
             systemInjection = `(INSTRUÇÃO: Mostre que entende o problema dele. Diga que falta organização, mas sem culpar ele. Sugira que existe um jeito mais fácil.)`;
-        } 
-        else if (messageCount < DEMO_LIMIT) {
-            // Fase 3: Oferecer ajuda
+        } else if (messageCount < DEMO_LIMIT) {
             systemInjection = `(INSTRUÇÃO: Diga: "Eu montei um plano pra te ajudar com isso. Quer dar uma olhada?". Gere curiosidade.)`;
-        } 
-        else {
-            // Fase 4: Fechamento
+        } else {
             systemInjection = `(INSTRUÇÃO FINAL: Diga: "Seu plano está pronto. O Synapse vai te mostrar agora." Encerre OBRIGATORIAMENTE com [[LOCKED_DIAGNOSIS]].)`;
         }
     }
 
     const loadingId = showLoading();
-    const rpg = getRPGState();
+    const rpg = getRPGState(); // Isso já pega do estado novo
     
     try {
         const MAX_CONTEXT = 12;
@@ -174,11 +172,7 @@ async function sendMessage(text = null) {
             let aiText = data.choices[0].message.content;
             let forceBlock = false;
 
-            // --- REGEX BLINDADO ---
-            // Aceita LOCKED_DIAGNOSIS, LOCKED_DIGESTION ou qualquer variação que comece com LOCKED_
-            // Isso resolve o problema da "alucinação" da IA
             const lockRegex = /(\[\[|\()LOCKED_.*?(\]\]|\))/i;
-            
             if (lockRegex.test(aiText)) {
                 aiText = aiText.replace(lockRegex, ''); 
                 forceBlock = true;
@@ -197,9 +191,13 @@ async function sendMessage(text = null) {
                 addMessageUI('ai', aiText, true);
                 chatHistory.push({ role: 'user', content: val });
                 chatHistory.push({ role: 'assistant', content: aiText });
+                
+                // SALVA NO SUPABASE
+                if (window.Database) {
+                    window.Database.saveChatHistory(currentAgentKey, chatHistory);
+                }
             }
             
-            // Verifica Bloqueio
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
             const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
             const shouldBlockNow = (isLimitReached) || forceBlock;
@@ -209,7 +207,6 @@ async function sendMessage(text = null) {
             }
 
             if (shouldBlockNow) {
-                console.log("🔒 Paywall Ativado!");
                 disableInput(); 
                 setTimeout(() => { triggerPaywallSequence(); }, 2000);
             }
@@ -221,7 +218,7 @@ async function sendMessage(text = null) {
     }
 }
 
-// --- COMANDOS E VISUAL ---
+// --- RESTO DAS FUNÇÕES DE UI (Mantidas iguais) ---
 function handleCommands(text) {
     const regex = /\[\[(ADD_MISSION|ADD_HABIT):(.*?)\]\]/g;
     let match;
@@ -364,7 +361,6 @@ function enableInput() {
     if (btn) btn.disabled = false;
 }
 
-// --- SEQUÊNCIA DO PAYWALL (Visual do Polvo) ---
 function triggerPaywallSequence() {
     disableInput();
     const area = document.getElementById('messagesArea');
@@ -373,7 +369,6 @@ function triggerPaywallSequence() {
 
     const sequenceId = 'seq-' + Date.now();
     
-    // Seu HTML Original (Polvo)
     const sequenceHTML = `
         <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in transition-all duration-500">
             <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
@@ -394,7 +389,10 @@ function triggerPaywallSequence() {
     area.appendChild(div);
     scrollToBottom();
 
-    setTimeout(() => { document.getElementById(`progress-bar-${sequenceId}`).style.width = "100%"; }, 100);
+    setTimeout(() => { 
+        const bar = document.getElementById(`progress-bar-${sequenceId}`);
+        if(bar) bar.style.width = "100%"; 
+    }, 100);
 
     setTimeout(() => {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
@@ -414,18 +412,17 @@ function triggerPaywallSequence() {
             container.style.opacity = "0";
         }
         setTimeout(() => {
-            document.getElementById(sequenceId).remove();
+            const el = document.getElementById(sequenceId);
+            if(el) el.remove();
             showPaywallCard();
         }, 800);
     }, 3500);
 }
 
-// --- MODAL CARD (Texto Natural e Direto) ---
 function showPaywallCard() {
     const area = document.getElementById('messagesArea');
     const CHECKOUT_LINK = "../index.html#planos";
 
-    // Design original, mas texto humanizado e persuasivo
     const cardHTML = `
         <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
             <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden">

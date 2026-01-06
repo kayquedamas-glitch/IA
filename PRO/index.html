@@ -2,6 +2,44 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    function verificarAcessoDireto() {
+        console.log("🔒 Verificando credenciais...");
+
+        // 1. Tenta ler os dados salvos no navegador
+        const sessaoSalva = localStorage.getItem('synapse_user');
+
+        if (!sessaoSalva) {
+            // Se não tem nada salvo, chuta pro login
+            console.log("❌ Sem sessão. Redirecionando...");
+            window.location.href = "login.html";
+            return;
+        }
+
+        try {
+            const usuario = JSON.parse(sessaoSalva);
+            
+            // Verifica se tem email válido no objeto
+            if (!usuario.email) {
+                throw new Error("Sessão inválida");
+            }
+
+            console.log("✅ Bem-vindo de volta: " + usuario.email);
+            // Aqui o acesso continua normalmente...
+
+        } catch (e) {
+            // Se o dado estiver corrompido, limpa e manda pro login
+            localStorage.removeItem('synapse_user');
+            window.location.href = "login.html";
+        }
+    }
+
+    // Executa imediatamente
+    verificarAcessoDireto();
+</script>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPT9PTG129"></script>
 <script>
@@ -284,6 +322,47 @@
             </button>
         </nav>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // --- SEUS DADOS ---
+        const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
+        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
+        
+        // Cria a conexão GLOBAL (window._supabase) para todos os arquivos verem
+        window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+
+        // Script de Proteção (Segurança)
+        async function verificarAcesso() {
+            console.log("🔒 Verificando credenciais...");
+
+            // 1. Tenta ler os dados salvos no navegador (Login Direto)
+            const sessaoSalva = localStorage.getItem('synapse_user');
+
+            if (!sessaoSalva) {
+                console.log("❌ Sem sessão. Redirecionando...");
+                window.location.href = "login.html"; // Mude para ../login.html se necessário
+                return;
+            }
+
+            try {
+                const usuario = JSON.parse(sessaoSalva);
+                if (!usuario.email) throw new Error("Sessão inválida");
+                console.log("✅ Bem-vindo: " + usuario.email);
+            } catch (e) {
+                localStorage.removeItem('synapse_user');
+                window.location.href = "login.html";
+            }
+        }
+
+        // Executa a verificação
+        verificarAcesso();
+    </script>
+
+    <script type="module" src="js/main.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
 
     <script type="module" src="js/main.js"></script>
     <script>lucide.createIcons();</script>

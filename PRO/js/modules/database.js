@@ -1,104 +1,108 @@
-import { CONFIG } from '../config.js';
+// PRO/js/modules/database.js
 
-// Variável de controle para não salvar toda hora (Debounce)
-let saveTimeout = null;
+// Estado Global (Adicionei chatHistory aqui)
+window.AppEstado = {
+    gamification: {}, 
+    dashboard: {},    
+    calendar: {},     
+    chatHistory: {}, // <--- NOVO: Onde o chat fica salvo
+    config: {}        
+};
 
-// --- FUNÇÕES DE USUÁRIO ---
-export function getUserEmail() {
-    try {
-        const session = localStorage.getItem(CONFIG.STORAGE_KEYS.USER);
-        if (session) {
-            return JSON.parse(session).email;
+const DB_TABLE = 'progresso_usuario';
+let autoSaveTimer = null;
+let ultimosDadosSalvos = "";
+
+const Database = {
+    async init() {
+        console.log("📥 Iniciando Banco de Dados...");
+        
+        if (!window._supabase) {
+            console.error("❌ ERRO: Supabase não encontrado (window._supabase).");
+            return; 
         }
-    } catch (e) { return null; }
-    return null;
-}
 
-// --- SALVAR DADOS (Direto no SheetDB, mas inteligente) ---
-export async function saveUserData(rpgState) {
-    const email = getUserEmail();
-    if (!email) return;
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user || !user.email) {
+            console.error("Usuário não logado!");
+            return;
+        }
 
-    // Se tentar salvar de novo em menos de 2 segundos, cancela a tentativa anterior
-    if (saveTimeout) clearTimeout(saveTimeout);
-
-    console.log("⏳ ...esperando para salvar");
-
-    saveTimeout = setTimeout(async () => {
         try {
-            // Pega os eventos do calendário da memória
-            const calendarEvents = localStorage.getItem(CONFIG.STORAGE_KEYS.EVENTS) || "[]";
+            // Baixa tudo do Supabase
+            const { data, error } = await window._supabase
+                .from(DB_TABLE)
+                .select('dados')
+                .eq('email', user.email)
+                .single();
 
-            const dataToSave = {
-                xp: rpgState.xp,
-                habits: JSON.stringify(rpgState.habits || []),
-                missions: JSON.stringify(rpgState.missions || []),
-                dailyScores: JSON.stringify(rpgState.dailyScores || {}),
-                events: calendarEvents // Incluímos o calendário!
-            };
+            if (data && data.dados) {
+                console.log("☁️ Dados carregados da Nuvem!");
+                // Mescla os dados baixados com o estado atual para garantir que nada falte
+                window.AppEstado = { ...window.AppEstado, ...data.dados };
+            } else {
+                console.log("💾 Criando novo registro na nuvem...");
+                this.migrarDoLocalStorage();
+                await this.forceSave();
+            }
+        } catch (e) {
+            console.error("Erro conexão banco:", e);
+        }
 
-            // Envia direto para o SheetDB
-            await fetch(`${CONFIG.API_URL}/email/${email}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ data: dataToSave })
+        this.iniciarAutoSave();
+    },
+
+    migrarDoLocalStorage() {
+        // Tenta pegar históricos antigos se existirem
+        try {
+            const oldChat = localStorage.getItem('synapse_chat_history_v1');
+            if (oldChat) window.AppEstado.chatHistory = JSON.parse(oldChat);
+        } catch (e) {}
+    },
+
+    async forceSave() {
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user) return;
+
+        const dadosAtuais = JSON.stringify(window.AppEstado);
+        if (dadosAtuais === ultimosDadosSalvos) return; // Não mudou nada
+
+        // Salva tudo (Gamificação + Chat + Calendário)
+        const { error } = await window._supabase
+            .from(DB_TABLE)
+            .upsert({ 
+                email: user.email, 
+                dados: window.AppEstado,
+                updated_at: new Date()
             });
 
-            console.log("☁ ✅ Dados e Calendário salvos!");
-        } catch (e) { 
-            console.warn("Erro ao salvar:", e); 
+        if (!error) {
+            ultimosDadosSalvos = dadosAtuais;
+            console.log("✅ Dados salvos na nuvem.");
         }
-    }, 2000); // 2 segundos de atraso
-}
+    },
 
-// --- CARREGAR DADOS ---
-export async function syncUserData() {
-    const email = getUserEmail();
-    if (!email) return null;
+    iniciarAutoSave() {
+        if (autoSaveTimer) clearInterval(autoSaveTimer);
+        autoSaveTimer = setInterval(() => { this.forceSave(); }, 30000); 
+        window.addEventListener('beforeunload', () => { this.forceSave(); });
+    },
 
-    try {
-        console.log("☁ Buscando dados...");
-        const response = await fetch(`${CONFIG.API_URL}/search?email=${email}`);
-        const data = await response.json();
+    // --- FUNÇÕES DE CHAT (Para o chat.js usar) ---
+    async saveChatHistory(agentName, history) {
+        if (!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
+        
+        window.AppEstado.chatHistory[agentName] = history;
+        
+        // Força salvar agora para não perder conversa
+        this.forceSave(); 
+    },
 
-        if (data && data.length > 0) {
-            const userRow = data[0];
-            
-            // Restaura o Calendário na memória do navegador
-            if (userRow.events) {
-                localStorage.setItem(CONFIG.STORAGE_KEYS.EVENTS, userRow.events);
-            }
-            
-            // Retorna os dados do RPG
-            return {
-                xp: parseInt(userRow.xp) || 0,
-                habits: userRow.habits ? JSON.parse(userRow.habits) : [],
-                missions: userRow.missions ? JSON.parse(userRow.missions) : [],
-                dailyScores: userRow.dailyScores ? JSON.parse(userRow.dailyScores) : {}
-            };
-        }
-    } catch (e) {
-        console.warn("Erro ao baixar dados (usando offline):", e);
+    async loadChatHistory(agentName) {
+        if (!window.AppEstado.chatHistory) return [];
+        return window.AppEstado.chatHistory[agentName] || [];
     }
-    return null; 
-}
+};
 
-// --- OUTRAS FUNÇÕES (Mantidas iguais) ---
-export async function pushHistoryLog(activity) {}
-
-export async function saveChatHistory(agentName, history) {
-    try {
-        let allChats = JSON.parse(localStorage.getItem('synapse_chat_history_v1') || '{}');
-        allChats[agentName] = history;
-        localStorage.setItem('synapse_chat_history_v1', JSON.stringify(allChats));
-    } catch (e) { }
-}
-
-export async function loadChatHistory(agentName) {
-    try {
-        let allChats = JSON.parse(localStorage.getItem('synapse_chat_history_v1') || '{}');
-        return allChats[agentName] || null;
-    } catch (e) { return null; }
-}
+// Exporta globalmente
+window.Database = Database;
