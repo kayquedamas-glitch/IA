@@ -1,27 +1,17 @@
 import { CONFIG } from '../config.js';
 import { showToast } from './ui.js';
-// REMOVIDOS OS IMPORTS ANTIGOS DO DATABASE PARA NÃO DAR ERRO
 import { playSFX } from './audio.js'; 
 
-console.log("🎮 Módulo de Gamificação Tático Iniciado (Supabase Edition)...");
+console.log("🎮 Módulo de Gamificação Iniciado (V6 - Final Fix)...");
 
-const IS_DEMO = window.IS_DEMO === true;
-
-// Estado Inicial Padrão
+// --- VARIÁVEIS GLOBAIS (Restauradas) ---
 let rpgState = { 
-    xp: 0, 
-    level: 1, 
-    currentRank: "RECRUTA",
-    streak: 0, 
-    lastLoginDate: null, 
-    lastActionTime: 0,
-    habits: [], 
-    missions: [], 
-    history: [],
-    dailyScores: {} 
+    xp: 0, level: 1, currentRank: "RECRUTA", streak: 0, 
+    lastLoginDate: null, lastActionTime: 0,
+    habits: [], missions: [], history: [], dailyScores: {} 
 };
 
-let previousLevel = 1;
+let previousLevel = 1; // <--- A variável que faltava!
 
 const RANKS = [
     { name: "RECRUTA", minLevel: 1 }, { name: "SOLDADO", minLevel: 5 },
@@ -32,79 +22,70 @@ const RANKS = [
     { name: "MARECHAL", minLevel: 100 }
 ];
 
+// --- DATA LOCAL ---
+function getLocalDate() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; 
+}
+
 export async function initGamification() { 
     try {
-        // 1. CARREGA DO ESTADO GLOBAL (Que o Database.js já baixou do Supabase)
         loadFromGlobalState(); 
         
-        previousLevel = rpgState.level; 
-        checkStreak(); 
-        calculateRankAndLevel(false); 
+        // Inicializa o previousLevel com o nível salvo para não dar erro
+        if (rpgState.level) previousLevel = rpgState.level;
+
+        checkDailyReset();
+        updateDailyScore(); 
+        
+        // Recalcula ranking inicial sem animar
+        calculateRankAndLevel(false);
+
         updateUI(); 
         renderHabits();
         safeRenderCalendar(); 
         
-        // Globais para o HTML usar
         window.openAddHabitModal = openAddHabitModal;
         window.toggleHabit = toggleHabit;
         window.deleteHabit = deleteHabit;
-        
     } catch (e) { console.error("Erro Gamificação:", e); }
 }
 
-export function getRPGState() { return { ...rpgState }; }
-export function updateMissionsState(newMissions) { 
-    rpgState.missions = newMissions; 
-    saveToGlobalState(); 
+function checkDailyReset() {
+    const today = getLocalDate();
+    const lastSavedDate = rpgState.habitsDate; 
+    
+    // Se a data salva for diferente de hoje, limpa tudo
+    if (lastSavedDate !== today && rpgState.habits) {
+        console.log("🔄 Novo dia detectado: Resetando rituais...");
+        rpgState.habits = rpgState.habits.map(h => ({ ...h, done: false }));
+        rpgState.habitsDate = today;
+        rpgState.dailyScores[today] = 0;
+        saveToGlobalState();
+    }
 }
 
-// --- FUNÇÃO DE CARREGAMENTO NOVO (Lê do window.AppEstado) ---
 function loadFromGlobalState() {
-    // Se o banco de dados já preencheu o AppEstado, usamos ele
-    if (window.AppEstado && window.AppEstado.gamification && Object.keys(window.AppEstado.gamification).length > 0) {
-        console.log("🎮 Gamificação carregada do Estado Global");
+    if (window.AppEstado && window.AppEstado.gamification) {
         rpgState = { ...rpgState, ...window.AppEstado.gamification };
-        
-        // Verifica reset diário de hábitos (Lógica movida para cá)
-        const habitsDate = rpgState.habitsDate; // Precisamos salvar a data dos hábitos
-        const today = new Date().toISOString().split('T')[0];
-        
-        if (habitsDate !== today && rpgState.habits) {
-            console.log("🔄 Novo dia: Resetando hábitos...");
-            rpgState.habits = rpgState.habits.map(h => ({ ...h, done: false }));
-            rpgState.habitsDate = today;
-            saveToGlobalState(); // Salva o reset
-        }
     }
 }
 
-// --- FUNÇÃO DE SALVAMENTO NOVO (Escreve no window.AppEstado) ---
 function saveToGlobalState() {
-    // 1. Atualiza a memória RAM do app
     if (!window.AppEstado) window.AppEstado = {};
-    
-    // Salva a data de hoje para controle de reset
-    rpgState.habitsDate = new Date().toISOString().split('T')[0];
-    
+    rpgState.habitsDate = getLocalDate();
     window.AppEstado.gamification = rpgState;
-
-    // 2. Avisa o Banco de Dados para sincronizar com a nuvem (Auto-Save ou Force Save)
-    if (window.Database && window.Database.forceSave) {
-        // O Database vai detectar a mudança e salvar no Supabase
-        // Não precisamos chamar forceSave() toda hora se tiver auto-save, 
-        // mas chamar garante sincronia rápida em ações importantes.
-        window.Database.forceSave(); 
-    }
+    if (window.Database && window.Database.forceSave) window.Database.forceSave();
 }
 
-// --- FUNÇÃO SEGURA DO CALENDÁRIO ---
 function safeRenderCalendar() {
-    if (typeof window.renderCalendar === 'function') {
-        window.renderCalendar();
-    }
+    if (typeof window.renderCalendar === 'function') window.renderCalendar();
 }
 
-// --- GERENCIAMENTO DE HÁBITOS ---
+// --- INTERAÇÃO ---
 
 function toggleHabit(id) {
     const h = rpgState.habits.find(x => x.id === id);
@@ -121,28 +102,33 @@ function toggleHabit(id) {
         }
         
         updateDailyScore(); 
-        saveToGlobalState(); // Mudou para o novo save
+        saveToGlobalState(); 
         renderHabits();
         safeRenderCalendar(); 
     }
 }
 
 function updateDailyScore() {
-    const today = new Date().toISOString().split('T')[0];
-    if (rpgState.habits.length === 0) {
-        if(rpgState.dailyScores) rpgState.dailyScores[today] = 0;
+    const today = getLocalDate();
+    
+    if (!rpgState.habits || rpgState.habits.length === 0) {
+        // Se não tem hábitos, zera o dia ou deixa neutro?
+        // Vamos deixar como 0 para forçar o usuário a criar algo.
         return;
     }
+
     const doneCount = rpgState.habits.filter(h => h.done).length;
     const total = rpgState.habits.length;
-    const percent = Math.round((doneCount / total) * 100);
+    
+    let percent = 0;
+    if (total > 0) percent = Math.round((doneCount / total) * 100);
     
     if(!rpgState.dailyScores) rpgState.dailyScores = {};
     rpgState.dailyScores[today] = percent;
 }
 
 function deleteHabit(id) {
-    if(confirm("Remover este protocolo permanentemente?")) {
+    if(confirm("Remover ritual?")) {
         rpgState.habits = rpgState.habits.filter(h => h.id !== id);
         updateDailyScore();
         saveToGlobalState();
@@ -150,6 +136,14 @@ function deleteHabit(id) {
         safeRenderCalendar();
         safePlaySFX('click');
     }
+}
+
+export function addCustomHabit(text) { 
+    rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); 
+    updateDailyScore(); 
+    saveToGlobalState(); 
+    renderHabits();
+    safeRenderCalendar();
 }
 
 function renderHabits() {
@@ -222,6 +216,8 @@ function openAddHabitModal() {
     input.onkeypress = (e) => { if(e.key === 'Enter') confirm(); };
 }
 
+// --- FUNÇÕES EXPORTADAS ---
+
 export function addXP(amt) {
     const now = Date.now();
     if (amt > 0 && (now - rpgState.lastActionTime < 500)) return;
@@ -237,14 +233,6 @@ export function addXP(amt) {
     if (amt > 0) safePlaySFX('success'); 
 }
 
-export function addCustomHabit(text) { 
-    rpgState.habits.push({ id: 'h' + Date.now(), text, done: false }); 
-    updateDailyScore();
-    saveToGlobalState(); 
-    renderHabits();
-    safeRenderCalendar();
-}
-
 export function addHabitFromAI(text) { addCustomHabit(text); return true; }
 
 export async function logActivity(type, detail, xpGained, durationMin = 0) {
@@ -253,10 +241,11 @@ export async function logActivity(type, detail, xpGained, durationMin = 0) {
         if(!rpgState.history) rpgState.history = [];
         rpgState.history.unshift(activity);
         if (rpgState.history.length > 50) rpgState.history.pop();
-        
-        saveToGlobalState(); // Salva o histórico
+        saveToGlobalState();
     } catch (e) {}
 }
+
+// --- FUNÇÕES DE NÍVEL (Agora com previousLevel e RANKS funcionando) ---
 
 function triggerLevelUpPro(newLevel, newRank) {
     const overlay = document.createElement('div');
@@ -274,7 +263,6 @@ function triggerLevelUpPro(newLevel, newRank) {
     }, 4000);
 }
 
-// --- LÓGICA DE CÁLCULO DE NÍVEL ---
 function calculateRankAndLevel(animate = false) { 
     if (!rpgState.xp || isNaN(rpgState.xp)) rpgState.xp = 0;
     
@@ -282,12 +270,14 @@ function calculateRankAndLevel(animate = false) {
     let xpCost = 100; 
     let totalXpNeeded = 0;
     
+    // Calcula o nível baseado no XP
     while (rpgState.xp >= totalXpNeeded + xpCost) { 
         totalXpNeeded += xpCost; 
         calculatedLevel++; 
         xpCost = Math.floor(xpCost * 1.10); 
     }
     
+    // Verifica se subiu de nível
     if (animate && calculatedLevel > previousLevel) {
         let newRank = "RECRUTA";
         for (let r of RANKS) { if (calculatedLevel >= r.minLevel) newRank = r.name; }
@@ -304,6 +294,7 @@ function calculateRankAndLevel(animate = false) {
     previousLevel = calculatedLevel;
     rpgState.level = calculatedLevel;
     
+    // Atualiza Rank
     let rank = "RECRUTA";
     for (let r of RANKS) { if (rpgState.level >= r.minLevel) rank = r.name; }
     rpgState.currentRank = rank;
@@ -311,19 +302,15 @@ function calculateRankAndLevel(animate = false) {
 
 function checkStreak() {
     try {
-        const today = new Date().toISOString().split('T')[0];
+        const today = getLocalDate();
         const lastLogin = rpgState.lastLoginDate;
         if (!lastLogin) { rpgState.streak = 1; rpgState.lastLoginDate = today; } 
         else if (lastLogin !== today) {
-            const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-            if (lastLogin === yesterday.toISOString().split('T')[0]) { 
-                rpgState.streak += 1; 
-                if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); 
-            } 
-            else { 
-                if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); 
-                rpgState.streak = 1; 
-            }
+            const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth()+1).padStart(2,'0')}-${String(yesterdayDate.getDate()).padStart(2,'0')}`;
+            
+            if (lastLogin === yesterday) { rpgState.streak += 1; if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); } 
+            else { if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); rpgState.streak = 1; }
             rpgState.lastLoginDate = today;
         }
         saveToGlobalState();
@@ -349,3 +336,10 @@ function updateUI() {
 }
 
 function safePlaySFX(sound) { if (typeof playSFX === 'function') playSFX(sound); }
+
+// EXPORTS FINAIS
+export function getRPGState() { return { ...rpgState }; }
+export function updateMissionsState(newMissions) { 
+    rpgState.missions = newMissions; 
+    saveToGlobalState(); 
+}
