@@ -163,9 +163,9 @@ function renderHabits() {
                     <i class="fa-solid fa-check text-[8px] text-white ${h.done ? '' : 'hidden'}"></i>
                 </div>
             </div>
-            <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-700 hover:text-red-500 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <i class="fa-solid fa-trash text-[10px]"></i>
-            </button>
+            <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-700 hover:text-red-500 p-2 transition">
+    <i class="fa-solid fa-trash text-[10px]"></i>
+</button>
         </div>
     `).join('');
 }

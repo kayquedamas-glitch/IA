@@ -214,7 +214,7 @@ function renderMissions() {
                     ${m.date ? `<div class="flex items-center gap-2 mt-1"><span class="text-[10px] font-mono flex items-center gap-1 ${isLate && !m.done ? 'text-red-500 font-bold animate-pulse' : 'text-gray-600'}"><i class="fa-regular fa-calendar"></i> ${m.date.split('-').reverse().join('/').substring(0,5)}</span></div>` : ''}
                 </div>
             </div>
-            <button onclick="window.deleteMission(${m.id})" class="text-gray-700 hover:text-red-500 transition opacity-0 group-hover:opacity-100 p-2 ml-2"><i class="fa-solid fa-trash text-xs"></i></button>
+            <button onclick="window.deleteMission(${m.id})" class="text-gray-700 hover:text-red-500 transition p-2 ml-2"><i class="fa-solid fa-trash text-xs"></i></button>
         </div>`
     }).join('');
 }
