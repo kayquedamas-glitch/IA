@@ -586,6 +586,9 @@
             if(!target) return;
             const rect = target.getBoundingClientRect();
             if(rect.width === 0) return; // Elemento invisível, aborta
+            
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
             const borderRadius = window.getComputedStyle(target).borderRadius || '12px';
 

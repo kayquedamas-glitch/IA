@@ -1,7 +1,7 @@
 export const AGENTS = {
 "Diagnostico": {
         name: "Consciência",
-        welcome: "Oi. Estou aqui pra te ouvir. O que está mais difícil hoje: Falta de Tempo, Cansaço ou Procrastinação?",
+        welcome: "Oi. Estou aqui pra te ouvir. O que está mais difícil hoje?",
         
         // --- VERSÃO DEMO (AJUSTADA: MAIS CONVERSA + EXPLICAÇÃO DO VALOR) ---
         prompt: `
