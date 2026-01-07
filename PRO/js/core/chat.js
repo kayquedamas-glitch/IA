@@ -13,7 +13,15 @@ const DEMO_LIMIT = 7;
 const DIAGNOSE_PHASE = 3; 
 const SELL_PHASE = 5;     
 
-const IS_DEMO_MODE = localStorage.getItem('synapse_access') !== 'PRO';
+let userStatus = 'DEMO';
+try {
+    const session = JSON.parse(localStorage.getItem('synapse_user'));
+    if (session && session.status) {
+        userStatus = session.status.toUpperCase(); 
+    }
+} catch (e) {}
+
+const IS_DEMO_MODE = userStatus !== 'VIP' && userStatus !== 'PRO';
 
 // --- INICIALIZAÇÃO ---
 export async function initChat() {
@@ -193,9 +201,10 @@ async function sendMessage(text = null) {
                 chatHistory.push({ role: 'assistant', content: aiText });
                 
                 // SALVA NO SUPABASE
-                if (window.Database) {
-                    window.Database.saveChatHistory(currentAgentKey, chatHistory);
-                }
+                // SALVA NO SUPABASE (Com proteção)
+if (window.Database && typeof window.Database.saveChatHistory === 'function') {
+    window.Database.saveChatHistory(currentAgentKey, chatHistory);
+}
             }
             
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
