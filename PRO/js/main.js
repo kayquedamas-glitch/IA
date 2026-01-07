@@ -270,22 +270,41 @@ function loadUserProfile() {
             return;
         }
 
+        // Tenta recuperar a sessão (aceita os dois formatos que você usa)
         const sessionRaw = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
+        
         if (sessionRaw) {
             const session = JSON.parse(sessionRaw);
-            const userName = session.user || session.nome || session.name || 'OPERADOR';
+            
+            // --- CORREÇÃO AQUI ---
+            // 1. Tenta pegar o nome explícito
+            let userName = session.user || session.nome || session.name;
+            
+            // 2. Se não tiver nome, pega o e-mail e usa a parte antes do @
+            if (!userName && session.email) {
+                userName = session.email.split('@')[0]; // Ex: contato@exemplo.com vira "contato"
+            }
+            
+            // 3. Se ainda assim falhar, usa o padrão
+            userName = userName || 'OPERADOR';
+            
+            // Formatação (Primeira letra maiúscula)
             const displayName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
             const firstLetter = displayName.charAt(0).toUpperCase();
 
+            // Atualiza a Barra Lateral (Sidebar)
             const sideName = document.getElementById('sidebarName');
             const sideAvatar = document.getElementById('sidebarAvatar');
             if (sideName) sideName.innerText = displayName;
             if (sideAvatar) sideAvatar.innerText = firstLetter;
 
+            // Atualiza o Dashboard (Protocolo)
             const dashName = document.getElementById('dashName');
             if (dashName) dashName.innerText = displayName.toUpperCase();
         }
-    } catch (e) { console.warn("Perfil não carregado."); }
+    } catch (e) { 
+        console.warn("Erro ao carregar perfil:", e); 
+    }
 }
 
 function updateStatusIndicator() {

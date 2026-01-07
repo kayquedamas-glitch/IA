@@ -156,13 +156,16 @@
     
     window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY)
 
-    // Limpa acessos anteriores ao abrir a tela de login
+    // --- CORREÇÃO AQUI: LIMPEZA PROFUNDA ---
+    // Remove qualquer vestígio de logins anteriores (incluindo versões antigas)
     localStorage.removeItem('synapse_user');
+    localStorage.removeItem('synapse_session_v2'); 
+    localStorage.removeItem('synapse_gamification'); // Opcional: Reseta gamificação ao trocar de user
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const emailInput = document.getElementById('email').value.trim(); // Remove espaços extras
+        const emailInput = document.getElementById('email').value.trim();
         const btn = document.getElementById('btnSubmit');
         const errorMsg = document.getElementById('errorMsg');
         const originalText = btn.innerHTML;
@@ -174,7 +177,7 @@
         errorMsg.classList.add('hidden');
         
         try {
-            // 1. CONSULTA NO BANCO DE DADOS (Usando ilike para ignorar maiúsculas/minúsculas)
+            // 1. CONSULTA NO BANCO DE DADOS
             const { data: cliente, error } = await _supabase
                 .from('clientes_vip')
                 .select('*')
@@ -186,14 +189,19 @@
                 throw new Error("E-mail não encontrado na base de clientes.");
             }
 
-            // 3. SE ACHOU: LIBERA O ACESSO DIRETO!
-            // Salvamos os dados do cliente no navegador para a próxima página ler
+            // 3. SE ACHOU: SALVA OS DADOS CORRETAMENTE
+            // Tenta achar o nome em várias colunas possíveis do seu banco
+            const nomeCliente = cliente.nome || cliente.name || cliente.full_name || cliente.user || '';
+
             const sessaoUsuario = {
                 email: cliente.email,
+                // Se tiver nome no banco, usa. Se não, o main.js vai criar baseado no e-mail.
+                nome: nomeCliente, 
                 status: cliente.status,
                 entrada: new Date().toISOString()
             };
             
+            // Salva apenas na chave padrão que estamos usando agora
             localStorage.setItem('synapse_user', JSON.stringify(sessaoUsuario));
 
             // Sucesso Visual
@@ -201,10 +209,10 @@
             btn.classList.add('bg-green-600');
             btn.innerHTML = '<i class="fas fa-check"></i> ACESSO PERMITIDO!';
 
-            // Redireciona imediatamente para o painel
+            // Redireciona
             setTimeout(() => {
                 window.location.href = "index.html"; 
-            }, 1000); // Espera 1 segundo só para o usuário ver o "check" verde
+            }, 1000);
 
         } catch (error) {
             console.error(error);
@@ -216,7 +224,7 @@
             btn.classList.add('bg-[#CC0000]');
             
             // Mensagem de erro
-            let msg = "Acesso Negado: E-mail não encontrado ou assinatura inativa.";
+            let msg = "Acesso Negado: E-mail não encontrado.";
             errorMsg.innerHTML = '<i class="fas fa-lock"></i> ' + msg;
             errorMsg.classList.remove('hidden');
         }
