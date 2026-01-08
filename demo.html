@@ -577,26 +577,40 @@
             if(!highlightBox) {
                 highlightBox = document.createElement('div');
                 highlightBox.className = 'synapse-highlight-box';
-                // Transição rápida apenas na opacidade
-                highlightBox.style.transition = `opacity ${FADE_SPEED}ms ease`; 
+                
+                // --- MUDANÇA 1: USAR FIXED ---
+                // 'fixed' prende o elemento na tela (vidro), ignorando a rolagem da página.
+                // Isso resolve o problema de barras do navegador móvel interferindo.
+                highlightBox.style.position = 'fixed'; 
+                
+                highlightBox.style.zIndex = '9999';
+                highlightBox.style.transition = `opacity ${FADE_SPEED}ms ease, top 0.3s ease, left 0.3s ease, width 0.3s ease, height 0.3s ease`;
                 highlightBox.style.boxShadow = `0 0 0 2px ${HIGHLIGHT_COLOR}, 0 0 30px rgba(204, 0, 0, 0.5), 0 0 0 9999px rgba(0, 0, 0, 0.85)`;
+                highlightBox.style.pointerEvents = 'none';
                 document.body.appendChild(highlightBox);
             }
 
             if(!target) return;
-            const rect = target.getBoundingClientRect();
-            if(rect.width === 0) return; // Elemento invisível, aborta
             
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            // Garante que o elemento esteja visível antes de marcar
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
+            const rect = target.getBoundingClientRect();
+            if(rect.width === 0) return; 
+
+            // --- MUDANÇA 2: REMOVER CÁLCULO DE SCROLL ---
+            // Como estamos usando 'fixed', usamos as coordenadas diretas do rect.
+            // Não somamos mais window.scrollY nem window.scrollX.
+            
             const borderRadius = window.getComputedStyle(target).borderRadius || '12px';
 
-            // REPOSICIONAMENTO INSTANTÂNEO (enquanto está invisível)
             highlightBox.style.width = `${rect.width + (PADDING_HIGHLIGHT * 2)}px`;
             highlightBox.style.height = `${rect.height + (PADDING_HIGHLIGHT * 2)}px`;
+            
+            // Posição exata na tela
             highlightBox.style.top = `${rect.top - PADDING_HIGHLIGHT}px`;
             highlightBox.style.left = `${rect.left - PADDING_HIGHLIGHT}px`;
+            
             highlightBox.style.borderRadius = borderRadius === '0px' ? '12px' : borderRadius;
 
             // NOVO HUD
