@@ -71,6 +71,7 @@ async function resetCurrentChat() {
 }
 
 // --- CARREGAR AGENTE ---
+// --- CARREGAR AGENTE ---
 export async function loadAgent(key) {
     if (!AGENTS[key]) return;
     currentAgentKey = key;
@@ -116,6 +117,78 @@ export async function loadAgent(key) {
             }
         }, 500);
     }
+
+    // [IMPORTANTE] ATUALIZA A SIDEBAR
+    setTimeout(() => {
+        renderChatSidebar();
+    }, 500);
+}
+
+// --- RENDERIZAR SIDEBAR (ESTILO CHATGPT) ---
+export function renderChatSidebar() {
+    const container = document.getElementById('chatHistoryList');
+    if (!container) return;
+
+    // 1. Pega o histórico salvo
+    const history = window.AppEstado?.chatHistory || {};
+    
+    // 2. Filtra conversas que têm conteúdo
+    const activeChats = Object.keys(history).filter(key => history[key] && history[key].length > 0);
+
+    if (activeChats.length === 0) {
+        container.innerHTML = '<span class="text-[8px] text-gray-700 font-mono px-2 italic">SEM REGISTROS</span>';
+        return;
+    }
+
+    container.innerHTML = ''; // Limpa a lista antes de recriar
+
+    activeChats.forEach(agentKey => {
+        const msgs = history[agentKey];
+        
+        // --- LÓGICA PARA O "TÍTULO DO TEMA" ---
+        // Tenta pegar a primeira mensagem do USUÁRIO para usar como título
+        const firstUserMsg = msgs.find(m => m.role === 'user');
+        let themeTitle = "Nova Conversa";
+        
+        if (firstUserMsg && firstUserMsg.content) {
+            // Pega os primeiros 25 caracteres da mensagem
+            themeTitle = firstUserMsg.content.substring(0, 25);
+            if (firstUserMsg.content.length > 25) themeTitle += "...";
+        }
+
+        // --- ÍCONE E COR BASEADO NO AGENTE ---
+        let icon = "fa-comment";
+        let colorClass = "text-gray-500";
+        
+        if (agentKey === 'Diagnostico') { icon = "fa-eye"; colorClass = "text-red-500"; }
+        if (agentKey === 'COMANDANTE') { icon = "fa-brain"; colorClass = "text-purple-500"; }
+        if (agentKey === 'GENERAL') { icon = "fa-chess"; colorClass = "text-blue-500"; }
+        if (agentKey === 'TATICO') { icon = "fa-wind"; colorClass = "text-green-500"; }
+
+        // Verifica se é o chat ativo no momento
+        const isActive = window.currentAgentKey === agentKey;
+        const activeBg = isActive ? "bg-[#1a1a1a] border-white/10" : "border-transparent hover:bg-[#111] hover:border-white/5";
+
+        const item = document.createElement('div');
+        item.className = `group flex flex-col gap-1 px-3 py-3 rounded-lg cursor-pointer transition-all duration-200 border ${activeBg}`;
+        
+        item.onclick = () => window.selectTool(agentKey);
+
+        item.innerHTML = `
+            <span class="text-[11px] font-medium text-gray-300 group-hover:text-white truncate leading-tight">
+                ${themeTitle}
+            </span>
+
+            <div class="flex items-center gap-2 mt-1">
+                <i class="fa-solid ${icon} text-[10px] ${colorClass} opacity-80"></i>
+                <span class="text-[9px] font-black uppercase tracking-wider text-gray-600 group-hover:text-gray-400">
+                    ${agentKey}
+                </span>
+            </div>
+        `;
+
+        container.appendChild(item);
+    });
 }
 
 // --- LÓGICA DE ENVIO ---
@@ -151,7 +224,7 @@ async function sendMessage(text = null) {
     }
 
     const loadingId = showLoading();
-    const rpg = getRPGState(); // Isso já pega do estado novo
+    const rpg = getRPGState(); 
     
     try {
         const MAX_CONTEXT = 12;
@@ -201,12 +274,14 @@ async function sendMessage(text = null) {
                 chatHistory.push({ role: 'assistant', content: aiText });
                 
                 // SALVA NO SUPABASE
-                // SALVA NO SUPABASE (Com proteção)
-if (window.Database && typeof window.Database.saveChatHistory === 'function') {
-    window.Database.saveChatHistory(currentAgentKey, chatHistory);
-}
+                if (window.Database && typeof window.Database.saveChatHistory === 'function') {
+                    window.Database.saveChatHistory(currentAgentKey, chatHistory);
+                    
+                    // [IMPORTANTE] Atualiza a lista lateral com a nova mensagem
+                    renderChatSidebar(); 
+                }
             }
-            
+            // ... resto do código (botões, bloqueio, etc) ...
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
             const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
             const shouldBlockNow = (isLimitReached) || forceBlock;
