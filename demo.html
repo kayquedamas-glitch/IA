@@ -461,34 +461,44 @@
         function startStep3() {
             // PASSO 3: XP / NÍVEL
             const statsArea = document.querySelector('.dashboard-card'); 
-            if(statsArea) statsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // CORREÇÃO: Mudamos para 'auto' (instantâneo) para garantir que
+            // quando medirmos a posição, o elemento já esteja no lugar certo.
+            if(statsArea) statsArea.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-            // Executa assim que a rolagem começa
-            showSynapseHud({
-                target: statsArea || document.body,
-                icon: "fa-solid fa-fire",
-                title: "3. VICIE EM PROGREDIR",
-                text: "O sistema hackeia sua dopamina. <b class='text-white'>Ganhe XP e suba de nível</b> cumprindo tarefas.",
-                position: "bottom",
-                nextAction: () => startStep4()
-            });
+            // Pequeno delay para o navegador renderizar a nova posição do scroll
+            setTimeout(() => {
+                showSynapseHud({
+                    target: statsArea || document.body,
+                    icon: "fa-solid fa-fire",
+                    title: "3. VICIE EM PROGREDIR",
+                    text: "O sistema hackeia sua dopamina. <b class='text-white'>Ganhe XP e suba de nível</b> cumprindo tarefas.",
+                    position: "bottom",
+                    nextAction: () => startStep4()
+                });
+            }, 50);
         }
 
         function startStep4() {
             // PASSO 4: AGENDA
-            // Instantâneo (mesma tela)
             setTimeout(() => {
                 const agendaCard = document.getElementById('calendarGrid')?.parentElement;
-                if(agendaCard) agendaCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // CORREÇÃO: Scroll instantâneo ('auto')
+                if(agendaCard) agendaCard.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-                showSynapseHud({
-                    target: agendaCard || document.body,
-                    icon: "fa-regular fa-calendar-check",
-                    title: "4. ROTINA BLINDADA",
-                    text: "Defina seus <b class='text-white'>Rituais</b>. O sistema garante que você nunca mais esqueça o importante.",
-                    position: "top",
-                    nextAction: () => startStep5()
-                });
+                // Pequeno delay de segurança antes de desenhar a borda
+                setTimeout(() => {
+                    showSynapseHud({
+                        target: agendaCard || document.body,
+                        icon: "fa-regular fa-calendar-check",
+                        title: "4. ROTINA BLINDADA",
+                        text: "Defina seus <b class='text-white'>Rituais</b>. O sistema garante que você nunca mais esqueça o importante.",
+                        position: "top",
+                        nextAction: () => startStep5()
+                    });
+                }, 50); 
+
             }, 50);
         }
 
