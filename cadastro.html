@@ -190,15 +190,12 @@
             // 1. VERIFICA SE JÁ EXISTE NO SUPABASE
             const { data: existente, error: erroConsulta } = await _supabase
                 .from('clientes_vip')
-                .select('email')
-                .eq('email', email)
-                .single();
+    .insert([{ nome: nome, email: email, status: 'free', created_at: new Date() }])
+    .select() // <--- ISSO É OBRIGATÓRIO PARA PEGAR O ID
+    .single();
 
             // CASO 1: USUÁRIO JÁ EXISTE
-            if (existente) {
-                // Aqui personalizamos o erro para quem já tem conta
-                throw new Error("Este e-mail já possui acesso! Faça Login.");
-            }
+            if (novoUsuario && novoUsuario.id) checkoutUrl.searchParams.set('custom_id', novoUsuario.id);
 
             // CASO 2: NOVO USUÁRIO -> PROSSEGUE COM O CADASTRO
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CRIANDO CONTA...';
@@ -231,19 +228,29 @@
             btn.innerHTML = '<i class="fas fa-check"></i> SUCESSO! REDIRECIONANDO...';
 
             // --- REDIRECIONAMENTO INTELIGENTE ---
+            // --- REDIRECIONAMENTO INTELIGENTE (CADASTRO) ---
             setTimeout(() => {
-                // Verifica se veio para COMPRAR (tem código na URL?)
                 const params = new URLSearchParams(window.location.search);
-                const checkoutCode = params.get('checkout');
+                const intent = params.get('intent');
+                
+                // Se veio pelo botão de "Desbloquear Acesso" (Novo Usuário querendo pagar)
+                if (intent === 'upgrade') {
+                    // ⚠️ COLOQUE SEU LINK DA KIWIFY AQUI TAMBÉM ⚠️
+                    const KIWIFY_URL = "https://pay.kiwify.com.br/YzOIskc"; 
+                    
+                    const checkoutUrl = new URL(KIWIFY_URL);
+                    checkoutUrl.searchParams.set('email', email);
+                    checkoutUrl.searchParams.set('name', nome);
+                    
+                    // Pega o ID que acabou de ser criado (novoUsuario vem do .select() no insert)
+                    if (novoUsuario && novoUsuario.id) {
+                        checkoutUrl.searchParams.set('custom_id', novoUsuario.id); 
+                    }
 
-                if (checkoutCode) {
-                    // >> CENÁRIO: PAGAMENTO (Desbloquear Acesso)
-                    // Envia para o Kiwify com o e-mail já preenchido
-                    const finalLink = `https://pay.kiwify.com.br/${checkoutCode}?email=${encodeURIComponent(email)}`;
-                    window.location.href = finalLink;
-                } else {
-                    // >> CENÁRIO: TOUR GRATUITO (Iniciar Versão Core)
-                    // Envia para o Demo do sistema
+                    window.location.href = checkoutUrl.toString();
+                } 
+                else {
+                    // Cadastro Normal (Tour Grátis) -> Vai para Demo
                     window.location.href = "demo.html";
                 }
             }, 1000);
@@ -280,7 +287,7 @@ if (data.user) {
         // É USUÁRIO NOVO JÁ QUERENDO PAGAR
         alert("Conta criada! Redirecionando para ativação do Ultimate...");
         
-        const checkoutUrl = new URL("SEU_LINK_KIWIFY_AQUI");
+        const checkoutUrl = new URL("https://pay.kiwify.com.br/YzOIskc");
         checkoutUrl.searchParams.set('email', data.user.email);
         checkoutUrl.searchParams.set('name', nome); // Variável do nome do input
         checkoutUrl.searchParams.set('custom_id', data.user.id); // O NOVO ID
