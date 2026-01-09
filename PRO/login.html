@@ -149,18 +149,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
+    
     // --- SUAS CREDENCIAIS ---
     const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
     const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
     
     window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY)
 
-    // --- CORREÇÃO AQUI: LIMPEZA PROFUNDA ---
-    // Remove qualquer vestígio de logins anteriores (incluindo versões antigas)
+    // LIMPEZA DE SESSÃO ANTIGA
     localStorage.removeItem('synapse_user');
-    localStorage.removeItem('synapse_session_v2'); 
-    localStorage.removeItem('synapse_gamification'); // Opcional: Reseta gamificação ao trocar de user
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -184,24 +183,20 @@
                 .ilike('email', emailInput)
                 .single();
 
-            // 2. SE NÃO ACHOU OU DEU ERRO
+            // 2. SE NÃO ACHOU
             if (error || !cliente) {
-                throw new Error("E-mail não encontrado na base de clientes.");
+                throw new Error("E-mail não encontrado na base de dados.");
             }
 
-            // 3. SE ACHOU: SALVA OS DADOS CORRETAMENTE
-            // Tenta achar o nome em várias colunas possíveis do seu banco
-            const nomeCliente = cliente.nome || cliente.name || cliente.full_name || cliente.user || '';
-
+            // 3. SALVA SESSÃO NO NAVEGADOR
+            const nomeCliente = cliente.nome || cliente.name || '';
             const sessaoUsuario = {
                 email: cliente.email,
-                // Se tiver nome no banco, usa. Se não, o main.js vai criar baseado no e-mail.
                 nome: nomeCliente, 
-                status: cliente.status,
+                status: cliente.status, // 'free' ou 'pro'
                 entrada: new Date().toISOString()
             };
             
-            // Salva apenas na chave padrão que estamos usando agora
             localStorage.setItem('synapse_user', JSON.stringify(sessaoUsuario));
 
             // Sucesso Visual
@@ -209,9 +204,16 @@
             btn.classList.add('bg-green-600');
             btn.innerHTML = '<i class="fas fa-check"></i> ACESSO PERMITIDO!';
 
-            // Redireciona
+            // 4. REDIRECIONAMENTO INTELIGENTE (A CORREÇÃO ESTÁ AQUI)
             setTimeout(() => {
-                window.location.href = "index.html"; 
+                if (cliente.status === 'free') {
+                    // SE FOR FREE -> Manda para o Demo (saindo da pasta PRO)
+                    window.location.href = "../demo.html";
+                } else {
+                    // SE FOR PRO -> Mantém no fluxo PRO (Painel Oficial)
+                    // Se o seu painel oficial for o PRO/index.html, use:
+                    window.location.href = "index.html"; 
+                }
             }, 1000);
 
         } catch (error) {

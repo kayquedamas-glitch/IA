@@ -136,22 +136,33 @@
                 </button>
 
             </form>
+            <div class="upgrade-redirect-box" style="margin-top: 25px; text-align: center; padding-top: 20px; border-top: 1px solid #333;">
+    <p style="color: #888; font-size: 13px; margin-bottom: 10px;">
+        Já possui uma conta Free (Core)?
+    </p>
+    
+    <button onclick="irParaLoginUpgrade()" 
+            class="btn-login-upgrade"
+            style="width: 100%; padding: 12px; background: transparent; border: 1px solid #E50914; color: #E50914; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; transition: all 0.3s;">
+        Fazer Login & Upgrade
+    </button>
+</div>
 
-            <div class="mt-8 text-center pb-6">
-                <p class="text-gray-600 text-xs mb-3">Já possui cadastro?</p>
-                <a href="login.html" class="text-white hover:text-[#CC0000] text-xs font-bold transition-colors underline decoration-gray-700 underline-offset-4">
-                    Fazer Login
-                </a>
-            </div>
+<script>
+    function irParaLoginUpgrade() {
+        // Agora estamos dizendo: "Vá para a pasta PRO e procure o login.html"
+        window.location.href = '/PRO/login.html?intent=upgrade';
+    }
+</script>
 
-        </div>
+            
     </div>
     
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // --- SUAS CREDENCIAIS ---
+    // --- SUAS CREDENCIAIS SUPABASE ---
     const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
     const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
     
@@ -170,7 +181,7 @@
         const originalText = btn.innerHTML;
 
         // Estado de Carregamento
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CRIANDO CONTA...';
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> VERIFICANDO...';
         btn.classList.add('opacity-80', 'cursor-not-allowed');
         btn.disabled = true;
         errorMsg.classList.add('hidden');
@@ -183,13 +194,15 @@
                 .eq('email', email)
                 .single();
 
-            // Se encontrou algum resultado (significa que já tem cadastro)
+            // CASO 1: USUÁRIO JÁ EXISTE
             if (existente) {
-                throw new Error("Este e-mail já está cadastrado.");
+                // Aqui personalizamos o erro para quem já tem conta
+                throw new Error("Este e-mail já possui acesso! Faça Login.");
             }
 
-            // 2. INSERE NOVO USUÁRIO (SEM SENHA)
-            // Status padrão 'free'
+            // CASO 2: NOVO USUÁRIO -> PROSSEGUE COM O CADASTRO
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CRIANDO CONTA...';
+
             const { error: erroInsert } = await _supabase
                 .from('clientes_vip')
                 .insert([
@@ -203,37 +216,48 @@
 
             if (erroInsert) throw erroInsert;
 
-            // 3. SALVA SESSÃO LOCAL (AUTO-LOGIN)
+            // Salva sessão local
             const sessaoUsuario = {
                 email: email,
                 nome: nome,
                 status: 'free',
                 entrada: new Date().toISOString()
             };
-            
             localStorage.setItem('synapse_user', JSON.stringify(sessaoUsuario));
 
             // Sucesso Visual
             btn.classList.remove('bg-[#CC0000]', 'hover:bg-red-600');
             btn.classList.add('bg-green-600');
-            btn.innerHTML = '<i class="fas fa-check"></i> CONTA CRIADA!';
+            btn.innerHTML = '<i class="fas fa-check"></i> SUCESSO! REDIRECIONANDO...';
 
-            // Redireciona para o Painel (Core Gratuito)
-           // Redireciona para o Painel (Core Gratuito)
-setTimeout(() => {
-    window.location.href = "demo.html"; // <--- AGORA VAI PARA O TOUR/SISTEMA
-}, 1000);
+            // --- REDIRECIONAMENTO INTELIGENTE ---
+            setTimeout(() => {
+                // Verifica se veio para COMPRAR (tem código na URL?)
+                const params = new URLSearchParams(window.location.search);
+                const checkoutCode = params.get('checkout');
+
+                if (checkoutCode) {
+                    // >> CENÁRIO: PAGAMENTO (Desbloquear Acesso)
+                    // Envia para o Kiwify com o e-mail já preenchido
+                    const finalLink = `https://pay.kiwify.com.br/${checkoutCode}?email=${encodeURIComponent(email)}`;
+                    window.location.href = finalLink;
+                } else {
+                    // >> CENÁRIO: TOUR GRATUITO (Iniciar Versão Core)
+                    // Envia para o Demo do sistema
+                    window.location.href = "demo.html";
+                }
+            }, 1000);
 
         } catch (error) {
             console.error(error);
             
-            // Volta botão ao normal
+            // Volta botão ao normal (Vermelho de Erro)
             btn.innerHTML = originalText;
             btn.disabled = false;
             btn.classList.remove('opacity-80', 'cursor-not-allowed', 'bg-green-600');
             btn.classList.add('bg-[#CC0000]');
             
-            // Exibe erro
+            // Exibe a mensagem de erro
             mostrarErro(error.message || "Erro ao conectar com o servidor.");
         }
 
@@ -243,6 +267,31 @@ setTimeout(() => {
             errorMsg.classList.add('shake-anim');
             setTimeout(() => errorMsg.classList.remove('shake-anim'), 500);
         }
+        // DENTRO DA FUNÇÃO DE SUCESSO DO CADASTRO (handleSignUp)
+
+// ... código de criação de conta no Supabase ...
+
+if (data.user) {
+    // Verifica se ele veio pelo botão de compra
+    const params = new URLSearchParams(window.location.search);
+    const intent = params.get('intent');
+
+    if (intent === 'upgrade') {
+        // É USUÁRIO NOVO JÁ QUERENDO PAGAR
+        alert("Conta criada! Redirecionando para ativação do Ultimate...");
+        
+        const checkoutUrl = new URL("SEU_LINK_KIWIFY_AQUI");
+        checkoutUrl.searchParams.set('email', data.user.email);
+        checkoutUrl.searchParams.set('name', nome); // Variável do nome do input
+        checkoutUrl.searchParams.set('custom_id', data.user.id); // O NOVO ID
+
+        window.location.href = checkoutUrl.toString();
+    } else {
+        // CADASTRO NORMAL (FREE)
+        alert("Bem-vindo ao Synapse Core.");
+        window.location.href = "login.html";
+    }
+}
     });
 </script>
     
