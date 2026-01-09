@@ -1189,16 +1189,14 @@
 
         // Direciona com a intenção correta
         function irParaUpgrade(tipo) {
-            if (tipo === 'login') {
-                // Manda para Login com aviso de Upgrade
-                // O login.html vai detectar isso e mandar pro checkout com o ID antigo
-                window.location.href = 'PRO/login.html?intent=upgrade';
-            } else {
-                // Manda para Cadastro com aviso de Upgrade
-                // O cadastro.html precisa ser configurado para detectar isso também
-                window.location.href = 'PRO/cadastro.html?intent=upgrade';
-            }
-        }
+    if (tipo === 'login') {
+        // Login está na pasta PRO, então este caminho continua assim:
+        window.location.href = 'PRO/login.html?intent=upgrade'; 
+    } else {
+        // Cadastro está na RAIZ, então tiramos o "PRO/" da frente:
+        window.location.href = 'cadastro.html?intent=upgrade';
+    }
+}
         lucide.createIcons();
 
         // Lógica do Player de Vídeo

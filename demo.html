@@ -37,112 +37,129 @@
 
     <div class="app-layout h-full">
 
-        <aside id="sidebar" class="sidebar z-[70] flex flex-col h-full bg-[#0a0a0a]"> <div class="flex-shrink-0">
-        <div class="bg-[#121212] rounded-xl p-5 flex flex-col gap-5 m-2 mb-0 border border-white/5">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <img src="PRO/icone preto.png" alt="Logo" class="w-6 h-6 invert opacity-80">
-                    <span class="font-bold text-white tracking-tighter text-sm uppercase">Synapse</span>
+        <aside id="sidebar" class="sidebar z-[70] flex flex-col h-full bg-[#0a0a0a]">
+            <div class="flex-shrink-0">
+                <div class="bg-[#121212] rounded-xl p-5 flex flex-col gap-5 m-2 mb-0 border border-white/5">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <img src="PRO/icone preto.png" alt="Logo" class="w-6 h-6 invert opacity-80">
+                            <span class="font-bold text-white tracking-tighter text-sm uppercase">Synapse</span>
+                        </div>
+                        <button onclick="window.toggleSidebar(false)"
+                            class="md:hidden text-gray-400 hover:text-white p-2">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+                    <nav class="space-y-1">
+                        <div onclick="window.switchTab('protocolo')"
+                            class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
+                            <div class="w-5 text-center"><i
+                                    class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i>
+                            </div>
+                            <span class="uppercase tracking-widest">Base de Comando</span>
+                        </div>
+                    </nav>
                 </div>
-                <button onclick="window.toggleSidebar(false)" class="md:hidden text-gray-400 hover:text-white p-2">
-                    <i class="fa-solid fa-xmark text-xl"></i>
+            </div>
+
+            <div class="flex-grow flex flex-col overflow-hidden m-2 mt-2">
+                <div class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden">
+                    <div class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
+                    </div>
+
+                    <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar flex-grow">
+                        <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate"
+                            style="animation-delay: 0.1s">
+                            <div
+                                class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
+                                <i class="fa-solid fa-eye text-white text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-black uppercase tracking-tight text-white">CONSCIÊNCIA</span>
+                                <span class="text-[8px] text-gray-500 uppercase font-mono">Clareza</span>
+                            </div>
+                        </div>
+
+                        <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate"
+                            style="animation-delay: 0.2s">
+                            <div
+                                class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                                <i class="fa-solid fa-brain text-gray-500 text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-black uppercase tracking-tight text-white">CÓRTEX</span>
+                                <span class="text-[8px] text-gray-600 uppercase font-mono">Controle</span>
+                            </div>
+                        </div>
+
+                        <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate"
+                            style="animation-delay: 0.3s">
+                            <div
+                                class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                                <i class="fa-solid fa-chess text-gray-500 text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-black uppercase tracking-tight text-white">RAZÃO</span>
+                                <span class="text-[8px] text-gray-600 uppercase font-mono">Lógica</span>
+                            </div>
+                        </div>
+
+                        <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate"
+                            style="animation-delay: 0.4s">
+                            <div
+                                class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
+                                <i class="fa-solid fa-wind text-gray-500 text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-black uppercase tracking-tight text-white">FLUXO</span>
+                                <span class="text-[8px] text-gray-600 uppercase font-mono">Ação</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 px-2 pb-2 space-y-3">
+
+                <button id="btn-sos-protocol"
+                    class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-900/10 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700">
+                    </div>
+                    <i class="fa-solid fa-tower-broadcast animate-pulse text-lg"></i>
+                    <div class="flex flex-col items-start">
+                        <span
+                            class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100">Protocolo</span>
+                        <span class="text-xs font-black tracking-widest group-hover:text-white">S.O.S.</span>
+                    </div>
                 </button>
-            </div>
-            <nav class="space-y-1">
-                <div onclick="window.switchTab('protocolo')" class="flex items-center gap-4 px-3 py-2.5 text-gray-400 hover:text-white hover:bg-[#1a1a1a] rounded-lg cursor-pointer transition font-bold text-xs group">
-                    <div class="w-5 text-center"><i class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
-                    <span class="uppercase tracking-widest">Base de Comando</span>
-                </div>
-            </nav>
-        </div>
+
+                <div class="synapse-profile-card w-full" id="profileCard">
+                    <div class="user-section">
+    <div class="user-avatar">
+        <span>?</span>
     </div>
-
-    <div class="flex-grow flex flex-col overflow-hidden m-2 mt-2">
-        <div class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden">
-            <div class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0">
-                <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Arsenal Neural</p>
-            </div>
-            
-            <div class="overflow-y-auto px-2 py-4 space-y-1 custom-scrollbar flex-grow">
-                <div onclick="window.selectTool('Diagnostico')" class="tool-item tool-animate" style="animation-delay: 0.1s">
-                    <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg mr-3">
-                        <i class="fa-solid fa-eye text-white text-lg"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-black uppercase tracking-tight text-white">CONSCIÊNCIA</span>
-                        <span class="text-[8px] text-gray-500 uppercase font-mono">Clareza</span>
-                    </div>
-                </div>
-
-                <div onclick="window.selectTool('COMANDANTE')" class="tool-item tool-animate" style="animation-delay: 0.2s">
-                    <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                        <i class="fa-solid fa-brain text-gray-500 text-lg"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-black uppercase tracking-tight text-white">CÓRTEX</span>
-                        <span class="text-[8px] text-gray-600 uppercase font-mono">Controle</span>
-                    </div>
-                </div>
-
-                <div onclick="window.selectTool('GENERAL')" class="tool-item tool-animate" style="animation-delay: 0.3s">
-                    <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                        <i class="fa-solid fa-chess text-gray-500 text-lg"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-black uppercase tracking-tight text-white">RAZÃO</span>
-                        <span class="text-[8px] text-gray-600 uppercase font-mono">Lógica</span>
-                    </div>
-                </div>
-
-                <div onclick="window.selectTool('TATICO')" class="tool-item tool-animate" style="animation-delay: 0.4s">
-                    <div class="w-10 h-10 bg-[#222] rounded-lg flex items-center justify-center flex-shrink-0 mr-3 border border-white/5">
-                        <i class="fa-solid fa-wind text-gray-500 text-lg"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-black uppercase tracking-tight text-white">FLUXO</span>
-                        <span class="text-[8px] text-gray-600 uppercase font-mono">Ação</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="user-info">
+        <h4 class="user-name">Carregando...</h4>
+        <span class="user-status" id="userStatus">Plano Grátis</span>
     </div>
+</div>
 
-    <div class="flex-shrink-0 px-2 pb-2 space-y-3">
-        
-        <button id="btn-sos-protocol" class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-900/10 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-            <i class="fa-solid fa-tower-broadcast animate-pulse text-lg"></i>
-            <div class="flex flex-col items-start">
-                <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100">Protocolo</span>
-                <span class="text-xs font-black tracking-widest group-hover:text-white">S.O.S.</span>
-            </div>
-        </button>
+                    <div class="upgrade-action" id="upgradeActionArea">
+                        <div class="divider"></div>
+                        <p class="upgrade-text">Liberar recursos de IA</p>
+                        <button onclick="irParaPlanos()" class="btn-upgrade-red" id="btnUpgradeSidebar">
+                            Fazer Upgrade
+                        </button>
+                    </div>
 
-        <div class="synapse-profile-card w-full" id="profileCard">
-            <div class="user-section">
-                <div class="user-avatar">
-                    <span>K</span>
-                </div>
-                <div class="user-info">
-                    <h4 class="user-name">Kayque</h4>
-                    <span class="user-status" id="userStatus">Plano Grátis</span>
+                    <div class="pro-badge-container hidden" id="proBadgeContainer">
+                        <div class="pro-tag">PRO MEMBER</div>
+                    </div>
                 </div>
             </div>
-
-            <div class="upgrade-action" id="upgradeActionArea">
-                <div class="divider"></div>
-                <p class="upgrade-text">Liberar recursos de IA</p>
-                <button onclick="irParaPlanos()" class="btn-upgrade-red" id="btnUpgradeSidebar">
-    Fazer Upgrade
-    </button>
-            </div>
-
-            <div class="pro-badge-container hidden" id="proBadgeContainer">
-                <div class="pro-tag">PRO MEMBER</div>
-            </div>
-        </div>
-    </div>
-</aside>
+        </aside>
 
         <main class="main-content relative flex flex-col h-full bg-black overflow-hidden">
             <div
@@ -367,6 +384,67 @@
             </button>
         </nav>
     </div>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Tenta recuperar os dados do usuário salvos no navegador
+    const dadosSalvos = localStorage.getItem('synapse_user');
+
+    if (dadosSalvos) {
+        try {
+            const usuario = JSON.parse(dadosSalvos);
+
+            // 2. Seleciona os elementos do HTML
+            const elementoNome = document.querySelector('.user-name');
+            const elementoAvatar = document.querySelector('.user-avatar span');
+            const elementoStatus = document.querySelector('.user-status');
+            
+            // Elementos de Upgrade
+            const areaUpgrade = document.getElementById('upgradeActionArea');
+            const seloPro = document.getElementById('proBadgeContainer');
+            const cartaoPerfil = document.getElementById('profileCard');
+
+            // 3. Atualiza o Nome
+            if (elementoNome && usuario.nome) {
+                // Pega apenas o primeiro nome (Ex: "Kayque Damas" -> "Kayque")
+                const primeiroNome = usuario.nome.split(' ')[0];
+                elementoNome.textContent = primeiroNome;
+            }
+
+            // 4. Atualiza a Letra do Avatar
+            if (elementoAvatar && usuario.nome) {
+                elementoAvatar.textContent = usuario.nome.charAt(0).toUpperCase();
+            }
+
+            // 5. Se for PRO, muda o visual do card
+            if (usuario.status === 'pro') {
+                if (elementoStatus) {
+                    elementoStatus.textContent = "Membro Elite";
+                    elementoStatus.style.color = "#E50914"; // Vermelho
+                }
+
+                // Esconde botão de comprar e mostra selo PRO
+                if (areaUpgrade) areaUpgrade.style.display = 'none';
+                if (seloPro) seloPro.classList.remove('hidden');
+                
+                // Detalhe visual vermelho no card
+                if (cartaoPerfil) {
+                    cartaoPerfil.style.borderLeft = "3px solid #E50914";
+                }
+                
+                // Pinta a bolinha do avatar de vermelho
+                const avatarBg = document.querySelector('.user-avatar');
+                if (avatarBg) {
+                    avatarBg.style.backgroundColor = "#E50914";
+                    avatarBg.style.borderColor = "#E50914";
+                }
+            }
+
+        } catch (e) {
+            console.error("Erro ao carregar perfil:", e);
+        }
+    }
+});
+</script>
 
     <script>
         // Esta flag avisa o JS principal que estamos em modo Demonstração
@@ -376,74 +454,74 @@
 
     <script type="module" src="PRO/js/main.js"></script>
     <script>lucide.createIcons();</script>
-    
+
     <script>
         function irParaPlanos() {
-    // Verifica se a seção de planos existe na página atual
-    const secaoPlanos = document.getElementById('secao-planos');
-    
-    if (secaoPlanos) {
-        // Se já estiver na página certa, só rola até lá
-        secaoPlanos.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        // Se estiver em outra página (ex: app.html), vai para a home na seção planos
-        window.location.href = 'index.html#secao-planos';
-    }
-}
-        
-        document.getElementById('btnUpgrade').addEventListener('click', async () => {
-    const btn = document.getElementById('btnUpgrade');
-    
-    // 1. Efeito visual
-    const originalText = btn.innerHTML;
-    btn.innerHTML = 'CARREGANDO...';
-    btn.style.opacity = '0.7';
+            // Verifica se a seção de planos existe na página atual
+            const secaoPlanos = document.getElementById('secao-planos');
 
-    try {
-        // --- AQUI ESTÁ A MUDANÇA: Puxando do Supabase ---
-        
-        // Pega o usuário da sessão atual
-        const { data: { user } } = await supabase.auth.getUser();
-
-        // Verificação de segurança: Se não tiver usuário logado, para tudo.
-        if (!user) {
-            alert("Erro: Você precisa estar logado para fazer o upgrade.");
-            window.location.href = "login.html"; // Opcional: manda pro login
-            return;
+            if (secaoPlanos) {
+                // Se já estiver na página certa, só rola até lá
+                secaoPlanos.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // Se estiver em outra página (ex: app.html), vai para a home na seção planos
+                window.location.href = 'index.html#secao-planos';
+            }
         }
 
-        // Monta o objeto com os dados REAIS
-        // O Supabase guarda o nome dentro de 'user_metadata'
-        const currentUser = {
-            name: user.user_metadata.full_name || user.user_metadata.name || "Membro Synapse", // Tenta pegar o nome, se não tiver usa um genérico
-            email: user.email
-        };
+        document.getElementById('btnUpgrade').addEventListener('click', async () => {
+            const btn = document.getElementById('btnUpgrade');
 
-        console.log("Usuário identificado:", currentUser);
+            // 1. Efeito visual
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'CARREGANDO...';
+            btn.style.opacity = '0.7';
 
-        // ------------------------------------------------
+            try {
+                // --- AQUI ESTÁ A MUDANÇA: Puxando do Supabase ---
 
-        // 3. Montar a URL da Kiwify
-        const checkoutUrl = new URL(SYSTEM_CONFIG.kiwifyUrl);
-        checkoutUrl.searchParams.set('name', currentUser.name);
-        checkoutUrl.searchParams.set('email', currentUser.email);
-        
-        // Passar o ID do Supabase (UUID) para garantir rastreio perfeito depois
-        checkoutUrl.searchParams.set('custom_id', user.id); 
+                // Pega o usuário da sessão atual
+                const { data: { user } } = await supabase.auth.getUser();
 
-        // 4. Salvar estado pendente
-        localStorage.setItem('synapse_upgrade_pending', 'true');
+                // Verificação de segurança: Se não tiver usuário logado, para tudo.
+                if (!user) {
+                    alert("Erro: Você precisa estar logado para fazer o upgrade.");
+                    window.location.href = "login.html"; // Opcional: manda pro login
+                    return;
+                }
 
-        // 5. Redirecionar
-        window.location.href = checkoutUrl.toString();
+                // Monta o objeto com os dados REAIS
+                // O Supabase guarda o nome dentro de 'user_metadata'
+                const currentUser = {
+                    name: user.user_metadata.full_name || user.user_metadata.name || "Membro Synapse", // Tenta pegar o nome, se não tiver usa um genérico
+                    email: user.email
+                };
 
-    } catch (error) {
-        console.error("Erro ao processar usuário:", error);
-        btn.innerHTML = originalText;
-        btn.style.opacity = '1';
-        alert("Não foi possível identificar seu usuário. Tente fazer login novamente.");
-    }
-});
+                console.log("Usuário identificado:", currentUser);
+
+                // ------------------------------------------------
+
+                // 3. Montar a URL da Kiwify
+                const checkoutUrl = new URL(SYSTEM_CONFIG.kiwifyUrl);
+                checkoutUrl.searchParams.set('name', currentUser.name);
+                checkoutUrl.searchParams.set('email', currentUser.email);
+
+                // Passar o ID do Supabase (UUID) para garantir rastreio perfeito depois
+                checkoutUrl.searchParams.set('custom_id', user.id);
+
+                // 4. Salvar estado pendente
+                localStorage.setItem('synapse_upgrade_pending', 'true');
+
+                // 5. Redirecionar
+                window.location.href = checkoutUrl.toString();
+
+            } catch (error) {
+                console.error("Erro ao processar usuário:", error);
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                alert("Não foi possível identificar seu usuário. Tente fazer login novamente.");
+            }
+        });
     </script>
 </body>
 
