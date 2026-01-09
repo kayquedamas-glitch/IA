@@ -7,13 +7,12 @@ import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
 import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
 
-// --- INICIALIZAÇÃO DO SISTEMA ---
+// --- INICIALIZAÇÃO DO SISTEMA (BOOT) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica qual foi o último boot e inverte
+    // Verifica qual foi o último boot e inverte para variar a animação
     const lastBoot = localStorage.getItem('synapse_boot_mode');
     const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
     
-    // Salva o atual para a próxima vez ser o outro
     localStorage.setItem('synapse_boot_mode', currentMode);
 
     if (currentMode === 'BIO') {
@@ -24,13 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =================================================================
-// OPÇÃO 1: BIOMETRIA TÁTICA (Scanner)
+// BOOT 1: BIOMETRIA TÁTICA
 // =================================================================
 async function runBootBiometria() {
     const bootOverlay = document.createElement('div');
     bootOverlay.id = 'boot-overlay';
     bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
     
+    // VOLTEI PARA O ORIGINAL: src="logo_synapse.png"
     bootOverlay.innerHTML = `
         <div class="relative w-32 h-32 mb-8">
             <img src="logo_synapse.png" class="w-full h-full object-contain opacity-40 grayscale">
@@ -61,7 +61,7 @@ async function runBootBiometria() {
         status.innerText = "ESCANEANDO RETINA...";
         scanner.style.top = '100%'; 
         
-        // Carrega sistema em background
+        // --- CARREGA O SISTEMA ---
         await initializeSystemCore();
         
         await wait(1000);
@@ -76,7 +76,7 @@ async function runBootBiometria() {
         detail.innerText = "IDENTIDADE CONFIRMADA";
         
         const img = bootOverlay.querySelector('img');
-        img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
+        if(img) img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
         
         await wait(800);
         finishBoot(bootOverlay);
@@ -85,13 +85,14 @@ async function runBootBiometria() {
 }
 
 // =================================================================
-// OPÇÃO 2: SINCRONIZAÇÃO NEURAL (Pulso)
+// BOOT 2: SINCRONIZAÇÃO NEURAL
 // =================================================================
 async function runBootNeural() {
     const bootOverlay = document.createElement('div');
     bootOverlay.id = 'boot-overlay';
     bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
     
+    // VOLTEI PARA O ORIGINAL: src="logo_synapse.png"
     bootOverlay.innerHTML = `
         <div class="relative flex items-center justify-center mb-12">
             <div class="absolute w-32 h-32 bg-red-600/20 rounded-full animate-ping"></div>
@@ -112,7 +113,7 @@ async function runBootNeural() {
     try {
         setTimeout(() => { bar.style.width = '70%'; }, 100);
 
-        // Carrega sistema em background
+        // --- CARREGA O SISTEMA ---
         await initializeSystemCore();
 
         await wait(1500);
@@ -129,20 +130,25 @@ async function runBootNeural() {
 }
 
 // =================================================================
-// LÓGICA COMUM (CARREGAMENTO REAL)
+// CARREGAMENTO REAL DO SISTEMA (CORE)
 // =================================================================
 async function initializeSystemCore() {
     loadUserProfile();
     
-    // Define funções globais PRIMEIRO para não dar erro de "switchTab is not a function"
+    // 1. Define funções globais
     window.selectTool = selectTool;
     window.switchTab = switchTab;
     window.toggleSidebar = toggleSidebar;
+    
+    // Configura os recursos (features)
     window.features = {
         startFocusMode: startFocusMode,
         startSOSProtocol: startSOSProtocol,
+        // Se for DEMO, mostra modal de vendas. Se não, mostra o relatório real.
         showWeeklyReport: window.IS_DEMO ? () => showDemoModal('DOSSIE') : showWeeklyReport
     };
+
+    // Atalhos globais
     window.startFocusMode = window.features.startFocusMode;
     window.startSOSProtocol = window.features.startSOSProtocol;
     window.showWeeklyReport = window.features.showWeeklyReport;
@@ -150,30 +156,107 @@ async function initializeSystemCore() {
     const btnSOS = document.getElementById('btn-sos-protocol');
     if (btnSOS) btnSOS.onclick = () => { window.features.startSOSProtocol(); toggleSidebar(false); };
 
-    // --- CARREGA O BANCO DE DADOS AGORA ---
+    // 2. INICIALIZAÇÃO DO BANCO E VERIFICAÇÃO AUTOMÁTICA
     try {
         if (window.Database) {
             await window.Database.init();
+            
+            // >>> CHECA SE VIROU PRO <<<
+            await checkRealUserStatus();
+            
         } else {
             console.warn("⚠️ Banco de dados não carregado.");
         }
     } catch (e) {
         console.error("Erro ao iniciar banco:", e);
     }
-    // --------------------------------------
+    
+    // 3. CONFIGURA LINKS DE VENDA (Checkout Inteligente)
+    setupCheckoutLinks();
 
+    // 4. Inicializa módulos
     initAudio();
     await initChat();
     await initGamification();
     initDashboard();
     initCalendar();
     
+    // Monitor de Conexão
     window.addEventListener('online', updateStatusIndicator);
     window.addEventListener('offline', updateStatusIndicator);
     updateStatusIndicator();
+    
     if (window.Database) {
         window.Database.logEvent("LOGIN_SISTEMA", "App Iniciado");
     }
+}
+
+
+// --- [NOVO] Verifica status real no Supabase ---
+async function checkRealUserStatus() {
+    try {
+        const sessionRaw = localStorage.getItem('synapse_user');
+        if (!sessionRaw) return;
+
+        const session = JSON.parse(sessionRaw);
+        const email = session.email;
+
+        // Tenta usar o cliente Supabase global
+        const client = window.supabase || (window.Database ? window.Database.client : null);
+
+        if (client && email) {
+            const { data, error } = await client
+                .from('clientes_vip')
+                .select('status')
+                .eq('email', email)
+                .single();
+
+            if (data && data.status) {
+                // Se o banco diz PRO, mas o navegador diz FREE -> Atualiza!
+                if (data.status.toLowerCase() !== (session.status || 'free').toLowerCase()) {
+                    console.log(`🔄 Status atualizado via Banco: ${data.status}`);
+                    
+                    session.status = data.status.toLowerCase();
+                    localStorage.setItem('synapse_user', JSON.stringify(session));
+
+                    // Se virou PRO, desliga o modo DEMO
+                    if (session.status === 'pro' || session.status === 'vip') {
+                        window.IS_DEMO = false;
+                        localStorage.removeItem('synapse_demo_mode');
+                        // Recarrega para aplicar desbloqueios
+                        setTimeout(() => window.location.reload(), 500);
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        console.warn("CheckStatus ignorado (offline ou erro):", err);
+    }
+}
+
+// --- [NOVO] Adiciona o e-mail nos links de checkout ---
+function setupCheckoutLinks() {
+    try {
+        const sessionRaw = localStorage.getItem('synapse_user');
+        if (!sessionRaw) return;
+        
+        const session = JSON.parse(sessionRaw);
+        const userEmail = session.email;
+
+        if (!userEmail) return;
+
+        // Pega todos os links que apontam para a Kiwify
+        const kiwifyLinks = document.querySelectorAll("a[href*='pay.kiwify.com.br']");
+
+        kiwifyLinks.forEach(link => {
+            let originalUrl = link.getAttribute('href');
+            if (originalUrl && !originalUrl.includes('email=')) {
+                const separator = originalUrl.includes('?') ? '&' : '?';
+                link.setAttribute('href', `${originalUrl}${separator}email=${encodeURIComponent(userEmail)}`);
+            }
+        });
+        console.log("🔗 Checkout links sincronizados.");
+    } catch (e) { console.error(e); }
 }
 
 
@@ -187,7 +270,7 @@ function finishBoot(overlay) {
         
         setTimeout(() => {
             if (typeof loadAgent === 'function') loadAgent('Diagnostico');
-            if (window.IS_DEMO) startDemoBriefing();
+            if (window.IS_DEMO && window.startDemoBriefing) window.startDemoBriefing();
         }, 100);
     }, 800);
 }
@@ -197,11 +280,13 @@ function finishBoot(overlay) {
 function selectTool(toolName) {
     const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
 
+    // Se for DEMO e tentar acessar ferramenta PRO -> Bloqueia
     if (window.IS_DEMO && FERRAMENTAS_PRO.includes(toolName.toUpperCase())) {
         if(typeof playSFX === 'function') playSFX('error');
         showDemoModal(toolName); 
         return; 
     }
+    
     if (window.Database) window.Database.logEvent("USO_FERRAMENTA", toolName);
 
     switchTab('chat');
@@ -270,35 +355,25 @@ function loadUserProfile() {
             return;
         }
 
-        // Tenta recuperar a sessão (aceita os dois formatos que você usa)
-        const sessionRaw = localStorage.getItem('synapse_session_v2') || localStorage.getItem('synapse_user');
+        const sessionRaw = localStorage.getItem('synapse_user');
         
         if (sessionRaw) {
             const session = JSON.parse(sessionRaw);
             
-            // --- CORREÇÃO AQUI ---
-            // 1. Tenta pegar o nome explícito
-            let userName = session.user || session.nome || session.name;
-            
-            // 2. Se não tiver nome, pega o e-mail e usa a parte antes do @
+            let userName = session.nome || session.name || session.user;
             if (!userName && session.email) {
-                userName = session.email.split('@')[0]; // Ex: contato@exemplo.com vira "contato"
+                userName = session.email.split('@')[0];
             }
-            
-            // 3. Se ainda assim falhar, usa o padrão
             userName = userName || 'OPERADOR';
             
-            // Formatação (Primeira letra maiúscula)
             const displayName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
             const firstLetter = displayName.charAt(0).toUpperCase();
 
-            // Atualiza a Barra Lateral (Sidebar)
             const sideName = document.getElementById('sidebarName');
             const sideAvatar = document.getElementById('sidebarAvatar');
             if (sideName) sideName.innerText = displayName;
             if (sideAvatar) sideAvatar.innerText = firstLetter;
 
-            // Atualiza o Dashboard (Protocolo)
             const dashName = document.getElementById('dashName');
             if (dashName) dashName.innerText = displayName.toUpperCase();
         }
@@ -343,7 +418,15 @@ function showDemoModal(featureName) {
         iconClass = "fa-solid fa-file-shield";
     }
     
-    const checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
+    // --- LINK DE CHECKOUT INTELIGENTE ---
+    let checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
+    const sessionRaw = localStorage.getItem('synapse_user');
+    if (sessionRaw) {
+        const session = JSON.parse(sessionRaw);
+        if (session.email) {
+            checkoutLink += `?email=${encodeURIComponent(session.email)}`;
+        }
+    }
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -375,7 +458,6 @@ function showDemoModal(featureName) {
     const existingModal = document.getElementById('demo-modal');
     if (existingModal) existingModal.remove();
 
-    // CORREÇÃO AQUI: Alterado de z-[100] para z-[9999] para ficar acima da sidebar (que é 200)
     const modalBaseHTML = `
     <div id="demo-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
@@ -406,7 +488,7 @@ function startDemoBriefing() {
     if (document.getElementById('demo-briefing')) return;
     if (localStorage.getItem('synapse_demo_seen')) return;
 
-    // CORREÇÃO AQUI: Alterado de z-[200] para z-[9999]
+    // VOLTEI PARA O ORIGINAL: url('PRO/polvo_synapse.png')
     const modalHTML = `
     <div id="demo-briefing" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
