@@ -410,22 +410,37 @@ function startDemoBriefing() {
     const modalHTML = `
     <div id="demo-briefing" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
+        
         <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
-            <div class="h-24 md:h-32 bg-gradient-to-b from-red-900/20 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
+            
+            <div class="h-24 md:h-32 bg-gradient-to-b from-green-900/10 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
                 <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
+                <div class="absolute bottom-0 w-full h-10 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
             </div>
-            <div class="p-6 md:p-8 text-center -mt-4 relative z-10 overflow-y-auto custom-scrollbar">
-                <span class="inline-block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20 text-[9px] md:text-[10px] font-mono text-red-400 uppercase tracking-widest mb-4">Modo Visitante Ativo</span>
-                <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">Bem-vindo à Base.</h2>
-                <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6">
-                    Você tem permissão temporária para explorar a interface do <strong>Synapse PRO</strong>.<br><br>
-                    <span class="text-white"> LIBERADO:</span> Navegação e <strong>Diagnóstico</strong>.<br>
-                    <span class="text-gray-500"> RESTRITO:</span> IAs de Elite e Relatórios.
+
+            <div class="p-6 md:p-8 text-center -mt-8 relative z-10 overflow-y-auto custom-scrollbar">
+                
+                <span class="inline-block py-1 px-3 rounded-full bg-green-500/10 border border-green-500/20 text-[9px] md:text-[10px] font-mono text-green-400 uppercase tracking-widest mb-4 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+                    <i class="fa-solid fa-check-circle mr-1"></i> Acesso Concedido
+                </span>
+
+                <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">
+                    Bem-vindo ao Core.
+                </h2>
+
+                <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-medium">
+                    Sua identidade foi registrada. O sistema Synapse agora está conectado à sua mente.<br><br>
+                    Preparamos um tour rápido para te ensinar a dominar sua dopamina e organizar sua rotina usando o método PRO.
                 </p>
-                <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm">Entendido, Iniciar Tour</button>
+
+                <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm flex items-center justify-center gap-2 group">
+                    <span>Iniciar Protocolo</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-red-600"></i>
+                </button>
             </div>
         </div>
     </div>`;
+    
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
