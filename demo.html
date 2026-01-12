@@ -63,50 +63,66 @@
             </div>
 
             <div class="flex-grow flex flex-col overflow-hidden m-2 mt-2">
-    <div class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden relative">
-        
-        <div class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0 flex justify-between items-center">
-            <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Núcleo Neural</p>
-            <div class="flex items-center gap-1.5">
-                <span class="relative flex h-1.5 w-1.5">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-                </span>
-                <span class="text-[8px] font-mono text-green-500 uppercase tracking-widest">Online</span>
-            </div>
-        </div>
+                <div
+                    class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden relative">
 
-        <div class="overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar flex-grow">
-            <div onclick="window.selectTool('MENTOR')" class="relative group cursor-pointer w-full">
-                <div class="absolute inset-0 bg-red-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                
-                <div class="relative bg-gradient-to-br from-[#1a0505] to-[#0a0a0a] border border-red-900/30 group-hover:border-red-500/50 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] group-hover:translate-y-[-2px]">
-                    
-                    <div class="relative w-14 h-14 flex-shrink-0">
-                        <div class="absolute inset-0 border border-red-500/30 rounded-full animate-[spin_4s_linear_infinite]"></div>
-                        <div class="absolute inset-2 border border-red-500/50 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]"></div>
-                        
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <img src="logo_synapse.png" class="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                    <div
+                        class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0 flex justify-between items-center">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Núcleo Neural</p>
+                        <div class="flex items-center gap-1.5">
+                            <span class="relative flex h-1.5 w-1.5">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                            </span>
+                            <span class="text-[8px] font-mono text-green-500 uppercase tracking-widest">Online</span>
                         </div>
                     </div>
 
-                    <div class="flex flex-col">
-                        <span class="text-sm font-black text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Synapse Core</span>
-                        <p class="text-[10px] text-gray-400 font-mono leading-tight mt-0.5">
-                            Status: <span class="text-green-500">Aguardando Comando</span>
-                        </p>
-                        <div class="mt-2 flex items-center gap-2">
-                             <span class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">Mentor</span>
-                             <span class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">IA v2.0</span>
+                    <div class="overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar flex-grow">
+                        <div onclick="window.selectTool('MENTOR')" class="relative group cursor-pointer w-full">
+                            <div
+                                class="absolute inset-0 bg-red-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500">
+                            </div>
+
+                            <div
+                                class="relative bg-gradient-to-br from-[#1a0505] to-[#0a0a0a] border border-red-900/30 group-hover:border-red-500/50 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] group-hover:translate-y-[-2px]">
+
+                                <div class="relative w-14 h-14 flex-shrink-0">
+                                    <div
+                                        class="absolute inset-0 border border-red-500/30 rounded-full animate-[spin_4s_linear_infinite]">
+                                    </div>
+                                    <div
+                                        class="absolute inset-2 border border-red-500/50 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]">
+                                    </div>
+
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <img src="logo_synapse.png"
+                                            class="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-sm font-black text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Synapse
+                                        Core</span>
+                                    <p class="text-[10px] text-gray-400 font-mono leading-tight mt-0.5">
+                                        Status: <span class="text-green-500">Aguardando Comando</span>
+                                    </p>
+                                    <div class="mt-2 flex items-center gap-2">
+                                        <span
+                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">Mentor</span>
+                                        <span
+                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">IA
+                                            v2.0</span>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
             <div class="flex-shrink-0 px-2 pb-2 space-y-3">
 
@@ -122,7 +138,17 @@
                         <span class="text-[10px] font-black tracking-widest group-hover:text-white">EMERGÊNCIA</span>
                     </div>
                 </button>
+                <div class="flex items-center justify-between px-1">
+                    <span class="text-[8px] text-gray-600 font-bold uppercase tracking-widest flex items-center gap-1">
+                        <i class="fa-solid fa-gear text-[8px]"></i> Sistema
+                    </span>
 
+                    <button onclick="window.openAudioSettings()"
+                        class="group flex items-center gap-1.5 text-[9px] text-gray-500 hover:text-white transition-colors bg-[#151515] hover:bg-[#202020] px-2 py-1 rounded border border-white/5 hover:border-white/10">
+                        <i class="fa-solid fa-volume-high text-[9px] group-hover:text-red-500 transition-colors"></i>
+                        <span>Ajustar Som</span>
+                    </button>
+                </div>
                 <div class="synapse-profile-card w-full" id="profileCard">
                     <div class="user-section">
                         <div class="user-avatar">
@@ -435,7 +461,7 @@
     </script>
 
     <script>
-        
+
         window.IS_DEMO = true; 
     </script>
 

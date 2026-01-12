@@ -286,6 +286,7 @@ function finishBoot(overlay) {
 // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
 
 function selectTool(toolName) {
+    if(typeof playSFX === 'function') playSFX('click');
     const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
 
     // Se for DEMO e tentar acessar ferramenta PRO -> Bloqueia
@@ -306,6 +307,7 @@ function selectTool(toolName) {
 }
 
 function switchTab(tabName) {
+    if(typeof playSFX === 'function') playSFX('click');
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     
@@ -414,6 +416,7 @@ function updateStatusIndicator() {
 // No arquivo: PRO/js/main.js
 
 function showDemoModal(featureName) {
+    if(typeof playSFX === 'function') playSFX('error');
     let title = "Acesso Restrito";
     let subtitle = "Funcionalidade PRO";
     let message = `O recurso <span class="text-white font-bold">${featureName}</span> é exclusivo para operadores do plano completo.`;
