@@ -303,6 +303,9 @@ function switchTab(tabName) {
     
     if(typeof playSFX === 'function') playSFX('click');
 
+    // Controle do Botão "Novo Chat" na Sidebar
+    const btnNewChat = document.getElementById('btnNewChat');
+
     if (tabName === 'protocolo') {
         const view = document.getElementById('viewProtocolo');
         if(view) view.classList.remove('hidden');
@@ -311,6 +314,9 @@ function switchTab(tabName) {
         if(btn) btn.classList.add('active');
         
         if(typeof renderCalendar === 'function') renderCalendar(); 
+        
+        // ESCONDE O BOTÃO NOVO CHAT NO DASHBOARD
+        if(btnNewChat) btnNewChat.classList.add('hidden');
     } 
     else if (tabName === 'chat') {
         const view = document.getElementById('viewChat');
@@ -322,6 +328,9 @@ function switchTab(tabName) {
         if(window.innerWidth > 768) {
             setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
         }
+
+        // MOSTRA O BOTÃO NOVO CHAT NA ABA DE CHAT
+        if(btnNewChat) btnNewChat.classList.remove('hidden');
     }
     toggleSidebar(false);
 }
