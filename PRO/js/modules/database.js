@@ -1,143 +1,137 @@
 // PRO/js/modules/database.js
 
-export const Database = {
-    client: null,
-    isDemo: false,
+window.AppEstado = {
+    gamification: {}, 
+    dashboard: {},    
+    calendar: {},     
+    chatHistory: {},
+    config: {}        
+};
 
+const DB_TABLE = 'progresso_usuario';
+let autoSaveTimer = null;
+let ultimosDadosSalvos = "";
+
+const Database = {
     async init() {
         console.log("📥 Iniciando Banco de Dados Inteligente...");
         
-        // 1. Tenta pegar a conexão global criada no HTML
-        // IMPORTANTE: window._supabase é a instância criada, window.supabase é a biblioteca
-        if (window._supabase) {
-            this.client = window._supabase;
-            console.log("✅ Database: Conectado ao Supabase Global.");
-        } else {
-            console.warn("⚠️ Database: Supabase Global não encontrado. Tentando reconexão...");
-            await new Promise(r => setTimeout(r, 1000)); // Espera 1s
-            
-            if (window._supabase) {
-                this.client = window._supabase;
-                console.log("✅ Database: Conectado na segunda tentativa.");
+        // 1. Tenta pegar usuário logado
+        let user = null;
+        try {
+            user = JSON.parse(localStorage.getItem('synapse_user'));
+        } catch (e) {}
+
+        // 2. MODO DEMO (Sem Login)
+        if (!user || !user.email) {
+            console.warn("⚠️ Modo DEMO/Offline ativado (Salvando no navegador)");
+            this.isDemo = true;
+            this.migrarDoLocalStorage();
+            this.atualizarInterface();
+            this.iniciarAutoSave();
+            return;
+        }
+
+        // 3. MODO PRO (Com Supabase)
+        this.isDemo = false;
+        if (!window._supabase) {
+            console.error("❌ Erro crítico: Supabase não carregou.");
+            return;
+        }
+
+        try {
+            const { data, error } = await window._supabase
+                .from(DB_TABLE)
+                .select('dados')
+                .eq('email', user.email)
+                .single();
+
+            if (data && data.dados) {
+                console.log("☁️ Dados baixados da nuvem!");
+                window.AppEstado = { ...window.AppEstado, ...data.dados };
             } else {
-                console.warn("❌ Modo Offline (Supabase ausente). Usando LocalStorage.");
-                this.isDemo = true;
+                console.log("💾 Criando registro nuvem...");
+                this.migrarDoLocalStorage();
+                await this.forceSave();
             }
-        }
-    },
-
-    // --- FUNÇÕES DE CHAT ---
-    async saveChatHistory(agentKey, history) {
-        if (!this.client) return; 
-
-        try {
-            const { data: { user } } = await this.client.auth.getUser();
-            if (!user) return;
-
-            const { data: existing } = await this.client
-                .from('synapse_chats')
-                .select('id')
-                .eq('user_id', user.id)
-                .eq('title', agentKey)
-                .maybeSingle();
-
-            const payload = {
-                user_id: user.id,
-                title: agentKey,
-                messages: history,
-                updated_at: new Date()
-            };
-
-            if (existing) payload.id = existing.id;
-
-            await this.client.from('synapse_chats').upsert(payload);
         } catch (e) {
-            console.warn("Erro ao salvar chat (ignorado):", e.message);
+            console.error("Erro conexão:", e);
         }
+
+        this.atualizarInterface();
+        this.iniciarAutoSave();
     },
 
-    async loadChatHistory(agentKey) {
-        if (!this.client) return [];
+    migrarDoLocalStorage() {
+        // Recupera dados antigos se existirem no navegador
         try {
-            const { data: { user } } = await this.client.auth.getUser();
-            if (!user) return [];
-            const { data } = await this.client
-                .from('synapse_chats')
-                .select('messages')
-                .eq('user_id', user.id)
-                .eq('title', agentKey)
-                .maybeSingle();
-            return data ? data.messages : [];
-        } catch (e) { return []; }
-    },
-
-    // --- ANALYTICS ---
-    logEvent(eventName, details = null) {
-        if (!this.client) return;
-        this.client.auth.getUser().then(({ data }) => {
-            if (data?.user) {
-                this.client.from('analytics_eventos').insert({
-                    user_id: data.user.id,
-                    evento: eventName,
-                    detalhe: details ? JSON.stringify(details) : null
-                }).then(() => {}); 
+            const oldGamification = localStorage.getItem('synapse_gamification');
+            if (oldGamification) window.AppEstado.gamification = JSON.parse(oldGamification);
+            
+            const oldMissions = localStorage.getItem('synapse_missions');
+            if (oldMissions) {
+                if(!window.AppEstado.gamification) window.AppEstado.gamification = {};
+                window.AppEstado.gamification.missions = JSON.parse(oldMissions);
             }
-        }).catch(() => {});
+        } catch (e) {}
     },
 
-    // --- [CORREÇÃO] FUNÇÕES QUE FALTAVAM (forceSave e Gamification) ---
+    atualizarInterface() {
+        // Força a atualização visual dos módulos
+        if (window.initGamification) window.initGamification();
+        if (window.initCalendar) window.initCalendar();
+    },
+
+    async forceSave() {
+        // Salva o estado atual
+        const dadosAtuais = JSON.stringify(window.AppEstado);
+        if (dadosAtuais === ultimosDadosSalvos) return;
+
+        // SE FOR DEMO: Salva só no LocalStorage
+        if (this.isDemo) {
+            localStorage.setItem('synapse_gamification', JSON.stringify(window.AppEstado.gamification));
+            ultimosDadosSalvos = dadosAtuais;
+            return;
+        }
+
+        // SE FOR PRO: Salva no Supabase
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (user && window._supabase) {
+            const { error } = await window._supabase
+                .from(DB_TABLE)
+                .upsert({ 
+                    email: user.email, 
+                    dados: window.AppEstado,
+                    updated_at: new Date()
+                });
+            if (!error) ultimosDadosSalvos = dadosAtuais;
+        }
+    },
+
+    async logEvent(nomeEvento, detalhe = "") {
+        if (this.isDemo) return; // Não loga eventos na demo
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user) return;
+        
+        window._supabase.from('analytics_eventos').insert({
+            email: user.email, evento: nomeEvento, detalhe: detalhe
+        }).then(() => {});
+    },
+
+    iniciarAutoSave() {
+        if (autoSaveTimer) clearInterval(autoSaveTimer);
+        autoSaveTimer = setInterval(() => { this.forceSave(); }, 10000); // Salva a cada 10s
+        window.addEventListener('beforeunload', () => { this.forceSave(); });
+    },
     
-    // Usado pelo dashboard.js para salvar dias na base
-    async forceSave(key, data) {
-        // 1. Salva localmente sempre (Backup)
-        localStorage.setItem(`synapse_${key}`, JSON.stringify(data));
-
-        // 2. Tenta salvar no Supabase se estiver conectado
-        if (this.client) {
-            try {
-                const { data: { user } } = await this.client.auth.getUser();
-                if (user) {
-                    // Salva na tabela de perfis ou gamificação
-                    // Exemplo genérico: atualiza metadata do usuário ou tabela específica
-                    await this.client.from('gamificacao').upsert({
-                        user_id: user.id,
-                        dados: data,
-                        tipo: key,
-                        updated_at: new Date()
-                    });
-                }
-            } catch (e) {
-                // Falha silenciosa no cloud, mas já salvou no localStorage
-            }
-        }
+    // Suporte ao Chat
+    async saveChatHistory(agent, history) {
+        if(!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
+        window.AppEstado.chatHistory[agent] = history;
+        this.forceSave();
     },
-
-    // Usado pelo gamification.js
-    async getGamificationState() {
-        // Tenta ler do LocalStorage primeiro (mais rápido)
-        const local = localStorage.getItem('synapse_gamification');
-        if (local) return JSON.parse(local);
-
-        // Se não tiver local, tenta do banco
-        if (this.client) {
-            try {
-                const { data: { user } } = await this.client.auth.getUser();
-                if (user) {
-                    const { data } = await this.client
-                        .from('gamificacao')
-                        .select('dados')
-                        .eq('user_id', user.id)
-                        .eq('tipo', 'gamification')
-                        .maybeSingle();
-                    if (data) return data.dados;
-                }
-            } catch (e) {}
-        }
-        return null;
-    },
-
-    async saveGamificationState(state) {
-        return this.forceSave('gamification', state);
+    async loadChatHistory(agent) {
+        return window.AppEstado.chatHistory?.[agent] || [];
     }
 };
 

@@ -2,15 +2,13 @@ import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
+// REMOVIDO: import { saveChatHistory... } (Isso causava a tela preta)
 
-// --- ESTADO GLOBAL ---
+// --- CONFIGURAÇÕES ---
 let chatHistory = [];
-let sessionList = []; 
-let currentSessionId = null; 
-let currentAgentKey = 'SYNAPSE'; // Padrão Absoluto
+let currentAgentKey = 'Diagnostico';
 let messageCount = 0;
 
-// Configurações de Demo/Venda
 const DEMO_LIMIT = 7;    
 const DIAGNOSE_PHASE = 3; 
 const SELL_PHASE = 5;     
@@ -18,7 +16,9 @@ const SELL_PHASE = 5;
 let userStatus = 'DEMO';
 try {
     const session = JSON.parse(localStorage.getItem('synapse_user'));
-    if (session && session.status) userStatus = session.status.toUpperCase(); 
+    if (session && session.status) {
+        userStatus = session.status.toUpperCase(); 
+    }
 } catch (e) {}
 
 const IS_DEMO_MODE = userStatus !== 'VIP' && userStatus !== 'PRO';
@@ -29,11 +29,7 @@ export async function initChat() {
     const input = document.getElementById('chatInput');
     const resetBtn = document.getElementById('resetChatBtn');
 
-    // Expõe funções globais para o Sidebar funcionar
-    window.resetCurrentChat = startNewSession; 
-    window.loadSessionById = loadSessionById;
-
-    if (resetBtn) resetBtn.onclick = () => startNewSession();
+    if (resetBtn) resetBtn.onclick = () => resetCurrentChat();
 
     if (btn && input) {
         btn.onclick = () => sendMessage();
@@ -47,222 +43,163 @@ export async function initChat() {
             input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
     }
-
-    // 1. Carrega lista de sessões antigas
-    await fetchSessionList();
-
-    // 2. Inicia o Super-Agente
-    if (sessionList.length > 0) {
-        await loadSessionById(sessionList[0].id);
-    } else {
-        await startNewSession();
-    }
 }
 
-// --- ADAPTADOR DE AGENTES (Para compatibilidade) ---
-export async function loadAgent(key) {
-    // Não importa qual chave venha (Diagnostico, General, etc),
-    // nós forçamos o SYNAPSE, pois ele agora é o único "cérebro".
-    currentAgentKey = 'SYNAPSE';
-    
-    // Se não tem sessão ativa, cria uma.
-    if (!currentSessionId) {
-        await startNewSession();
-    } else {
-        // Se já tem, apenas garante que a UI está certa
-        renderChatSidebar();
-    }
-}
-
-// --- GERENCIAMENTO DE SESSÕES (Supabase) ---
-async function fetchSessionList() {
-    if (!window._supabase) return;
-    
-    const { data: { user } } = await window._supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await window._supabase
-        .from('synapse_chats')
-        .select('id, title, created_at')
-        .order('updated_at', { ascending: false });
-
-    if (!error && data) {
-        sessionList = data;
-        renderChatSidebar();
-    }
-}
-
-// Cria uma NOVA memória (Chat Limpo) e Arquiva a Antiga
-async function startNewSession() {
-    console.log("Arquivando sessão anterior e iniciando nova...");
-    
+// --- RESETAR ---
+async function resetCurrentChat() {
     const area = document.getElementById('messagesArea');
-    
-    // 1. SALVA A SESSÃO ATUAL ANTES DE LIMPAR (ARQUIVAMENTO)
-    // Se já tiver um ID e mensagens, salva no banco com o estado atual
-    if (currentSessionId && chatHistory.length > 0) {
-        await saveSessionToSupabase(); 
-        console.log("Sessão anterior arquivada com sucesso.");
-    }
-
-    // Efeito visual de limpeza
     if (area) {
-        area.style.transition = 'opacity 0.2s';
+        area.style.transition = 'opacity 0.3s';
         area.style.opacity = '0';
     }
-
     setTimeout(async () => {
-        // 2. RESETA VARIÁVEIS PARA O NOVO CHAT
-        currentSessionId = crypto.randomUUID(); // Gera um ID totalmente novo
-        chatHistory = []; // Limpa o array local
+        chatHistory = [];
         messageCount = 0;
+        enableInput();
         
-        // Limpa UI
+        // USANDO O NOVO BANCO DE DADOS
+        if (window.Database) {
+            await window.Database.saveChatHistory(currentAgentKey, []);
+        }
+        
         if (area) {
             area.innerHTML = '';
             area.style.opacity = '1';
-            renderHeader(); // Mostra logo
         }
-        enableInput();
-
-        // 3. CARREGA BOAS VINDAS DO AGENTE
-        const agentData = AGENTS['SYNAPSE']; // Agente Único
-        if (agentData) {
-            chatHistory = [{ role: 'system', content: agentData.prompt }];
-            addMessageUI('ai', agentData.welcome, true);
-            
-            if (agentData.initialButtons) {
-                setTimeout(() => renderReplies(agentData.initialButtons), 1000);
-            }
-        }
-        
-        // 4. CRIA A NOVA SESSÃO NO BANCO (Para ela aparecer na lista como "Ativa" ou "Nova")
-        // Usamos um título provisório até o usuário falar algo
-        await saveSessionToSupabase("Nova Auditoria");
-        
-        // 5. ATUALIZA A BARRA LATERAL (Isso faz o chat antigo aparecer na lista!)
-        await fetchSessionList();
-
-    }, 200);
+        await loadAgent(currentAgentKey);
+    }, 300);
 }
 
-async function loadSessionById(sessionId) {
-    if (!sessionId) return;
-    
-    const { data, error } = await window._supabase
-        .from('synapse_chats')
-        .select('*')
-        .eq('id', sessionId)
-        .single();
+// --- CARREGAR AGENTE ---
+// --- CARREGAR AGENTE ---
+export async function loadAgent(key) {
+    if (!AGENTS[key]) return;
+    currentAgentKey = key;
 
-    if (error || !data) return;
-
-    currentSessionId = sessionId;
-    chatHistory = data.messages || [];
-    messageCount = chatHistory.length;
-
-    const area = document.getElementById('messagesArea');
-    if (area) area.innerHTML = '';
-
-    renderHeader();
-
-    chatHistory.forEach(msg => {
-        if (msg.role !== 'system') {
-            addMessageUI(msg.role === 'assistant' ? 'ai' : msg.role, msg.content, false);
-        }
-    });
-
-    renderChatSidebar(); 
-    scrollToBottom();
-}
-
-async function saveSessionToSupabase(customTitle = null) {
-    if (!window._supabase || !currentSessionId) return;
-
-    const { data: { user } } = await window._supabase.auth.getUser();
-    if (!user) return;
-
-    let title = customTitle;
-    if (!title) {
-        const firstUserMsg = chatHistory.find(m => m.role === 'user');
-        // Título inteligente baseado na primeira mensagem do usuário
-        title = firstUserMsg ? firstUserMsg.content.substring(0, 25) : "Sessão Neural";
-    }
-
-    const payload = {
-        id: currentSessionId,
-        user_id: user.id,
-        messages: chatHistory,
-        title: title,
-        updated_at: new Date()
-    };
-
-    window._supabase.from('synapse_chats').upsert(payload).then(() => {
-        if (customTitle === null && chatHistory.length <= 4) fetchSessionList(); 
-    });
-}
-
-// --- RENDERIZAR BARRA LATERAL (Histórico) ---
-export function renderChatSidebar() {
-    const container = document.getElementById('chatHistoryList');
-    if (!container) return; // Se o container não existir no HTML, ignora sem erro
-
-    container.innerHTML = '';
-
-    if (sessionList.length === 0) {
-        container.innerHTML = `<p class="text-[10px] text-gray-600 text-center italic mt-2 opacity-50 font-mono">MEMÓRIA VAZIA</p>`;
-        return;
-    }
-
-    sessionList.forEach(session => {
-        const isActive = session.id === currentSessionId;
-        const activeClass = isActive ? "bg-[#1a1a1a] border-red-900/30 text-white" : "border-transparent text-gray-500 hover:text-gray-300 hover:bg-[#111]";
-        
-        const dateObj = new Date(session.created_at);
-        const dateStr = dateObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
-
-        const div = document.createElement('div');
-        div.className = `group flex flex-col gap-1 px-3 py-3 rounded-lg cursor-pointer transition-all duration-200 border ${activeClass}`;
-        div.onclick = () => loadSessionById(session.id);
-        
-        div.innerHTML = `
-            <div class="flex justify-between w-full items-center">
-                <span class="text-[10px] font-bold uppercase tracking-wide truncate w-[75%] font-mono">
-                    ${session.title || 'SESSÃO'}
-                </span>
-                <span class="text-[8px] opacity-40 font-mono">${dateStr}</span>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function renderHeader() {
     const messagesArea = document.getElementById('messagesArea');
-    // Header minimalista e militar
+    const viewChat = document.getElementById('viewChat');
+
+    viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
+    if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
+
+    if (messagesArea) messagesArea.innerHTML = '';
+
     const headerHTML = `
-        <div class="w-full text-center mt-6 mb-6 animate-fade-in opacity-50 hover:opacity-100 transition-opacity">
-            <div class="relative w-16 h-16 mx-auto mb-2 flex items-center justify-center grayscale">
-                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain" alt="Synapse AI">
+        <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
+            <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
+                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
             </div>
-            <p class="text-[9px] text-gray-600 tracking-[0.3em] uppercase font-mono">
-                STATUS: <span class="text-green-900 font-bold">ONLINE</span>
+            <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
+                CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
             </p>
         </div>
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
+
+    // CARREGA HISTÓRICO DO SUPABASE (Via window.Database)
+    let savedHistory = [];
+    if (window.Database) {
+        savedHistory = await window.Database.loadChatHistory(key);
+    }
+
+    if (savedHistory && savedHistory.length > 0) {
+        chatHistory = savedHistory;
+        chatHistory.forEach(msg => {
+            if (msg.role !== 'system') addMessageUI(msg.role === 'assistant' ? 'ai' : msg.role, msg.content, false);
+        });
+        messagesArea.insertAdjacentHTML('beforeend', `<div class="w-full text-center my-4 opacity-50"><span class="text-[8px] text-gray-700 uppercase tracking-widest border-b border-gray-800 pb-1">Memória Restaurada</span></div>`);
+    } else {
+        chatHistory = [{ role: 'system', content: AGENTS[key].prompt }];
+        setTimeout(() => {
+            addMessageUI('ai', AGENTS[key].welcome, true);
+            if (AGENTS[key].initialButtons) {
+                setTimeout(() => renderReplies(AGENTS[key].initialButtons), 1000);
+            }
+        }, 500);
+    }
+
+    // [IMPORTANTE] ATUALIZA A SIDEBAR
+    setTimeout(() => {
+        renderChatSidebar();
+    }, 500);
 }
 
-// --- LÓGICA DE ENVIO (AI) ---
+// --- RENDERIZAR SIDEBAR (ESTILO CHATGPT) ---
+export function renderChatSidebar() {
+    const container = document.getElementById('chatHistoryList');
+    if (!container) return;
+
+    // 1. Pega o histórico salvo
+    const history = window.AppEstado?.chatHistory || {};
+    
+    // 2. Filtra conversas que têm conteúdo
+    const activeChats = Object.keys(history).filter(key => history[key] && history[key].length > 0);
+
+    if (activeChats.length === 0) {
+        container.innerHTML = '<span class="text-[8px] text-gray-700 font-mono px-2 italic">SEM REGISTROS</span>';
+        return;
+    }
+
+    container.innerHTML = ''; // Limpa a lista antes de recriar
+
+    activeChats.forEach(agentKey => {
+        const msgs = history[agentKey];
+        
+        // --- LÓGICA PARA O "TÍTULO DO TEMA" ---
+        // Tenta pegar a primeira mensagem do USUÁRIO para usar como título
+        const firstUserMsg = msgs.find(m => m.role === 'user');
+        let themeTitle = "Nova Conversa";
+        
+        if (firstUserMsg && firstUserMsg.content) {
+            // Pega os primeiros 25 caracteres da mensagem
+            themeTitle = firstUserMsg.content.substring(0, 25);
+            if (firstUserMsg.content.length > 25) themeTitle += "...";
+        }
+
+        // --- ÍCONE E COR BASEADO NO AGENTE ---
+        let icon = "fa-comment";
+        let colorClass = "text-gray-500";
+        
+        if (agentKey === 'Diagnostico') { icon = "fa-eye"; colorClass = "text-red-500"; }
+        if (agentKey === 'COMANDANTE') { icon = "fa-brain"; colorClass = "text-purple-500"; }
+        if (agentKey === 'GENERAL') { icon = "fa-chess"; colorClass = "text-blue-500"; }
+        if (agentKey === 'TATICO') { icon = "fa-wind"; colorClass = "text-green-500"; }
+
+        // Verifica se é o chat ativo no momento
+        const isActive = window.currentAgentKey === agentKey;
+        const activeBg = isActive ? "bg-[#1a1a1a] border-white/10" : "border-transparent hover:bg-[#111] hover:border-white/5";
+
+        const item = document.createElement('div');
+        item.className = `group flex flex-col gap-1 px-3 py-3 rounded-lg cursor-pointer transition-all duration-200 border ${activeBg}`;
+        
+        item.onclick = () => window.selectTool(agentKey);
+
+        item.innerHTML = `
+            <span class="text-[11px] font-medium text-gray-300 group-hover:text-white truncate leading-tight">
+                ${themeTitle}
+            </span>
+
+            <div class="flex items-center gap-2 mt-1">
+                <i class="fa-solid ${icon} text-[10px] ${colorClass} opacity-80"></i>
+                <span class="text-[9px] font-black uppercase tracking-wider text-gray-600 group-hover:text-gray-400">
+                    ${agentKey}
+                </span>
+            </div>
+        `;
+
+        container.appendChild(item);
+    });
+}
+
+// --- LÓGICA DE ENVIO ---
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
 
     if (!val) return;
 
-    // Verificação de Demo (Paywall)
-    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && messageCount >= DEMO_LIMIT) {
-        triggerPaywallSequence(); return;
+    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
+        return;
     }
 
     addMessageUI('user', val, false);
@@ -271,19 +208,18 @@ async function sendMessage(text = null) {
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
-    messageCount++;
+    if (currentAgentKey === 'Diagnostico') messageCount++;
 
-    // Injeção de Sistema para Demo (Adaptada para tom militar)
     let systemInjection = "";
-    if (IS_DEMO_MODE) {
+    if (currentAgentKey === 'Diagnostico') {
         if (messageCount <= DIAGNOSE_PHASE) {
-            systemInjection = `(SISTEMA: Usuário em modo DEMO. Seja breve. Extraia o problema principal rapidamente.)`;
+            systemInjection = `(INSTRUÇÃO: Pergunte algo sobre a rotina dele. Seja natural, como uma conversa no WhatsApp. Uma pergunta só.)`;
         } else if (messageCount <= SELL_PHASE) {
-            systemInjection = `(SISTEMA: Valide a falha do usuário. Mostre que ele precisa de um método (Synapse).)`;
+            systemInjection = `(INSTRUÇÃO: Mostre que entende o problema dele. Diga que falta organização, mas sem culpar ele. Sugira que existe um jeito mais fácil.)`;
         } else if (messageCount < DEMO_LIMIT) {
-            systemInjection = `(SISTEMA: Prepare o bloqueio. Gere urgência para o plano completo.)`;
+            systemInjection = `(INSTRUÇÃO: Diga: "Eu montei um plano pra te ajudar com isso. Quer dar uma olhada?". Gere curiosidade.)`;
         } else {
-            systemInjection = `(SISTEMA: BLOQUEIO IMINENTE. Encerre com [[LOCKED_DIAGNOSIS]].)`;
+            systemInjection = `(INSTRUÇÃO FINAL: Diga: "Seu plano está pronto. O Synapse vai te mostrar agora." Encerre OBRIGATORIAMENTE com [[LOCKED_DIAGNOSIS]].)`;
         }
     }
 
@@ -291,13 +227,12 @@ async function sendMessage(text = null) {
     const rpg = getRPGState(); 
     
     try {
-        const MAX_CONTEXT = 12; // Contexto curto para manter foco
-        const recentHistory = chatHistory.filter(m => m.role !== 'system').slice(-MAX_CONTEXT);
-        
+        const MAX_CONTEXT = 12;
+        const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
         const apiMessages = [
-            { role: 'system', content: AGENTS['SYNAPSE'].prompt }, // Prompt do Auditor
+            chatHistory[0], 
             { role: 'system', content: systemInjection }, 
-            { role: 'system', content: `[User Level: ${rpg.level} | SessionID: ${currentSessionId}]` }, 
+            { role: 'system', content: `[User Lvl ${rpg.level}]` }, 
             ...recentHistory, 
             { role: 'user', content: val }
         ];
@@ -324,7 +259,6 @@ async function sendMessage(text = null) {
                 forceBlock = true;
             }
             
-            // Tratamento de botões dinâmicos {{Botão}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -332,23 +266,31 @@ async function sendMessage(text = null) {
                 aiText = aiText.replace(btnMatch[0], '').trim();
             }
 
-            // Executa comandos [[ADD_MISSION]]
             aiText = handleCommands(aiText);
             
             if (aiText.trim() !== "") {
                 addMessageUI('ai', aiText, true);
                 chatHistory.push({ role: 'user', content: val });
                 chatHistory.push({ role: 'assistant', content: aiText });
-                saveSessionToSupabase();
+                
+                // SALVA NO SUPABASE
+                if (window.Database && typeof window.Database.saveChatHistory === 'function') {
+                    window.Database.saveChatHistory(currentAgentKey, chatHistory);
+                    
+                    // [IMPORTANTE] Atualiza a lista lateral com a nova mensagem
+                    renderChatSidebar(); 
+                }
             }
+            // ... resto do código (botões, bloqueio, etc) ...
+            const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
+            const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            const shouldBlockNow = (isLimitReached) || forceBlock;
 
-            const isLimitReached = (IS_DEMO_MODE && messageCount >= DEMO_LIMIT);
-            
-            if (dynamicButtons.length > 0 && !isLimitReached) {
+            if(dynamicButtons.length > 0 && !shouldBlockNow) {
                 renderReplies(dynamicButtons);
             }
 
-            if (isLimitReached || forceBlock) {
+            if (shouldBlockNow) {
                 disableInput(); 
                 setTimeout(() => { triggerPaywallSequence(); }, 2000);
             }
@@ -356,13 +298,12 @@ async function sendMessage(text = null) {
     } catch (e) {
         removeLoading(loadingId);
         console.error(e);
-        addMessageUI('system', "ERRO DE CONEXÃO. REINICIANDO LINK...", false);
+        addMessageUI('system', "ERRO DE CONEXÃO.", false);
     }
 }
 
-// --- FUNÇÕES UI ---
+// --- RESTO DAS FUNÇÕES DE UI (Mantidas iguais) ---
 function handleCommands(text) {
-    // Detecta comandos vindos do prompt do Agente
     const regex = /\[\[(ADD_MISSION|ADD_HABIT):(.*?)\]\]/g;
     let match;
     let clean = text;
@@ -393,13 +334,10 @@ function addMessageUI(role, text, animate = true) {
 
     const div = document.createElement('div');
     let safeText = escapeHTML(text);
-    
-    // Formatação Markdown básica para visual militar
     let formattedText = safeText
-        .replace(/\*\*(.*?)\*\*/g, '<b class="text-white font-mono">$1</b>') // Negrito vira monoespaçado branco
-        .replace(/\*(.*?)\*/g, '<i class="text-gray-500">$1</i>')
+        .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>')
+        .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>')
         .replace(/\n/g, '<br>');
-    
     div.style.whiteSpace = 'pre-wrap';
 
     if (role === 'user') {
@@ -410,8 +348,8 @@ function addMessageUI(role, text, animate = true) {
         if (animate) typeWriterBubble(div, formattedText);
         else div.innerHTML = formattedText;
     } else {
-        div.className = 'self-center text-[9px] text-red-600 font-mono tracking-widest my-2 opacity-80';
-        div.innerHTML = formattedText.toUpperCase();
+        div.className = 'self-center text-[10px] text-red-500 font-bold my-2 opacity-70';
+        div.innerHTML = formattedText;
     }
 
     area.appendChild(div);
@@ -433,6 +371,15 @@ function typeWriterBubble(element, html, speed = 10) {
                 return;
             }
         }
+        if (char === '&') {
+            let entityEnd = html.indexOf(';', i);
+            if (entityEnd !== -1 && entityEnd - i < 10) {
+                element.innerHTML += html.substring(i, entityEnd + 1);
+                i = entityEnd + 1;
+                setTimeout(type, 0);
+                return;
+            }
+        }
         element.innerHTML += char;
         i++;
         scrollToBottom();
@@ -447,7 +394,7 @@ function renderReplies(btns) {
     div.className = "quick-reply-container animate-fade-in-up";
     btns.forEach(b => {
         const btn = document.createElement('button');
-        btn.className = "cyber-btn"; // Certifique-se que essa classe existe no CSS ou use classes tailwind
+        btn.className = "cyber-btn";
         btn.innerText = b.trim();
         btn.onclick = () => sendMessage(b.trim());
         div.appendChild(btn);
@@ -462,11 +409,9 @@ function showLoading() {
     const div = document.createElement('div');
     div.id = id;
     div.className = "animate-fade-in my-2";
-    // Loading minimalista
     div.innerHTML = `
-        <div class="flex items-center gap-1 ml-2">
-            <span class="w-1 h-1 bg-red-500 rounded-full animate-ping"></span>
-            <span class="text-[9px] text-red-500 font-mono tracking-widest">PROCESSANDO</span>
+        <div class="loading-neural">
+            <span></span><span></span><span></span>
         </div>`;
     area.appendChild(div);
     scrollToBottom();
@@ -489,31 +434,36 @@ function scrollToBottom() {
 function disableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if (input) { input.disabled = true; input.placeholder = "SISTEMA TRAVADO"; }
+    if (input) { input.disabled = true; input.placeholder = "PLANO GERADO"; }
     if (btn) btn.disabled = true;
 }
 
 function enableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if (input) { input.disabled = false; input.placeholder = "Inserir dados..."; }
+    if (input) { input.disabled = false; input.placeholder = "Digite sua mensagem..."; }
     if (btn) btn.disabled = false;
 }
 
 function triggerPaywallSequence() {
     disableInput();
     const area = document.getElementById('messagesArea');
+    const oldLoad = document.querySelector('.synapse-loader-wrapper');
+    if (oldLoad) oldLoad.parentElement.remove();
+
     const sequenceId = 'seq-' + Date.now();
     
-    // Animação de bloqueio militar
     const sequenceHTML = `
-        <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in">
-            <div class="text-red-600 font-black text-4xl mb-2"><i class="fa-solid fa-lock"></i></div>
-            <div class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase mb-4">
-                ACESSO NEGADO
+        <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in transition-all duration-500">
+            <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
+                <div class="absolute inset-0 bg-red-600 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
+                <img src="logo_synapse.png" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" style="animation-duration: 1s;" alt="Synapse Core">
             </div>
-            <div class="w-48 h-0.5 bg-gray-900 rounded-full overflow-hidden">
-                <div class="h-full bg-red-600 w-full animate-pulse"></div>
+            <div id="status-text-${sequenceId}" class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase">
+                <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Gerando Plano...
+            </div>
+            <div class="w-48 h-1 bg-gray-900 rounded-full mt-3 overflow-hidden border border-gray-800">
+                <div id="progress-bar-${sequenceId}" class="h-full bg-red-600 w-0 transition-all duration-[3000ms] ease-out"></div>
             </div>
         </div>
     `;
@@ -523,32 +473,66 @@ function triggerPaywallSequence() {
     area.appendChild(div);
     scrollToBottom();
 
+    setTimeout(() => { 
+        const bar = document.getElementById(`progress-bar-${sequenceId}`);
+        if(bar) bar.style.width = "100%"; 
+    }, 100);
+
     setTimeout(() => {
-        const el = document.getElementById(sequenceId);
-        if(el) el.remove();
-        showPaywallCard();
-    }, 2000);
+        const textEl = document.getElementById(`status-text-${sequenceId}`);
+        if (textEl) {
+            textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-yellow-500 text-center uppercase";
+            textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Finalizando...`;
+        }
+    }, 1500);
+
+    setTimeout(() => {
+        const textEl = document.getElementById(`status-text-${sequenceId}`);
+        if (textEl) {
+            textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-green-500 text-center uppercase";
+            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Tudo pronto.`;
+            const container = document.getElementById(sequenceId);
+            container.style.transform = "scale(1.1)";
+            container.style.opacity = "0";
+        }
+        setTimeout(() => {
+            const el = document.getElementById(sequenceId);
+            if(el) el.remove();
+            showPaywallCard();
+        }, 800);
+    }, 3500);
 }
 
 function showPaywallCard() {
     const area = document.getElementById('messagesArea');
     const CHECKOUT_LINK = "../index.html#planos";
+
     const cardHTML = `
-        <div class="w-full max-w-md mx-auto mt-4 mb-12 relative z-0 animate-fade-in-up">
-            <div class="bg-[#050505] rounded border border-red-900/40 p-6 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div>
-                <div class="text-left">
-                    <p class="text-red-500 text-[9px] uppercase tracking-[0.3em] font-bold mb-2">RELATÓRIO BLOQUEADO</p>
-                    <h2 class="text-lg text-white font-bold uppercase italic mb-4">SISTEMA REQUER UPGRADE</h2>
-                    <a href="${CHECKOUT_LINK}" class="block w-full bg-red-700 text-white font-bold py-3 text-center text-xs uppercase tracking-widest hover:bg-red-600 transition-colors">
-                        DESBLOQUEAR AGORA
+        <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
+            <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-red-600 to-gray-900"></div>
+                <div class="relative z-10 text-center">
+                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Análise Concluída</p>
+                    <h2 class="text-2xl text-white font-serif italic mb-6">"Chega de viver no <span class="text-red-500 not-italic font-bold">automático.</span>"</h2>
+                    <div class="bg-gray-900/50 rounded-lg p-4 text-left mb-6 border-l-2 border-red-500">
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            <i class="fa-solid fa-quote-left text-gray-600 mr-2 text-xs"></i>
+                            O problema não é você, é a falta de método. Criei um plano passo a passo pra você assumir o controle da sua rotina de vez.
+                        </p>
+                    </div>
+                    <a href="${CHECKOUT_LINK}" class="block w-full bg-white text-black font-extrabold py-4 rounded hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] text-sm tracking-wide uppercase">
+                        Ver meu Plano
                     </a>
+                    <p class="mt-4 text-xs text-gray-600">
+                        <i class="fa-solid fa-clock mr-1"></i> Acesso imediato
+                    </p>
                 </div>
             </div>
         </div>
     `;
+
     const div = document.createElement('div');
     div.innerHTML = cardHTML;
     area.appendChild(div);
-    scrollToBottom();
+    if (typeof scrollToBottom === 'function') scrollToBottom();
 }
