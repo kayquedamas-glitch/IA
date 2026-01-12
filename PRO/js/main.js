@@ -142,19 +142,27 @@ async function initializeSystemCore() {
     
     // Configura os recursos (features)
     window.features = {
-        startFocusMode: startFocusMode,
-        startSOSProtocol: startSOSProtocol,
-        // Se for DEMO, mostra modal de vendas. Se não, mostra o relatório real.
+        // Bloqueia MODO FOCO se for Demo
+        startFocusMode: window.IS_DEMO ? () => showDemoModal('MODO FOCO') : startFocusMode,
+        
+        // Bloqueia PROTOCOLO SOS se for Demo
+        startSOSProtocol: window.IS_DEMO ? () => showDemoModal('PROTOCOLO SOS') : startSOSProtocol,
+        
+        // Bloqueia RELATÓRIO (Dossiê) se for Demo
         showWeeklyReport: window.IS_DEMO ? () => showDemoModal('DOSSIE') : showWeeklyReport
     };
 
-    // Atalhos globais
+    // Atualiza os atalhos globais para usar as versões (possivelmente) bloqueadas
     window.startFocusMode = window.features.startFocusMode;
     window.startSOSProtocol = window.features.startSOSProtocol;
     window.showWeeklyReport = window.features.showWeeklyReport;
     
+    // Atualiza o click do botão SOS da sidebar para usar a nova função protegida
     const btnSOS = document.getElementById('btn-sos-protocol');
-    if (btnSOS) btnSOS.onclick = () => { window.features.startSOSProtocol(); toggleSidebar(false); };
+    if (btnSOS) btnSOS.onclick = () => { 
+        window.features.startSOSProtocol(); 
+        toggleSidebar(false); 
+    };
 
     // 2. INICIALIZAÇÃO DO BANCO E VERIFICAÇÃO AUTOMÁTICA
     try {
@@ -403,19 +411,36 @@ function updateStatusIndicator() {
 
 // --- MODAIS (BRIEFING E VENDAS) ---
 
+// No arquivo: PRO/js/main.js
+
 function showDemoModal(featureName) {
-    let title = "Recurso Pro";
-    let subtitle = "Acesso Exclusivo";
-    let message = `A funcionalidade <span class="text-white font-bold">${featureName}</span> está disponível apenas nos planos avançados.`;
-    let btnText = "Fazer Upgrade Agora";
+    let title = "Acesso Restrito";
+    let subtitle = "Funcionalidade PRO";
+    let message = `O recurso <span class="text-white font-bold">${featureName}</span> é exclusivo para operadores do plano completo.`;
+    let btnText = "Desbloquear Agora";
     let iconClass = "fa-solid fa-lock";
 
+    // PERSONALIZAÇÃO DO DISCURSO DE VENDA
     if (featureName === 'DOSSIE') {
-        title = "Análise Concluída";
-        subtitle = "Documento Pronto";
-        message = `A IA processou suas respostas e gerou seu <span class="text-white font-bold"> Relatório </span>. O relatório contém a análise dos seus pontos cegos e o plano de ação.<br><br>Desbloqueie sua conta para acessar o documento completo.`;
-        btnText = "Liberar Meu Relatório";
+        title = "Dossiê Bloqueado";
+        subtitle = "Análise de Perfil";
+        message = `A IA gerou seu <span class="text-white font-bold">Relatório Semanal</span>, mas ele está criptografado. O Dossiê revela seus padrões ocultos de comportamento e sugere ajustes táticos.`;
+        btnText = "Liberar Meu Dossiê";
         iconClass = "fa-solid fa-file-shield";
+    }
+    else if (featureName === 'MODO FOCO') {
+        title = "Hiperfoco Neural";
+        subtitle = "Ferramenta Tática";
+        message = `Você tentou ativar o <span class="text-white font-bold">Modo de Imersão</span>. Essa ferramenta bloqueia distrações e usa frequências sonoras (Binaural Beats) para induzir estado de fluxo imediato.`;
+        btnText = "Ativar Modo Foco";
+        iconClass = "fa-solid fa-headset";
+    }
+    else if (featureName === 'PROTOCOLO SOS') {
+        title = "Protocolo de Resgate";
+        subtitle = "Emergência";
+        message = `O botão <span class="text-red-500 font-bold">S.O.S.</span> é o recurso mais poderoso do sistema. Ele ativa uma intervenção de áudio guiada para crises de ansiedade, pânico ou procrastinação aguda.`;
+        btnText = "Obter Botão de Pânico";
+        iconClass = "fa-solid fa-tower-broadcast";
     }
     
     // --- LINK DE CHECKOUT INTELIGENTE ---
@@ -430,26 +455,31 @@ function showDemoModal(featureName) {
 
     let modalInnerHTML = `
         <div class="relative bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-red-600 to-gray-900"></div>
+            
             <div class="p-8">
                 <div class="flex items-start gap-5">
-                    <div class="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
-                        <i class="${iconClass} text-xl text-gray-300"></i>
+                    <div class="flex-shrink-0 w-14 h-14 bg-red-900/10 rounded-xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
+                        <i class="${iconClass} text-2xl text-red-500"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">${subtitle}</p>
-                        <h3 class="text-2xl font-bold text-white mb-3">${title}</h3>
+                        <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-[8px]"></i> ${subtitle}
+                        </p>
+                        <h3 class="text-2xl font-bold text-white mb-3 italic">${title}</h3>
                         <p class="text-gray-400 text-sm leading-relaxed">${message}</p>
                     </div>
                 </div>
                 
                 <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-3">
                     <button onclick="window.location.href='${checkoutLink}'" 
-                        class="w-full py-3.5 bg-white text-black hover:bg-gray-200 font-bold rounded-lg transition-all flex items-center justify-center gap-2 group">
-                        <span>${btnText}</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        class="w-full py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-lg transition-all flex items-center justify-center gap-3 group relative overflow-hidden">
+                        <div class="absolute inset-0 bg-red-500/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+                        <span class="relative z-10">${btnText}</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-red-600 relative z-10"></i>
                     </button>
-                    <button onclick="closeDemoModal()" class="py-3 text-sm text-gray-500 hover:text-white transition-colors">
-                        Agora não, voltar para demo
+                    <button onclick="closeDemoModal()" class="py-2 text-xs text-gray-600 hover:text-white transition-colors uppercase tracking-wider font-bold">
+                        Voltar para Synapse Core <i class="fa-solid fa-arrow-left ml-1"></i>
                     </button>
                 </div>
             </div>
@@ -460,7 +490,7 @@ function showDemoModal(featureName) {
 
     const modalBaseHTML = `
     <div id="demo-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-sm transition-opacity opacity-0" id="demo-overlay"></div>
         <div class="relative w-full w-[95%] max-w-md scale-95 opacity-0 transition-all duration-300 ease-out max-h-[90vh] overflow-y-auto custom-scrollbar" id="demo-content">
             ${modalInnerHTML}
         </div>
