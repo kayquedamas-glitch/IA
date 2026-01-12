@@ -482,7 +482,7 @@ function showDemoModal(featureName) {
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-red-600 relative z-10"></i>
                     </button>
                     <button onclick="closeDemoModal()" class="py-2 text-xs text-gray-600 hover:text-white transition-colors uppercase tracking-wider font-bold">
-                        Voltar para Synapse Core <i class="fa-solid fa-arrow-left ml-1"></i>
+                        Voltar para Synapse Free <i class="fa-solid fa-arrow-left ml-1"></i>
                     </button>
                 </div>
             </div>
@@ -540,7 +540,7 @@ function startDemoBriefing() {
                 </span>
 
                 <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">
-                    Bem-vindo ao Core.
+                    Bem-vindo ao Free.
                 </h2>
 
                 <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-medium">

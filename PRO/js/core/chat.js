@@ -91,7 +91,7 @@ export async function loadAgent(key) {
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
-                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(200,0,0,0.3)]" alt="Synapse Core">
+                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(200,0,0,0.3)]" alt="Synapse Free">
             </div>
             <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
                 CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
@@ -463,7 +463,7 @@ function triggerPaywallSequence(diagnosisReason) {
         <div id="${sequenceId}" class="my-8 flex flex-col items-center justify-center animate-fade-in transition-all duration-500">
             <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
                 <div class="absolute inset-0 bg-red-600 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
-                <img src="logo_synapse.png" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" style="animation-duration: 1s;" alt="Synapse Core">
+                <img src="logo_synapse.png" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" style="animation-duration: 1s;" alt="Synapse Free">
             </div>
             <div id="status-text-${sequenceId}" class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase">
                 <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Compilando Protocolo...
