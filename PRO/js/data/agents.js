@@ -3,7 +3,7 @@
 export const AGENTS = {
     "MENTOR": {
         name: "Synapse", // Ou o nome que você quiser dar ao 'amigo'
-        welcome: "Olá. Sou seu sistema operacional neural. Estou aqui para organizar sua mente e sua rotina. Como você está se sentindo hoje?",
+        welcome: "Olá. Como posso ajudar você hoje?",
         
         // Mantém a lógica de venda na Demo
         prompt: `
