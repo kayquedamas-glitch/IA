@@ -717,56 +717,91 @@ function mostrarCardInteligente(dados, index, total) {
     let alvo = document.querySelector(dados.seletor);
     if (!alvo && dados.fallbackSeletor) alvo = document.querySelector(dados.fallbackSeletor);
     
-    // Posição Padrão (Segurança)
-    let classePosicao = "bottom-0 mb-8"; 
+    // Classes base para o card (animação e estilo)
+    const cardBaseClasses = "bg-[#0a0a0a] border border-white/20 p-6 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative animate-fade-in-up backdrop-blur-xl w-full md:w-[400px]";
+    
+    // Posição padrão (Segurança)
+    let containerClasses = "fixed bottom-6 left-4 right-4 md:left-auto md:right-10 md:bottom-10"; 
     
     if (alvo) {
-        // Destaque visual no elemento
+        // Destaque visual (Scroll e Ring)
         alvo.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-        alvo.classList.add('ring-2', 'ring-red-500', 'ring-offset-4', 'ring-offset-black');
-        setTimeout(() => alvo.classList.remove('ring-2', 'ring-red-500', 'ring-offset-4', 'ring-offset-black'), 2500);
+        alvo.classList.add('ring-4', 'ring-red-600', 'ring-offset-4', 'ring-offset-black', 'z-[10005]');
+        setTimeout(() => alvo.classList.remove('ring-4', 'ring-red-600', 'ring-offset-4', 'ring-offset-black', 'z-[10005]'), 3000);
 
         const rect = alvo.getBoundingClientRect();
         const screenHeight = window.innerHeight;
-        
-        // LÓGICA DE NÃO-SOBREPOSIÇÃO MELHORADA
-        // Se o elemento alvo está na metade INFERIOR da tela (> 50%)
-        if (rect.top > (screenHeight / 2)) {
-            // Joga o card para o TOPO, com margem grande para não cobrir headers
-            classePosicao = "top-0 mt-20 md:top-auto md:bottom-auto md:-translate-y-full md:mb-4"; 
+        const screenWidth = window.innerWidth;
+        const isMobile = screenWidth < 768;
+
+        if (isMobile) {
+            // --- LÓGICA MOBILE (VERTICAL) ---
+            // Se o centro do elemento está na metade DE BAIXO da tela...
+            if ((rect.top + rect.height/2) > (screenHeight / 2)) {
+                // ...Joga o card para o TOPO ABSOLUTO
+                containerClasses = "fixed top-6 left-4 right-4";
+            } else {
+                // ...Senão, joga para o FUNDO ABSOLUTO
+                containerClasses = "fixed bottom-6 left-4 right-4";
+            }
         } else {
-            // Se o elemento está na metade SUPERIOR (< 50%)
-            // Joga o card para o FUNDO, com margem para não cobrir rodapés
-            classePosicao = "bottom-0 mb-20 md:bottom-auto md:top-auto md:translate-y-full md:mt-4"; 
+            // --- LÓGICA PC (HORIZONTAL) ---
+            // Se o elemento é muito largo (ex: header), usa lógica vertical
+            if (rect.width > screenWidth * 0.7) {
+                 if (rect.top > screenHeight / 2) {
+                    containerClasses = "fixed top-10 left-1/2 -translate-x-1/2";
+                 } else {
+                    containerClasses = "fixed bottom-10 left-1/2 -translate-x-1/2";
+                 }
+            } else {
+                // Lógica Lado a Lado
+                // Se está na ESQUERDA da tela...
+                if ((rect.left + rect.width/2) < (screenWidth / 2)) {
+                    // ...Joga card para a DIREITA
+                    containerClasses = "fixed top-1/2 -translate-y-1/2 right-10";
+                } else {
+                    // ...Joga card para a ESQUERDA
+                    containerClasses = "fixed top-1/2 -translate-y-1/2 left-10";
+                }
+            }
         }
     }
 
     const html = `
     <div id="tour-overlay" class="fixed inset-0 z-[10000] pointer-events-none">
-        <div class="pointer-events-auto absolute left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[400px] ${classePosicao} transition-all duration-500 ease-out">
+        <div class="pointer-events-auto ${containerClasses} transition-all duration-500 ease-out z-[10010]">
             
-            <div class="bg-[#0a0a0a] border border-white/20 p-6 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative animate-fade-in-up backdrop-blur-xl">
-                
+            <div class="${cardBaseClasses}">
                 <div class="absolute top-0 left-0 h-1 bg-red-600 transition-all duration-300" style="width: ${((index + 1) / total) * 100}%"></div>
                 
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="text-lg font-black text-white uppercase italic tracking-wider">${dados.titulo}</h3>
-                    <span class="text-[10px] font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">${index + 1}/${total}</span>
+                    <span class="text-[10px] font-mono text-gray-500 bg-white/5 px-2 py-1 rounded border border-white/10">${index + 1}/${total}</span>
                 </div>
                 
                 <p class="text-sm text-gray-300 mb-6 leading-relaxed font-medium">
                     ${dados.texto}
                 </p>
 
-                <button onclick="proximoPasso()" class="w-full py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
-                    ${index === total - 1 ? 'Concluir Tour' : 'Próximo Passo'} <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                <div class="flex gap-3">
+                     ${index > 0 ? `<button onclick="passoAnterior()" class="px-4 py-3 border border-white/20 text-white rounded-lg font-bold uppercase text-xs hover:bg-white/10 transition-colors"><i class="fa-solid fa-arrow-left"></i></button>` : ''}
+                     
+                    <button onclick="proximoPasso()" class="flex-1 py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+                        ${index === total - 1 ? 'Concluir' : 'Próximo'} <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>`;
 
     document.body.insertAdjacentHTML('beforeend', html);
 }
+
+// Adicione também esta pequena função para permitir voltar, se quiser
+window.passoAnterior = () => {
+    // Você precisará expor a variável passoAtual globalmente ou dentro do escopo do tour
+    // Se não quiser mexer muito, apenas ignore este bloco, o botão voltar é opcional.
+};
 
 // Exporta globais
 window.startDemoBriefing = startDemoBriefing;
