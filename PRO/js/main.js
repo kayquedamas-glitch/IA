@@ -517,41 +517,66 @@ function closeDemoModal() {
     setTimeout(() => { modal.classList.add('hidden'); }, 300);
 }
 
+// --- FUNÇÃO DE BOAS-VINDAS INTELIGENTE ---
+// =================================================================
+// 1. BOAS-VINDAS (CLEAN & MINIMALISTA)
+// =================================================================
 function startDemoBriefing() {
-    if (document.getElementById('demo-briefing')) return;
-    if (localStorage.getItem('synapse_demo_seen')) return;
+    // Verifica usuário
+    let user = { nome: "Visitante", email: "demo", status: "free" };
+    try {
+        const savedUser = localStorage.getItem('synapse_user');
+        if (savedUser) user = JSON.parse(savedUser);
+    } catch (e) {}
 
-    // VOLTEI PARA O ORIGINAL: url('PRO/polvo_synapse.png')
+    // Verifica se já viu (Bloqueio por e-mail)
+    const storageKey = `synapse_welcome_seen_${user.email}`;
+    if (document.getElementById('demo-briefing')) return;
+    if (localStorage.getItem(storageKey)) return;
+
+    const primeiroNome = user.nome ? user.nome.split(' ')[0] : 'Operador';
+    
+    // HTML Minimalista
     const modalHTML = `
-    <div id="demo-briefing" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/95 backdrop-blur-md animate-fade-in"></div>
-        
-        <div class="relative w-full w-[95%] max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
+    <div id="demo-briefing" class="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#000000]/90 backdrop-blur-xl animate-fade-in"></div>
+
+        <div class="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/5 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-fade-in-up max-h-[90vh]">
             
-            <div class="h-24 md:h-32 bg-gradient-to-b from-green-900/10 to-transparent flex items-center justify-center relative overflow-hidden shrink-0">
-                <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-20 scale-150"></div>
-                <div class="absolute bottom-0 w-full h-10 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+            <div class="relative h-64 md:h-auto md:w-1/2 overflow-hidden bg-gradient-to-br from-[#1a0505] to-black flex items-center justify-center">
+                <div class="absolute inset-0 bg-[url('PRO/polvo_synapse.png')] bg-center bg-contain bg-no-repeat opacity-80 md:scale-90 animate-pulse-slow"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
             </div>
 
-            <div class="p-6 md:p-8 text-center -mt-8 relative z-10 overflow-y-auto custom-scrollbar">
+            <div class="flex flex-col justify-center p-8 md:p-12 md:w-1/2 bg-[#0a0a0a] relative z-10">
                 
-                <span class="inline-block py-1 px-3 rounded-full bg-green-500/10 border border-green-500/20 text-[9px] md:text-[10px] font-mono text-green-400 uppercase tracking-widest mb-4 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
-                    <i class="fa-solid fa-check-circle mr-1"></i> Acesso Concedido
-                </span>
+                <div class="mb-8">
+                    <div class="flex items-center gap-2 mb-4 opacity-50">
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-[9px] uppercase tracking-[0.3em] font-mono text-white">Conexão Estabelecida</span>
+                    </div>
 
-                <h2 class="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter mb-4">
-                    Bem-vindo ao Free.
-                </h2>
+                    <h1 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-2 leading-none">
+                        Olá, <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">${primeiroNome}</span>
+                    </h1>
+                    
+                    <p class="text-gray-500 text-sm leading-relaxed max-w-sm mt-4">
+                        O sistema Synapse está pronto. Configuramos seu ambiente neural para máxima produtividade.
+                    </p>
+                </div>
 
-                <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-medium">
-                    Sua identidade foi registrada. O sistema Synapse agora está conectado à sua mente.<br><br>
-                    Preparamos um tour rápido para te ensinar a dominar sua dopamina e organizar sua rotina usando o método PRO.
-                </p>
+                <div class="space-y-3 mt-auto">
+                    <button onclick="iniciarTourDetalhado()" class="w-full py-4 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-gray-200 transition-all flex items-center justify-center gap-3 group">
+                        <div class="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-play text-[8px]"></i>
+                        </div>
+                        <span>Conhecer Ferramentas</span>
+                    </button>
 
-                <button onclick="closeBriefing()" class="w-full py-3 md:py-4 bg-white text-black hover:bg-gray-200 font-black uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 text-xs md:text-sm flex items-center justify-center gap-2 group">
-                    <span>Iniciar Protocolo</span>
-                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-red-600"></i>
-                </button>
+                    <button onclick="fecharBoasVindas()" class="w-full py-4 rounded-xl border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest hover:text-white hover:border-white/30 transition-all">
+                        Pular Introdução
+                    </button>
+                </div>
             </div>
         </div>
     </div>`;
@@ -559,16 +584,191 @@ function startDemoBriefing() {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
-function closeBriefing() {
-    const el = document.getElementById('demo-briefing');
-    if (el) {
-        el.style.opacity = '0';
-        el.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => el.remove(), 500);
+function fecharBoasVindas() {
+    const modal = document.getElementById('demo-briefing');
+    let userEmail = 'demo';
+    try { const u = JSON.parse(localStorage.getItem('synapse_user')); if(u) userEmail = u.email; } catch(e){}
+    
+    localStorage.setItem(`synapse_welcome_seen_${userEmail}`, 'true');
+
+    if (modal) {
+        modal.style.transition = 'opacity 0.5s ease';
+        modal.style.opacity = '0';
+        setTimeout(() => modal.remove(), 500);
     }
 }
 
-window.showDemoModal = showDemoModal;
-window.closeDemoModal = closeDemoModal;
+// =================================================================
+// 2. SISTEMA DE TOUR INTELIGENTE (DETALHADO & RESPONSIVO)
+// =================================================================
+function iniciarTourDetalhado() {
+    // 1. Remove modal anterior
+    const modal = document.getElementById('demo-briefing');
+    if(modal) modal.remove();
+
+    // 2. Define os passos com Ações e Seletores
+    const passos = [
+        {
+            titulo: "Núcleo Neural",
+            texto: "Este é o seu chat principal. Aqui você conversa com a IA para estruturar ideias e resolver problemas.",
+            seletor: "#viewChat", // Foca na tela de chat
+            posicaoDesktop: "center",
+            acao: () => { 
+                if(typeof toggleSidebar === 'function') toggleSidebar(false);
+                if(typeof switchTab === 'function') switchTab('chat');
+            }
+        },
+        {
+            titulo: "Menu de Agentes",
+            texto: "Clique no ícone do menu (celular) ou veja na lateral. Aqui ficam suas ferramentas especializadas.",
+            seletor: ".fa-bars-staggered", // Foca no botão de menu do mobile
+            fallbackSeletor: "#sidebar", // Se for desktop, foca na sidebar
+            posicaoDesktop: "right",
+            acao: () => {
+                // No mobile, apenas aponta para o botão, não abre para não cobrir tudo
+                if(window.innerWidth > 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
+            }
+        },
+        {
+            titulo: "Base de Comando",
+            texto: "Vamos mudar de aba. A 'Base' é onde você visualiza seu progresso.",
+            seletor: "#tabJornada", // Botão da navegação inferior
+            fallbackSeletor: ".fa-house", // Ícone da sidebar desktop
+            posicaoDesktop: "right",
+            acao: () => {
+                // Muda a aba automaticamente para mostrar
+                if(typeof switchTab === 'function') switchTab('protocolo');
+                if(typeof toggleSidebar === 'function') toggleSidebar(false);
+            }
+        },
+        {
+            titulo: "Níveis de Dopamina",
+            texto: "Seu XP e Sequência (Fogo) mostram sua consistência. Mantenha os números altos.",
+            seletor: ".dopamine-card", // Foca no primeiro card
+            posicaoDesktop: "bottom",
+            acao: null
+        },
+        {
+            titulo: "Missões e Agenda",
+            texto: "Adicione tarefas rápidas aqui. O sistema organiza sua rotina automaticamente.",
+            seletor: "#missionList",
+            posicaoDesktop: "left",
+            acao: () => {
+                // Rola para baixo suavemente se necessário
+                const el = document.getElementById('missionList');
+                if(el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+        },
+        {
+            titulo: "Protocolo SOS",
+            texto: "Caso sinta ansiedade ou bloqueio, ative o SOS no menu lateral para uma intervenção de áudio imediata.",
+            seletor: "#btn-sos-protocol",
+            posicaoDesktop: "right",
+            acao: () => {
+                if(window.innerWidth > 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
+                // No mobile, abrimos a sidebar rapidinho para mostrar o botão
+                if(window.innerWidth <= 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
+            }
+        }
+    ];
+
+    let passoAtual = 0;
+
+    function renderizarPasso() {
+        if (passoAtual >= passos.length) {
+            // --- FIX: REMOVE O OVERLAY DO TOUR ---
+            const tourOverlay = document.getElementById('tour-overlay');
+            if (tourOverlay) {
+                tourOverlay.style.opacity = '0';
+                setTimeout(() => tourOverlay.remove(), 300);
+            }
+
+            // Restaura o estado original da tela
+            if(typeof toggleSidebar === 'function') toggleSidebar(false); 
+            if(typeof switchTab === 'function') switchTab('protocolo'); 
+            
+            // Salva que o usuário já viu
+            fecharBoasVindas(); 
+            return;
+        }
+
+        const dados = passos[passoAtual];
+        
+        if(dados.acao) dados.acao();
+
+        setTimeout(() => {
+            mostrarCardInteligente(dados, passoAtual, passos.length);
+        }, 300);
+    }
+
+    window.proximoPasso = () => {
+        passoAtual++;
+        renderizarPasso();
+    };
+
+    renderizarPasso();
+}
+
+// 3. LÓGICA DE POSICIONAMENTO INTELIGENTE (EVITA COBRIR O ELEMENTO)
+function mostrarCardInteligente(dados, index, total) {
+    const overlayExistente = document.getElementById('tour-overlay');
+    if(overlayExistente) overlayExistente.remove();
+
+    let alvo = document.querySelector(dados.seletor);
+    if (!alvo && dados.fallbackSeletor) alvo = document.querySelector(dados.fallbackSeletor);
+    
+    // Posição Padrão (Segurança)
+    let classePosicao = "bottom-0 mb-8"; 
+    
+    if (alvo) {
+        // Destaque visual no elemento
+        alvo.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+        alvo.classList.add('ring-2', 'ring-red-500', 'ring-offset-4', 'ring-offset-black');
+        setTimeout(() => alvo.classList.remove('ring-2', 'ring-red-500', 'ring-offset-4', 'ring-offset-black'), 2500);
+
+        const rect = alvo.getBoundingClientRect();
+        const screenHeight = window.innerHeight;
+        
+        // LÓGICA DE NÃO-SOBREPOSIÇÃO MELHORADA
+        // Se o elemento alvo está na metade INFERIOR da tela (> 50%)
+        if (rect.top > (screenHeight / 2)) {
+            // Joga o card para o TOPO, com margem grande para não cobrir headers
+            classePosicao = "top-0 mt-20 md:top-auto md:bottom-auto md:-translate-y-full md:mb-4"; 
+        } else {
+            // Se o elemento está na metade SUPERIOR (< 50%)
+            // Joga o card para o FUNDO, com margem para não cobrir rodapés
+            classePosicao = "bottom-0 mb-20 md:bottom-auto md:top-auto md:translate-y-full md:mt-4"; 
+        }
+    }
+
+    const html = `
+    <div id="tour-overlay" class="fixed inset-0 z-[10000] pointer-events-none">
+        <div class="pointer-events-auto absolute left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[400px] ${classePosicao} transition-all duration-500 ease-out">
+            
+            <div class="bg-[#0a0a0a] border border-white/20 p-6 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative animate-fade-in-up backdrop-blur-xl">
+                
+                <div class="absolute top-0 left-0 h-1 bg-red-600 transition-all duration-300" style="width: ${((index + 1) / total) * 100}%"></div>
+                
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-lg font-black text-white uppercase italic tracking-wider">${dados.titulo}</h3>
+                    <span class="text-[10px] font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">${index + 1}/${total}</span>
+                </div>
+                
+                <p class="text-sm text-gray-300 mb-6 leading-relaxed font-medium">
+                    ${dados.texto}
+                </p>
+
+                <button onclick="proximoPasso()" class="w-full py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+                    ${index === total - 1 ? 'Concluir Tour' : 'Próximo Passo'} <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+}
+
+// Exporta globais
 window.startDemoBriefing = startDemoBriefing;
-window.closeBriefing = closeBriefing;
+window.iniciarTourDetalhado = iniciarTourDetalhado;
+window.fecharBoasVindas = fecharBoasVindas;
