@@ -2,16 +2,18 @@ import { CONFIG } from '../config.js';
 import { AGENTS } from '../data/agents.js';
 import { addMissionFromAI } from '../modules/dashboard.js';
 import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
-// REMOVIDO: import { saveChatHistory... } (Isso causava a tela preta)
 
-// --- CONFIGURAÇÕES ---
+// --- CONFIGURAÇÕES GLOBAIS ---
 let chatHistory = [];
-let currentAgentKey = 'Diagnostico';
+// AJUSTE 1: Mudamos o padrão para o Agente Único
+let currentAgentKey = 'MENTOR'; 
 let messageCount = 0;
 
+// Configuração do Funil de Vendas
 const DEMO_LIMIT = 7;    
 const DIAGNOSE_PHASE = 3; 
-const SELL_PHASE = 5;     
+// Ajuste para garantir o gancho antes do bloqueio
+const PRE_LOCK_PHASE = DEMO_LIMIT - 1; 
 
 let userStatus = 'DEMO';
 try {
@@ -39,6 +41,7 @@ export async function initChat() {
                 sendMessage();
             }
         };
+        // Ajuste para mobile/desktop focus
         if (window.innerWidth > 768) {
             input.addEventListener('focus', () => setTimeout(scrollToBottom, 300));
         }
@@ -57,7 +60,6 @@ async function resetCurrentChat() {
         messageCount = 0;
         enableInput();
         
-        // USANDO O NOVO BANCO DE DADOS
         if (window.Database) {
             await window.Database.saveChatHistory(currentAgentKey, []);
         }
@@ -71,15 +73,17 @@ async function resetCurrentChat() {
 }
 
 // --- CARREGAR AGENTE ---
-// --- CARREGAR AGENTE ---
 export async function loadAgent(key) {
-    if (!AGENTS[key]) return;
+    // Se o agente não existir (ex: chaves antigas), força o MENTOR
+    if (!AGENTS[key]) key = 'MENTOR';
+    
     currentAgentKey = key;
 
     const messagesArea = document.getElementById('messagesArea');
     const viewChat = document.getElementById('viewChat');
 
-    viewChat.classList.remove('theme-diagnostico', 'theme-comandante', 'theme-general', 'theme-tatico');
+    // Limpa classes antigas e adiciona a nova
+    viewChat.className = 'view-section h-full flex flex-col bg-black relative'; // Reseta classes base
     if (AGENTS[key].themeClass) viewChat.classList.add(AGENTS[key].themeClass);
 
     if (messagesArea) messagesArea.innerHTML = '';
@@ -87,7 +91,7 @@ export async function loadAgent(key) {
     const headerHTML = `
         <div class="w-full text-center mt-8 mb-6 animate-fade-in opacity-0" style="animation-delay: 0.2s; opacity: 1;">
             <div class="relative w-24 h-24 mx-auto mb-2 flex items-center justify-center">
-                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" alt="Synapse Octopus">
+                <img src="logo_synapse.png" class="chat-header-img w-full h-full object-contain drop-shadow-[0_0_15px_rgba(200,0,0,0.3)]" alt="Synapse Core">
             </div>
             <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">
                 CONEXÃO: <span id="header-dynamic-text" class="text-red-600 font-bold">ESTABELECIDA</span>
@@ -96,7 +100,7 @@ export async function loadAgent(key) {
     `;
     messagesArea.insertAdjacentHTML('beforeend', headerHTML);
 
-    // CARREGA HISTÓRICO DO SUPABASE (Via window.Database)
+    // CARREGA HISTÓRICO DO SUPABASE
     let savedHistory = [];
     if (window.Database) {
         savedHistory = await window.Database.loadChatHistory(key);
@@ -118,21 +122,17 @@ export async function loadAgent(key) {
         }, 500);
     }
 
-    // [IMPORTANTE] ATUALIZA A SIDEBAR
     setTimeout(() => {
         renderChatSidebar();
     }, 500);
 }
 
-// --- RENDERIZAR SIDEBAR (ESTILO CHATGPT) ---
+// --- RENDERIZAR SIDEBAR ---
 export function renderChatSidebar() {
     const container = document.getElementById('chatHistoryList');
     if (!container) return;
 
-    // 1. Pega o histórico salvo
     const history = window.AppEstado?.chatHistory || {};
-    
-    // 2. Filtra conversas que têm conteúdo
     const activeChats = Object.keys(history).filter(key => history[key] && history[key].length > 0);
 
     if (activeChats.length === 0) {
@@ -140,32 +140,21 @@ export function renderChatSidebar() {
         return;
     }
 
-    container.innerHTML = ''; // Limpa a lista antes de recriar
+    container.innerHTML = ''; 
 
     activeChats.forEach(agentKey => {
         const msgs = history[agentKey];
-        
-        // --- LÓGICA PARA O "TÍTULO DO TEMA" ---
-        // Tenta pegar a primeira mensagem do USUÁRIO para usar como título
         const firstUserMsg = msgs.find(m => m.role === 'user');
-        let themeTitle = "Nova Conversa";
+        let themeTitle = "Sessão Iniciada";
         
         if (firstUserMsg && firstUserMsg.content) {
-            // Pega os primeiros 25 caracteres da mensagem
             themeTitle = firstUserMsg.content.substring(0, 25);
             if (firstUserMsg.content.length > 25) themeTitle += "...";
         }
 
-        // --- ÍCONE E COR BASEADO NO AGENTE ---
-        let icon = "fa-comment";
-        let colorClass = "text-gray-500";
+        let icon = "fa-brain";
+        let colorClass = "text-red-500"; // Padrão Synapse
         
-        if (agentKey === 'Diagnostico') { icon = "fa-eye"; colorClass = "text-red-500"; }
-        if (agentKey === 'COMANDANTE') { icon = "fa-brain"; colorClass = "text-purple-500"; }
-        if (agentKey === 'GENERAL') { icon = "fa-chess"; colorClass = "text-blue-500"; }
-        if (agentKey === 'TATICO') { icon = "fa-wind"; colorClass = "text-green-500"; }
-
-        // Verifica se é o chat ativo no momento
         const isActive = window.currentAgentKey === agentKey;
         const activeBg = isActive ? "bg-[#1a1a1a] border-white/10" : "border-transparent hover:bg-[#111] hover:border-white/5";
 
@@ -178,11 +167,10 @@ export function renderChatSidebar() {
             <span class="text-[11px] font-medium text-gray-300 group-hover:text-white truncate leading-tight">
                 ${themeTitle}
             </span>
-
             <div class="flex items-center gap-2 mt-1">
                 <i class="fa-solid ${icon} text-[10px] ${colorClass} opacity-80"></i>
                 <span class="text-[9px] font-black uppercase tracking-wider text-gray-600 group-hover:text-gray-400">
-                    ${agentKey}
+                    ${agentKey === 'MENTOR' ? 'SYNAPSE' : agentKey}
                 </span>
             </div>
         `;
@@ -191,14 +179,15 @@ export function renderChatSidebar() {
     });
 }
 
-// --- LÓGICA DE ENVIO ---
+// --- LÓGICA DE ENVIO (O CÉREBRO) ---
 async function sendMessage(text = null) {
     const input = document.getElementById('chatInput');
     const val = text || input.value.trim();
 
     if (!val) return;
 
-    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT) {
+    // Bloqueio Hard caso o usuário tente burlar via Console
+    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'MENTOR' && messageCount >= DEMO_LIMIT) {
         return;
     }
 
@@ -208,18 +197,21 @@ async function sendMessage(text = null) {
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
-    if (currentAgentKey === 'Diagnostico') messageCount++;
+    if (currentAgentKey === 'MENTOR') messageCount++;
 
+    // --- AJUSTE 2: LÓGICA DE INJEÇÃO (CLIFFHANGER) ---
     let systemInjection = "";
-    if (currentAgentKey === 'Diagnostico') {
+    if (currentAgentKey === 'MENTOR' && IS_DEMO_MODE) {
         if (messageCount <= DIAGNOSE_PHASE) {
-            systemInjection = `(INSTRUÇÃO: Pergunte algo sobre a rotina dele. Seja natural, como uma conversa no WhatsApp. Uma pergunta só.)`;
-        } else if (messageCount <= SELL_PHASE) {
-            systemInjection = `(INSTRUÇÃO: Mostre que entende o problema dele. Diga que falta organização, mas sem culpar ele. Sugira que existe um jeito mais fácil.)`;
-        } else if (messageCount < DEMO_LIMIT) {
-            systemInjection = `(INSTRUÇÃO: Diga: "Eu montei um plano pra te ajudar com isso. Quer dar uma olhada?". Gere curiosidade.)`;
+            systemInjection = `(INSTRUÇÃO: Acolha o usuário. Faça uma pergunta investigativa sobre a rotina dele para entender a dor principal.)`;
+        } else if (messageCount < PRE_LOCK_PHASE) {
+            systemInjection = `(INSTRUÇÃO: Mostre autoridade. Comece a sugerir que existe um método para resolver isso, mas não entregue tudo ainda.)`;
+        } else if (messageCount === PRE_LOCK_PHASE) {
+            // O GANCHO: Promete, mas não entrega
+            systemInjection = `(INSTRUÇÃO CRÍTICA: O usuário está engajado. Diga EXATAMENTE: "Eu analisei seu perfil e detectei o padrão exato que te trava. Desenvolvi um Protocolo de 3 passos para resolver isso hoje. Quer ver o plano?" NÃO entregue o plano ainda.)`;
         } else {
-            systemInjection = `(INSTRUÇÃO FINAL: Diga: "Seu plano está pronto. O Synapse vai te mostrar agora." Encerre OBRIGATORIAMENTE com [[LOCKED_DIAGNOSIS]].)`;
+            // O BLOQUEIO: O usuário disse sim, a IA bloqueia
+            systemInjection = `(INSTRUÇÃO FINAL: O usuário quer o plano. Diga: "Perfeito. Estou compilando seu Protocolo Personalizado..." e encerre IMEDIATAMENTE com a tag [[LOCKED_DIAGNOSIS: [Motivo/Dor Principal do Usuário]]].)`;
         }
     }
 
@@ -232,7 +224,7 @@ async function sendMessage(text = null) {
         const apiMessages = [
             chatHistory[0], 
             { role: 'system', content: systemInjection }, 
-            { role: 'system', content: `[User Lvl ${rpg.level}]` }, 
+            { role: 'system', content: `[User Lvl ${rpg.level} | Rank ${rpg.currentRank}]` }, 
             ...recentHistory, 
             { role: 'user', content: val }
         ];
@@ -252,13 +244,23 @@ async function sendMessage(text = null) {
         if (data.choices && data.choices[0]) {
             let aiText = data.choices[0].message.content;
             let forceBlock = false;
+            let diagnosisReason = "Falta de Método"; // Motivo padrão
 
-            const lockRegex = /(\[\[|\()LOCKED_.*?(\]\]|\))/i;
-            if (lockRegex.test(aiText)) {
-                aiText = aiText.replace(lockRegex, ''); 
+            // --- AJUSTE 3: CAPTURA DO MOTIVO PARA O PAYWALL ---
+            // Procura por [[LOCKED_DIAGNOSIS: Motivo]] ou apenas [[LOCKED_DIAGNOSIS]]
+            const lockMatch = aiText.match(/(\[\[|\()LOCKED_.*?:?(.*?)(\]\]|\))/i);
+            
+            if (lockMatch) {
                 forceBlock = true;
+                // Se tiver conteúdo depois dos dois pontos, usa como motivo
+                if (lockMatch[2] && lockMatch[2].trim().length > 2) {
+                    diagnosisReason = lockMatch[2].trim();
+                }
+                // Remove a tag da mensagem visível
+                aiText = aiText.replace(lockMatch[0], '').trim(); 
             }
             
+            // Botões Dinâmicos {{Opção 1|Opção 2}}
             let dynamicButtons = [];
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if(btnMatch) {
@@ -266,6 +268,7 @@ async function sendMessage(text = null) {
                 aiText = aiText.replace(btnMatch[0], '').trim();
             }
 
+            // Executa comandos (add mission/habit)
             aiText = handleCommands(aiText);
             
             if (aiText.trim() !== "") {
@@ -273,17 +276,14 @@ async function sendMessage(text = null) {
                 chatHistory.push({ role: 'user', content: val });
                 chatHistory.push({ role: 'assistant', content: aiText });
                 
-                // SALVA NO SUPABASE
                 if (window.Database && typeof window.Database.saveChatHistory === 'function') {
                     window.Database.saveChatHistory(currentAgentKey, chatHistory);
-                    
-                    // [IMPORTANTE] Atualiza a lista lateral com a nova mensagem
                     renderChatSidebar(); 
                 }
             }
-            // ... resto do código (botões, bloqueio, etc) ...
+
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
-            const isLimitReached = (isDemo && currentAgentKey === 'Diagnostico' && messageCount >= DEMO_LIMIT);
+            const isLimitReached = (isDemo && currentAgentKey === 'MENTOR' && messageCount >= DEMO_LIMIT);
             const shouldBlockNow = (isLimitReached) || forceBlock;
 
             if(dynamicButtons.length > 0 && !shouldBlockNow) {
@@ -292,17 +292,18 @@ async function sendMessage(text = null) {
 
             if (shouldBlockNow) {
                 disableInput(); 
-                setTimeout(() => { triggerPaywallSequence(); }, 2000);
+                // Passa o motivo diagnosticado para a sequência
+                setTimeout(() => { triggerPaywallSequence(diagnosisReason); }, 2000);
             }
         }
     } catch (e) {
         removeLoading(loadingId);
         console.error(e);
-        addMessageUI('system', "ERRO DE CONEXÃO.", false);
+        addMessageUI('system', "ERRO DE CONEXÃO NEURAL.", false);
     }
 }
 
-// --- RESTO DAS FUNÇÕES DE UI (Mantidas iguais) ---
+// --- COMANDOS E UI ---
 function handleCommands(text) {
     const regex = /\[\[(ADD_MISSION|ADD_HABIT):(.*?)\]\]/g;
     let match;
@@ -327,6 +328,7 @@ function addMessageUI(role, text, animate = true) {
     if (!area) return;
 
     if (text) {
+        // Truque para decodificar html entities se necessário
         const txt = document.createElement('textarea');
         txt.innerHTML = text;
         text = txt.value;
@@ -334,6 +336,7 @@ function addMessageUI(role, text, animate = true) {
 
     const div = document.createElement('div');
     let safeText = escapeHTML(text);
+    // Formatação básica Markdown like
     let formattedText = safeText
         .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>')
         .replace(/\*(.*?)\*/g, '<i class="text-gray-400">$1</i>')
@@ -362,6 +365,7 @@ function typeWriterBubble(element, html, speed = 10) {
     function type() {
         if (i >= html.length) return;
         const char = html.charAt(i);
+        // Pula tags HTML para não quebrar a digitação
         if (char === '<') {
             let tagEnd = html.indexOf('>', i);
             if (tagEnd !== -1) {
@@ -427,14 +431,13 @@ function scrollToBottom() {
     const messagesContainer = document.querySelector('.chat-messages');
     if (messagesContainer) {
         messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
-        setTimeout(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; }, 100);
     }
 }
 
 function disableInput() {
     const input = document.getElementById('chatInput');
     const btn = document.getElementById('sendMessageBtn');
-    if (input) { input.disabled = true; input.placeholder = "PLANO GERADO"; }
+    if (input) { input.disabled = true; input.placeholder = "ACESSO RESTRITO // PLANO GERADO"; }
     if (btn) btn.disabled = true;
 }
 
@@ -445,9 +448,12 @@ function enableInput() {
     if (btn) btn.disabled = false;
 }
 
-function triggerPaywallSequence() {
+// --- SEQUÊNCIA DE PAYWALL (COM MOTIVO PERSONALIZADO) ---
+function triggerPaywallSequence(diagnosisReason) {
     disableInput();
     const area = document.getElementById('messagesArea');
+    
+    // Remove loaders antigos
     const oldLoad = document.querySelector('.synapse-loader-wrapper');
     if (oldLoad) oldLoad.parentElement.remove();
 
@@ -460,7 +466,7 @@ function triggerPaywallSequence() {
                 <img src="logo_synapse.png" class="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(204,0,0,0.5)] animate-pulse-slow" style="animation-duration: 1s;" alt="Synapse Core">
             </div>
             <div id="status-text-${sequenceId}" class="font-mono text-xs font-bold tracking-[0.2em] text-red-500 text-center uppercase">
-                <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Gerando Plano...
+                <i class="fa-solid fa-satellite-dish fa-spin mr-2"></i>Compilando Protocolo...
             </div>
             <div class="w-48 h-1 bg-gray-900 rounded-full mt-3 overflow-hidden border border-gray-800">
                 <div id="progress-bar-${sequenceId}" class="h-full bg-red-600 w-0 transition-all duration-[3000ms] ease-out"></div>
@@ -482,7 +488,7 @@ function triggerPaywallSequence() {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
         if (textEl) {
             textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-yellow-500 text-center uppercase";
-            textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Finalizando...`;
+            textEl.innerHTML = `<i class="fa-solid fa-microchip animate-pulse mr-2"></i>Finalizando Estratégia...`;
         }
     }, 1500);
 
@@ -490,7 +496,7 @@ function triggerPaywallSequence() {
         const textEl = document.getElementById(`status-text-${sequenceId}`);
         if (textEl) {
             textEl.className = "font-mono text-xs font-bold tracking-[0.2em] text-green-500 text-center uppercase";
-            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Tudo pronto.`;
+            textEl.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>Plano Pronto.`;
             const container = document.getElementById(sequenceId);
             container.style.transform = "scale(1.1)";
             container.style.opacity = "0";
@@ -498,33 +504,57 @@ function triggerPaywallSequence() {
         setTimeout(() => {
             const el = document.getElementById(sequenceId);
             if(el) el.remove();
-            showPaywallCard();
+            showPaywallCard(diagnosisReason); // Chama o card com o motivo
         }, 800);
     }, 3500);
 }
 
-function showPaywallCard() {
+// --- CARD DE VENDAS (PERSONALIZADO) ---
+function showPaywallCard(diagnosisReason = "Falta de Método") {
     const area = document.getElementById('messagesArea');
-    const CHECKOUT_LINK = "../index.html#planos";
+    
+    // Link base do checkout
+    let CHECKOUT_LINK = "https://pay.kiwify.com.br/YzOIskc"; // Seu link aqui
+
+    // Tenta adicionar o e-mail se disponível (Recuperação de Carrinho)
+    try {
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (user && user.email) {
+            CHECKOUT_LINK += `?email=${encodeURIComponent(user.email)}`;
+        }
+    } catch(e) {}
+
+    // Formata o motivo para ficar bonito (Capitalize)
+    const reasonFormatted = diagnosisReason.charAt(0).toUpperCase() + diagnosisReason.slice(1);
 
     const cardHTML = `
         <div class="w-full max-w-md mx-auto mt-8 mb-12 relative z-0 animate-fade-in-up">
-            <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden">
+            <div class="bg-[#080808] rounded-xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden group hover:border-red-900/50 transition-colors">
+                
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-red-600 to-gray-900"></div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl"></div>
+
                 <div class="relative z-10 text-center">
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Análise Concluída</p>
-                    <h2 class="text-2xl text-white font-serif italic mb-6">"Chega de viver no <span class="text-red-500 not-italic font-bold">automático.</span>"</h2>
+                    <p class="text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-4">Diagnóstico Final</p>
+                    
+                    <h2 class="text-2xl text-white font-serif italic mb-6 leading-tight">
+                        "Sua <span class="text-red-500 not-italic font-bold">${reasonFormatted}</span> tem solução."
+                    </h2>
+
                     <div class="bg-gray-900/50 rounded-lg p-4 text-left mb-6 border-l-2 border-red-500">
                         <p class="text-gray-300 text-sm leading-relaxed">
                             <i class="fa-solid fa-quote-left text-gray-600 mr-2 text-xs"></i>
-                            O problema não é você, é a falta de método. Criei um plano passo a passo pra você assumir o controle da sua rotina de vez.
+                            Eu mapeei seus padrões. O problema não é você, é a falta de um sistema. Criei o protocolo exato para você destravar hoje.
                         </p>
                     </div>
-                    <a href="${CHECKOUT_LINK}" class="block w-full bg-white text-black font-extrabold py-4 rounded hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] text-sm tracking-wide uppercase">
-                        Ver meu Plano
+
+                    <a href="${CHECKOUT_LINK}" class="block w-full bg-white text-black font-extrabold py-4 rounded hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)] text-sm tracking-wide uppercase relative overflow-hidden group-btn">
+                        <span class="relative z-10">Desbloquear Meu Plano</span>
+                        <div class="absolute inset-0 bg-red-500 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-500 opacity-20"></div>
                     </a>
-                    <p class="mt-4 text-xs text-gray-600">
-                        <i class="fa-solid fa-clock mr-1"></i> Acesso imediato
+                    
+                    <p class="mt-4 text-[10px] text-gray-600 uppercase tracking-wider">
+                        <i class="fa-solid fa-lock mr-1"></i> Acesso Vitalício + Bônus
                     </p>
                 </div>
             </div>
