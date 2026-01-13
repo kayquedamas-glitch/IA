@@ -561,6 +561,62 @@
     </script>
 
     <script type="module" src="PRO/js/main.js"></script>
-</body>
+    <script>
+        // Define a função globalmente para que o botão "onclick" a encontre
+        window.closeDemoModal = function() {
+            console.log("Tentando fechar modal via closeDemoModal()...");
 
+            // 1. Tenta achar o modal de bloqueio de recursos (Feature Lock)
+            // Geralmente ele tem IDs como 'featureLockModal' ou classes de modal fixo
+            const modaisParaFechar = document.querySelectorAll('#featureLockModal, .fixed.z-\\[60\\]');
+
+            modaisParaFechar.forEach(modal => {
+                // Esconde o modal
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            });
+
+            // 2. Remove o desfoque (blur) do fundo, se houver
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.classList.remove('blur-sm');
+            }
+        };
+    </script>
+<script>
+        window.closeDemoModal = function() {
+            console.log("Detectando modal para fechar...");
+            
+            // 1. Pega o elemento exato que recebeu o clique
+            const evento = window.event;
+            const elementoClicado = evento ? (evento.target || evento.srcElement) : null;
+
+            if (elementoClicado) {
+                // Sobe a hierarquia até achar a caixa do modal (geralmente tem position fixed ou absolute)
+                // O seletor .fixed pega o container de fundo escuro do Tailwind
+                const modalPai = elementoClicado.closest('.fixed, .absolute.inset-0, [role="dialog"]');
+
+                if (modalPai) {
+                    console.log("Modal encontrado e fechado:", modalPai);
+                    modalPai.style.display = 'none'; // Força bruta
+                    modalPai.classList.add('hidden'); // Classe Tailwind
+                } else {
+                    console.warn("Não consegui achar o container do modal automaticamente.");
+                }
+            }
+
+            // 2. Limpeza geral (Remove blur e overlays soltos)
+            const conteudoPrincipal = document.querySelector('main');
+            if (conteudoPrincipal) conteudoPrincipal.classList.remove('blur-sm');
+
+            // Garante que overlays escuros (backdrop) sumam
+            document.querySelectorAll('.bg-black\\/80, .bg-black\\/90').forEach(el => {
+                if (el.id !== 'sidebarOverlay') { // Não fecha o menu mobile
+                    el.style.display = 'none';
+                    el.classList.add('hidden');
+                }
+            });
+        };
+    </script>
+</body>
 </html>
