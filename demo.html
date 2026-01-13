@@ -28,6 +28,43 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <link rel="stylesheet" href="PRO/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // --- SEUS DADOS ---
+        const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co';
+        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
+
+        // Cria a conexão GLOBAL (window._supabase) para todos os arquivos verem
+        window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+
+        // Script de Proteção (Segurança)
+        async function verificarAcesso() {
+            console.log("🔒 Verificando credenciais...");
+
+            // 1. Tenta ler os dados salvos no navegador (Login Direto)
+            const sessaoSalva = localStorage.getItem('synapse_user');
+
+            if (!sessaoSalva) {
+                console.log("❌ Sem sessão. Redirecionando...");
+                window.location.href = "login.html"; // Mude para ../login.html se necessário
+                return;
+            }
+
+            try {
+                const usuario = JSON.parse(sessaoSalva);
+                if (!usuario.email) throw new Error("Sessão inválida");
+                console.log("✅ Bem-vindo: " + usuario.email);
+            } catch (e) {
+                localStorage.removeItem('synapse_user');
+                window.location.href = "login.html";
+            }
+        }
+
+        // Executa a verificação
+        verificarAcesso();
+    </script>
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
@@ -398,144 +435,132 @@
             </button>
         </nav>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. Tenta recuperar os dados do usuário salvos no navegador
-            const dadosSalvos = localStorage.getItem('synapse_user');
+  
 
+    <script>
+        // Define variável global para a demo
+        window.IS_DEMO = true;
+
+        // Garante que o lucide carregue ícones
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+        });
+    </script>
+
+    <script type="module" src="PRO/js/main.js"></script>
+
+    <script>
+        // Carregar Perfil do Usuário (LocalStorage)
+        document.addEventListener('DOMContentLoaded', function () {
+            const dadosSalvos = localStorage.getItem('synapse_user');
             if (dadosSalvos) {
                 try {
                     const usuario = JSON.parse(dadosSalvos);
-
-                    // 2. Seleciona os elementos do HTML
                     const elementoNome = document.querySelector('.user-name');
                     const elementoAvatar = document.querySelector('.user-avatar span');
                     const elementoStatus = document.querySelector('.user-status');
+                    const elementoDashName = document.getElementById('dashName'); // Correção do Visitante
 
-                    // Elementos de Upgrade
+                    // Elementos PRO
                     const areaUpgrade = document.getElementById('upgradeActionArea');
                     const seloPro = document.getElementById('proBadgeContainer');
                     const cartaoPerfil = document.getElementById('profileCard');
 
-                    // 3. Atualiza o Nome
-                    if (elementoNome && usuario.nome) {
-                        // Pega apenas o primeiro nome (Ex: "Kayque Damas" -> "Kayque")
+                    if (usuario.nome) {
                         const primeiroNome = usuario.nome.split(' ')[0];
-                        elementoNome.textContent = primeiroNome;
+                        if (elementoNome) elementoNome.textContent = primeiroNome;
+                        if (elementoDashName) elementoDashName.textContent = primeiroNome.toUpperCase();
+                        if (elementoAvatar) elementoAvatar.textContent = usuario.nome.charAt(0).toUpperCase();
                     }
 
-                    // 4. Atualiza a Letra do Avatar
-                    if (elementoAvatar && usuario.nome) {
-                        elementoAvatar.textContent = usuario.nome.charAt(0).toUpperCase();
-                    }
-
-                    // 5. Se for PRO, muda o visual do card
                     if (usuario.status === 'pro') {
                         if (elementoStatus) {
                             elementoStatus.textContent = "Membro Elite";
-                            elementoStatus.style.color = "#E50914"; // Vermelho
+                            elementoStatus.style.color = "#E50914";
                         }
-
-                        // Esconde botão de comprar e mostra selo PRO
                         if (areaUpgrade) areaUpgrade.style.display = 'none';
                         if (seloPro) seloPro.classList.remove('hidden');
+                        if (cartaoPerfil) cartaoPerfil.style.borderLeft = "3px solid #E50914";
 
-                        // Detalhe visual vermelho no card
-                        if (cartaoPerfil) {
-                            cartaoPerfil.style.borderLeft = "3px solid #E50914";
-                        }
-
-                        // Pinta a bolinha do avatar de vermelho
                         const avatarBg = document.querySelector('.user-avatar');
                         if (avatarBg) {
                             avatarBg.style.backgroundColor = "#E50914";
                             avatarBg.style.borderColor = "#E50914";
                         }
                     }
-
-                } catch (e) {
-                    console.error("Erro ao carregar perfil:", e);
-                }
+                } catch (e) { console.error("Erro perfil:", e); }
             }
         });
-    </script>
 
-    <script>
-
-        window.IS_DEMO = true; 
-    </script>
-
-    <script type="module" src="PRO/js/main.js"></script>
-    <script>lucide.createIcons();</script>
-
-    <script>
+        // Função de Navegação para Planos
         function irParaPlanos() {
-            // Verifica se a seção de planos existe na página atual
-            const secaoPlanos = document.getElementById('secao-planos');
-
+            // Tenta achar a seção na página atual ou redireciona
+            const secaoPlanos = document.getElementById('planos');
             if (secaoPlanos) {
-                // Se já estiver na página certa, só rola até lá
                 secaoPlanos.scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Se estiver em outra página (ex: app.html), vai para a home na seção planos
-                window.location.href = 'index.html#secao-planos';
+                window.location.href = 'index.html#planos';
             }
         }
 
-        document.getElementById('btnUpgrade').addEventListener('click', async () => {
-            const btn = document.getElementById('btnUpgrade');
+        // =================================================================
+        // 4. CORREÇÃO DO BOTÃO UPGRADE (ID CORRETO + PROTEÇÃO DE ERRO)
+        // =================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // O ID correto no seu HTML é 'btnUpgradeSidebar', não 'btnUpgrade'
+            const btn = document.getElementById('btnUpgradeSidebar');
 
-            // 1. Efeito visual
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'CARREGANDO...';
-            btn.style.opacity = '0.7';
+            if (btn) {
+                btn.addEventListener('click', async () => {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = 'AGUARDE...';
+                    btn.style.opacity = '0.7';
 
-            try {
-                // --- AQUI ESTÁ A MUDANÇA: Puxando do Supabase ---
+                    try {
+                        // Verifica se o Supabase carregou
+                        if (typeof supabase === 'undefined') {
+                            throw new Error("Sistema de dados offline.");
+                        }
 
-                // Pega o usuário da sessão atual
-                const { data: { user } } = await supabase.auth.getUser();
+                        const { data: { user } } = await supabase.auth.getUser();
 
-                // Verificação de segurança: Se não tiver usuário logado, para tudo.
-                if (!user) {
-                    alert("Erro: Você precisa estar logado para fazer o upgrade.");
-                    window.location.href = "login.html"; // Opcional: manda pro login
-                    return;
-                }
+                        if (!user) {
+                            alert("Para fazer upgrade, faça login novamente.");
+                            window.location.href = "PRO/login.html";
+                            return;
+                        }
 
-                // Monta o objeto com os dados REAIS
-                // O Supabase guarda o nome dentro de 'user_metadata'
-                const currentUser = {
-                    name: user.user_metadata.full_name || user.user_metadata.name || "Membro Synapse", // Tenta pegar o nome, se não tiver usa um genérico
-                    email: user.email
-                };
+                        const checkoutUrl = new URL("https://pay.kiwify.com.br/SeuLinkAqui"); // Se tiver a variável SYSTEM_CONFIG, use-a
 
-                console.log("Usuário identificado:", currentUser);
+                        // Passa dados se existirem
+                        if (user.user_metadata) {
+                            checkoutUrl.searchParams.set('name', user.user_metadata.name || "");
+                        }
+                        checkoutUrl.searchParams.set('email', user.email);
+                        checkoutUrl.searchParams.set('custom_id', user.id);
 
-                // ------------------------------------------------
+                        localStorage.setItem('synapse_upgrade_pending', 'true');
+                        window.location.href = checkoutUrl.toString();
 
-                // 3. Montar a URL da Kiwify
-                const checkoutUrl = new URL(SYSTEM_CONFIG.kiwifyUrl);
-                checkoutUrl.searchParams.set('name', currentUser.name);
-                checkoutUrl.searchParams.set('email', currentUser.email);
-
-                // Passar o ID do Supabase (UUID) para garantir rastreio perfeito depois
-                checkoutUrl.searchParams.set('custom_id', user.id);
-
-                // 4. Salvar estado pendente
-                localStorage.setItem('synapse_upgrade_pending', 'true');
-
-                // 5. Redirecionar
-                window.location.href = checkoutUrl.toString();
-
-            } catch (error) {
-                console.error("Erro ao processar usuário:", error);
-                btn.innerHTML = originalText;
-                btn.style.opacity = '1';
-                alert("Não foi possível identificar seu usuário. Tente fazer login novamente.");
+                    } catch (error) {
+                        console.error("Erro upgrade:", error);
+                        btn.innerHTML = originalText;
+                        btn.style.opacity = '1';
+                        // Fallback simples se der erro
+                        irParaPlanos();
+                    }
+                });
             }
         });
     </script>
+    <script>
+        window.IS_DEMO = true;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+        });
+    </script>
+
+    <script type="module" src="PRO/js/main.js"></script>
 </body>
 
 </html>
