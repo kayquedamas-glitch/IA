@@ -295,10 +295,14 @@
                 setTimeout(() => { window.location.href = ofertaUrl.toString(); }, 1000);
 
             } else {
-                // >>> CENÁRIO 3: GRÁTIS / TOUR
-                btn.innerHTML = '<i class="fas fa-check"></i> SUCESSO!';
-                btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
-                setTimeout(() => { window.location.href = "demo.html"; }, 1000);
+                // >>> CENÁRIO 3: FLUXO DE DIAGNÓSTICO (O Novo Padrão)
+                // O usuário criou a conta, agora precisa passar pelo Quiz para "ativar" o protocolo.
+                
+                btn.innerHTML = '<i class="fas fa-brain"></i> INICIANDO DIAGNÓSTICO...';
+                btn.classList.replace('bg-[#CC0000]', 'bg-gray-800');
+                
+                // Manda para o Quiz
+                setTimeout(() => { window.location.href = "quiz.html"; }, 1500);
             }
 
         } catch (error) {
