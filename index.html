@@ -184,31 +184,39 @@
     <nav class="fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-50 px-4 hidden md:block">
         <div
             class="bg-[#050505]/70 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 flex items-center justify-between shadow-2xl hover:border-white/20 transition-all">
-            <div class="flex items-center gap-6 pl-4">
-                <a href="#" class="flex items-center gap-2 group">
-                    <div
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
-                        <img src="assets/logo_synapse.png" alt="S"
-                            class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
-                    </div>
-                    <span class="text-white font-bold tracking-tight text-lg font-brand">Synapse</span>
-                </a>
-                <div class="h-6 w-px bg-white/10"></div>
-                <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
-                    <li><a href="#inicio"
-                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Início</a>
-                    </li>
-                    <li><a href="#metodo"
-                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">O
-                            Método</a></li>
-                    <li><a href="#ferramentas"
-                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Ferramentas</a>
-                    </li>
-                    <li><a href="#depoimentos"
-                            class="hover:text-white transition-colors hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Resultados</a>
-                    </li>
-                </ul>
-            </div>
+           <div class="flex items-center gap-6 pl-4 pointer-events-auto relative z-50">
+    <a href="#" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white font-bold text-xs shadow-lg group-hover:scale-110 transition">
+            <img src="assets/logo_synapse.png" alt="S" class="w-8 h-8 rounded-full border border-red-500/30 object-cover opacity-90">
+        </div>
+        <span class="text-white font-bold tracking-tight text-lg font-brand">Synapse</span>
+    </a>
+    
+    <div class="h-6 w-px bg-white/10"></div>
+    
+    <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
+        <li>
+            <a href="#inicio" class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                Início
+            </a>
+        </li>
+        <li>
+            <a href="#mecanismo" class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                O Método
+            </a>
+        </li>
+        <li>
+            <a href="#ferramentas" class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                Ferramentas
+            </a>
+        </li>
+        <li>
+            <a href="#depoimentos" class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                Resultados
+            </a>
+        </li>
+    </ul>
+</div>
             <div class="flex items-center gap-4 pr-2">
                 <a href="PRO/login.html"
                     class="text-sm font-bold text-gray-400 hover:text-white transition px-2">Login</a>
@@ -515,7 +523,7 @@
 
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
-    <section class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
+    <section id="ferramentas" class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
         <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none"
             style="background-image: radial-gradient(#cc0000 1px, transparent 1px); background-size: 24px 24px;"></div>
 
