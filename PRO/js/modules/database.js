@@ -5,8 +5,7 @@ window.AppEstado = {
     dashboard: {},    
     calendar: {},     
     chatHistory: {},
-    quizData: {},     // Novo campo para dados do quiz
-    funnel: {}        // Novo campo para flags de upgrade/funil
+    config: {}        
 };
 
 const DB_TABLE = 'progresso_usuario';
@@ -14,140 +13,114 @@ let autoSaveTimer = null;
 let ultimosDadosSalvos = "";
 
 const Database = {
-    client: null,
-
     async init() {
-        console.log("🔄 Inicializando Database & Migração...");
-
-        // 1. Identifica o usuário pela Sessão Temporária (SessionStorage)
+        console.log("📥 Iniciando Banco de Dados Inteligente...");
+        
+        // 1. Tenta pegar usuário logado
         let user = null;
         try {
-            user = JSON.parse(sessionStorage.getItem('synapse_session'));
+            user = JSON.parse(localStorage.getItem('synapse_user'));
         } catch (e) {}
 
+        // 2. MODO DEMO (Sem Login)
         if (!user || !user.email) {
-            console.warn("⛔ Sem sessão ativa. Redirecionando para login.");
-            window.location.href = "login.html";
+            console.warn("⚠️ Modo DEMO/Offline ativado (Salvando no navegador)");
+            this.isDemo = true;
+            this.migrarDoLocalStorage();
+            this.atualizarInterface();
+            this.iniciarAutoSave();
             return;
         }
 
-        // 2. Conecta ao Supabase
+        // 3. MODO PRO (Com Supabase)
+        this.isDemo = false;
         if (!window._supabase) {
-            console.error("❌ Supabase não encontrado.");
+            console.error("❌ Erro crítico: Supabase não carregou.");
             return;
         }
-        this.client = window._supabase;
 
-        // 3. Tenta baixar dados da Nuvem
         try {
-            const { data, error } = await this.client
+            const { data, error } = await window._supabase
                 .from(DB_TABLE)
                 .select('dados')
                 .eq('email', user.email)
                 .single();
 
             if (data && data.dados) {
-                console.log("☁️ Dados carregados da nuvem.");
+                console.log("☁️ Dados baixados da nuvem!");
                 window.AppEstado = { ...window.AppEstado, ...data.dados };
             } else {
-                // 4. Se não tem dados na nuvem, verifica se tem lixo no LocalStorage para migrar
-                console.log("📦 Perfil vazio na nuvem. Verificando dados locais para migração...");
-                await this.migrarLegado(user.email);
+                console.log("💾 Criando registro nuvem...");
+                this.migrarDoLocalStorage();
+                await this.forceSave();
             }
         } catch (e) {
-            console.error("Erro no sync:", e);
+            console.error("Erro conexão:", e);
         }
 
-        // 5. Inicia interface e autosave
         this.atualizarInterface();
         this.iniciarAutoSave();
     },
 
-    // --- MÁQUINA DE MIGRAÇÃO ---
-    async migrarLegado(emailUser) {
-        let migrouAlgo = false;
-
-        // 1. Resgata Gamificação e Missões (synapse_gamification / synapse_missions)
+    migrarDoLocalStorage() {
+        // Recupera dados antigos se existirem no navegador
         try {
             const oldGamification = localStorage.getItem('synapse_gamification');
-            if (oldGamification) {
-                window.AppEstado.gamification = JSON.parse(oldGamification);
-                migrouAlgo = true;
-            }
-
-            // Se as missões estiverem separadas (dependendo da versão antiga)
+            if (oldGamification) window.AppEstado.gamification = JSON.parse(oldGamification);
+            
             const oldMissions = localStorage.getItem('synapse_missions');
             if (oldMissions) {
-                if (!window.AppEstado.gamification) window.AppEstado.gamification = {};
+                if(!window.AppEstado.gamification) window.AppEstado.gamification = {};
                 window.AppEstado.gamification.missions = JSON.parse(oldMissions);
-                migrouAlgo = true;
-            }
-        } catch (e) { console.warn("Erro ao ler gamificação antiga", e); }
-
-        // 2. Resgata Dados do Quiz (synapse_quiz_data)
-        try {
-            const oldQuiz = localStorage.getItem('synapse_quiz_data');
-            if (oldQuiz) {
-                window.AppEstado.quizData = JSON.parse(oldQuiz);
-                migrouAlgo = true;
             }
         } catch (e) {}
-
-        // 3. Resgata Flags de Funil (synapse_upgrade_pending, etc)
-        const upgradePending = localStorage.getItem('synapse_upgrade_pending');
-        const upgradeRejected = localStorage.getItem('synapse_upgrade_rejeitado_v_final');
-        if (upgradePending || upgradeRejected) {
-            window.AppEstado.funnel = {
-                upgradePending: !!upgradePending,
-                upgradeRejected: !!upgradeRejected
-            };
-            migrouAlgo = true;
-        }
-
-        // 4. Se encontrou dados locais, SALVA NA NUVEM e LIMPA O LOCAL
-        if (migrouAlgo) {
-            console.log("🚀 Migrando dados locais para o Supabase...");
-            await this.forceSave(); // Salva no Supabase
-            
-            // Limpeza completa do LocalStorage (Adeus vulnerabilidade)
-            localStorage.removeItem('synapse_gamification');
-            localStorage.removeItem('synapse_missions');
-            localStorage.removeItem('synapse_quiz_data');
-            localStorage.removeItem('synapse_upgrade_pending');
-            localStorage.removeItem('synapse_upgrade_rejeitado_v_final');
-            console.log("✨ Limpeza local concluída.");
-        } else {
-            // Se não tinha nada local, apenas cria o registro inicial vazio
-            await this.forceSave();
-        }
     },
 
     atualizarInterface() {
+        // Força a atualização visual dos módulos
         if (window.initGamification) window.initGamification();
         if (window.initCalendar) window.initCalendar();
     },
 
     async forceSave() {
-        const user = JSON.parse(sessionStorage.getItem('synapse_session'));
-        if (!user || !this.client) return;
-
+        // Salva o estado atual
         const dadosAtuais = JSON.stringify(window.AppEstado);
         if (dadosAtuais === ultimosDadosSalvos) return;
 
-        const { error } = await this.client
-            .from(DB_TABLE)
-            .upsert({ 
-                email: user.email, 
-                dados: window.AppEstado,
-                updated_at: new Date()
-            });
+        // SE FOR DEMO: Salva só no LocalStorage
+        if (this.isDemo) {
+            localStorage.setItem('synapse_gamification', JSON.stringify(window.AppEstado.gamification));
+            ultimosDadosSalvos = dadosAtuais;
+            return;
+        }
 
-        if (!error) ultimosDadosSalvos = dadosAtuais;
+        // SE FOR PRO: Salva no Supabase
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (user && window._supabase) {
+            const { error } = await window._supabase
+                .from(DB_TABLE)
+                .upsert({ 
+                    email: user.email, 
+                    dados: window.AppEstado,
+                    updated_at: new Date()
+                });
+            if (!error) ultimosDadosSalvos = dadosAtuais;
+        }
+    },
+
+    async logEvent(nomeEvento, detalhe = "") {
+        if (this.isDemo) return; // Não loga eventos na demo
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user) return;
+        
+        window._supabase.from('analytics_eventos').insert({
+            email: user.email, evento: nomeEvento, detalhe: detalhe
+        }).then(() => {});
     },
 
     iniciarAutoSave() {
         if (autoSaveTimer) clearInterval(autoSaveTimer);
-        autoSaveTimer = setInterval(() => { this.forceSave(); }, 5000);
+        autoSaveTimer = setInterval(() => { this.forceSave(); }, 10000); // Salva a cada 10s
         window.addEventListener('beforeunload', () => { this.forceSave(); });
     },
     
