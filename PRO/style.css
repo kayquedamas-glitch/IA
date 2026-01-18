@@ -479,7 +479,7 @@ body {
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
 }
 
-/* 💀 COMANDANTE: GUERRA (Ruído e Vinheta) */
+
 .theme-comandante {
     /* Textura de ruído (noise) simulada + Bordas escuras (Vinheta) */
     background-color: #050000;

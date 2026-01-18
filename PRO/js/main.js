@@ -619,7 +619,7 @@ function iniciarTourDetalhado() {
             }
         },
         {
-            titulo: "Menu de Agentes",
+            titulo: "Menu de Agente",
             texto: "Clique no ícone do menu (celular) ou veja na lateral. Aqui ficam suas ferramentas especializadas.",
             seletor: ".fa-bars-staggered", // Foca no botão de menu do mobile
             fallbackSeletor: "#sidebar", // Se for desktop, foca na sidebar

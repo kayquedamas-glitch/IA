@@ -134,293 +134,341 @@
                 transform: translateY(0);
             }
         }
+
         /* --- CONFIGURAÇÕES GERAIS --- */
-:root {
-    --bg-color: #050505;
-    --red-primary: #cc0000;
-    --red-glow: rgba(220, 38, 38, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.1);
-}
+        :root {
+            --bg-color: #050505;
+            --red-primary: #cc0000;
+            --red-glow: rgba(220, 38, 38, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-/* --- HERO SECTION VERTICAL --- */
-.hero-section {
-    position: relative;
-    min-height: 100vh; /* Ocupa a tela toda */
-    padding-top: 120px;
-    padding-bottom: 50px;
-    background-color: var(--bg-color);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+        /* --- HERO SECTION VERTICAL --- */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            /* Ocupa a tela toda */
+            padding-top: 120px;
+            padding-bottom: 50px;
+            background-color: var(--bg-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-/* Fundo: Polvo e Luz */
-.hero-bg-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
+        /* Fundo: Polvo e Luz */
+        .hero-bg-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.bg-polvo {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%; /* No mobile */
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.15; /* Opacidade baixa como pedido */
-    mix-blend-mode: lighten;
-}
+        .bg-polvo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            /* No mobile */
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.15;
+            /* Opacidade baixa como pedido */
+            mix-blend-mode: lighten;
+        }
 
-.red-glow-orb {
-    position: absolute;
-    top: -10%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
-    background: rgba(220, 38, 38, 0.15); /* Vermelho bem suave */
-    filter: blur(120px);
-    border-radius: 50%;
-    animation: pulseSlow 4s infinite alternate;
-}
+        .red-glow-orb {
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(220, 38, 38, 0.15);
+            /* Vermelho bem suave */
+            filter: blur(120px);
+            border-radius: 50%;
+            animation: pulseSlow 4s infinite alternate;
+        }
 
-@media (min-width: 768px) {
-    .bg-polvo { width: 60%; } /* Desktop ajusta para a direita */
-}
+        @media (min-width: 768px) {
+            .bg-polvo {
+                width: 60%;
+            }
 
-/* Conteúdo Centralizado/Esquerda */
-.hero-container-vertical {
-    position: relative;
-    z-index: 10;
-    max-width: 900px; /* Limita a largura para ficar elegante */
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinha tudo à esquerda */
-    padding: 0 20px;
-}
+            /* Desktop ajusta para a direita */
+        }
 
-/* 1. Badge Social */
-.social-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    border-radius: 50px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    cursor: default;
-    transition: background 0.3s;
-}
+        /* Conteúdo Centralizado/Esquerda */
+        .hero-container-vertical {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            /* Limita a largura para ficar elegante */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* Alinha tudo à esquerda */
+            padding: 0 20px;
+        }
 
-.social-badge:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
+        /* 1. Badge Social */
+        .social-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: default;
+            transition: background 0.3s;
+        }
 
-.avatars {
-    display: flex;
-    margin-left: 5px;
-}
+        .social-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-.avatars img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid #000;
-    margin-left: -8px; /* Sobreposição */
-}
+        .avatars {
+            display: flex;
+            margin-left: 5px;
+        }
 
-.avatars img:first-child { margin-left: 0; }
+        .avatars img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #000;
+            margin-left: -8px;
+            /* Sobreposição */
+        }
 
-.social-badge span {
-    color: #d1d5db;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 500;
-}
+        .avatars img:first-child {
+            margin-left: 0;
+        }
 
-/* 2. Título */
-.hero-title {
-    font-size: 2.5rem;
-    line-height: 1;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: #fff;
-    margin-bottom: 30px;
-    letter-spacing: -1px;
-}
+        .social-badge span {
+            color: #d1d5db;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
 
-.gradient-red {
-    background: linear-gradient(135deg, #ef4444, #991b1b); /* Vermelho Vivo -> Escuro */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5); /* Glow no texto */
-}
+        /* 2. Título */
+        .hero-title {
+            font-size: 2.5rem;
+            line-height: 1;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
 
-@media (min-width: 768px) {
-    .hero-title { font-size: 4rem; }
-}
+        .gradient-red {
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            /* Vermelho Vivo -> Escuro */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+            /* Glow no texto */
+        }
 
-/* 3. Imagem Note */
-.hero-featured-image {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    margin: 10px 0 30px 0;
-    cursor: pointer;
-    transition: transform 0.5s;
-}
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
 
-.hero-featured-image:hover {
-    transform: scale(1.02);
-}
+        /* 3. Imagem Note */
+        .hero-featured-image {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 10px 0 30px 0;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
 
-.image-glow-back {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 60%;
-    background: rgba(220, 38, 38, 0.3); /* Glow atrás do note */
-    filter: blur(80px);
-    border-radius: 50%;
-    pointer-events: none;
-}
+        .hero-featured-image:hover {
+            transform: scale(1.02);
+        }
 
-.note-img {
-    position: relative;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-    z-index: 2;
-}
+        .image-glow-back {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: rgba(220, 38, 38, 0.3);
+            /* Glow atrás do note */
+            filter: blur(80px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-.click-hint {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: rgba(0,0,0,0.8);
-    color: #aaa;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.1);
-    opacity: 0;
-    transition: 0.3s;
-    z-index: 5;
-    pointer-events: none;
-}
+        .note-img {
+            position: relative;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            z-index: 2;
+        }
 
-.hero-featured-image:hover .click-hint {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
+        .click-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(0, 0, 0, 0.8);
+            color: #aaa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 5;
+            pointer-events: none;
+        }
 
-/* 4. Descrição */
-.hero-description {
-    color: #9ca3af;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 600px;
-    margin-bottom: 40px;
-}
+        .hero-featured-image:hover .click-hint {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
-.hero-description strong {
-    color: #fff;
-}
+        /* 4. Descrição */
+        .hero-description {
+            color: #9ca3af;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
 
-/* 5. Botões */
-.hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+        .hero-description strong {
+            color: #fff;
+        }
 
-.btn-glass {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff;
-    padding: 14px 30px;
-    border-radius: 50px;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    transition: 0.3s;
-}
+        /* 5. Botões */
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
 
-.btn-glass:hover {
-    background: rgba(255,255,255,0.1);
-}
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
 
-.btn-red-glow {
-    background: var(--red-primary);
-    color: #fff;
-    padding: 14px 35px;
-    border-radius: 50px;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 0 20px rgba(204, 0, 0, 0.4);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-    transition: 0.3s;
-}
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-.btn-red-glow:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(204, 0, 0, 0.6);
-}
+        .btn-red-glow {
+            background: var(--red-primary);
+            color: #fff;
+            padding: 14px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 20px rgba(204, 0, 0, 0.4);
+            border: 1px solid rgba(255, 100, 100, 0.2);
+            transition: 0.3s;
+        }
 
-/* Indicador de Scroll */
-.scroll-indicator {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255,255,255,0.3);
-    animation: bounce 2s infinite;
-}
+        .btn-red-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(204, 0, 0, 0.6);
+        }
 
-/* Animações Auxiliares */
-@keyframes pulseSlow {
-    0% { opacity: 0.3; transform: scale(1); }
-    100% { opacity: 0.5; transform: scale(1.1); }
-}
+        /* Indicador de Scroll */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            animation: bounce 2s infinite;
+        }
 
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
-    40% {transform: translateY(-10px) translateX(-50%);}
-    60% {transform: translateY(-5px) translateX(-50%);}
-}
+        /* Animações Auxiliares */
+        @keyframes pulseSlow {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
 
-/* MODAL SIMPLES */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
-.modal-overlay.hidden { display: none; }
-.modal-content img { max-width: 90vw; max-height: 90vh; box-shadow: 0 0 50px rgba(200,0,0,0.2); border-radius: 10px;}
+            100% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0) translateX(-50%);
+            }
+
+            40% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+
+            60% {
+                transform: translateY(-5px) translateX(-50%);
+            }
+        }
+
+        /* MODAL SIMPLES */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+            box-shadow: 0 0 50px rgba(200, 0, 0, 0.2);
+            border-radius: 10px;
+        }
 
         .faq-card {
             background-color: rgba(20, 20, 20, 0.4);
@@ -541,59 +589,60 @@
     </nav>
 
     <!-- Header / Hero Section -->
-   <section class="hero-section" id="inicio">
-    
-    <div class="hero-bg-overlay">
-        <div class="red-glow-orb"></div>
-        <img src="assets/polvo_synapse.png" alt="Background" class="bg-polvo">
-    </div>
+    <section class="hero-section" id="inicio">
 
-    <div class="container hero-container-vertical">
-        
-       
+        <div class="hero-bg-overlay">
+            <div class="red-glow-orb"></div>
+            <img src="assets/polvo_synapse.png" alt="Background" class="bg-polvo">
+        </div>
 
-        <h1 class="hero-title reveal">
-            Troque a Dopamina Barata <br>
-            <span class="gradient-red">Pelo Vício em Evoluir.</span>
-        </h1>
+        <div class="container hero-container-vertical">
 
-        <div class="hero-featured-image reveal" onclick="document.getElementById('imageModal').classList.remove('hidden')">
-            <div class="image-glow-back"></div>
-            <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
-            
-            <div class="image-fade-bottom"></div>
-            
-            <div class="click-hint">
-                <i class="fas fa-search-plus"></i> Clique para ampliar
+
+
+            <h1 class="hero-title reveal">
+                Troque a Dopamina Barata <br>
+                <span class="gradient-red">Pelo Vício em Evoluir.</span>
+            </h1>
+
+            <div class="hero-featured-image reveal"
+                onclick="document.getElementById('imageModal').classList.remove('hidden')">
+                <div class="image-glow-back"></div>
+                <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
+
+                <div class="image-fade-bottom"></div>
+
+                <div class="click-hint">
+                    <i class="fas fa-search-plus"></i> Clique para ampliar
+                </div>
             </div>
+
+            <p class="hero-description reveal">
+                O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a
+                procrastinação e torna a disciplina automática.
+            </p>
+
+            <div class="hero-actions reveal">
+                <a href="cadastro.html" class="btn-glass">
+                    Criar Conta Grátis
+                </a>
+                <a href="#planos" class="btn-red-glow">
+                    Ver Planos e Preços <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
         </div>
 
-        <p class="hero-description reveal">
-            O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a
-            procrastinação e torna a disciplina automática.
-        </p>
-
-        <div class="hero-actions reveal">
-            <a href="cadastro.html" class="btn-glass">
-                Criar Conta Grátis
-            </a>
-            <a href="#planos" class="btn-red-glow">
-                Ver Planos e Preços <i class="fas fa-arrow-right"></i>
-            </a>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
         </div>
+    </section>
 
+    <div id="imageModal" class="hidden modal-overlay" onclick="this.classList.add('hidden')">
+        <div class="modal-content">
+            <img src="assets/note.png" alt="Zoom">
+        </div>
     </div>
-
-    <div class="scroll-indicator">
-        <i class="fas fa-chevron-down"></i>
-    </div>
-</section>
-
-<div id="imageModal" class="hidden modal-overlay" onclick="this.classList.add('hidden')">
-    <div class="modal-content">
-        <img src="assets/note.png" alt="Zoom">
-    </div>
-</div>
 
     <section class="py-24 md:py-32 bg-black relative overflow-hidden border-b border-white/5">
 
@@ -705,209 +754,111 @@
     </section>
 
 
-    <section id="mecanismo" class="py-20 border-b border-white/5 bg-[#080808]">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="text-center mb-16 reveal">
-                <span class="text-red-500 font-mono-code text-xs font-bold tracking-widest uppercase mb-2 block">O
-                    Mecanismo</span>
-                <h3 class="text-3xl font-black text-white uppercase font-brand">Como o Synapse muda seu estado mental
-                </h3>
-                <p class="text-gray-400 text-sm mt-4">Não é mágica. É neurociência aplicada via algoritmo.</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
-                <!-- Passo 1 -->
-                <div class="reveal delay-100 flex flex-col items-center text-center relative">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-red-500 text-xl font-bold">
-                        1</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Detecção</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">A IA identifica qual dos 4 sabotadores está
-                        ativo na sua mente agora.</p>
-                    <div
-                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
-                    </div>
-                </div>
-
-                <!-- Passo 2 -->
-                <div class="reveal delay-200 flex flex-col items-center text-center relative">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
-                        2</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Protocolo</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">O sistema gera uma intervenção específica para
-                        quebrar o padrão.</p>
-                    <div
-                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
-                    </div>
-                </div>
-
-                <!-- Passo 3 -->
-                <div class="reveal delay-300 flex flex-col items-center text-center relative">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
-                        3</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Modulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Estímulos audiovisuais ajustam seu foco
-                        emocional em segundos.</p>
-                    <div
-                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
-                    </div>
-                </div>
-
-                <!-- Passo 4 -->
-                <div class="reveal delay-400 flex flex-col items-center text-center relative">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-lg text-white text-xl font-bold">
-                        4</div>
-                    <h5 class="text-white text-sm font-bold mb-2">Regulação</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Sua dopamina é redirecionada do prazer barato
-                        para a execução.</p>
-                    <div
-                        class="hidden md:block absolute top-7 right-[-50%] w-full h-[1px] bg-gradient-to-r from-white/10 to-transparent z-0">
-                    </div>
-                </div>
-
-                <!-- Passo 5 -->
-                <div class="reveal delay-500 flex flex-col items-center text-center relative">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-red-600 border border-red-500 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(204,0,0,0.4)] text-white text-xl font-bold">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h5 class="text-white text-sm font-bold mb-2">Execução</h5>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">Você entra em estado de fluxo e realiza a
-                        tarefa sem dor.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
     <section id="ferramentas" class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
-        <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none"
-            style="background-image: radial-gradient(#cc0000 1px, transparent 1px); background-size: 24px 24px;"></div>
+  <!-- Padrão de fundo sutil -->
+  <div class="absolute inset-0 opacity-5 pointer-events-none bg-gradient-to-br from-red-600 via-transparent to-black"></div>
+  
+  <div class="container mx-auto px-6 relative z-10">
+    <!-- Cabeçalho da seção -->
+    <div class="text-center mb-20 reveal">
+      <span class="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">
+        Ferramentas Táticas
+      </span>
+      <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase leading-none">
+        O <span class="text-red-600">Cérebro</span> do Synapse
+      </h2>
+      <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto font-medium leading-relaxed">
+        Essas ferramentas foram criadas para transformar sua força de vontade em rotina. Mais foco, menos esforço.
+      </p>
+    </div>
 
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase ">
-                    Sua Nova <span class="text-red-600">Mente</span>
-                </h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-                    Chega de lutar contra seu cérebro. Nós ajustamos sua biologia para você viciar em fazer o que
-                    precisa ser feito.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-
-                    <div
-                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                        <i class="fa-solid fa-trophy text-red-500 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Vício em Evoluir</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                        Transformamos sua vida em um jogo. Você começa como <strong class="text-white">Recruta</strong>
-                        e sobe de nível a cada tarefa cumprida. É dopamina real para fazer você querer trabalhar.
-                    </p>
-                </div>
-
-                <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-
-                    <div
-                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                        <i class="fa-solid fa-users text-red-500 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-wide">Sua Equipe Pessoal</h3>
-
-                    <div class="space-y-3 relative z-10">
-                        <p class="text-gray-400 text-xs">Pare de pensar sozinho. Você terá um especialistas de IA
-                            trabalhando por você 24h</p>
-
-                    </div>
-                </div>
-
-                <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-200 hover:-translate-y-1 relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-
-                    <div
-                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                        <i class="fa-solid fa-fire text-red-500 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Não Quebre a Corrente</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                        Veja seu progresso visualmente. Seus dias ganham cor quando você vence. Mantenha a chama da
-                        <strong class="text-white">Sequência</strong> acesa e nunca mais desista no meio do caminho.
-                    </p>
-                </div>
-
-                <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal hover:-translate-y-1 relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-
-                    <div
-                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                        <i class="fa-solid fa-repeat text-red-500 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Rotina Automática</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                        Defina o que é obrigatório no seu dia (treino, leitura, trabalho). Todo dia o sistema reseta e
-                        te cobra. Sem bagunça, sem esquecimentos. É só seguir o plano.
-                    </p>
-                </div>
-
-                <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-600/50 transition duration-500 group reveal delay-100 hover:-translate-y-1 relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-
-                    <div
-                        class="w-12 h-12 bg-red-900/10 border border-red-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
-                        <i class="fa-solid fa-life-ring text-red-500 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Botão de Pânico</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">
-                        Bateu ansiedade? Travou? Aperte um botão e a IA te guia com respiração e técnicas para acalmar a
-                        mente e voltar ao foco em minutos.
-                    </p>
-                </div>
-
-                <div class="bg-black border border-red-900/40 p-8 rounded-2xl hover:scale-[1.02] transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.15)]"
-                    onclick="window.location.href='#planos'">
-                    <div class="absolute inset-0 bg-red-900/10 animate-pulse-slow"></div>
-
-                    <div class="relative z-10">
-                        <h3 class="text-3xl font-black text-white mb-2  uppercase">Versão Ultimate</h3>
-                        <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest font-bold">Sua procrastinação
-                            custa caro. Mude agora.</p>
-
-                        <span
-                            class="inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white font-bold rounded-lg text-xs uppercase tracking-[0.2em] hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] hover:scale-105">
-                            Liberar Meu Acesso <i class="fa-solid fa-lock-open"></i>
-                        </span>
-                    </div>
-                </div>
-
-            </div>
+    <!-- Grade de ferramentas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Exemplo de card -->
+      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+          <i class="fa-solid fa-trophy text-red-500 group-hover:text-red-600"></i>
         </div>
-    </section>
+        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+          Gamificação que Motiva
+        </h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Transforme tarefas chatas em pontos e suba de patente enquanto conclui metas de verdade. É divertido acompanhar seu avanço.
+        </p>
+      </div>
+
+      <!-- Assistente de IA -->
+      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+          <i class="fa-solid fa-robot text-red-500 group-hover:text-red-600"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+          Assistente Inteligente
+        </h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Deixe o Synapse organizar, priorizar e lembrar de suas tarefas. Você libera espaço mental e se concentra no que importa.
+        </p>
+      </div>
+
+      <!-- Métrica de Momentum -->
+      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-200">
+        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+          <i class="fa-solid fa-fire text-red-500 group-hover:text-red-600"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+          Métrica de Momentum
+        </h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Visualize sua sequência de dias produtivos e não deixe a corrente quebrar. Seu painel torna viciante manter o ritmo.
+        </p>
+      </div>
+
+      <!-- Automação de Rituais -->
+      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+          <i class="fa-solid fa-repeat text-red-500 group-hover:text-red-600"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+          Automação de Rituais
+        </h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Crie rotinas automáticas para treino, leitura e trabalho profundo. Você não precisa decidir, apenas seguir o fluxo.
+        </p>
+      </div>
+
+      <!-- Protocolo S.O.S. -->
+      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+          <i class="fa-solid fa-heart-pulse text-red-500 group-hover:text-red-600"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+          Protocolo S.O.S.
+        </h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Sentiu ansiedade ou bloqueou? Aperte o SOS e receba áudios e técnicas de respiração para retomar o foco em minutos.
+        </p>
+      </div>
+
+      <!-- Card de Upsell -->
+      <div class="bg-gradient-to-br from-[#0a0a0a] to-[#1a0505] border border-red-900/30 p-8 rounded-2xl hover:scale-105 transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative shadow-[0_0_40px_rgba(204,0,0,0.1)]"
+           onclick="window.location.href='#planos'">
+        <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10"></div>
+        <div class="relative z-10 flex flex-col items-center h-full justify-center">
+          <h3 class="text-2xl font-black text-white mb-2 uppercase ">Versão Ultimate</h3>
+          <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">
+            Acesso total ao sistema
+          </p>
+          <span class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded hover:bg-red-500 transition-all text-xs uppercase tracking-widest shadow-lg shadow-red-900/40">
+            Desbloquear Agora <i class="fa-solid fa-unlock-keyhole"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+
+
+
 
     <!-- Seção Depoimentos -->
     <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808] relative overflow-hidden">

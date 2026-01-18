@@ -9,11 +9,7 @@ let chatHistory = [];
 let currentAgentKey = 'MENTOR'; 
 let messageCount = 0;
 
-// Configuração do Funil de Vendas
-const DEMO_LIMIT = 7;    
-const DIAGNOSE_PHASE = 3; 
-// Ajuste para garantir o gancho antes do bloqueio
-const PRE_LOCK_PHASE = DEMO_LIMIT - 1; 
+
 
 let userStatus = 'DEMO';
 try {
