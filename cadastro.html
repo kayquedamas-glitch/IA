@@ -243,69 +243,73 @@
         errorMsg.classList.add('hidden');
         
         try {
-            // 1. Verifica se já existe
-            const { data: existente } = await _supabase
-                .from('clientes_vip')
-                .select('email')
-                .eq('email', email)
-                .single();
+    // 1. Verifica se já existe
+    const { data: existente } = await _supabase
+        .from('clientes_vip')
+        .select('email')
+        .eq('email', email)
+        .single();
 
-            if (existente) throw new Error("Este e-mail já possui cadastro! Faça Login.");
+    if (existente) throw new Error("Este e-mail já possui cadastro! Faça Login.");
 
-            // 2. Cria conta e PEGA O ID (.select().single())
-            const { data: novoUsuario, error: erroInsert } = await _supabase
-                .from('clientes_vip')
-                .insert([{ nome: nome, email: email, status: 'free', created_at: new Date() }])
-                .select()
-                .single();
+    // 2. Cria conta e PEGA O ID
+    const { data: novoUsuario, error: erroInsert } = await _supabase
+        .from('clientes_vip')
+        .insert([{ nome: nome, email: email, status: 'free', created_at: new Date() }])
+        .select()
+        .single();
 
-            if (erroInsert) throw erroInsert;
+    if (erroInsert) throw erroInsert;
 
-            // Salva sessão
-            localStorage.setItem('synapse_user', JSON.stringify({
-                email: email, nome: nome, status: 'free', entrada: new Date().toISOString()
-            }));
+    // --- [MUDANÇA 1] SALVAR SESSÃO SEGURA ---
+    // Usamos sessionStorage. Se fechar o navegador, desloga (padrão seguro).
+    sessionStorage.setItem('synapse_session', JSON.stringify({
+        email: email, nome: nome, status: 'free', entrada: new Date().toISOString()
+    }));
 
-            // 3. IDENTIFICA PARA ONDE MANDAR (O CORAÇÃO DA MUDANÇA)
-            const params = new URLSearchParams(window.location.search);
-            const intent = params.get('intent');
-            const checkoutCode = params.get('checkout'); // Pega o código da oferta de 19,90
+    // Opcional: Garante que não sobrou lixo antigo de login
+    localStorage.removeItem('synapse_user'); 
 
-            if (intent === 'upgrade') {
-                // >>> CENÁRIO 1: ULTIMATE (27,90)
-                btn.innerHTML = 'INDO PARA CHECKOUT...';
-                const checkoutUrl = new URL(LINK_ULTIMATE);
-                checkoutUrl.searchParams.set('email', email);
-                checkoutUrl.searchParams.set('name', nome);
-                if (novoUsuario?.id) checkoutUrl.searchParams.set('custom_id', novoUsuario.id);
-                
-                setTimeout(() => { window.location.href = checkoutUrl.toString(); }, 1000);
+    // 3. IDENTIFICA PARA ONDE MANDAR
+    const params = new URLSearchParams(window.location.search);
+    const intent = params.get('intent');
+    const checkoutCode = params.get('checkout');
 
-            } else if (checkoutCode) {
-                // >>> CENÁRIO 2: OFERTA ESPECIAL (19,90)
-                // O código vem da URL (ex: ?checkout=0hrS0C7)
-                btn.innerHTML = 'APROVEITANDO OFERTA...';
-                
-                // Monta o link da Kiwify usando o código que veio da URL
-                const ofertaUrl = new URL(`https://pay.kiwify.com.br/${checkoutCode}`);
-                ofertaUrl.searchParams.set('email', email);
-                ofertaUrl.searchParams.set('name', nome);
-                if (novoUsuario?.id) ofertaUrl.searchParams.set('custom_id', novoUsuario.id);
+    if (intent === 'upgrade') {
+        // >>> CENÁRIO 1: ULTIMATE (27,90)
+        btn.innerHTML = 'INDO PARA CHECKOUT...';
+        const checkoutUrl = new URL(LINK_ULTIMATE);
+        checkoutUrl.searchParams.set('email', email);
+        checkoutUrl.searchParams.set('name', nome);
+        if (novoUsuario?.id) checkoutUrl.searchParams.set('custom_id', novoUsuario.id);
+        
+        setTimeout(() => { window.location.href = checkoutUrl.toString(); }, 1000);
 
-                setTimeout(() => { window.location.href = ofertaUrl.toString(); }, 1000);
+    } else if (checkoutCode) {
+        // >>> CENÁRIO 2: OFERTA ESPECIAL (19,90)
+        btn.innerHTML = 'APROVEITANDO OFERTA...';
+        const ofertaUrl = new URL(`https://pay.kiwify.com.br/${checkoutCode}`);
+        ofertaUrl.searchParams.set('email', email);
+        ofertaUrl.searchParams.set('name', nome);
+        if (novoUsuario?.id) ofertaUrl.searchParams.set('custom_id', novoUsuario.id);
 
-            } else {
-                // >>> CENÁRIO 3: FLUXO DE DIAGNÓSTICO (O Novo Padrão)
-                // O usuário criou a conta, agora precisa passar pelo Quiz para "ativar" o protocolo.
-                
-                btn.innerHTML = '<i class="fas fa-brain"></i> INICIANDO DIAGNÓSTICO...';
-                btn.classList.replace('bg-[#CC0000]', 'bg-gray-800');
-                
-                // Manda para o Quiz
-                setTimeout(() => { window.location.href = "quiz.html"; }, 1500);
-            }
+        setTimeout(() => { window.location.href = ofertaUrl.toString(); }, 1000);
 
-        } catch (error) {
+    } else {
+        // >>> CENÁRIO 3: FLUXO PADRÃO
+        // [MUDANÇA 2] Mandamos para o PAINEL (PRO/index.html).
+        // Motivo: É lá que o script 'database.js' vai rodar, detectar que é um login novo,
+        // pegar os dados do Quiz (que estão no localStorage) e salvar na nuvem (Supabase).
+        
+        btn.innerHTML = '<i class="fas fa-check"></i> CONTA CRIADA!';
+        btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
+        
+        setTimeout(() => { 
+            window.location.href = "PRO/index.html"; 
+        }, 1500);
+    }
+
+}catch (error) {
             console.error(error);
             btn.innerHTML = originalText;
             btn.disabled = false;
