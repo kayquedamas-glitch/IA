@@ -95,66 +95,67 @@
         ];
 
         const questions = [
-            // FASE 1
-            {
-                text: "Ao abrir os olhos, qual é a primeira injeção química que você dá ao seu cérebro?",
-                options: [
-                    { label: "Dopamina Barata. Pego o celular e rolo feed/notificações.", score: 0, pain: "Vício Dopaminérgico" },
-                    { label: "Cortisol (Estresse). Já acordo pensando nos problemas.", score: 5, pain: "Ansiedade Paralisante" },
-                    { label: "Adrenalina Controlada. Levanto e executo.", score: 20 }
-                ]
-            },
-            {
-                text: "Você sente um cansaço mental inexplicável antes mesmo do meio-dia?",
-                options: [
-                    { label: "Sim, parece que meu cérebro está 'nebuloso'.", score: 0, pain: "Brain Fog" },
-                    { label: "Apenas quando tenho tarefas chatas.", score: 10, pain: "Tédio Seletivo" },
-                    { label: "Não, minha energia é constante.", score: 20 }
-                ]
-            },
-            // FASE 2
-            {
-                text: "Quando você define uma meta difícil, o que acontece internamente?",
-                options: [
-                    { label: "Sinto uma barreira física. Quero fazer, mas não me mexo.", score: 0, pain: "Paralisia Executiva" },
-                    { label: "Faço um plano complexo, mas não executo nada.", score: 5, pain: "Overthinking" },
-                    { label: "Quebro em passos e ataco.", score: 20 }
-                ]
-            },
-            {
-                text: "Quantas abas ou projetos você abre simultaneamente x Quantos você termina?",
-                options: [
-                    { label: "Abro 10, termino 0. Sou multitarefa ineficiente.", score: 0, pain: "Incapacidade de Fechamento" },
-                    { label: "Foco em um, mas qualquer notificação me tira.", score: 5, pain: "Foco Frágil" },
-                    { label: "Mono-foco absoluto.", score: 20 }
-                ]
-            },
-            {
-                text: "Seu tempo de tela (celular) ontem foi maior que seu tempo de produção?",
-                options: [
-                    { label: "Sim. É vergonhoso.", score: 0, pain: "Escravidão Digital" },
-                    { label: "Empatado.", score: 10, pain: "Equilíbrio Precário" },
-                    { label: "Não. O celular é minha ferramenta, não meu dono.", score: 20 }
-                ]
-            },
-            // FASE 3
-            {
-                text: "Qual é o seu diálogo interno quando você falha na dieta ou no trabalho?",
-                options: [
-                    { label: "'Eu sou um lixo. Amanhã tento de novo.' (Culpa)", score: 0, pain: "Ciclo de Autopunição" },
-                    { label: "'Ah, eu mereço um descanso.' (Desculpa)", score: 5, pain: "Auto-Sabotagem" },
-                    { label: "'Onde errei? Corrigir rota.' (Análise)", score: 20 }
-                ]
-            },
-            {
-                text: "Por que você acha que ainda não atingiu seu potencial máximo?",
-                options: [
-                    { label: "Eu sei O QUE fazer, mas não consigo FAZER.", score: 0, pain: "Gap de Execução" },
-                    { label: "Sinto que estou correndo em círculos.", score: 5, pain: "Falta de Método" },
-                    { label: "Estou no caminho certo, só preciso de tempo.", score: 20 }
-                ]
-            }
-        ];
+  // Fase 1
+  {
+    text: "Ao acordar, qual é a primeira coisa que você faz?",
+    options: [
+      { label: "Pego o celular e fico rolando redes sociais", score: 0, pain: "Vício em Dopamina" },
+      { label: "Já acordo pensando nos problemas do dia", score: 5, pain: "Ansiedade" },
+      { label: "Levanto e começo minhas tarefas", score: 20 }
+    ]
+  },
+  {
+    text: "Você se sente mentalmente esgotado antes do meio‑dia?",
+    options: [
+      { label: "Sim, parece que minha mente está nublada", score: 0, pain: "Cansaço Mental" },
+      { label: "Apenas quando tenho tarefas que não gosto", score: 10, pain: "Falta de Interesse" },
+      { label: "Não, mantenho minha energia constante", score: 20 }
+    ]
+  },
+  // Fase 2
+  {
+    text: "Quando você define uma meta desafiadora, como você se sente?",
+    options: [
+      { label: "Fico paralisado, sei o que quero mas não começo", score: 0, pain: "Paralisia" },
+      { label: "Planejo demais e não saio do lugar", score: 5, pain: "Overthinking" },
+      { label: "Divido em etapas pequenas e começo a agir", score: 20 }
+    ]
+  },
+  {
+    text: "Você costuma começar vários projetos ao mesmo tempo ou termina o que começa?",
+    options: [
+      { label: "Começo várias coisas e concluo poucas", score: 0, pain: "Falta de Foco" },
+      { label: "Foco em uma tarefa, mas me distraio facilmente", score: 5, pain: "Distrações" },
+      { label: "Concentro‑me em uma tarefa até terminar", score: 20 }
+    ]
+  },
+  {
+    text: "Ontem você passou mais tempo no celular do que produzindo?",
+    options: [
+      { label: "Sim, fiquei bastante tempo distraído no celular", score: 0, pain: "Distração Digital" },
+      { label: "Foi equilibrado: trabalho e celular empataram", score: 10, pain: "Equilíbrio Precário" },
+      { label: "Não, usei o celular apenas como ferramenta de apoio", score: 20 }
+    ]
+  },
+  // Fase 3
+  {
+    text: "Como você reage quando falha na dieta ou em uma tarefa?",
+    options: [
+      { label: "Fico me culpando e prometo tentar amanhã", score: 0, pain: "Autocrítica Excessiva" },
+      { label: "Me justifico dizendo que mereço um descanso", score: 5, pain: "Auto-Sabotagem" },
+      { label: "Analiso onde errei e ajusto o caminho", score: 20 }
+    ]
+  },
+  {
+    text: "Por que você acha que ainda não atingiu seu potencial?",
+    options: [
+      { label: "Sei o que devo fazer, mas tenho dificuldade em agir", score: 0, pain: "Gap de Execução" },
+      { label: "Sinto que me esforço, mas não saio do lugar", score: 5, pain: "Falta de Método" },
+      { label: "Acredito que estou evoluindo no meu ritmo", score: 20 }
+    ]
+  }
+];
+
 
         let currentQ = 0;
         let totalScore = 0;
@@ -323,49 +324,47 @@
             }));
 
             area.innerHTML = `
-                <div class="fade-in-up max-w-3xl mx-auto pb-10">
-                    
-                    <div class="text-center mb-10">
-                        <span class="inline-block border border-red-900/50 bg-red-950/20 text-red-400 text-[10px] font-bold px-3 py-1 rounded uppercase tracking-[0.2em] mb-4 animate-pulse">Diagnóstico Finalizado</span>
-                        <h1 class="text-4xl md:text-5xl font-black text-white uppercase  leading-none mb-3">${titulo}</h1>
-                        <p class="text-gray-500 font-mono text-xs uppercase">Causa Raiz: <b class="text-red-500 bg-red-900/10 px-1 rounded">${dominantPain.toUpperCase()}</b></p>
-                    </div>
+  <div class="fade-in-up max-w-3xl mx-auto pb-10">
+    <div class="text-center mb-10">
+      <span class="inline-block border border-red-900/50 bg-red-950/20 text-red-400 text-[10px] font-bold px-3 py-1 rounded uppercase tracking-[0.2em] mb-4 animate-pulse">
+        Diagnóstico completo
+      </span>
+      <h1 class="text-4xl md:text-5xl font-black text-white uppercase leading-none mb-3">
+        Hora de evoluir
+      </h1>
+      <p class="text-gray-500 text-xs uppercase">Seu nível atual: <b class="${cor}">${nivel}</b></p>
+    </div>
 
-                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-2xl">
-                        <div class="absolute top-0 right-0 w-40 h-40 bg-red-600/10 blur-[80px]"></div>
-                        
-                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Relatório de Falha
-                        </h3>
-                        <p class="text-sm text-gray-300 leading-relaxed mb-6 relative z-10">
-                            Sua análise indica que seu sistema de recompensa está <b class="text-white">dessensibilizado</b>. 
-                            Tentar usar "força de vontade" no seu estado atual gera <span class="text-red-400 ">Paralisia Executiva</span> porque a tarefa não libera dopamina suficiente para mover você.
-                        </p>
-                        
-                        <div class="p-4 bg-red-950/10 border-l-2 border-red-600 rounded-r relative z-10">
-                            <p class="text-sm text-white font-medium">
-                                Seu cérebro primitivo busca conforto. O Synapse busca evolução. <b class="text-red-400">Quem você vai deixar no comando?"</b>.
-                            </p>
-                        </div>
-                    </div>
+    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-2xl">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-red-600/10 blur-[80px]"></div>
+      <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
+        <i class="fa-solid fa-lightbulb text-red-500"></i> O que descobrimos
+      </h3>
+      <p class="text-sm text-gray-300 leading-relaxed mb-6 relative z-10">
+        Nossa análise mostra que sua motivação está baixa. Forçar a vontade nessa fase causa bloqueio porque as tarefas não parecem recompensadoras.
+      </p>
+      <div class="p-4 bg-red-950/10 border-l-2 border-red-600 rounded-r relative z-10">
+        <p class="text-sm text-white font-medium">
+          Seu cérebro busca conforto. O Synapse te ajuda a buscar evolução. Agora você tem o controle.
+        </p>
+      </div>
+    </div>
 
-                    <div class="text-center">
-                        <p class="text-xs text-gray-400 mb-6 max-w-sm mx-auto">
-                            A IA já estruturou seu plano para corrigir o gap de <b class="text-white">${dominantPain}</b>.
-                        </p>
-                        
-                        <button onclick="goToApp()" class="group w-full md:w-auto bg-[#CC0000] text-white font-black uppercase tracking-widest py-4 px-12 rounded-full hover:bg-red-700 transition-all shadow-[0_0_40px_rgba(204,0,0,0.3)] hover:shadow-[0_0_60px_rgba(204,0,0,0.5)] flex items-center justify-center gap-3 mx-auto text-sm">
-                            <span>Acessar Meu Painel Neural</span> 
-                            <i class="fa-solid fa-terminal group-hover:translate-x-1 transition-transform"></i>
-                        </button>
-                        
-                        <p class="mt-6 text-[9px] text-gray-600 font-mono uppercase opacity-70">
-                            <i class="fa-solid fa-check-circle mr-1"></i> Conta Criada com Sucesso
-                        </p>
-                    </div>
+    <div class="text-center">
+      <p class="text-xs text-gray-400 mb-6 max-w-sm mx-auto">
+        Seu plano está pronto para superar <b class="text-white">${dominantPain}</b>. Vamos colocá-lo em prática?
+      </p>
+      <button onclick="goToApp()" class="group w-full md:w-auto bg-[#CC0000] text-white font-black uppercase tracking-widest py-4 px-12 rounded-full hover:bg-red-700 transition-all shadow-[0_0_40px_rgba(204,0,0,0.3)] hover:shadow-[0_0_60px_rgba(204,0,0,0.5)] flex items-center justify-center gap-3 mx-auto text-sm">
+        <span>Acessar painel</span>
+        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+      </button>
+      <p class="mt-6 text-[9px] text-gray-600 uppercase opacity-70">
+        <i class="fa-solid fa-check-circle mr-1"></i> Conta criada com sucesso
+      </p>
+    </div>
+  </div>
+`;
 
-                </div>
-            `;
         }
 
         function goToApp() {
