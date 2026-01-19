@@ -144,7 +144,6 @@ const SOS_QUOTES = [
     "O conforto é uma armadilha. Abrace o desconforto.",
     "A cada 'NÃO' que você diz ao vício, sua força de vontade sobe de nível.",
     "Lembre-se do porquê você começou.",
-    "A única saída é através. Respire e aguente.",
     "Não negocie com a fraqueza.",
     "Sêneca dizia: 'Sofremos mais na imaginação do que na realidade'.",
     "Você já venceu 100% dos seus dias ruins. Vai vencer este também.",

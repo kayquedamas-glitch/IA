@@ -579,269 +579,361 @@
             line-height: 1.1;
             text-transform: none;
         }
+
         /* --- LAYOUT HÍBRIDO (MOBILE vs DESKTOP) --- */
 
-.hero-flex-layout {
-    display: flex;
-    flex-direction: column; /* Mobile: Um embaixo do outro */
-    align-items: center;
-    gap: 40px;
-    padding-top: 20px;
-    width: 100%;
-    max-width: 1200px; /* Largura máxima do site */
-    margin: 0 auto;
-    position: relative;
-    z-index: 10;
-}
+        .hero-flex-layout {
+            display: flex;
+            flex-direction: column;
+            /* Mobile: Um embaixo do outro */
+            align-items: center;
+            gap: 40px;
+            padding-top: 20px;
+            width: 100%;
+            max-width: 1200px;
+            /* Largura máxima do site */
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
 
-/* --- VERSÃO COMPUTADOR (TELAS GRANDES) --- */
-@media (min-width: 1024px) {
-    .hero-flex-layout {
-        flex-direction: row; /* Desktop: Lado a Lado */
-        align-items: center; /* Centraliza verticalmente */
-        justify-content: space-between; /* Espaço entre texto e imagem */
-        text-align: left; /* Texto alinhado à esquerda */
-        padding: 0 40px;
-        min-height: 80vh; /* Ocupa boa parte da tela */
-    }
+        /* --- VERSÃO COMPUTADOR (TELAS GRANDES) --- */
+        @media (min-width: 1024px) {
+            .hero-flex-layout {
+                flex-direction: row;
+                /* Desktop: Lado a Lado */
+                align-items: center;
+                /* Centraliza verticalmente */
+                justify-content: space-between;
+                /* Espaço entre texto e imagem */
+                text-align: left;
+                /* Texto alinhado à esquerda */
+                padding: 0 40px;
+                min-height: 80vh;
+                /* Ocupa boa parte da tela */
+            }
 
-    /* Lado do Texto */
-    .hero-content-left {
-        flex: 1;
-        max-width: 550px; /* TRAVA DE LARGURA: Evita linhas longas */
-        padding-right: 20px;
-    }
+            /* Lado do Texto */
+            .hero-content-left {
+                flex: 1;
+                max-width: 550px;
+                /* TRAVA DE LARGURA: Evita linhas longas */
+                padding-right: 20px;
+            }
 
-    /* Ajuste fino do Título no Desktop */
-    .hero-title {
-        text-align: left;
-        font-size: 3.5rem; /* Maior no PC */
-        line-height: 1.1;
-        margin-bottom: 24px;
-        max-width: 15ch; /* Força quebra de linha inteligente (aprox 3 palavras por linha) */
-    }
+            /* Ajuste fino do Título no Desktop */
+            .hero-title {
+                text-align: left;
+                font-size: 3.5rem;
+                /* Maior no PC */
+                line-height: 1.1;
+                margin-bottom: 24px;
+                max-width: 15ch;
+                /* Força quebra de linha inteligente (aprox 3 palavras por linha) */
+            }
 
-    /* Ajuste da Descrição */
-    .hero-description {
-        text-align: left;
-        margin: 0 0 32px 0; /* Margem apenas embaixo */
-        font-size: 1.1rem;
-        max-width: 45ch; /* Garante no máximo ~3 linhas de texto */
-        color: #d4d4d4;
-    }
+            /* Ajuste da Descrição */
+            .hero-description {
+                text-align: left;
+                margin: 0 0 32px 0;
+                /* Margem apenas embaixo */
+                font-size: 1.1rem;
+                max-width: 45ch;
+                /* Garante no máximo ~3 linhas de texto */
+                color: #d4d4d4;
+            }
 
-    /* Botões à esquerda */
-    .hero-actions {
-        justify-content: flex-start; /* Alinha botões à esquerda */
-        gap: 20px;
-    }
+            /* Botões à esquerda */
+            .hero-actions {
+                justify-content: flex-start;
+                /* Alinha botões à esquerda */
+                gap: 20px;
+            }
 
-    /* Lado da Imagem */
-    .hero-visual-right {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end; /* Joga imagem para a direita */
-        position: relative;
-        max-width: 600px; /* Tamanho máximo da imagem */
-    }
-    
-    .note-img {
-        width: 100%;
-        height: auto;
-        transform: perspective(1000px) rotateY(-5deg) rotateX(2deg); /* Efeito 3D sutil */
-        transition: transform 0.5s ease;
-    }
-    
-    .hero-visual-right:hover .note-img {
-        transform: perspective(1000px) rotateY(0deg); /* Fica reto ao passar o mouse */
-    }
-}
+            /* Lado da Imagem */
+            .hero-visual-right {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+                /* Joga imagem para a direita */
+                position: relative;
+                max-width: 600px;
+                /* Tamanho máximo da imagem */
+            }
 
-/* --- AJUSTE MOBILE (MANTÉM O PADRÃO) --- */
-@media (max-width: 1023px) {
-    .hero-content-left {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .hero-visual-right {
-        width: 100%;
-        max-width: 400px;
-    }
-}
-/* --- SYNAPSE TACTICAL REFINED (VISUAL FINAL) --- */
-@media (max-width: 1023px) {
-    
-    .hero-section {
-        min-height: 100dvh; /* Garante tela cheia */
-        background: #000;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-    }
+            .note-img {
+                width: 100%;
+                height: auto;
+                transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+                /* Efeito 3D sutil */
+                transition: transform 0.5s ease;
+            }
 
-    /* Vignette Sutil (Escurece as bordas da tela para focar no centro) */
-    .hero-section::after {
-        content: ''; position: absolute; inset: 0;
-        background: radial-gradient(circle at center, transparent 60%, black 100%);
-        pointer-events: none; z-index: 1;
-    }
+            .hero-visual-right:hover .note-img {
+                transform: perspective(1000px) rotateY(0deg);
+                /* Fica reto ao passar o mouse */
+            }
+        }
 
-    .hero-flex-layout {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 20px 24px 80px 24px;
-        width: 100%;
-        height: 100%;
-        position: relative;
-        z-index: 10; /* Conteúdo acima da vinheta */
-        gap: 0;
-    }
+        /* --- AJUSTE MOBILE (MANTÉM O PADRÃO) --- */
+        @media (max-width: 1023px) {
+            .hero-content-left {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
 
-    .hero-content-left { display: contents; }
+            .hero-visual-right {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
 
-    /* 1. TÍTULO (IMPACTO MACIÇO) */
-    .hero-title {
-        order: 1;
-        font-family: 'Inter', sans-serif;
-        font-weight: 900;
-        font-size: 2.4rem; /* Um pouco maior */
-        line-height: 0.9;  /* Linhas bem juntas */
-        letter-spacing: -0.04em; /* Letras apertadas (Estilo Nike/Sports) */
-        text-transform: uppercase;
-        text-align: left;
-        color: #fff;
-        margin-bottom: 16px;
-        
-        opacity: 0;
-        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    }
+        /* --- SYNAPSE TACTICAL REFINED (VISUAL FINAL) --- */
+        @media (max-width: 1023px) {
 
-    .hero-title .gradient-red {
-        /* Gradiente mais "vivo" */
-        background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        /* Brilho neon atrás do texto */
-        filter: drop-shadow(0 0 25px rgba(220, 38, 38, 0.5));
-    }
+            .hero-section {
+                min-height: 100dvh;
+                /* Garante tela cheia */
+                background: #000;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+            }
 
-    /* 2. SUBTÍTULO (CONTRASTE ALTO) */
-    .hero-description {
-        order: 2;
-        font-family: 'Inter', sans-serif;
-        font-size: 0.95rem;
-        color: #e5e5e5; /* Quase branco para leitura fácil */
-        line-height: 1.5;
-        font-weight: 500;
-        text-align: left;
-        margin-bottom: 30px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.8); /* Sombra para ler em cima do polvo */
-        
-        display: block; 
-        
-        opacity: 0;
-        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.1s;
-    }
+            /* Vignette Sutil (Escurece as bordas da tela para focar no centro) */
+            .hero-section::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at center, transparent 60%, black 100%);
+                pointer-events: none;
+                z-index: 1;
+            }
 
-    /* 3. O POLVO (INTEGRAÇÃO PERFEITA) */
-    .hero-visual-right {
-        order: 0; 
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -45%); /* Centralizado */
-        width: 130%; /* Vaza a tela */
-        display: flex;
-        justify-content: center;
-        z-index: -1;
-        pointer-events: none;
-        
-        opacity: 0;
-        animation: pulseFade 2s ease-out forwards 0.3s;
-    }
+            .hero-flex-layout {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 20px 24px 80px 24px;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                z-index: 10;
+                /* Conteúdo acima da vinheta */
+                gap: 0;
+            }
 
-    .note-img {
-        width: 100%;
-        max-width: 420px;
-        height: auto;
-        opacity: 0.4; /* Visível mas não briga com o texto */
-        filter: grayscale(100%) contrast(1.1);
-        
-        /* O SEGREDO: Máscara que apaga as bordas da imagem suavemente */
-        mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
-        -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
-    }
+            .hero-content-left {
+                display: contents;
+            }
 
-    /* 4. BOTÕES (EFEITO VIDRO) */
-    .hero-actions {
-        order: 3;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: auto;
-        
-        opacity: 0;
-        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
-    }
+            /* 1. TÍTULO (IMPACTO MACIÇO) */
+            .hero-title {
+                order: 1;
+                font-family: 'Inter', sans-serif;
+                font-weight: 900;
+                font-size: 2.4rem;
+                /* Um pouco maior */
+                line-height: 0.9;
+                /* Linhas bem juntas */
+                letter-spacing: -0.04em;
+                /* Letras apertadas (Estilo Nike/Sports) */
+                text-transform: uppercase;
+                text-align: left;
+                color: #fff;
+                margin-bottom: 16px;
 
-    .hero-actions a {
-        width: 100%;
-        justify-content: center;
-        padding: 18px;
-        border-radius: 6px; /* Tech Style */
-        font-size: 1rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+                opacity: 0;
+                animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
 
-    /* Botão Branco Puro */
-    .btn-glass {
-        background: #fff;
-        color: #000;
-        border: none;
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Glow branco */
-    }
-    
-    /* Botão Outline com Blur (Vidro) */
-    .btn-red-glow {
-        background: rgba(0, 0, 0, 0.3); /* Fundo semi-transparente */
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #fff;
-        backdrop-filter: blur(8px); /* Desfoca o polvo atrás do botão */
-        -webkit-backdrop-filter: blur(8px);
-    }
+            .hero-title .gradient-red {
+                /* Gradiente mais "vivo" */
+                background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                /* Brilho neon atrás do texto */
+                filter: drop-shadow(0 0 25px rgba(220, 38, 38, 0.5));
+            }
 
-    /* 5. SETA SCROLL */
-    .scroll-indicator-container {
-        position: absolute;
-        bottom: 25px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
-        opacity: 0;
-        animation: fadeIn 1s ease-out forwards 1.5s;
-    }
-    .arrow-down { 
-        color: rgba(255,255,255,0.4); 
-        font-size: 14px; 
-        animation: bounce 2s infinite; 
-    }
+            /* 2. SUBTÍTULO (CONTRASTE ALTO) */
+            .hero-description {
+                order: 2;
+                font-family: 'Inter', sans-serif;
+                font-size: 0.95rem;
+                color: #e5e5e5;
+                /* Quase branco para leitura fácil */
+                line-height: 1.5;
+                font-weight: 500;
+                text-align: left;
+                margin-bottom: 30px;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+                /* Sombra para ler em cima do polvo */
 
-    .click-hint, .image-glow-back, .image-fade-bottom, .mouse-icon { display: none; }
+                display: block;
 
-    /* ANIMAÇÕES SUAVES */
-    @keyframes slideUpFade { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes pulseFade { 0%{opacity:0; transform:translate(-50%, -45%) scale(0.9);} 100%{opacity:1; transform:translate(-50%, -45%) scale(1);} }
-    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-    @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-5px);} 60%{transform:translateY(-3px);} }
-}   
+                opacity: 0;
+                animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.1s;
+            }
 
+            /* 3. O POLVO (INTEGRAÇÃO PERFEITA) */
+            .hero-visual-right {
+                order: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -45%);
+                /* Centralizado */
+                width: 130%;
+                /* Vaza a tela */
+                display: flex;
+                justify-content: center;
+                z-index: -1;
+                pointer-events: none;
+
+                opacity: 0;
+                animation: pulseFade 2s ease-out forwards 0.3s;
+            }
+
+            .note-img {
+                width: 100%;
+                max-width: 420px;
+                height: auto;
+                opacity: 0.9;
+                /* Visível mas não briga com o texto */
+                filter: grayscale(100%) contrast(1.1);
+
+                /* O SEGREDO: Máscara que apaga as bordas da imagem suavemente */
+                mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+                -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            }
+
+            /* 4. BOTÕES (EFEITO VIDRO) */
+            .hero-actions {
+                order: 3;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-top: auto;
+
+                opacity: 0;
+                animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
+            }
+
+            .hero-actions a {
+                width: 100%;
+                justify-content: center;
+                padding: 18px;
+                border-radius: 6px;
+                /* Tech Style */
+                font-size: 1rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            /* Botão Branco Puro */
+            .btn-glass {
+                background: #fff;
+                color: #000;
+                border: none;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+                /* Glow branco */
+            }
+
+            /* Botão Outline com Blur (Vidro) */
+            .btn-red-glow {
+                background: rgba(0, 0, 0, 0.3);
+                /* Fundo semi-transparente */
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: #fff;
+                backdrop-filter: blur(8px);
+                /* Desfoca o polvo atrás do botão */
+                -webkit-backdrop-filter: blur(8px);
+            }
+
+            /* 5. SETA SCROLL */
+            .scroll-indicator-container {
+                position: absolute;
+                bottom: 25px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 20;
+                opacity: 0;
+                animation: fadeIn 1s ease-out forwards 1.5s;
+            }
+
+            .arrow-down {
+                color: rgba(255, 255, 255, 0.4);
+                font-size: 14px;
+                animation: bounce 2s infinite;
+            }
+
+            .click-hint,
+            .image-glow-back,
+            .image-fade-bottom,
+            .mouse-icon {
+                display: none;
+            }
+
+            /* ANIMAÇÕES SUAVES */
+            @keyframes slideUpFade {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes pulseFade {
+                0% {
+                    opacity: 0;
+                    transform: translate(-50%, -45%) scale(0.9);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translate(-50%, -45%) scale(1);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes bounce {
+
+                0%,
+                20%,
+                50%,
+                80%,
+                100% {
+                    transform: translateY(0);
+                }
+
+                40% {
+                    transform: translateY(-5px);
+                }
+
+                60% {
+                    transform: translateY(-3px);
+                }
+            }
+        }
     </style>
 
 </head>
@@ -866,31 +958,36 @@
                 <div class="h-6 w-px bg-white/10"></div>
 
                 <ul class="flex items-center gap-6 text-sm font-medium text-gray-400">
-                    <li>
-                        <a href="#inicio"
-                            class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                            Início
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#mecanismo"
-                            class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                            O Método
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#ferramentas"
-                            class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                            Ferramentas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#depoimentos"
-                            class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                            Resultados
-                        </a>
-                    </li>
-                </ul>
+    <li>
+        <a href="#" 
+           class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+            Início
+        </a>
+    </li>
+
+    <li>
+        <a href="#arsenal-section" 
+           class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+            Sistema
+        </a>
+    </li>
+
+    <li>
+        <a href="#planos" 
+           class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+            Planos
+        </a>
+    </li>
+
+    <li>
+        <a href="#depoimentos" 
+           class="hover:text-white transition-colors cursor-pointer hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+            Resultados
+        </a>
+    </li>
+
+    
+</ul>
             </div>
             <div class="flex items-center gap-4 pr-2">
                 <a href="PRO/login.html"
@@ -930,38 +1027,40 @@
         </div>
 
         <div class="container hero-flex-layout">
-    
-    <div class="hero-content-left">
-        <h1 class="hero-title font-inter-hero">
-            Troque a Dopamina Barata <br>
-            <span class="gradient-red">Pelo Vício em Evoluir.</span>
-        </h1>
 
-        <p class="hero-description reveal">
-            O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a procrastinação e torna a disciplina automática.
-        </p>
+            <div class="hero-content-left">
+                <h1 class="hero-title font-inter-hero">
+                    Troque a Dopamina Barata <br>
+                    <span class="gradient-red">Pelo Vício em Evoluir.</span>
+                </h1>
 
-        <div class="hero-actions reveal">
-            <a href="cadastro.html" class="btn-glass">
-                Criar Conta Grátis
-            </a>
-            <a href="#planos" class="btn-red-glow">
-                Ver Planos <i class="fas fa-arrow-right"></i>
-            </a>
+                <p class="hero-description reveal">
+                    O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a
+                    procrastinação e torna a disciplina automática.
+                </p>
+
+                <div class="hero-actions reveal">
+                    <a href="cadastro.html" class="btn-glass">
+                        Criar Conta Grátis
+                    </a>
+                    <a href="#planos" class="btn-red-glow">
+                        Ver Planos <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-visual-right reveal"
+                onclick="document.getElementById('imageModal').classList.remove('hidden')">
+                <div class="image-glow-back"></div>
+                <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
+
+                <div class="click-hint">
+                    <i class="fas fa-search-plus"></i> Ampliar
+                </div>
+
+            </div>
+
         </div>
-    </div>
-
-    <div class="hero-visual-right reveal" onclick="document.getElementById('imageModal').classList.remove('hidden')">
-        <div class="image-glow-back"></div>
-        <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
-        
-        <div class="click-hint">
-            <i class="fas fa-search-plus"></i> Ampliar
-        </div>
-        
-    </div>
-
-</div>
         <div class="scroll-indicator">
             <i class="fas fa-chevron-down"></i>
         </div>
@@ -1085,129 +1184,223 @@
 
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
-    <section id="ferramentas" class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
-        <!-- Padrão de fundo sutil -->
+    <section id="arsenal-section" class="py-24 bg-[#030303] relative border-t border-white/5 overflow-hidden"
+        style="perspective: 2000px;">
+
         <div
-            class="absolute inset-0 opacity-5 pointer-events-none bg-gradient-to-br from-red-600 via-transparent to-black">
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-red-900/5 blur-[120px] pointer-events-none">
         </div>
 
         <div class="container mx-auto px-6 relative z-10">
-            <!-- Cabeçalho da seção -->
-            <div class="text-center mb-20 reveal">
-                <span class="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">
-                    Ferramentas Táticas
+
+            <div class="text-center mb-16">
+                <span class="text-red-600 font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-3 block">
+                    Inventário do Sistema
                 </span>
-                <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase leading-none">
-                    O <span class="text-red-600">Cérebro</span> do Synapse
+                <h2 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">
+                    Funcionalidades <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Nativas</span>
                 </h2>
-                <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto font-medium leading-relaxed">
-                    Essas ferramentas foram criadas para transformar sua força de vontade em rotina. Mais foco, menos
-                    esforço.
+                <p class="text-gray-400 text-sm max-w-2xl mx-auto">
+                    As ferramentas exatas que você terá acesso imediato ao entrar no Synapse.
                 </p>
             </div>
 
-            <!-- Grade de ferramentas -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Exemplo de card -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto perspective-grid">
+
                 <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
                     <div
-                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-                        <i class="fa-solid fa-trophy text-red-500 group-hover:text-red-600"></i>
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-tachometer-alt text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-                        Gamificação que Motiva
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Transforme tarefas chatas em pontos e suba de patente enquanto conclui metas de verdade. É
-                        divertido acompanhar seu avanço.
-                    </p>
+                    <h3 class="text-white font-bold text-lg mb-2">Painel de Evolução</h3>
+                    <p class="text-gray-500 text-xs mb-4 leading-relaxed">Acompanhe seu progresso em tempo real. Veja
+                        seu Nível atual, XP acumulado e estatísticas de foco.</p>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Barra de Experiência (XP)</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Contador de Tarefas Pendentes</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Status do Jogador</li>
+                    </ul>
                 </div>
 
-                <!-- Assistente de IA -->
                 <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
                     <div
-                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-                        <i class="fa-solid fa-robot text-red-500 group-hover:text-red-600"></i>
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-cloud text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-                        Assistente Inteligente
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Deixe o Synapse organizar, priorizar e lembrar de suas tarefas. Você libera espaço mental e se
-                        concentra no que importa.
-                    </p>
+                    <h3 class="text-white font-bold text-lg mb-2">Banco de Dados em Nuvem</h3>
+                    <p class="text-gray-500 text-xs mb-4 leading-relaxed">Seus dados são salvos automaticamente. Acesse
+                        sua conta de qualquer dispositivo sem perder nada.</p>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Login seguro com E-mail</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Sincronização Automática</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Tecnologia "Always Online"</li>
+                    </ul>
                 </div>
 
-                <!-- Métrica de Momentum -->
                 <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-200">
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
                     <div
-                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-                        <i class="fa-solid fa-fire text-red-500 group-hover:text-red-600"></i>
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-hourglass-half text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-                        Métrica de Momentum
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Visualize sua sequência de dias produtivos e não deixe a corrente quebrar. Seu painel torna
-                        viciante manter o ritmo.
-                    </p>
+                    <h3 class="text-white font-bold text-lg mb-2">Modo Deep Work</h3>
+                    <p class="text-gray-500 text-xs mb-4 leading-relaxed">Timer de foco integrado para sessões de
+                        trabalho profundo, baseado na técnica Pomodoro.</p>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Cronômetro de Foco</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Sessões Personalizáveis</li>
+                        <li class="text-gray-400 text-xs flex items-center gap-2"><i
+                                class="fas fa-check text-red-900 text-[10px]"></i> Isolamento de Distrações</li>
+                    </ul>
                 </div>
 
-                <!-- Automação de Rituais -->
                 <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
                     <div
-                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-                        <i class="fa-solid fa-repeat text-red-500 group-hover:text-red-600"></i>
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-fire text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-                        Automação de Rituais
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Crie rotinas automáticas para treino, leitura e trabalho profundo. Você não precisa decidir,
-                        apenas seguir o fluxo.
-                    </p>
+                    <h3 class="text-white font-bold text-lg mb-2">Sistema de Streak</h3>
+                    <p class="text-gray-500 text-xs leading-relaxed">Visualize sua sequência de dias consecutivos. Não
+                        quebre a corrente para manter seu multiplicador de pontos ativo.</p>
                 </div>
 
-                <!-- Protocolo S.O.S. -->
                 <div
-                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
                     <div
-                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-                        <i class="fa-solid fa-heart-pulse text-red-500 group-hover:text-red-600"></i>
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-list-ul text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-                        Protocolo S.O.S.
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Sentiu ansiedade ou bloqueou? Aperte o SOS e receba áudios e técnicas de respiração para retomar
-                        o foco em minutos.
-                    </p>
+                    <h3 class="text-white font-bold text-lg mb-2">Gestão de Rituais</h3>
+                    <p class="text-gray-500 text-xs leading-relaxed">Checklists dedicados para sua Rotina Matinal e
+                        Noturna. Garanta que o essencial seja executado todo dia.</p>
                 </div>
 
-                <!-- Card de Upsell -->
-                <div class="bg-gradient-to-br from-[#0a0a0a] to-[#1a0505] border border-red-900/30 p-8 rounded-2xl hover:scale-105 transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative shadow-[0_0_40px_rgba(204,0,0,0.1)]"
-                    onclick="window.location.href='#planos'">
-                    <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10"></div>
-                    <div class="relative z-10 flex flex-col items-center h-full justify-center">
-                        <h3 class="text-2xl font-black text-white mb-2 uppercase italic">Versão Ultimate</h3>
-                        <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">
-                            Acesso total ao sistema
-                        </p>
-                        <span
-                            class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded hover:bg-red-500 transition-all text-xs uppercase tracking-widest shadow-lg shadow-red-900/40">
-                            Desbloquear Agora <i class="fa-solid fa-unlock-keyhole"></i>
-                        </span>
+                <div
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
+                    <div
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-robot text-xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Mentor I.A.</h3>
+                    <p class="text-gray-500 text-xs leading-relaxed">Chat integrado com Inteligência Artificial para
+                        tirar dúvidas, organizar ideias e receber feedback.</p>
+                </div>
+
+                <div
+                    class="synapse-3d-card bg-[#080808] border border-white/5 p-6 rounded-xl hover:border-red-600/30 hover:bg-[#0c0c0c] group">
+                    <div
+                        class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center text-red-500 mb-4 border border-white/5 group-hover:scale-110 transition">
+                        <i class="fas fa-medal text-xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Sistema de Patentes</h3>
+                    <p class="text-gray-500 text-xs leading-relaxed">Suba de nível conforme conclui tarefas. Comece como
+                        "Recruta" e evolua até se tornar uma "Lenda".</p>
+                </div>
+
+                <div
+                    class="synapse-3d-card md:col-span-2 lg:col-span-2 bg-gradient-to-br from-[#1a0505] to-[#080808] border border-red-900/40 p-6 rounded-xl hover:border-red-600 transition-all group relative overflow-hidden">
+
+                    <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10 pointer-events-none"></div>
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-red-600/20 blur-[60px]"></div>
+
+                    <div class="relative z-10 flex flex-col md:flex-row items-start gap-6">
+                        <div
+                            class="w-14 h-14 bg-red-900/20 rounded-xl flex items-center justify-center text-red-500 border border-red-500/20 flex-shrink-0 animate-pulse">
+                            <i class="fas fa-shield-alt text-2xl"></i>
+                        </div>
+
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-white font-bold text-xl uppercase">Protocolo S.O.S <span
+                                        class="text-red-600 text-sm bg-red-900/20 px-2 py-0.5 rounded border border-red-900/30">Anti-Recaída</span>
+                                </h3>
+                            </div>
+                            <p class="text-gray-400 text-sm mb-4 max-w-lg">
+                                Um "Botão de Pânico" digital. Sentiu a urgência de voltar a um vício antigo ou a
+                                ansiedade bater? Ative o protocolo para receber áudios de intervenção imediata.
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-black/40 border border-white/5 p-3 rounded flex items-center gap-3">
+                                    <i class="fas fa-ban text-red-500"></i>
+                                    <span class="text-gray-300 text-xs">Pornografia (NoFap)</span>
+                                </div>
+                                <div class="bg-black/40 border border-white/5 p-3 rounded flex items-center gap-3">
+                                    <i class="fas fa-ban text-red-500"></i>
+                                    <span class="text-gray-300 text-xs">Cigarro / Vaping</span>
+                                </div>
+                                <div class="bg-black/40 border border-white/5 p-3 rounded flex items-center gap-3">
+                                    <i class="fas fa-ban text-red-500"></i>
+                                    <span class="text-gray-300 text-xs">Procrastinação Aguda</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
-            <!-- CTA final -->
-
+            <div class="mt-16 text-center">
+                <a href="#planos"
+                    class="inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                    Quero acesso a essas ferramentas <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
+
+        <style>
+            .perspective-grid {
+                perspective: 2000px;
+            }
+
+            .synapse-3d-card {
+                opacity: 0;
+                transform-origin: bottom center;
+                transform: rotateX(90deg) translateY(100px) scale(0.8);
+                filter: blur(10px);
+                transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                will-change: transform, opacity, filter;
+            }
+
+            .synapse-3d-card.active {
+                opacity: 1;
+                transform: rotateX(0deg) translateY(0) scale(1);
+                filter: blur(0);
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const observer3D = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const cards = entry.target.querySelectorAll('.synapse-3d-card');
+                            cards.forEach((card, index) => {
+                                setTimeout(() => {
+                                    card.classList.add('active');
+                                }, index * 100);
+                            });
+                            observer3D.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                const section = document.getElementById('arsenal-section');
+                if (section) observer3D.observe(section);
+            });
+        </script>
     </section>
 
 
@@ -1361,7 +1554,7 @@
         </div>
 
         <div class="relative z-10 text-center mb-16 max-w-2xl">
-            
+
             <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
                 Escolha seu plano Synapse
             </h2>
@@ -1376,46 +1569,39 @@
 
             </div>
 
-            <div
-                class="bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col lg:flex-row relative shadow-2xl group hover:border-white/20 transition-all duration-500">
+            <div class="bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col lg:flex-row relative shadow-2xl group hover:border-white/20 transition-all duration-500">
 
                 <div class="flex-1 p-6 md:p-12 relative z-10">
 
                     <div class="flex items-center gap-3 mb-6">
                         <h3 class="text-2xl md:text-4xl font-bold text-white tracking-tight">
                             Synapse
-                            <span class="text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.8)] font-black ">
+                            <span class="text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.8)] font-black">
                                 ULTIMATE
                             </span>
                         </h3>
                     </div>
 
                     <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-xl">
-                        A experiência definitiva. Desbloqueie o sistema operacional completo com todas as integrações de
-                        IA e ferramentas de produtividade.
+                        A experiência definitiva. Desbloqueie o sistema operacional completo com todas as integrações de IA e ferramentas de produtividade.
                     </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
 
-                        <div
-                            class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
+                        <div class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
                                 <i class="fas fa-robot"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-white text-sm font-bold block mb-0.5 md:mb-1">Agente +
-                                    Dashboard</span>
+                                <span class="text-white text-sm font-bold block mb-0.5 md:mb-1">Agente + Dashboard</span>
                                 <span class="text-gray-500 text-[11px] md:text-xs leading-snug block">
                                     Dashboard Personalizada integrando com um Agente de IA dedicado.
                                 </span>
                             </div>
                         </div>
 
-                        <div
-                            class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
+                        <div class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
                                 <i class="fas fa-heartbeat"></i>
                             </div>
                             <div class="min-w-0">
@@ -1426,10 +1612,8 @@
                             </div>
                         </div>
 
-                        <div
-                            class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
+                        <div class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <div class="min-w-0">
@@ -1440,10 +1624,8 @@
                             </div>
                         </div>
 
-                        <div
-                            class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
+                        <div class="bg-white/[0.03] border border-white/5 p-3 md:p-4 rounded-xl flex items-start gap-3 md:gap-4 hover:bg-white/[0.05] transition-colors group">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center flex-shrink-0 text-red-600 group-hover:border-red-600/50 group-hover:shadow-[0_0_10px_rgba(220,38,38,0.2)] transition-all">
                                 <i class="fas fa-crosshairs"></i>
                             </div>
                             <div class="min-w-0">
@@ -1457,8 +1639,7 @@
                     </div>
                 </div>
 
-                <div
-                    class="w-full lg:w-[400px] bg-[#050505] border-t lg:border-t-0 lg:border-l border-white/10 p-8 md:p-12 flex flex-col justify-center relative">
+                <div class="w-full lg:w-[400px] bg-[#050505] border-t lg:border-t-0 lg:border-l border-white/10 p-8 md:p-12 flex flex-col justify-center relative">
 
                     <div class="text-center">
                         <span class="text-gray-500 line-through text-xs font-bold mb-2 block">De R$ 97,00</span>
@@ -1468,11 +1649,11 @@
                             <span class="text-6xl md:text-7xl font-black text-white tracking-tighter">27</span>
                             <span class="text-2xl text-gray-400 font-bold">,90</span>
                         </div>
-                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-6">Pagamento
-                            Único</span>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-6">
+                            Pagamento Único
+                        </span>
 
-                        <button onclick="fbq('track', 'InitiateCheckout'); iniciarFluxoCompra()"
-                            class="block w-full bg-white hover:bg-gray-200 text-black font-bold py-4 rounded-xl uppercase tracking-widest text-xs transition-colors shadow-lg flex items-center justify-center gap-2 mb-4 cursor-pointer">
+                        <button onclick="fbq('track', 'InitiateCheckout'); iniciarFluxoCompra()" class="block w-full bg-white hover:bg-gray-200 text-black font-bold py-4 rounded-xl uppercase tracking-widest text-xs transition-transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mb-4 cursor-pointer">
                             Desbloquear Acesso <i class="fas fa-arrow-right"></i>
                         </button>
 
@@ -1496,6 +1677,8 @@
                 </div>
             </div>
         </div>
+        </div>
+        
 
 
         <div class="w-full max-w-sm md:max-w-6xl relative z-10 reveal delay-100">
