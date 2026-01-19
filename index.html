@@ -157,6 +157,66 @@
             justify-content: center;
         }
 
+        /* --- HERO SECTION CENTRALIZADA --- */
+
+        .hero-section {
+            /* Garante que o conteúdo fique no meio da tela verticalmente */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-container-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* O segredo: Alinha itens (img, botões) no centro */
+            justify-content: center;
+            text-align: center;
+            /* Centraliza os textos */
+
+            width: 100%;
+            max-width: 900px;
+            /* Limita a largura para focar a visão (Style "Apple") */
+            margin: 0 auto;
+            /* Centraliza o bloco na página */
+            padding: 0 20px;
+            /* Margem de segurança para mobile */
+            z-index: 10;
+            /* Garante que fique acima do background */
+        }
+
+        /* Ajuste Fino na Descrição */
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #cccccc;
+
+            /* Centralização Visual */
+            max-width: 600px;
+            /* Impede que o texto estique até a borda */
+            margin: 24px auto;
+            /* Espaçamento vertical e centro horizontal */
+        }
+
+        /* Ajuste Fino nos Botões */
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            /* Centraliza os botões na linha */
+            align-items: center;
+            gap: 16px;
+            /* Espaço entre os botões */
+            flex-wrap: wrap;
+            /* Permite quebrar linha no mobile */
+            width: 100%;
+            margin-top: 10px;
+        }
+
         /* Fundo: Polvo e Luz */
         .hero-bg-overlay {
             position: absolute;
@@ -509,6 +569,267 @@
         .delay-300 {
             transition-delay: 0.3s;
         }
+
+        .font-inter-hero {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            /* Mudei de 900 para 700 (Bold) */
+            letter-spacing: -0.03em;
+            /* Ajustei levemente o espaçamento para não ficar tão apertado */
+            line-height: 1.1;
+            text-transform: none;
+        }
+        /* --- LAYOUT HÍBRIDO (MOBILE vs DESKTOP) --- */
+
+.hero-flex-layout {
+    display: flex;
+    flex-direction: column; /* Mobile: Um embaixo do outro */
+    align-items: center;
+    gap: 40px;
+    padding-top: 20px;
+    width: 100%;
+    max-width: 1200px; /* Largura máxima do site */
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- VERSÃO COMPUTADOR (TELAS GRANDES) --- */
+@media (min-width: 1024px) {
+    .hero-flex-layout {
+        flex-direction: row; /* Desktop: Lado a Lado */
+        align-items: center; /* Centraliza verticalmente */
+        justify-content: space-between; /* Espaço entre texto e imagem */
+        text-align: left; /* Texto alinhado à esquerda */
+        padding: 0 40px;
+        min-height: 80vh; /* Ocupa boa parte da tela */
+    }
+
+    /* Lado do Texto */
+    .hero-content-left {
+        flex: 1;
+        max-width: 550px; /* TRAVA DE LARGURA: Evita linhas longas */
+        padding-right: 20px;
+    }
+
+    /* Ajuste fino do Título no Desktop */
+    .hero-title {
+        text-align: left;
+        font-size: 3.5rem; /* Maior no PC */
+        line-height: 1.1;
+        margin-bottom: 24px;
+        max-width: 15ch; /* Força quebra de linha inteligente (aprox 3 palavras por linha) */
+    }
+
+    /* Ajuste da Descrição */
+    .hero-description {
+        text-align: left;
+        margin: 0 0 32px 0; /* Margem apenas embaixo */
+        font-size: 1.1rem;
+        max-width: 45ch; /* Garante no máximo ~3 linhas de texto */
+        color: #d4d4d4;
+    }
+
+    /* Botões à esquerda */
+    .hero-actions {
+        justify-content: flex-start; /* Alinha botões à esquerda */
+        gap: 20px;
+    }
+
+    /* Lado da Imagem */
+    .hero-visual-right {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end; /* Joga imagem para a direita */
+        position: relative;
+        max-width: 600px; /* Tamanho máximo da imagem */
+    }
+    
+    .note-img {
+        width: 100%;
+        height: auto;
+        transform: perspective(1000px) rotateY(-5deg) rotateX(2deg); /* Efeito 3D sutil */
+        transition: transform 0.5s ease;
+    }
+    
+    .hero-visual-right:hover .note-img {
+        transform: perspective(1000px) rotateY(0deg); /* Fica reto ao passar o mouse */
+    }
+}
+
+/* --- AJUSTE MOBILE (MANTÉM O PADRÃO) --- */
+@media (max-width: 1023px) {
+    .hero-content-left {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-visual-right {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+/* --- SYNAPSE TACTICAL: UPPERCASE & WATERMARK --- */
+@media (max-width: 1023px) {
+    
+    .hero-section {
+        height: 100dvh; /* Altura fixa para parecer um App */
+        background: #000;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Container Principal */
+    .hero-flex-layout {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px 24px 60px 24px;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 10;
+        gap: 0;
+    }
+
+    .hero-content-left { display: contents; }
+
+    /* 1. TÍTULO (CAIXA ALTA E AGRESSIVO) */
+    .hero-title {
+        order: 1;
+        font-family: 'Inter', sans-serif;
+        font-weight: 900; /* Peso máximo */
+        font-size: 2.2rem; /* Tamanho imponente */
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+        text-transform: uppercase; /* CAIXA ALTA */
+        text-align: left;
+        color: #fff;
+        margin-bottom: 16px;
+        
+        opacity: 0;
+        animation: slideUpFade 0.6s ease-out forwards;
+    }
+
+    .hero-title .gradient-red {
+        background: linear-gradient(90deg, #ff0000, #cc0000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        /* Sombra vermelha para destacar do fundo preto */
+        filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));
+    }
+
+    /* 2. SUBTÍTULO (Clean e Legível) */
+    .hero-description {
+        order: 2;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        color: #d4d4d4;
+        line-height: 1.5;
+        font-weight: 500;
+        text-align: left;
+        margin-bottom: 30px; /* Espaço para respirar antes dos botões */
+        
+        /* Mostra tudo (sem cortar texto) */
+        display: block; 
+        
+        opacity: 0;
+        animation: slideUpFade 0.6s ease-out forwards 0.1s;
+    }
+
+    /* 3. O POLVO (ESTRATÉGICO / BACKGROUND) */
+    .hero-visual-right {
+        order: 0; /* Ordem não importa pois é absolute, mas organizamos */
+        position: absolute; /* Sai do fluxo */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -40%); /* Centraliza e sobe um pouco */
+        width: 120%; /* Vaza um pouco a tela para parecer maior */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: -1; /* Fica ATRÁS do texto e botões */
+        pointer-events: none; /* Não atrapalha o clique */
+        
+        opacity: 0;
+        animation: pulseFade 2s ease-out forwards 0.3s;
+    }
+
+    .note-img {
+        width: 100%;
+        max-width: 400px; /* Grande */
+        height: auto;
+        opacity: 0.3; /* Transparência tática (Parece marca d'água) */
+        
+        mix-blend-mode: screen; /* Mistura com o fundo preto */
+    }
+
+    /* 4. BOTÕES (CAIXA ALTA E SÓLIDOS) */
+    .hero-actions {
+        order: 3;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: auto; /* Empurra para baixo se sobrar espaço */
+        
+        opacity: 0;
+        animation: slideUpFade 0.6s ease-out forwards 0.2s;
+    }
+
+    .hero-actions a {
+        font-family: 'Inter', sans-serif;
+        width: 100%;
+        justify-content: center;
+        padding: 18px;
+        border-radius: 4px; /* Cantos mais quadrados = Mais militar/tech */
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase; /* CAIXA ALTA */
+        letter-spacing: 1px;
+    }
+
+    /* Botão Principal: Branco Puro */
+    .btn-glass {
+        background: #fff;
+        color: #000;
+        border: none;
+        box-shadow: 0 0 30px rgba(255,255,255,0.1);
+    }
+    
+    /* Botão Secundário: Outline */
+    .btn-red-glow {
+        background: rgba(0,0,0,0.8);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+
+    /* 5. SETA SCROLL */
+    .scroll-indicator-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards 1.5s;
+    }
+    .arrow-down { color: rgba(255,255,255,0.3); font-size: 14px; animation: bounce 2s infinite; }
+
+    /* Remove extras */
+    .click-hint, .image-glow-back, .image-fade-bottom, .mouse-icon { display: none; }
+
+    /* Animações */
+    @keyframes slideUpFade { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulseFade { 0%{opacity:0; transform:translate(-50%, -40%) scale(0.9);} 100%{opacity:1; transform:translate(-50%, -40%) scale(1);} }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-5px);} 60%{transform:translateY(-3px);} }
+}
+
     </style>
 
 </head>
@@ -596,43 +917,39 @@
             <img src="assets/polvo_synapse.png" alt="Background" class="bg-polvo">
         </div>
 
-        <div class="container hero-container-vertical">
+        <div class="container hero-flex-layout">
+    
+    <div class="hero-content-left">
+        <h1 class="hero-title font-inter-hero">
+            Troque a Dopamina Barata <br>
+            <span class="gradient-red">Pelo Vício em Evoluir.</span>
+        </h1>
 
+        <p class="hero-description reveal">
+            O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a procrastinação e torna a disciplina automática.
+        </p>
 
-
-            <h1 class="hero-title reveal">
-                Troque a Dopamina Barata <br>
-                <span class="gradient-red">Pelo Vício em Evoluir.</span>
-            </h1>
-
-            <div class="hero-featured-image reveal"
-                onclick="document.getElementById('imageModal').classList.remove('hidden')">
-                <div class="image-glow-back"></div>
-                <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
-
-                <div class="image-fade-bottom"></div>
-
-                <div class="click-hint">
-                    <i class="fas fa-search-plus"></i> Clique para ampliar
-                </div>
-            </div>
-
-            <p class="hero-description reveal">
-                O primeiro sistema operacional com <strong>Agente de IA</strong> que organiza sua rotina, elimina a
-                procrastinação e torna a disciplina automática.
-            </p>
-
-            <div class="hero-actions reveal">
-                <a href="cadastro.html" class="btn-glass">
-                    Criar Conta Grátis
-                </a>
-                <a href="#planos" class="btn-red-glow">
-                    Ver Planos e Preços <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-
+        <div class="hero-actions reveal">
+            <a href="cadastro.html" class="btn-glass">
+                Criar Conta Grátis
+            </a>
+            <a href="#planos" class="btn-red-glow">
+                Ver Planos <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
+    </div>
 
+    <div class="hero-visual-right reveal" onclick="document.getElementById('imageModal').classList.remove('hidden')">
+        <div class="image-glow-back"></div>
+        <img src="assets/fotos posts.png" alt="Synapse Dashboard" class="note-img">
+        
+        <div class="click-hint">
+            <i class="fas fa-search-plus"></i> Ampliar
+        </div>
+        
+    </div>
+
+</div>
         <div class="scroll-indicator">
             <i class="fas fa-chevron-down"></i>
         </div>
@@ -640,7 +957,7 @@
 
     <div id="imageModal" class="hidden modal-overlay" onclick="this.classList.add('hidden')">
         <div class="modal-content">
-            <img src="assets/note.png" alt="Zoom">
+            <img src="assets/polvo.chat.png" alt="Zoom">
         </div>
     </div>
 
@@ -757,218 +1074,262 @@
 
     <!-- SEÇÃO FERRAMENTAS (Features) -->
     <section id="ferramentas" class="py-24 border-t border-white/5 relative overflow-hidden bg-black">
-  <!-- Padrão de fundo sutil -->
-  <div class="absolute inset-0 opacity-5 pointer-events-none bg-gradient-to-br from-red-600 via-transparent to-black"></div>
-  
-  <div class="container mx-auto px-6 relative z-10">
-    <!-- Cabeçalho da seção -->
-    <div class="text-center mb-20 reveal">
-      <span class="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">
-        Ferramentas Táticas
-      </span>
-      <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase leading-none">
-        O <span class="text-red-600">Cérebro</span> do Synapse
-      </h2>
-      <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto font-medium leading-relaxed">
-        Essas ferramentas foram criadas para transformar sua força de vontade em rotina. Mais foco, menos esforço.
-      </p>
-    </div>
-
-    <!-- Grade de ferramentas -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Exemplo de card -->
-      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
-        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-          <i class="fa-solid fa-trophy text-red-500 group-hover:text-red-600"></i>
+        <!-- Padrão de fundo sutil -->
+        <div
+            class="absolute inset-0 opacity-5 pointer-events-none bg-gradient-to-br from-red-600 via-transparent to-black">
         </div>
-        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-          Gamificação que Motiva
-        </h3>
-        <p class="text-gray-400 text-sm leading-relaxed">
-          Transforme tarefas chatas em pontos e suba de patente enquanto conclui metas de verdade. É divertido acompanhar seu avanço.
-        </p>
-      </div>
 
-      <!-- Assistente de IA -->
-      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
-        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-          <i class="fa-solid fa-robot text-red-500 group-hover:text-red-600"></i>
+        <div class="container mx-auto px-6 relative z-10">
+            <!-- Cabeçalho da seção -->
+            <div class="text-center mb-20 reveal">
+                <span class="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-4 block">
+                    Ferramentas Táticas
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight text-white uppercase leading-none">
+                    O <span class="text-red-600">Cérebro</span> do Synapse
+                </h2>
+                <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto font-medium leading-relaxed">
+                    Essas ferramentas foram criadas para transformar sua força de vontade em rotina. Mais foco, menos
+                    esforço.
+                </p>
+            </div>
+
+            <!-- Grade de ferramentas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Exemplo de card -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+                    <div
+                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+                        <i class="fa-solid fa-trophy text-red-500 group-hover:text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+                        Gamificação que Motiva
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Transforme tarefas chatas em pontos e suba de patente enquanto conclui metas de verdade. É
+                        divertido acompanhar seu avanço.
+                    </p>
+                </div>
+
+                <!-- Assistente de IA -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+                    <div
+                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+                        <i class="fa-solid fa-robot text-red-500 group-hover:text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+                        Assistente Inteligente
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Deixe o Synapse organizar, priorizar e lembrar de suas tarefas. Você libera espaço mental e se
+                        concentra no que importa.
+                    </p>
+                </div>
+
+                <!-- Métrica de Momentum -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-200">
+                    <div
+                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+                        <i class="fa-solid fa-fire text-red-500 group-hover:text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+                        Métrica de Momentum
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Visualize sua sequência de dias produtivos e não deixe a corrente quebrar. Seu painel torna
+                        viciante manter o ritmo.
+                    </p>
+                </div>
+
+                <!-- Automação de Rituais -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
+                    <div
+                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+                        <i class="fa-solid fa-repeat text-red-500 group-hover:text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+                        Automação de Rituais
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Crie rotinas automáticas para treino, leitura e trabalho profundo. Você não precisa decidir,
+                        apenas seguir o fluxo.
+                    </p>
+                </div>
+
+                <!-- Protocolo S.O.S. -->
+                <div
+                    class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
+                    <div
+                        class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
+                        <i class="fa-solid fa-heart-pulse text-red-500 group-hover:text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
+                        Protocolo S.O.S.
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Sentiu ansiedade ou bloqueou? Aperte o SOS e receba áudios e técnicas de respiração para retomar
+                        o foco em minutos.
+                    </p>
+                </div>
+
+                <!-- Card de Upsell -->
+                <div class="bg-gradient-to-br from-[#0a0a0a] to-[#1a0505] border border-red-900/30 p-8 rounded-2xl hover:scale-105 transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative shadow-[0_0_40px_rgba(204,0,0,0.1)]"
+                    onclick="window.location.href='#planos'">
+                    <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10"></div>
+                    <div class="relative z-10 flex flex-col items-center h-full justify-center">
+                        <h3 class="text-2xl font-black text-white mb-2 uppercase italic">Versão Ultimate</h3>
+                        <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">
+                            Acesso total ao sistema
+                        </p>
+                        <span
+                            class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded hover:bg-red-500 transition-all text-xs uppercase tracking-widest shadow-lg shadow-red-900/40">
+                            Desbloquear Agora <i class="fa-solid fa-unlock-keyhole"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA final -->
+
         </div>
-        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-          Assistente Inteligente
-        </h3>
-        <p class="text-gray-400 text-sm leading-relaxed">
-          Deixe o Synapse organizar, priorizar e lembrar de suas tarefas. Você libera espaço mental e se concentra no que importa.
-        </p>
-      </div>
-
-      <!-- Métrica de Momentum -->
-      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-200">
-        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-          <i class="fa-solid fa-fire text-red-500 group-hover:text-red-600"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-          Métrica de Momentum
-        </h3>
-        <p class="text-gray-400 text-sm leading-relaxed">
-          Visualize sua sequência de dias produtivos e não deixe a corrente quebrar. Seu painel torna viciante manter o ritmo.
-        </p>
-      </div>
-
-      <!-- Automação de Rituais -->
-      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal">
-        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-          <i class="fa-solid fa-repeat text-red-500 group-hover:text-red-600"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-          Automação de Rituais
-        </h3>
-        <p class="text-gray-400 text-sm leading-relaxed">
-          Crie rotinas automáticas para treino, leitura e trabalho profundo. Você não precisa decidir, apenas seguir o fluxo.
-        </p>
-      </div>
-
-      <!-- Protocolo S.O.S. -->
-      <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl hover:border-red-500 hover:bg-[#0f0f0f] transition duration-500 group reveal delay-100">
-        <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-red-500/30 transition">
-          <i class="fa-solid fa-heart-pulse text-red-500 group-hover:text-red-600"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-wide">
-          Protocolo S.O.S.
-        </h3>
-        <p class="text-gray-400 text-sm leading-relaxed">
-          Sentiu ansiedade ou bloqueou? Aperte o SOS e receba áudios e técnicas de respiração para retomar o foco em minutos.
-        </p>
-      </div>
-
-      <!-- Card de Upsell -->
-      <div class="bg-gradient-to-br from-[#0a0a0a] to-[#1a0505] border border-red-900/30 p-8 rounded-2xl hover:scale-105 transition duration-500 group reveal delay-200 cursor-pointer flex flex-col justify-center items-center text-center relative shadow-[0_0_40px_rgba(204,0,0,0.1)]"
-           onclick="window.location.href='#planos'">
-        <div class="absolute inset-0 bg-[url('assets/grid.png')] opacity-10"></div>
-        <div class="relative z-10 flex flex-col items-center h-full justify-center">
-          <h3 class="text-2xl font-black text-white mb-2 uppercase italic">Versão Ultimate</h3>
-          <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">
-            Acesso total ao sistema
-          </p>
-          <span class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded hover:bg-red-500 transition-all text-xs uppercase tracking-widest shadow-lg shadow-red-900/40">
-            Desbloquear Agora <i class="fa-solid fa-unlock-keyhole"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA final -->
-   
-  </div>
-</section>
+    </section>
 
 
     <!-- Seção Depoimentos -->
     <section id="depoimentos" class="py-24 border-t border-white/5 bg-[#080808] relative overflow-hidden">
-  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-  <div class="max-w-6xl mx-auto px-6 relative z-10">
-    <!-- Cabeçalho da seção -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 reveal">
-      <div>
-        <h3 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
-          Histórias reais<span class="text-red-600"> de transformação</span>
-        </h3>
-        <p class="text-gray-400 text-sm mt-2 font-medium">
-          Veja como o Synapse impactou a vida de pessoas como você.
-        </p>
-      </div>
-      <!-- Indicador de comunidade -->
-      <div class="mt-6 md:mt-0 flex items-center gap-4 bg-[#111] border border-white/10 px-5 py-3 rounded-full hover:border-red-600/30 transition">
-        <div class="flex -space-x-3">
-          <img class="w-8 h-8 rounded-full border-2 border-[#111]" src="https://down-br.img.susercontent.com/file/fbbfd61255488c41af9899d6a38cf741_tn" alt="">
-          <img class="w-8 h-8 rounded-full border-2 border-[#111]" src="https://down-br.img.susercontent.com/file/br-11134233-81z1k-mgtt2at1t1xh29_tn" alt="">
-          <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-[#111] flex items-center justify-center text-[10px] font-bold text-white">+1.000</div>
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] pointer-events-none">
         </div>
-        <div class="flex flex-col">
-          <span class="text-xs font-bold text-white">Membros ativos</span>
-          <span class="text-[9px] text-gray-500 uppercase tracking-wider">Comunidade elite</span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Depoimentos -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Depoimento 1 -->
-      <div class="reveal delay-100 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
-        <div class="flex justify-between items-start mb-6">
-          <div class="flex gap-4">
-            <img src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lzrys2g6qis528_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition" alt="">
-            <div>
-              <p class="text-sm font-bold text-white flex items-center gap-2">
-                Renan C. <i class="fas fa-check-circle text-red-600 text-xs"></i>
-              </p>
-              <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Compra verificada</p>
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <!-- Cabeçalho da seção -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 reveal">
+                <div>
+                    <h3 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
+                        Histórias reais<span class="text-red-600"> de transformação</span>
+                    </h3>
+                    <p class="text-gray-400 text-sm mt-2 font-medium">
+                        Veja como o Synapse impactou a vida de pessoas como você.
+                    </p>
+                </div>
+                <!-- Indicador de comunidade -->
+                <div
+                    class="mt-6 md:mt-0 flex items-center gap-4 bg-[#111] border border-white/10 px-5 py-3 rounded-full hover:border-red-600/30 transition">
+                    <div class="flex -space-x-3">
+                        <img class="w-8 h-8 rounded-full border-2 border-[#111]"
+                            src="https://down-br.img.susercontent.com/file/fbbfd61255488c41af9899d6a38cf741_tn" alt="">
+                        <img class="w-8 h-8 rounded-full border-2 border-[#111]"
+                            src="https://down-br.img.susercontent.com/file/br-11134233-81z1k-mgtt2at1t1xh29_tn" alt="">
+                        <div
+                            class="w-8 h-8 rounded-full bg-red-600 border-2 border-[#111] flex items-center justify-center text-[10px] font-bold text-white">
+                            +1.000</div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-white">Membros ativos</span>
+                        <span class="text-[9px] text-gray-500 uppercase tracking-wider">Comunidade elite</span>
+                    </div>
+                </div>
             </div>
-          </div>
-          <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
-        </div>
-        <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-          O agente me deu o empurrão que eu precisava. Parei de dar desculpas e comecei a agir. Vale cada centavo.
-        </p>
-        <div class="flex text-red-600 text-sm gap-1 opacity-80">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-        </div>
-      </div>
 
-      <!-- Depoimento 2 -->
-      <div class="reveal delay-200 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
-        <div class="flex justify-between items-start mb-6">
-          <div class="flex gap-4">
-            <img src="https://down-br.img.susercontent.com/file/12d7cea7f05165ec80151afdab869c0f_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition" alt="">
-            <div>
-              <p class="text-sm font-bold text-white flex items-center gap-2">
-                Lucas M. <i class="fas fa-check-circle text-red-600 text-xs"></i>
-              </p>
-              <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro verificado</p>
+            <!-- Depoimentos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Depoimento 1 -->
+                <div
+                    class="reveal delay-100 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/br-11134233-7r98o-lzrys2g6qis528_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition"
+                                alt="">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">
+                                    Renan C. <i class="fas fa-check-circle text-red-600 text-xs"></i>
+                                </p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Compra
+                                    verificada</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        O agente me deu o empurrão que eu precisava. Parei de dar desculpas e comecei a agir. Vale cada
+                        centavo.
+                    </p>
+                    <div class="flex text-red-600 text-sm gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <!-- Depoimento 2 -->
+                <div
+                    class="reveal delay-200 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/12d7cea7f05165ec80151afdab869c0f_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition"
+                                alt="">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">
+                                    Lucas M. <i class="fas fa-check-circle text-red-600 text-xs"></i>
+                                </p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro
+                                    verificado</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        Tenho TDAH e nada funcionava. Com o modo Foco consegui estudar 3 horas seguidas sem mexer no
+                        celular. Quem tem dificuldade de concentração precisa testar.
+                    </p>
+                    <div class="flex text-red-600 text-sm gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <!-- Depoimento 3 -->
+                <div
+                    class="reveal delay-300 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex gap-4">
+                            <img src="https://down-br.img.susercontent.com/file/880052fd019089a0eb398ed9d268b847_tn"
+                                class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition"
+                                alt="">
+                            <div>
+                                <p class="text-sm font-bold text-white flex items-center gap-2">
+                                    Juliana S. <i class="fas fa-check-circle text-red-600 text-xs"></i>
+                                </p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro elite
+                                </p>
+                            </div>
+                        </div>
+                        <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
+                        Agora sou viciada em manter minha sequência de dias produtivos. Antes eu procrastinava; agora
+                        fico motivada a cumprir minha meta diária. Melhor investimento que fiz no ano.
+                    </p>
+                    <div class="flex text-red-600 text-sm gap-1 opacity-80">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
             </div>
-          </div>
-          <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
-        </div>
-        <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-          Tenho TDAH e nada funcionava. Com o modo Foco consegui estudar 3 horas seguidas sem mexer no celular. Quem tem dificuldade de concentração precisa testar.
-        </p>
-        <div class="flex text-red-600 text-sm gap-1 opacity-80">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-        </div>
-      </div>
 
-      <!-- Depoimento 3 -->
-      <div class="reveal delay-300 bg-[#0a0a0a] border border-white/10 p-8 rounded-2xl group hover:border-red-600/40 transition relative hover:-translate-y-1">
-        <div class="flex justify-between items-start mb-6">
-          <div class="flex gap-4">
-            <img src="https://down-br.img.susercontent.com/file/880052fd019089a0eb398ed9d268b847_tn" class="w-12 h-12 rounded-full border border-white/10 grayscale group-hover:grayscale-0 transition" alt="">
-            <div>
-              <p class="text-sm font-bold text-white flex items-center gap-2">
-                Juliana S. <i class="fas fa-check-circle text-red-600 text-xs"></i>
-              </p>
-              <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Membro elite</p>
+            <!-- CTA final -->
+            <div class="mt-12 text-center reveal">
+                <a href="#planos" class="btn-red-glow px-6 py-4 text-sm uppercase tracking-widest">
+                    Junte-se à comunidade
+                </a>
             </div>
-          </div>
-          <i class="fas fa-quote-right text-red-900/20 text-4xl absolute top-6 right-6"></i>
         </div>
-        <p class="text-sm text-gray-300 leading-relaxed font-medium mb-4">
-          Agora sou viciada em manter minha sequência de dias produtivos. Antes eu procrastinava; agora fico motivada a cumprir minha meta diária. Melhor investimento que fiz no ano.
-        </p>
-        <div class="flex text-red-600 text-sm gap-1 opacity-80">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA final -->
-    <div class="mt-12 text-center reveal">
-      <a href="#planos" class="btn-red-glow px-6 py-4 text-sm uppercase tracking-widest">
-        Junte-se à comunidade
-      </a>
-    </div>
-  </div>
-</section>
+    </section>
 
 
     <!-- Seção Planos -->
