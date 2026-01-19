@@ -8,7 +8,9 @@ let chatHistory = [];
 // AJUSTE 1: Mudamos o padrão para o Agente Único
 let currentAgentKey = 'MENTOR'; 
 let messageCount = 0;
-
+const DIAGNOSE_PHASE = 2; // Quantas mensagens para entender o problema
+const PRE_LOCK_PHASE = 4; // Quando começar a prometer a solução
+const DEMO_LIMIT = 5;
 
 
 let userStatus = 'DEMO';

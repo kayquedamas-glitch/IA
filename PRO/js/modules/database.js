@@ -103,10 +103,15 @@ const Database = {
                     email: user.email, 
                     dados: window.AppEstado,
                     updated_at: new Date()
-                });
-            if (!error) ultimosDadosSalvos = dadosAtuais;
+                }, { onConflict: 'email' }); // <--- A CORREÇÃO ESTÁ AQUI
+
+            if (error) {
+                console.error("Erro ao salvar:", error);
+            } else {
+                ultimosDadosSalvos = dadosAtuais;
+            }
         }
-    },
+    },  
 
     async logEvent(nomeEvento, detalhe = "") {
         if (this.isDemo) return; // Não loga eventos na demo
