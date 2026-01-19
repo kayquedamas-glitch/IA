@@ -671,11 +671,11 @@
         max-width: 400px;
     }
 }
-/* --- SYNAPSE TACTICAL: UPPERCASE & WATERMARK --- */
+/* --- SYNAPSE TACTICAL REFINED (VISUAL FINAL) --- */
 @media (max-width: 1023px) {
     
     .hero-section {
-        height: 100dvh; /* Altura fixa para parecer um App */
+        min-height: 100dvh; /* Garante tela cheia */
         background: #000;
         position: relative;
         overflow: hidden;
@@ -683,77 +683,82 @@
         align-items: center;
     }
 
-    /* Container Principal */
+    /* Vignette Sutil (Escurece as bordas da tela para focar no centro) */
+    .hero-section::after {
+        content: ''; position: absolute; inset: 0;
+        background: radial-gradient(circle at center, transparent 60%, black 100%);
+        pointer-events: none; z-index: 1;
+    }
+
     .hero-flex-layout {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 20px 24px 60px 24px;
+        padding: 20px 24px 80px 24px;
         width: 100%;
         height: 100%;
         position: relative;
-        z-index: 10;
+        z-index: 10; /* Conteúdo acima da vinheta */
         gap: 0;
     }
 
     .hero-content-left { display: contents; }
 
-    /* 1. TÍTULO (CAIXA ALTA E AGRESSIVO) */
+    /* 1. TÍTULO (IMPACTO MACIÇO) */
     .hero-title {
         order: 1;
         font-family: 'Inter', sans-serif;
-        font-weight: 900; /* Peso máximo */
-        font-size: 2.2rem; /* Tamanho imponente */
-        line-height: 0.95;
-        letter-spacing: -0.02em;
-        text-transform: uppercase; /* CAIXA ALTA */
+        font-weight: 900;
+        font-size: 2.4rem; /* Um pouco maior */
+        line-height: 0.9;  /* Linhas bem juntas */
+        letter-spacing: -0.04em; /* Letras apertadas (Estilo Nike/Sports) */
+        text-transform: uppercase;
         text-align: left;
         color: #fff;
         margin-bottom: 16px;
         
         opacity: 0;
-        animation: slideUpFade 0.6s ease-out forwards;
+        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
     .hero-title .gradient-red {
-        background: linear-gradient(90deg, #ff0000, #cc0000);
+        /* Gradiente mais "vivo" */
+        background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        /* Sombra vermelha para destacar do fundo preto */
-        filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));
+        /* Brilho neon atrás do texto */
+        filter: drop-shadow(0 0 25px rgba(220, 38, 38, 0.5));
     }
 
-    /* 2. SUBTÍTULO (Clean e Legível) */
+    /* 2. SUBTÍTULO (CONTRASTE ALTO) */
     .hero-description {
         order: 2;
         font-family: 'Inter', sans-serif;
         font-size: 0.95rem;
-        color: #d4d4d4;
+        color: #e5e5e5; /* Quase branco para leitura fácil */
         line-height: 1.5;
         font-weight: 500;
         text-align: left;
-        margin-bottom: 30px; /* Espaço para respirar antes dos botões */
+        margin-bottom: 30px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8); /* Sombra para ler em cima do polvo */
         
-        /* Mostra tudo (sem cortar texto) */
         display: block; 
         
         opacity: 0;
-        animation: slideUpFade 0.6s ease-out forwards 0.1s;
+        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.1s;
     }
 
-    /* 3. O POLVO (ESTRATÉGICO / BACKGROUND) */
+    /* 3. O POLVO (INTEGRAÇÃO PERFEITA) */
     .hero-visual-right {
-        order: 0; /* Ordem não importa pois é absolute, mas organizamos */
-        position: absolute; /* Sai do fluxo */
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -40%); /* Centraliza e sobe um pouco */
-        width: 120%; /* Vaza um pouco a tela para parecer maior */
+        order: 0; 
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -45%); /* Centralizado */
+        width: 130%; /* Vaza a tela */
         display: flex;
         justify-content: center;
-        align-items: center;
-        z-index: -1; /* Fica ATRÁS do texto e botões */
-        pointer-events: none; /* Não atrapalha o clique */
+        z-index: -1;
+        pointer-events: none;
         
         opacity: 0;
         animation: pulseFade 2s ease-out forwards 0.3s;
@@ -761,74 +766,81 @@
 
     .note-img {
         width: 100%;
-        max-width: 400px; /* Grande */
+        max-width: 420px;
         height: auto;
-        opacity: 0.3; /* Transparência tática (Parece marca d'água) */
+        opacity: 0.4; /* Visível mas não briga com o texto */
+        filter: grayscale(100%) contrast(1.1);
         
-        mix-blend-mode: screen; /* Mistura com o fundo preto */
+        /* O SEGREDO: Máscara que apaga as bordas da imagem suavemente */
+        mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
     }
 
-    /* 4. BOTÕES (CAIXA ALTA E SÓLIDOS) */
+    /* 4. BOTÕES (EFEITO VIDRO) */
     .hero-actions {
         order: 3;
         width: 100%;
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-top: auto; /* Empurra para baixo se sobrar espaço */
+        margin-top: auto;
         
         opacity: 0;
-        animation: slideUpFade 0.6s ease-out forwards 0.2s;
+        animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
     }
 
     .hero-actions a {
-        font-family: 'Inter', sans-serif;
         width: 100%;
         justify-content: center;
         padding: 18px;
-        border-radius: 4px; /* Cantos mais quadrados = Mais militar/tech */
+        border-radius: 6px; /* Tech Style */
         font-size: 1rem;
         font-weight: 800;
-        text-transform: uppercase; /* CAIXA ALTA */
+        text-transform: uppercase;
         letter-spacing: 1px;
     }
 
-    /* Botão Principal: Branco Puro */
+    /* Botão Branco Puro */
     .btn-glass {
         background: #fff;
         color: #000;
         border: none;
-        box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Glow branco */
     }
     
-    /* Botão Secundário: Outline */
+    /* Botão Outline com Blur (Vidro) */
     .btn-red-glow {
-        background: rgba(0,0,0,0.8);
+        background: rgba(0, 0, 0, 0.3); /* Fundo semi-transparente */
         border: 1px solid rgba(255, 255, 255, 0.3);
         color: #fff;
+        backdrop-filter: blur(8px); /* Desfoca o polvo atrás do botão */
+        -webkit-backdrop-filter: blur(8px);
     }
 
     /* 5. SETA SCROLL */
     .scroll-indicator-container {
         position: absolute;
-        bottom: 20px;
+        bottom: 25px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 20;
         opacity: 0;
         animation: fadeIn 1s ease-out forwards 1.5s;
     }
-    .arrow-down { color: rgba(255,255,255,0.3); font-size: 14px; animation: bounce 2s infinite; }
+    .arrow-down { 
+        color: rgba(255,255,255,0.4); 
+        font-size: 14px; 
+        animation: bounce 2s infinite; 
+    }
 
-    /* Remove extras */
     .click-hint, .image-glow-back, .image-fade-bottom, .mouse-icon { display: none; }
 
-    /* Animações */
-    @keyframes slideUpFade { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes pulseFade { 0%{opacity:0; transform:translate(-50%, -40%) scale(0.9);} 100%{opacity:1; transform:translate(-50%, -40%) scale(1);} }
+    /* ANIMAÇÕES SUAVES */
+    @keyframes slideUpFade { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulseFade { 0%{opacity:0; transform:translate(-50%, -45%) scale(0.9);} 100%{opacity:1; transform:translate(-50%, -45%) scale(1);} }
     @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
     @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-5px);} 60%{transform:translateY(-3px);} }
-}
+}   
 
     </style>
 
