@@ -136,43 +136,7 @@
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
-    <div id="welcomeTourModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="welcomeBackdrop">
-        </div>
-
-        <div id="welcomeCard"
-            class="relative bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl transform scale-95 opacity-0 transition-all duration-500">
-
-            <div
-                class="w-20 h-20 bg-gradient-to-br from-[#1a0505] to-black rounded-full mx-auto mb-6 flex items-center justify-center border border-red-900/30 relative">
-                <div class="absolute inset-0 rounded-full border border-red-500/20 animate-ping"></div>
-                <img src="PRO/icone preto.png" class="w-8 h-8 opacity-80 invert">
-            </div>
-
-            <h2 class="text-2xl font-black text-white uppercase tracking-tighter mb-2">
-                Olá, <span id="welcomeUserName"
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Usuário</span>
-            </h2>
-
-            <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-8 px-4">
-                Bem-vindo ao <b>Synapse Neural OS</b>. Gostaria de fazer um tour rápido para conhecer as ferramentas e
-                funções do seu novo sistema operacional?
-            </p>
-
-            <div class="space-y-3">
-                <button onclick="iniciarTour()"
-                    class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 group">
-                    <span>Iniciar Tour</span>
-                    <i class="fa-solid fa-flag-checkered group-hover:translate-x-1 transition-transform"></i>
-                </button>
-
-                <button onclick="pularTour()"
-                    class="w-full bg-transparent hover:bg-white/5 text-gray-500 hover:text-white font-bold uppercase text-[10px] tracking-widest py-3 rounded-xl transition-colors">
-                    Não, já conheço o sistema
-                </button>
-            </div>
-        </div>
-    </div>
+    
 
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300">
     </div>
