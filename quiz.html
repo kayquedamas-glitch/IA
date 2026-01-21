@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocolo Neuro-Audit | Synapse</title>
-    
+
     <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
-        body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
 
         /* Fundo Grid + Polvo (Identidade Synapse) */
         .bg-ambient {
-            position: fixed; inset: 0; z-index: -10; pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            pointer-events: none;
             background-color: #050505;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
         }
 
         /* Animações do Sistema */
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-        .progress-bar { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
         /* Cards de Opção */
         .option-card {
@@ -37,11 +63,13 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.2s ease;
         }
+
         .option-card:hover {
             background: rgba(204, 0, 0, 0.1);
             border-color: rgba(204, 0, 0, 0.5);
             transform: translateX(4px);
         }
+
         .option-card.selected {
             background: rgba(204, 0, 0, 0.2);
             border-color: #cc0000;
@@ -49,44 +77,102 @@
         }
 
         /* Efeito Glitch no Título */
-        .glitch-wrapper { position: relative; display: inline-block; }
-        .glitch-wrapper::before, .glitch-wrapper::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
         }
-        .glitch-wrapper::before { left: 2px; text-shadow: -1px 0 #00ffff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
-        .glitch-wrapper::after { left: -2px; text-shadow: -1px 0 #ff00ff; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
-        
-        @keyframes glitch-anim { 0% { clip: rect(14px, 9999px, 122px, 0); } 100% { clip: rect(89px, 9999px, 92px, 0); } }
-        @keyframes glitch-anim2 { 0% { clip: rect(69px, 9999px, 86px, 0); } 100% { clip: rect(3px, 9999px, 55px, 0); } }
+
+        .glitch-wrapper::before,
+        .glitch-wrapper::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-wrapper::before {
+            left: 2px;
+            text-shadow: -1px 0 #00ffff;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-wrapper::after {
+            left: -2px;
+            text-shadow: -1px 0 #ff00ff;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(14px, 9999px, 122px, 0);
+            }
+
+            100% {
+                clip: rect(89px, 9999px, 92px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(69px, 9999px, 86px, 0);
+            }
+
+            100% {
+                clip: rect(3px, 9999px, 55px, 0);
+            }
+        }
 
         /* Animação Flutuante do Polvo */
-        .animate-float-slow { animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.05); } 50% { transform: translateY(-15px) scale(1); } }
+        .animate-float-slow {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1.05);
+            }
+
+            50% {
+                transform: translateY(-15px) scale(1);
+            }
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col selection:bg-red-900 selection:text-white">
 
     <div class="bg-ambient">
-        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-red-600/10 blur-[120px] rounded-full animate-pulse"></div>
-        <img src="assets/polvo_synapse.png" alt="Synapse AI" class="absolute bottom-[-10%] left-[-10%] w-[50%] md:w-[30%] opacity-10 mix-blend-screen animate-float-slow pointer-events-none">
+        <div
+            class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-red-600/10 blur-[120px] rounded-full animate-pulse">
+        </div>
+        <img src="assets/polvo_synapse.png" alt="Synapse AI"
+            class="absolute bottom-[-10%] left-[-10%] w-[50%] md:w-[30%] opacity-10 mix-blend-screen animate-float-slow pointer-events-none">
     </div>
-    
+
     <div class="fixed top-0 left-0 w-full h-1 bg-[#111] z-50">
-        <div id="top-progress" class="h-full bg-gradient-to-r from-red-800 to-red-500 w-0 progress-bar shadow-[0_0_10px_#ef4444]"></div>
+        <div id="top-progress"
+            class="h-full bg-gradient-to-r from-red-800 to-red-500 w-0 progress-bar shadow-[0_0_10px_#ef4444]"></div>
     </div>
 
     <div class="flex-grow flex items-center justify-center p-6 w-full max-w-2xl mx-auto my-auto relative z-10">
         <div id="quiz-area" class="w-full">
-            </div>
+        </div>
     </div>
 
-    <footer class="text-center py-6 text-[10px] text-gray-700 font-mono uppercase tracking-widest fixed bottom-0 w-full pointer-events-none">
+    <footer
+        class="text-center py-6 text-[10px] text-gray-700 font-mono uppercase tracking-widest fixed bottom-0 w-full pointer-events-none">
         Synapse Neural OS &copy; 2025
     </footer>
 
     <script>
         // --- LÓGICA DO SISTEMA ---
-        
+
         // Fases e Perguntas (Mantive sua copy que está ótima)
         const phases = [
             { name: "FASE 1: BIOQUÍMICA", questions: [0, 1] },
@@ -95,72 +181,72 @@
         ];
 
         const questions = [
-  // Fase 1
-  {
-    text: "Ao acordar, qual é a primeira coisa que você faz?",
-    options: [
-      { label: "Pego o celular e fico rolando redes sociais", score: 0, pain: "Vício em Dopamina" },
-      { label: "Já acordo pensando nos problemas do dia", score: 5, pain: "Ansiedade" },
-      { label: "Levanto e começo minhas tarefas", score: 20 }
-    ]
-  },
-  {
-    text: "Você se sente mentalmente esgotado antes do meio‑dia?",
-    options: [
-      { label: "Sim, parece que minha mente está nublada", score: 0, pain: "Cansaço Mental" },
-      { label: "Apenas quando tenho tarefas que não gosto", score: 10, pain: "Falta de Interesse" },
-      { label: "Não, mantenho minha energia constante", score: 20 }
-    ]
-  },
-  // Fase 2
-  {
-    text: "Quando você define uma meta desafiadora, como você se sente?",
-    options: [
-      { label: "Fico paralisado, sei o que quero mas não começo", score: 0, pain: "Paralisia" },
-      { label: "Planejo demais e não saio do lugar", score: 5, pain: "Overthinking" },
-      { label: "Divido em etapas pequenas e começo a agir", score: 20 }
-    ]
-  },
-  {
-    text: "Você costuma começar vários projetos ao mesmo tempo ou termina o que começa?",
-    options: [
-      { label: "Começo várias coisas e concluo poucas", score: 0, pain: "Falta de Foco" },
-      { label: "Foco em uma tarefa, mas me distraio facilmente", score: 5, pain: "Distrações" },
-      { label: "Concentro‑me em uma tarefa até terminar", score: 20 }
-    ]
-  },
-  {
-    text: "Ontem você passou mais tempo no celular do que produzindo?",
-    options: [
-      { label: "Sim, fiquei bastante tempo distraído no celular", score: 0, pain: "Distração Digital" },
-      { label: "Foi equilibrado: trabalho e celular empataram", score: 10, pain: "Equilíbrio Precário" },
-      { label: "Não, usei o celular apenas como ferramenta de apoio", score: 20 }
-    ]
-  },
-  // Fase 3
-  {
-    text: "Como você reage quando falha na dieta ou em uma tarefa?",
-    options: [
-      { label: "Fico me culpando e prometo tentar amanhã", score: 0, pain: "Autocrítica Excessiva" },
-      { label: "Me justifico dizendo que mereço um descanso", score: 5, pain: "Auto-Sabotagem" },
-      { label: "Analiso onde errei e ajusto o caminho", score: 20 }
-    ]
-  },
-  {
-    text: "Por que você acha que ainda não atingiu seu potencial?",
-    options: [
-      { label: "Sei o que devo fazer, mas tenho dificuldade em agir", score: 0, pain: "Gap de Execução" },
-      { label: "Sinto que me esforço, mas não saio do lugar", score: 5, pain: "Falta de Método" },
-      { label: "Acredito que estou evoluindo no meu ritmo", score: 20 }
-    ]
-  }
-];
+            // Fase 1
+            {
+                text: "Ao acordar, qual é a primeira coisa que você faz?",
+                options: [
+                    { label: "Pego o celular e fico rolando redes sociais", score: 0, pain: "Vício em Dopamina" },
+                    { label: "Já acordo pensando nos problemas do dia", score: 5, pain: "Ansiedade" },
+                    { label: "Levanto e começo minhas tarefas", score: 20 }
+                ]
+            },
+            {
+                text: "Você se sente mentalmente esgotado antes do meio‑dia?",
+                options: [
+                    { label: "Sim, parece que minha mente está nublada", score: 0, pain: "Cansaço Mental" },
+                    { label: "Apenas quando tenho tarefas que não gosto", score: 10, pain: "Falta de Interesse" },
+                    { label: "Não, mantenho minha energia constante", score: 20 }
+                ]
+            },
+            // Fase 2
+            {
+                text: "Quando você define uma meta desafiadora, como você se sente?",
+                options: [
+                    { label: "Fico paralisado, sei o que quero mas não começo", score: 0, pain: "Paralisia" },
+                    { label: "Planejo demais e não saio do lugar", score: 5, pain: "Overthinking" },
+                    { label: "Divido em etapas pequenas e começo a agir", score: 20 }
+                ]
+            },
+            {
+                text: "Você costuma começar vários projetos ao mesmo tempo ou termina o que começa?",
+                options: [
+                    { label: "Começo várias coisas e concluo poucas", score: 0, pain: "Falta de Foco" },
+                    { label: "Foco em uma tarefa, mas me distraio facilmente", score: 5, pain: "Distrações" },
+                    { label: "Concentro‑me em uma tarefa até terminar", score: 20 }
+                ]
+            },
+            {
+                text: "Ontem você passou mais tempo no celular do que produzindo?",
+                options: [
+                    { label: "Sim, fiquei bastante tempo distraído no celular", score: 0, pain: "Distração Digital" },
+                    { label: "Foi equilibrado: trabalho e celular empataram", score: 10, pain: "Equilíbrio Precário" },
+                    { label: "Não, usei o celular apenas como ferramenta de apoio", score: 20 }
+                ]
+            },
+            // Fase 3
+            {
+                text: "Como você reage quando falha na dieta ou em uma tarefa?",
+                options: [
+                    { label: "Fico me culpando e prometo tentar amanhã", score: 0, pain: "Autocrítica Excessiva" },
+                    { label: "Me justifico dizendo que mereço um descanso", score: 5, pain: "Auto-Sabotagem" },
+                    { label: "Analiso onde errei e ajusto o caminho", score: 20 }
+                ]
+            },
+            {
+                text: "Por que você acha que ainda não atingiu seu potencial?",
+                options: [
+                    { label: "Sei o que devo fazer, mas tenho dificuldade em agir", score: 0, pain: "Gap de Execução" },
+                    { label: "Sinto que me esforço, mas não saio do lugar", score: 5, pain: "Falta de Método" },
+                    { label: "Acredito que estou evoluindo no meu ritmo", score: 20 }
+                ]
+            }
+        ];
 
 
         let currentQ = 0;
         let totalScore = 0;
         let dominantPain = "Falta de Clareza";
-        let painCount = {}; 
+        let painCount = {};
 
         // INICIALIZAÇÃO
         showIntro();
@@ -200,7 +286,7 @@
         function renderQuestion() {
             const q = questions[currentQ];
             const area = document.getElementById('quiz-area');
-            
+
             // Lógica da barra de progresso e fase
             let currentPhase = phases.find(p => p.questions.includes(currentQ)).name;
             const progress = ((currentQ + 1) / questions.length) * 100;
@@ -237,12 +323,12 @@
         function handleOption(element, score, pain) {
             // Feedback visual de clique
             element.classList.add('selected');
-            
+
             // Computa dados
             totalScore += score;
             if (pain && score < 15) {
                 painCount[pain] = (painCount[pain] || 0) + 1;
-                dominantPain = pain; 
+                dominantPain = pain;
             }
 
             // Delay para próxima pergunta
@@ -259,7 +345,7 @@
         function showAnalyzing() {
             document.getElementById('top-progress').style.width = '100%';
             const area = document.getElementById('quiz-area');
-            
+
             area.innerHTML = `
                 <div class="flex flex-col items-center justify-center py-20 text-center fade-in-up">
                     <div class="relative mb-8">
@@ -275,7 +361,7 @@
                     </div>
                 </div>
             `;
-            
+
             // Animação da barra fake via JS para garantir sync
             setTimeout(() => document.getElementById('loading-bar').style.width = '100%', 100);
 
@@ -300,11 +386,11 @@
 
         function showSalesArgument() {
             const area = document.getElementById('quiz-area');
-            
+
             let nivel = "NÍVEL: CRÍTICO";
             let titulo = "MODO DE SOBREVIVÊNCIA";
             let cor = "text-red-500";
-            
+
             if (totalScore > 40) {
                 nivel = "NÍVEL: CIVIL";
                 titulo = "FALTA MÉTODO";
@@ -368,9 +454,11 @@
         }
 
         function goToApp() {
-            // REDIRECIONA PARA A ÁREA DE PLANOS DA LANDING PAGE
-            window.location.href = "demo.html";
-        }
+  // leva para os slides pós-quiz (estilo das imagens)
+  window.location.href = "onboarding.html";
+}
+
     </script>
 </body>
+
 </html>
