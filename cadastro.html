@@ -42,42 +42,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-
-        /* Animação de Erro */
-        .shake-anim {
-            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
-        }
-
-        @keyframes shake {
-
-            10%,
-            90% {
-                transform: translate3d(-1px, 0, 0);
-            }
-
-            20%,
-            80% {
-                transform: translate3d(2px, 0, 0);
-            }
-
-            30%,
-            50%,
-            70% {
-                transform: translate3d(-4px, 0, 0);
-            }
-
-            40%,
-            60% {
-                transform: translate3d(4px, 0, 0);
-            }
-        }
     </style>
 </head>
 
 <body class="h-full flex overflow-hidden">
 
-    <div
-        class="hidden md:flex w-1/2 bg-[#050505] relative items-center justify-center overflow-hidden border-r border-white/5">
+    <div class="hidden md:flex w-1/2 bg-[#050505] relative items-center justify-center overflow-hidden border-r border-white/5">
 
         <img src="polvo_synapse.png"
             class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity scale-110"
@@ -86,14 +56,11 @@
         <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] opacity-90"></div>
         <div class="absolute inset-0 bg-black/40"></div>
 
-        <div
-            class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#CC0000] rounded-full blur-[180px] opacity-10 animate-pulse">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#CC0000] rounded-full blur-[180px] opacity-10 animate-pulse">
         </div>
 
-        <div
-            class="glass-card relative z-10 p-10 rounded-3xl max-w-sm text-center transform hover:scale-[1.02] transition-transform duration-500 backdrop-blur-md">
-            <div
-                class="w-20 h-20 bg-gradient-to-br from-[#CC0000] to-[#600000] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-red-900/30">
+        <div class="glass-card relative z-10 p-10 rounded-3xl max-w-sm text-center transform hover:scale-[1.02] transition-transform duration-500 backdrop-blur-md">
+            <div class="w-20 h-20 bg-gradient-to-br from-[#CC0000] to-[#600000] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-red-900/30">
                 <img src="logo_synapse.png" class="w-full h-full object-cover rounded-2xl opacity-80 mix-blend-screen">
             </div>
 
@@ -102,20 +69,16 @@
                 Crie sua conta gratuita agora e comece a organizar sua mente com a metodologia PRO.
             </p>
 
-            <div
-                class="flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+            <div class="flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Cadastro Liberado
             </div>
         </div>
     </div>
 
-    <div
-        class="w-full md:w-1/2 bg-[#050505] bg-grid-pattern flex flex-col justify-center items-center p-6 relative overflow-y-auto">
+    <div class="w-full md:w-1/2 bg-[#050505] bg-grid-pattern flex flex-col justify-center items-center p-6 relative overflow-y-auto">
 
-        <a href="index.html"
-            class="absolute top-6 left-6 z-50 flex items-center gap-2 text-gray-500 hover:text-[#CC0000] transition-colors group">
-            <div
-                class="w-8 h-8 rounded-full border border-gray-800 flex items-center justify-center group-hover:border-[#CC0000] transition-colors bg-[#050505]">
+        <a href="index.html" class="absolute top-6 left-6 z-50 flex items-center gap-2 text-gray-500 hover:text-[#CC0000] transition-colors group">
+            <div class="w-8 h-8 rounded-full border border-gray-800 flex items-center justify-center group-hover:border-[#CC0000] transition-colors bg-[#050505]">
                 <i class="fas fa-arrow-left text-sm group-hover:-translate-x-1 transition-transform"></i>
             </div>
             <span class="text-xs font-bold uppercase tracking-wider hidden md:block">Voltar</span>
@@ -140,8 +103,7 @@
                     <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Nome Completo</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i
-                                class="far fa-user text-gray-500 group-focus-within:text-[#CC0000] transition-colors"></i>
+                            <i class="far fa-user text-gray-500 group-focus-within:text-[#CC0000] transition-colors"></i>
                         </div>
                         <input type="text" id="nome"
                             class="w-full bg-[#121212] border border-[#222] text-white text-sm rounded-xl py-3.5 pl-12 pr-4 outline-none focus:border-[#CC0000] focus:ring-1 focus:ring-[#CC0000] transition-all placeholder-gray-700 shadow-inner"
@@ -153,8 +115,7 @@
                     <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">E-mail</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i
-                                class="far fa-envelope text-gray-500 group-focus-within:text-[#CC0000] transition-colors"></i>
+                            <i class="far fa-envelope text-gray-500 group-focus-within:text-[#CC0000] transition-colors"></i>
                         </div>
                         <input type="email" id="email"
                             class="w-full bg-[#121212] border border-[#222] text-white text-sm rounded-xl py-3.5 pl-12 pr-4 outline-none focus:border-[#CC0000] focus:ring-1 focus:ring-[#CC0000] transition-all placeholder-gray-700 shadow-inner"
@@ -162,159 +123,133 @@
                     </div>
                 </div>
 
-                <div id="errorMsg"
-                    class="hidden bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-pulse">
+                <div id="errorMsg" class="hidden bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-lg text-xs font-bold flex items-center gap-2 animate-pulse">
                     <i class="fas fa-exclamation-circle"></i> <span id="errorText">Erro no cadastro.</span>
                 </div>
 
-                <button type="submit" id="btnSubmit"
-                    class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-red-900/20 group flex items-center justify-center gap-2 mt-4">
+                <button type="submit" id="btnSubmit" class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-red-900/20 group flex items-center justify-center gap-2 mt-4">
                     <span>Criar Conta</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </button>
 
             </form>
+
             <div class="mt-8 pt-6 border-t border-white/5 text-center">
-    
-    <p class="text-xs text-gray-500 font-medium mb-4 uppercase tracking-widest">
-        Já possui cadastro?
-    </p>
-    
-    <div class="space-y-3">
-        
-        <button onclick="irParaLoginNormal()" 
-                class="group w-full bg-[#0A0A0A] hover:bg-[#111] border border-[#222] hover:border-white/20 text-gray-400 hover:text-white font-bold py-3.5 rounded-xl transition-all duration-300 uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-3">
-            <span>Acessar Conta</span>
-            <i class="fas fa-sign-in-alt text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-transform"></i>
-        </button>
-
-    </div>
-</div>
-
-<script>
-    // Função para quem quer SÓ ENTRAR (Sem Upgrade)
-    function irParaLoginNormal() {
-        window.location.href = 'PRO/login.html';
-    }
-
-    // Função para quem quer COMPRAR
-    function irParaLoginUpgrade() {
-        window.location.href = 'PRO/login.html?intent=upgrade';
-    }
-</script>
-
+                <p class="text-xs text-gray-500 font-medium mb-4 uppercase tracking-widest">
+                    Já possui cadastro?
+                </p>
+                <div class="space-y-3">
+                    <button onclick="irParaLoginNormal()" class="group w-full bg-[#0A0A0A] hover:bg-[#111] border border-[#222] hover:border-white/20 text-gray-400 hover:text-white font-bold py-3.5 rounded-xl transition-all duration-300 uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-3">
+                        <span>Acessar Conta</span>
+                        <i class="fas fa-sign-in-alt text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
 
         </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-        <script>
-    // --- SUAS CREDENCIAIS ---
-    const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
-    const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
-    
-    // LINK DO PLANO ULTIMATE (R$ 27,90)
-    const LINK_ULTIMATE = "https://pay.kiwify.com.br/YzOIskc"; 
-
-    window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY)
-
-    // Função para quem já tem conta
-    function irParaLoginNormal() { window.location.href = 'PRO/login.html'; }
-    function irParaLoginUpgrade() { window.location.href = 'PRO/login.html?intent=upgrade'; }
-
-    document.getElementById('registerForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+    <script>
+        // --- SUAS CREDENCIAIS ---
+        const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co'; 
+        const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
         
-        const nome = document.getElementById('nome').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const btn = document.getElementById('btnSubmit');
-        const errorMsg = document.getElementById('errorMsg');
-        const originalText = btn.innerHTML;
+        // LINK DO PLANO ULTIMATE (R$ 27,90)
+        const LINK_ULTIMATE = "https://pay.kiwify.com.br/YzOIskc"; 
 
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CRIANDO CONTA...';
-        btn.disabled = true;
-        errorMsg.classList.add('hidden');
-        
-        try {
-    // 1. Verifica se já existe
-    const { data: existente } = await _supabase
-        .from('clientes_vip')
-        .select('email')
-        .eq('email', email)
-        .single();
+        window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY)
 
-    if (existente) throw new Error("Este e-mail já possui cadastro! Faça Login.");
+        function irParaLoginNormal() { window.location.href = 'PRO/login.html'; }
 
-    // 2. Cria conta e PEGA O ID
-    const { data: novoUsuario, error: erroInsert } = await _supabase
-        .from('clientes_vip')
-        .insert([{ nome: nome, email: email, status: 'free', created_at: new Date() }])
-        .select()
-        .single();
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const btn = document.getElementById('btnSubmit');
+            const errorMsg = document.getElementById('errorMsg');
+            const originalText = btn.innerHTML;
 
-    if (erroInsert) throw erroInsert;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CRIANDO CONTA...';
+            btn.disabled = true;
+            errorMsg.classList.add('hidden');
+            
+            try {
+                // 1. Verifica se já existe
+                const { data: existente } = await _supabase
+                    .from('clientes_vip')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
 
-    // --- [MUDANÇA 1] SALVAR SESSÃO SEGURA ---
-    // Usamos sessionStorage. Se fechar o navegador, desloga (padrão seguro).
-    sessionStorage.setItem('synapse_session', JSON.stringify({
-        email: email, nome: nome, status: 'free', entrada: new Date().toISOString()
-    }));
+                if (existente) throw new Error("Este e-mail já possui cadastro! Faça Login.");
 
-    // Opcional: Garante que não sobrou lixo antigo de login
-    localStorage.removeItem('synapse_user'); 
+                // 2. Cria conta e PEGA O ID
+                const { data: novoUsuario, error: erroInsert } = await _supabase
+                    .from('clientes_vip')
+                    .insert([{ nome: nome, email: email, status: 'free', created_at: new Date() }])
+                    .select()
+                    .single();
 
-    // 3. IDENTIFICA PARA ONDE MANDAR
-    const params = new URLSearchParams(window.location.search);
-    const intent = params.get('intent');
-    const checkoutCode = params.get('checkout');
+                if (erroInsert) throw erroInsert;
 
-    if (intent === 'upgrade') {
-        // >>> CENÁRIO 1: ULTIMATE (27,90)
-        btn.innerHTML = 'INDO PARA CHECKOUT...';
-        const checkoutUrl = new URL(LINK_ULTIMATE);
-        checkoutUrl.searchParams.set('email', email);
-        checkoutUrl.searchParams.set('name', nome);
-        if (novoUsuario?.id) checkoutUrl.searchParams.set('custom_id', novoUsuario.id);
-        
-        setTimeout(() => { window.location.href = checkoutUrl.toString(); }, 1000);
+                // --- [CORREÇÃO] SALVAR SESSÃO COMPATÍVEL COM LOGIN.HTML ---
+                localStorage.setItem('synapse_user', JSON.stringify({
+                    email: email, 
+                    nome: nome, 
+                    status: 'free', 
+                    entrada: new Date().toISOString()
+                }));
 
-    } else if (checkoutCode) {
-        // >>> CENÁRIO 2: OFERTA ESPECIAL (19,90)
-        btn.innerHTML = 'APROVEITANDO OFERTA...';
-        const ofertaUrl = new URL(`https://pay.kiwify.com.br/${checkoutCode}`);
-        ofertaUrl.searchParams.set('email', email);
-        ofertaUrl.searchParams.set('name', nome);
-        if (novoUsuario?.id) ofertaUrl.searchParams.set('custom_id', novoUsuario.id);
+                // 3. IDENTIFICA PARA ONDE MANDAR
+                const params = new URLSearchParams(window.location.search);
+                const intent = params.get('intent');
+                const checkoutCode = params.get('checkout');
 
-        setTimeout(() => { window.location.href = ofertaUrl.toString(); }, 1000);
+                if (intent === 'upgrade') {
+                    // >>> CENÁRIO 1: CHECKOUT ULTIMATE
+                    btn.innerHTML = 'INDO PARA CHECKOUT...';
+                    const checkoutUrl = new URL(LINK_ULTIMATE);
+                    checkoutUrl.searchParams.set('email', email);
+                    checkoutUrl.searchParams.set('name', nome);
+                    if (novoUsuario?.id) checkoutUrl.searchParams.set('custom_id', novoUsuario.id);
+                    
+                    setTimeout(() => { window.location.href = checkoutUrl.toString(); }, 1000);
 
-    } else {
-        // >>> CENÁRIO 3: FLUXO PADRÃO
-        // [MUDANÇA 2] Mandamos para o PAINEL (PRO/index.html).
-        // Motivo: É lá que o script 'database.js' vai rodar, detectar que é um login novo,
-        // pegar os dados do Quiz (que estão no localStorage) e salvar na nuvem (Supabase).
-        
-        btn.innerHTML = '<i class="fas fa-check"></i> CONTA CRIADA!';
-        btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
-        
-        setTimeout(() => { 
-            window.location.href = "PRO/index.html"; 
-        }, 1500);
-    }
+                } else if (checkoutCode) {
+                    // >>> CENÁRIO 2: OFERTA ESPECIAL
+                    btn.innerHTML = 'APROVEITANDO OFERTA...';
+                    const ofertaUrl = new URL(`https://pay.kiwify.com.br/${checkoutCode}`);
+                    ofertaUrl.searchParams.set('email', email);
+                    ofertaUrl.searchParams.set('name', nome);
+                    if (novoUsuario?.id) ofertaUrl.searchParams.set('custom_id', novoUsuario.id);
 
-}catch (error) {
-            console.error(error);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            // Se tiver elemento de texto de erro, usa, senão usa o padrão
-            const txtErro = document.getElementById('errorText') || errorMsg;
-            txtErro.textContent = error.message || "Erro ao cadastrar.";
-            errorMsg.classList.remove('hidden');
-        }
-    });
-</script>
+                    setTimeout(() => { window.location.href = ofertaUrl.toString(); }, 1000);
+
+                } else {
+                    // >>> CENÁRIO 3: FLUXO PADRÃO (REDIRECIONAR PARA QUIZ)
+                    // O usuário criou a conta, agora vai fazer o diagnóstico.
+                    
+                    btn.innerHTML = '<i class="fas fa-check"></i> CONTA CRIADA!';
+                    btn.classList.replace('bg-[#CC0000]', 'bg-green-600');
+                    
+                    setTimeout(() => { 
+                        window.location.href = "quiz.html"; 
+                    }, 1500);
+                }
+
+            } catch (error) {
+                console.error(error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                const txtErro = document.getElementById('errorText') || errorMsg;
+                txtErro.textContent = error.message || "Erro ao cadastrar.";
+                errorMsg.classList.remove('hidden');
+            }
+        });
+    </script>
 
 </body>
-
 </html>
