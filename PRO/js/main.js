@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verifica qual foi o último boot e inverte para variar a animação
     const lastBoot = localStorage.getItem('synapse_boot_mode');
     const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
-    
+
     localStorage.setItem('synapse_boot_mode', currentMode);
 
     if (currentMode === 'BIO') {
@@ -29,7 +29,7 @@ async function runBootBiometria() {
     const bootOverlay = document.createElement('div');
     bootOverlay.id = 'boot-overlay';
     bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
-    
+
     // VOLTEI PARA O ORIGINAL: src="logo_synapse.png"
     bootOverlay.innerHTML = `
         <div class="relative w-32 h-32 mb-8">
@@ -59,25 +59,25 @@ async function runBootBiometria() {
         scanner.style.opacity = '1';
         scanner.style.transition = 'top 1.5s ease-in-out';
         status.innerText = "ESCANEANDO RETINA...";
-        scanner.style.top = '100%'; 
-        
+        scanner.style.top = '100%';
+
         // --- CARREGA O SISTEMA ---
         await initializeSystemCore();
-        
+
         await wait(1000);
-        
+
         // Fase 2: Identificado
         scanner.style.transition = 'none';
         scanner.style.top = '0';
         scanner.style.opacity = '0';
-        
+
         status.className = "text-green-500 text-xs tracking-[0.3em] font-bold";
         status.innerText = "ACESSO AUTORIZADO";
         detail.innerText = "IDENTIDADE CONFIRMADA";
-        
+
         const img = bootOverlay.querySelector('img');
-        if(img) img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
-        
+        if (img) img.className = "w-full h-full object-contain opacity-100 grayscale-0 transition-all duration-500";
+
         await wait(800);
         finishBoot(bootOverlay);
 
@@ -91,7 +91,7 @@ async function runBootNeural() {
     const bootOverlay = document.createElement('div');
     bootOverlay.id = 'boot-overlay';
     bootOverlay.className = 'fixed inset-0 bg-black z-[99999] flex flex-col items-center justify-center p-8';
-    
+
     // VOLTEI PARA O ORIGINAL: src="logo_synapse.png"
     bootOverlay.innerHTML = `
         <div class="relative flex items-center justify-center mb-12">
@@ -117,7 +117,7 @@ async function runBootNeural() {
         await initializeSystemCore();
 
         await wait(1500);
-        
+
         bar.style.width = '100%';
         text.innerText = "CONEXÃO ESTABELECIDA";
         text.classList.remove('text-gray-500');
@@ -134,20 +134,20 @@ async function runBootNeural() {
 // =================================================================
 async function initializeSystemCore() {
     loadUserProfile();
-    
+
     // 1. Define funções globais
     window.selectTool = selectTool;
     window.switchTab = switchTab;
     window.toggleSidebar = toggleSidebar;
-    
+
     // Configura os recursos (features)
     window.features = {
         // Bloqueia MODO FOCO se for Demo
         startFocusMode: window.IS_DEMO ? () => showDemoModal('MODO FOCO') : startFocusMode,
-        
+
         // Bloqueia PROTOCOLO SOS se for Demo
         startSOSProtocol: window.IS_DEMO ? () => showDemoModal('PROTOCOLO SOS') : startSOSProtocol,
-        
+
         // Bloqueia RELATÓRIO (Dossiê) se for Demo
         showWeeklyReport: window.IS_DEMO ? () => showDemoModal('DOSSIE') : showWeeklyReport
     };
@@ -156,29 +156,29 @@ async function initializeSystemCore() {
     window.startFocusMode = window.features.startFocusMode;
     window.startSOSProtocol = window.features.startSOSProtocol;
     window.showWeeklyReport = window.features.showWeeklyReport;
-    
+
     // Atualiza o click do botão SOS da sidebar para usar a nova função protegida
     const btnSOS = document.getElementById('btn-sos-protocol');
-    if (btnSOS) btnSOS.onclick = () => { 
-        window.features.startSOSProtocol(); 
-        toggleSidebar(false); 
+    if (btnSOS) btnSOS.onclick = () => {
+        window.features.startSOSProtocol();
+        toggleSidebar(false);
     };
 
     // 2. INICIALIZAÇÃO DO BANCO E VERIFICAÇÃO AUTOMÁTICA
     try {
         if (window.Database) {
             await window.Database.init();
-            
+
             // >>> CHECA SE VIROU PRO <<<
             await checkRealUserStatus();
-            
+
         } else {
             console.warn("⚠️ Banco de dados não carregado.");
         }
     } catch (e) {
         console.error("Erro ao iniciar banco:", e);
     }
-    
+
     // 3. CONFIGURA LINKS DE VENDA (Checkout Inteligente)
     setupCheckoutLinks();
 
@@ -188,12 +188,12 @@ async function initializeSystemCore() {
     await initGamification();
     initDashboard();
     initCalendar();
-    
+
     // Monitor de Conexão
     window.addEventListener('online', updateStatusIndicator);
     window.addEventListener('offline', updateStatusIndicator);
     updateStatusIndicator();
-    
+
     if (window.Database) {
         window.Database.logEvent("LOGIN_SISTEMA", "App Iniciado");
     }
@@ -223,7 +223,7 @@ async function checkRealUserStatus() {
                 // Se o banco diz PRO, mas o navegador diz FREE -> Atualiza!
                 if (data.status.toLowerCase() !== (session.status || 'free').toLowerCase()) {
                     console.log(`🔄 Status atualizado via Banco: ${data.status}`);
-                    
+
                     session.status = data.status.toLowerCase();
                     localStorage.setItem('synapse_user', JSON.stringify(session));
 
@@ -247,7 +247,7 @@ function setupCheckoutLinks() {
     try {
         const sessionRaw = localStorage.getItem('synapse_user');
         if (!sessionRaw) return;
-        
+
         const session = JSON.parse(sessionRaw);
         const userEmail = session.email;
 
@@ -271,11 +271,11 @@ function setupCheckoutLinks() {
 function finishBoot(overlay) {
     overlay.style.transition = 'opacity 0.8s ease';
     overlay.style.opacity = '0';
-    
+
     setTimeout(() => {
         overlay.remove();
         switchTab('chat');
-        
+
         setTimeout(() => {
             if (typeof loadAgent === 'function') loadAgent('Diagnostico');
             if (window.IS_DEMO && window.startDemoBriefing) window.startDemoBriefing();
@@ -286,16 +286,16 @@ function finishBoot(overlay) {
 // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
 
 function selectTool(toolName) {
-    if(typeof playSFX === 'function') playSFX('click');
-    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO']; 
+    if (typeof playSFX === 'function') playSFX('click');
+    const FERRAMENTAS_PRO = ['COMANDANTE', 'GENERAL', 'TATICO'];
 
     // Se for DEMO e tentar acessar ferramenta PRO -> Bloqueia
     if (window.IS_DEMO && FERRAMENTAS_PRO.includes(toolName.toUpperCase())) {
-        if(typeof playSFX === 'function') playSFX('error');
-        showDemoModal(toolName); 
-        return; 
+        if (typeof playSFX === 'function') playSFX('error');
+        showDemoModal(toolName);
+        return;
     }
-    
+
     if (window.Database) window.Database.logEvent("USO_FERRAMENTA", toolName);
 
     switchTab('chat');
@@ -307,29 +307,29 @@ function selectTool(toolName) {
 }
 
 function switchTab(tabName) {
-    if(typeof playSFX === 'function') playSFX('click');
+    if (typeof playSFX === 'function') playSFX('click');
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-    
-    if(typeof playSFX === 'function') playSFX('click');
+
+    if (typeof playSFX === 'function') playSFX('click');
 
     if (tabName === 'protocolo') {
         const view = document.getElementById('viewProtocolo');
-        if(view) view.classList.remove('hidden');
-        
+        if (view) view.classList.remove('hidden');
+
         const btn = document.getElementById('tabJornada');
-        if(btn) btn.classList.add('active');
-        
-        if(typeof renderCalendar === 'function') renderCalendar(); 
-    } 
+        if (btn) btn.classList.add('active');
+
+        if (typeof renderCalendar === 'function') renderCalendar();
+    }
     else if (tabName === 'chat') {
         const view = document.getElementById('viewChat');
-        if(view) view.classList.remove('hidden');
-        
+        if (view) view.classList.remove('hidden');
+
         const btn = document.getElementById('tabChat');
-        if(btn) btn.classList.add('active');
-        
-        if(window.innerWidth > 768) {
+        if (btn) btn.classList.add('active');
+
+        if (window.innerWidth > 768) {
             setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
         }
     }
@@ -339,7 +339,7 @@ function switchTab(tabName) {
 function toggleSidebar(show) {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    if(!sidebar || !overlay) return;
+    if (!sidebar || !overlay) return;
 
     if (show) {
         sidebar.classList.add('active');
@@ -360,22 +360,22 @@ function loadUserProfile() {
             const dashName = document.getElementById('dashName');
 
             if (sideName) sideName.innerText = "VISITANTE";
-            if (sideAvatar) sideAvatar.innerText = "V"; 
+            if (sideAvatar) sideAvatar.innerText = "V";
             if (dashName) dashName.innerText = "OPERADOR CONVIDADO";
             return;
         }
 
         const sessionRaw = localStorage.getItem('synapse_user');
-        
+
         if (sessionRaw) {
             const session = JSON.parse(sessionRaw);
-            
+
             let userName = session.nome || session.name || session.user;
             if (!userName && session.email) {
                 userName = session.email.split('@')[0];
             }
             userName = userName || 'OPERADOR';
-            
+
             const displayName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
             const firstLetter = displayName.charAt(0).toUpperCase();
 
@@ -387,8 +387,8 @@ function loadUserProfile() {
             const dashName = document.getElementById('dashName');
             if (dashName) dashName.innerText = displayName.toUpperCase();
         }
-    } catch (e) { 
-        console.warn("Erro ao carregar perfil:", e); 
+    } catch (e) {
+        console.warn("Erro ao carregar perfil:", e);
     }
 }
 
@@ -396,7 +396,7 @@ function updateStatusIndicator() {
     const statusCards = document.querySelectorAll('.dashboard-card');
     let statusDot = null;
     statusCards.forEach(card => {
-        if(card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
+        if (card.innerText.includes('STATUS')) statusDot = card.querySelector('.rounded-full');
     });
 
     if (statusDot) {
@@ -406,7 +406,7 @@ function updateStatusIndicator() {
         } else {
             statusDot.classList.remove('bg-green-500', 'animate-pulse');
             statusDot.classList.add('bg-red-500');
-            if(typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
+            if (typeof showToast === 'function') showToast('CONEXÃO PERDIDA', 'Modo Offline.', 'error');
         }
     }
 }
@@ -416,7 +416,7 @@ function updateStatusIndicator() {
 // No arquivo: PRO/js/main.js
 
 function showDemoModal(featureName) {
-    if(typeof playSFX === 'function') playSFX('error');
+    if (typeof playSFX === 'function') playSFX('error');
     let title = "Acesso Restrito";
     let subtitle = "Funcionalidade PRO";
     let message = `O recurso <span class="text-white font-bold">${featureName}</span> é exclusivo para operadores do plano completo.`;
@@ -445,9 +445,9 @@ function showDemoModal(featureName) {
         btnText = "Obter Botão de Pânico";
         iconClass = "fa-solid fa-tower-broadcast";
     }
-    
+
     // --- LINK DE CHECKOUT INTELIGENTE ---
-    let checkoutLink = 'https://pay.kiwify.com.br/YzOIskc'; 
+    let checkoutLink = 'https://pay.kiwify.com.br/YzOIskc';
     const sessionRaw = localStorage.getItem('synapse_user');
     if (sessionRaw) {
         const session = JSON.parse(sessionRaw);
@@ -498,7 +498,7 @@ function showDemoModal(featureName) {
             ${modalInnerHTML}
         </div>
     </div>`;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalBaseHTML);
 
     setTimeout(() => {
@@ -511,7 +511,7 @@ function closeDemoModal() {
     const modal = document.getElementById('demo-modal');
     const overlay = document.getElementById('demo-overlay');
     const content = document.getElementById('demo-content');
-    if(!modal) return;
+    if (!modal) return;
     overlay.classList.add('opacity-0');
     content.classList.add('scale-90', 'opacity-0');
     setTimeout(() => { modal.classList.add('hidden'); }, 300);
@@ -527,7 +527,7 @@ function startDemoBriefing() {
     try {
         const savedUser = localStorage.getItem('synapse_user');
         if (savedUser) user = JSON.parse(savedUser);
-    } catch (e) {}
+    } catch (e) { }
 
     // Verifica se já viu (Bloqueio por e-mail)
     const storageKey = `synapse_welcome_seen_${user.email}`;
@@ -535,7 +535,7 @@ function startDemoBriefing() {
     if (localStorage.getItem(storageKey)) return;
 
     const primeiroNome = user.nome ? user.nome.split(' ')[0] : 'Operador';
-    
+
     // HTML Minimalista
     const modalHTML = `
     <div id="demo-briefing" class="fixed inset-0 z-[99999] flex items-center justify-center p-4">
@@ -580,15 +580,15 @@ function startDemoBriefing() {
             </div>
         </div>
     </div>`;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
 function fecharBoasVindas() {
     const modal = document.getElementById('demo-briefing');
     let userEmail = 'demo';
-    try { const u = JSON.parse(localStorage.getItem('synapse_user')); if(u) userEmail = u.email; } catch(e){}
-    
+    try { const u = JSON.parse(localStorage.getItem('synapse_user')); if (u) userEmail = u.email; } catch (e) { }
+
     localStorage.setItem(`synapse_welcome_seen_${userEmail}`, 'true');
 
     if (modal) {
@@ -598,174 +598,7 @@ function fecharBoasVindas() {
     }
 }
 
-// =================================================================
-// 2. SISTEMA DE TOUR INTELIGENTE (DETALHADO & RESPONSIVO)
-// =================================================================
-function iniciarTourDetalhado() {
-    // 1. Remove modal anterior
-    const modal = document.getElementById('demo-briefing');
-    if(modal) modal.remove();
 
-    // 2. Define os passos com Ações e Seletores
-    const passos = [
-        {
-            titulo: "Núcleo Neural",
-            texto: "Este é o seu chat principal. Aqui você conversa com a IA para estruturar ideias e resolver problemas.",
-            seletor: "#viewChat", // Foca na tela de chat
-            posicaoDesktop: "center",
-            acao: () => { 
-                if(typeof toggleSidebar === 'function') toggleSidebar(false);
-                if(typeof switchTab === 'function') switchTab('chat');
-            }
-        },
-        {
-            titulo: "Menu de Agente",
-            texto: "Clique no ícone do menu (celular) ou veja na lateral. Aqui ficam suas ferramentas especializadas.",
-            seletor: ".fa-bars-staggered", // Foca no botão de menu do mobile
-            fallbackSeletor: "#sidebar", // Se for desktop, foca na sidebar
-            posicaoDesktop: "right",
-            acao: () => {
-                // No mobile, apenas aponta para o botão, não abre para não cobrir tudo
-                if(window.innerWidth > 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
-            }
-        },
-        {
-            titulo: "Base de Comando",
-            texto: "Vamos mudar de aba. A 'Base' é onde você visualiza seu progresso.",
-            seletor: "#tabJornada", // Botão da navegação inferior
-            fallbackSeletor: ".fa-house", // Ícone da sidebar desktop
-            posicaoDesktop: "right",
-            acao: () => {
-                // Muda a aba automaticamente para mostrar
-                if(typeof switchTab === 'function') switchTab('protocolo');
-                if(typeof toggleSidebar === 'function') toggleSidebar(false);
-            }
-        },
-        {
-            titulo: "Níveis de Dopamina",
-            texto: "Seu XP e Sequência (Fogo) mostram sua consistência. Mantenha os números altos.",
-            seletor: ".dopamine-card", // Foca no primeiro card
-            posicaoDesktop: "bottom",
-            acao: null
-        },
-        {
-            titulo: "Missões e Agenda",
-            texto: "Adicione tarefas rápidas aqui. O sistema organiza sua rotina automaticamente.",
-            seletor: "#missionList",
-            posicaoDesktop: "left",
-            acao: () => {
-                // Rola para baixo suavemente se necessário
-                const el = document.getElementById('missionList');
-                if(el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
-            }
-        },
-        {
-            titulo: "Protocolo SOS",
-            texto: "Caso sinta ansiedade ou bloqueio, ative o SOS no menu lateral para uma intervenção de áudio imediata.",
-            seletor: "#btn-sos-protocol",
-            posicaoDesktop: "right",
-            acao: () => {
-                if(window.innerWidth > 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
-                // No mobile, abrimos a sidebar rapidinho para mostrar o botão
-                if(window.innerWidth <= 768 && typeof toggleSidebar === 'function') toggleSidebar(true);
-            }
-        }
-    ];
-
-    let passoAtual = 0;
-
-    function renderizarPasso() {
-        if (passoAtual >= passos.length) {
-            // --- FIX: REMOVE O OVERLAY DO TOUR ---
-            const tourOverlay = document.getElementById('tour-overlay');
-            if (tourOverlay) {
-                tourOverlay.style.opacity = '0';
-                setTimeout(() => tourOverlay.remove(), 300);
-            }
-
-            // Restaura o estado original da tela
-            if(typeof toggleSidebar === 'function') toggleSidebar(false); 
-            if(typeof switchTab === 'function') switchTab('protocolo'); 
-            
-            // Salva que o usuário já viu
-            fecharBoasVindas(); 
-            return;
-        }
-
-        const dados = passos[passoAtual];
-        
-        if(dados.acao) dados.acao();
-
-        setTimeout(() => {
-            mostrarCardInteligente(dados, passoAtual, passos.length);
-        }, 300);
-    }
-
-    window.proximoPasso = () => {
-        passoAtual++;
-        renderizarPasso();
-    };
-
-    renderizarPasso();
-}
-
-// 3. LÓGICA DE POSICIONAMENTO INTELIGENTE (EVITA COBRIR O ELEMENTO)
-function mostrarCardInteligente(dados, index, total) {
-    const overlayExistente = document.getElementById('tour-overlay');
-    if(overlayExistente) overlayExistente.remove();
-
-    let alvo = document.querySelector(dados.seletor);
-    if (!alvo && dados.fallbackSeletor) alvo = document.querySelector(dados.fallbackSeletor);
-    
-    // Classes base para o card (animação e estilo)
-    const cardBaseClasses = "bg-[#0a0a0a] border border-white/20 p-6 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative animate-fade-in-up backdrop-blur-xl w-full md:w-[400px]";
-    
-    // Posição padrão (Segurança)
-    let containerClasses = "fixed bottom-6 left-4 right-4 md:left-auto md:right-10 md:bottom-10"; 
-    
-    if (alvo) {
-        // Destaque visual (Scroll e Ring)
-        alvo.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-        alvo.classList.add('ring-4', 'ring-red-600', 'ring-offset-4', 'ring-offset-black', 'z-[10005]');
-        setTimeout(() => alvo.classList.remove('ring-4', 'ring-red-600', 'ring-offset-4', 'ring-offset-black', 'z-[10005]'), 3000);
-
-        const rect = alvo.getBoundingClientRect();
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
-        const isMobile = screenWidth < 768;
-
-        if (isMobile) {
-            // --- LÓGICA MOBILE (VERTICAL) ---
-            // Se o centro do elemento está na metade DE BAIXO da tela...
-            if ((rect.top + rect.height/2) > (screenHeight / 2)) {
-                // ...Joga o card para o TOPO ABSOLUTO
-                containerClasses = "fixed top-6 left-4 right-4";
-            } else {
-                // ...Senão, joga para o FUNDO ABSOLUTO
-                containerClasses = "fixed bottom-6 left-4 right-4";
-            }
-        } else {
-            // --- LÓGICA PC (HORIZONTAL) ---
-            // Se o elemento é muito largo (ex: header), usa lógica vertical
-            if (rect.width > screenWidth * 0.7) {
-                 if (rect.top > screenHeight / 2) {
-                    containerClasses = "fixed top-10 left-1/2 -translate-x-1/2";
-                 } else {
-                    containerClasses = "fixed bottom-10 left-1/2 -translate-x-1/2";
-                 }
-            } else {
-                // Lógica Lado a Lado
-                // Se está na ESQUERDA da tela...
-                if ((rect.left + rect.width/2) < (screenWidth / 2)) {
-                    // ...Joga card para a DIREITA
-                    containerClasses = "fixed top-1/2 -translate-y-1/2 right-10";
-                } else {
-                    // ...Joga card para a ESQUERDA
-                    containerClasses = "fixed top-1/2 -translate-y-1/2 left-10";
-                }
-            }
-        }
-    }
 
     const html = `
     <div id="tour-overlay" class="fixed inset-0 z-[10000] pointer-events-none">
@@ -795,7 +628,7 @@ function mostrarCardInteligente(dados, index, total) {
     </div>`;
 
     document.body.insertAdjacentHTML('beforeend', html);
-}
+
 
 // Adicione também esta pequena função para permitir voltar, se quiser
 window.passoAnterior = () => {

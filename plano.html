@@ -1,255 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Seu próximo passo | Synapse</title>
+        <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root { --syn-red: #CC0000; --bg: #f7f6f3; --ink: #0b0b0b; }
+            body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); }
+            .font-mono { font-family: 'JetBrains Mono', monospace; }
+            .card { background: #fff; border: 1px solid rgba(0, 0, 0, .08); border-radius: 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, .08); }
+            .card-strong { border: 1px solid rgba(0, 0, 0, .12); box-shadow: 0 25px 70px rgba(0, 0, 0, .12); }
+            .btn-ultimate { background: #0b0b0b; color: #fff; transition: .2s; }
+            .btn-ultimate:hover { background: #111; transform: translateY(-1px); }
+            .btn-outline { border: 1px solid rgba(0, 0, 0, .15); border-radius: 16px; font-weight: 800; transition: .2s; }
+            .btn-outline:hover { background: rgba(0, 0, 0, .03); transform: translateY(-1px); }
+            .octo { position: absolute; pointer-events: none; user-select: none; opacity: .12; filter: saturate(1.05) contrast(1.05); }
+            @media (max-width:768px) { .octo { opacity: .07; } }
+            @keyframes spin-slow { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+            .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+            html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+        </style>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Seu próximo passo | Synapse</title>
+    <body class="min-h-screen relative overflow-x-hidden flex flex-col">
 
-    <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f7f7f5;
-            color: #0b0b0b;
-            overflow-x: hidden;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid rgba(0, 0, 0, .08);
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .08);
-        }
-
-        .card-strong {
-            border: 1px solid rgba(0, 0, 0, .12);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .12);
-        }
-
-        .btn-dark {
-            background: #0b0b0b;
-            color: #fff;
-            border-radius: 16px;
-            font-weight: 900;
-            letter-spacing: .15em;
-            text-transform: uppercase;
-            transition: .2s;
-        }
-
-        .btn-dark:hover {
-            background: #000;
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            border: 1px solid rgba(0, 0, 0, .15);
-            border-radius: 16px;
-            font-weight: 800;
-            transition: .2s;
-        }
-
-        .btn-outline:hover {
-            background: rgba(0, 0, 0, .03);
-            transform: translateY(-1px);
-        }
-
-        .ghost {
-            pointer-events: none;
-            user-select: none;
-            letter-spacing: -.05em;
-        }
-
-        .octo {
-            position: absolute;
-            pointer-events: none;
-            user-select: none;
-            opacity: .12;
-            filter: saturate(1.05) contrast(1.05);
-        }
-
-        @media (max-width:768px) {
-            .octo {
-                opacity: .07;
-            }
-        }
-
-        /* modal animação */
-        @keyframes spin-slow {
-            from {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            to {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .animate-spin-slow {
-            animation: spin-slow 20s linear infinite;
-        }
-        :root {
-            --syn-red: #CC0000;
-            --bg: #f7f6f3;
-            --ink: #0b0b0b;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            overflow-x: hidden;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* glow bem sutil (synapse, mas clean) */
-        .soft-glow {
-            background: radial-gradient(600px 200px at 50% 0%, rgba(204, 0, 0, .08), transparent 60%),
-                radial-gradient(500px 250px at 10% 40%, rgba(0, 0, 0, .06), transparent 60%),
-                radial-gradient(500px 250px at 90% 60%, rgba(0, 0, 0, .06), transparent 60%);
-        }
-
-        /* animação leve */
-        .reveal {
-            opacity: 0;
-            transform: translateY(18px);
-            animation: reveal .7s cubic-bezier(.16, 1, .3, 1) forwards;
-        }
-
-        @keyframes reveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* badge de recomendado */
-        .badge {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-        }
-
-        /* botão: sensação premium */
-        .btn-ultimate {
-            background: #0b0b0b;
-            color: #fff;
-        }
-
-        .btn-ultimate:hover {
-            background: #111;
-        }
-
-        .btn-outline:hover {
-            background: rgba(0, 0, 0, .04);
-        }
-
-        /* toggle */
-        .segmented {
-            background: rgba(0, 0, 0, .04);
-            border: 1px solid rgba(0, 0, 0, .08);
-        }
-
-        .segmented button {
-            transition: .2s ease;
-        }
-
-        .segmented button.active {
-            background: #fff;
-            border: 1px solid rgba(0, 0, 0, .10);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
-        }
-
-        /* borda “destaque” do Ultimate (sutil) */
-        .ultimate-ring {
-            box-shadow:
-                0 0 0 1px rgba(0, 0, 0, .10),
-                0 18px 40px rgba(0, 0, 0, .08);
-        }
-
-        /* mini texto grande de fundo (bem sutil) */
-        .ghost {
-            user-select: none;
-            pointer-events: none;
-            letter-spacing: -.04em;
-        }
-    </style>
-</head>
-
-
-<body class="min-h-screen">
-    <main class="relative overflow-hidden min-h-screen flex flex-col">
-
-        <!-- Polvos decorativos -->
         <img src="assets/polvo_synapse.png" class="octo -top-24 -left-24 w-[360px] md:w-[520px]" alt="" />
-
         <img src="assets/polvo.chat.png" class="octo -bottom-24 -right-24 w-[360px] md:w-[520px]" alt="" />
 
-        <!-- HEADER -->
         <header class="max-w-6xl mx-auto px-4 pt-8 w-full">
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <img src="assets/icone preto.png" class="w-10 h-10" alt="Synapse">
-                    <div class="min-w-0">
-                        <div class="text-sm font-semibold truncate">Synapse</div>
-                        <div class="text-[11px] text-black/50 truncate">Resultado do Neuro-Audit</div>
-                    </div>
+            <div class="flex items-center gap-3">
+                <img src="assets/icone preto.png" class="w-10 h-10" alt="Synapse">
+                <div>
+                    <div class="text-sm font-semibold">Synapse</div>
+                    <div class="text-[11px] text-black/50">Resultado do Neuro-Audit</div>
                 </div>
-                
-
-
             </div>
         </header>
 
-        <!-- HERO -->
-        <section class="relative max-w-6xl mx-auto px-4 pt-12 pb-10 w-full">
-         
+        <section class="relative max-w-6xl mx-auto px-4 pt-12 pb-10 w-full flex-grow">
             <div class="relative z-10 text-center max-w-3xl mx-auto">
-
-
-                <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
-                    Planos que crescem com você
-                </h1>
-
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">Planos que crescem com você</h1>
             </div>
 
-            <!-- PLANOS (Ultimate primeiro) -->
             <div class="relative z-10 mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-
-                <!-- ULTIMATE FIRST -->
+                
                 <div class="card card-strong p-7 md:p-10 flex flex-col relative">
-
-
                     <span class="text-[10px] font-mono uppercase text-black/50">Ultimate Vitalício</span>
-                    <h2 class="text-2xl font-semibold mt-2">
-                                    Synapse <span style="color:var(--syn-red);" class="font-black">ULTIMATE</span>
-                                </h2>
-
-                    <p class="text-black/60 text-sm mt-3">
-                        Libere o sistema completo e aplique o protocolo do seu diagnóstico sem travar no meio do
-                        processo.
-                    </p>
-
+                    <h2 class="text-2xl font-semibold mt-2">Synapse <span style="color:var(--syn-red);" class="font-black">ULTIMATE</span></h2>
+                    <p class="text-black/60 text-sm mt-3">Libere o sistema completo e aplique o protocolo do seu diagnóstico sem travar no meio do processo.</p>
                     <div class="mt-6">
                         <div class="text-5xl font-black">R$ 27,90</div>
                         <div class="text-xs text-black/50">Pagamento único • acesso vitalício</div>
                     </div>
-
-                    <a href="https://pay.kiwify.com.br/YzOIskc" id="ctaUltimate"
-                            class="btn-ultimate mt-6 inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition">
-                            Desbloquear Ultimate <i class="fas fa-arrow-right ml-2" style="color:var(--syn-red);"></i>
-                        </a>
+                    
+                    <a href="#" id="ctaUltimate" class="btn-ultimate mt-6 inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition">
+                        Desbloquear Ultimate <i class="fas fa-arrow-right ml-2" style="color:var(--syn-red);"></i>
+                    </a>
 
                     <div class="mt-8 pt-6 border-t border-black/10">
                         <div class="text-sm font-semibold text-black/70 mb-3">Você desbloqueia:</div>
@@ -258,184 +71,109 @@
                             <li>✓ Protocolo SOS (anti-crise)</li>
                             <li>✓ Gamificação e XP (consistência)</li>
                             <li>✓ Foco extremo (bloqueios)</li>
-                            <li>✓ Acesso vitalício</li>
                         </ul>
-                    </div>
-
-                    <div class="mt-auto pt-6">
-                        <div class="text-[11px] text-black/45">
-                            Ideal se você quer sair do “saber o que fazer” e começar a executar hoje.
-                        </div>
                     </div>
                 </div>
 
-                <!-- FREE SECOND -->
                 <div class="card p-7 md:p-10 flex flex-col">
                     <span class="text-[10px] font-mono uppercase text-black/50">Free Vitalício</span>
                     <h2 class="text-2xl font-bold mt-2">Synapse Free</h2>
-
-                    <p class="text-black/60 text-sm mt-3">
-                        Se você preferir ir devagar, pode começar no essencial.
-                        Mas o caminho mais rápido para aplicar seu diagnóstico é o Ultimate.
-                    </p>
-
+                    <p class="text-black/60 text-sm mt-3">Se você preferir ir devagar, pode começar no essencial.</p>
                     <div class="mt-6 text-4xl font-black">R$ 0</div>
-                    <span class="text-xs text-black/50">Acesso vitalício</span>
-
-                    <button onclick="openUpgrade()" class="btn-outline mt-6 py-4">
-                        Continuar no Free
-                    </button>
-
+                    <button onclick="openUpgrade()" class="btn-outline mt-6 py-4 w-full">Continuar no Free</button>
                     <div class="mt-8 pt-6 border-t border-black/10">
                         <div class="text-sm font-semibold text-black/70 mb-3">Inclui:</div>
                         <ul class="text-sm text-black/65 space-y-2">
                             <li>✓ Acesso básico</li>
                             <li>✓ Organização essencial</li>
-                            <li>✓ Uso vitalício</li>
                         </ul>
                     </div>
-
-                    <button onclick="openUpgrade()" class="mt-6 text-[11px] text-black/40 underline">
-                        Não, quero continuar no Free
-                    </button>
                 </div>
-
             </div>
-
-            <!-- ÍCONES PIX / BANCOS ABAIXO DOS PLANOS -->
-            <div class="relative z-10 mt-8">
-                <div
-                    class="mx-auto max-w-3xl card px-5 py-4 flex flex-wrap items-center justify-center gap-4 text-black/55">
-                    <div class="flex items-center gap-2 text-xs">
-                        <i class="fas fa-shield-alt text-black/40"></i> Pagamento seguro
-                    </div>
-                    <div class="h-4 w-px bg-black/10"></div>
-
-                    <!-- Pix + cartões + bancos (icones) -->
-                    <div class="flex items-center gap-4 text-lg opacity-80">
-                        <i class="fas fa-pix" title="Pix"></i>
-                        <i class="fab fa-cc-visa" title="Visa"></i>
-                        <i class="fab fa-cc-mastercard" title="Mastercard"></i>
-                        <i class="fas fa-university" title="Bancos"></i>
-                    </div>
-                </div>
-
-                <p class="text-center text-[11px] text-black/45 mt-3">
-                    Entrega imediata após confirmação do pagamento.
-                </p>
+            
+            <div class="relative z-10 mt-8 text-center opacity-50 text-xs">
+                <i class="fas fa-lock mr-1"></i> Pagamento seguro via Kiwify
             </div>
-
         </section>
 
-        <!-- FOOTER -->
-        <footer class="mt-auto">
-            <div class="max-w-6xl mx-auto px-4 pb-10">
-                <div class="border-t border-black/10 pt-6 text-center text-xs text-black/45">
-                    © 2026 Synapse • todos os direitos reservados
-                </div>
-            </div>
-        </footer>
-
-        <!-- UPGRADE MODAL (igual ao seu) -->
         <div id="upgradeModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center px-4">
-            <div id="modalBackdrop"
-                class="absolute inset-0 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-500"
-                onclick="closeUpgrade()"></div>
-
-            <div id="modalCard"
-                class="relative w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl opacity-0 scale-90 translate-y-10 transition-all duration-500 flex flex-col md:flex-row">
-
+            <div id="modalBackdrop" class="absolute inset-0 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-500" onclick="closeUpgrade()"></div>
+            
+            <div id="modalCard" class="relative w-full max-w-4xl max-h-[85vh] overflow-y-auto overflow-x-hidden bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl opacity-0 scale-90 translate-y-10 transition-all duration-500 flex flex-col md:flex-row">
                 
-
-                <div class="absolute top-1/2 left-1/2 w-[200%] h-[200%]
-                  bg-[conic-gradient(from_0deg,transparent,rgba(255,255,255,.03),transparent)]
-                  animate-spin-slow -translate-x-1/2 -translate-y-1/2"></div>
-
-                <div class="relative z-10 md:w-1/2 p-7 sm:p-10 md:p-12 text-white">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-xl">
+                <div class="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-[conic-gradient(from_0deg,transparent,rgba(255,255,255,.03),transparent)] animate-spin-slow -translate-x-1/2 -translate-y-1/2 -z-0 pointer-events-none"></div>
+                
+                <div class="relative z-10 md:w-1/2 p-6 md:p-10 text-white">
+                    <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-xl">
                         <i class="fas fa-rocket text-2xl text-white"></i>
                     </div>
-
-                    <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 leading-tight">
-                        Antes de ir no Free…
-                    </h3>
-
-                    <p class="text-gray-400 text-sm sm:text-base leading-relaxed">
-                        Seu diagnóstico pede execução. O Ultimate acelera a aplicação do protocolo e evita que você
-                        trave.
-                    </p>
+                    <h3 class="text-3xl font-bold mb-3">Antes de ir no Free…</h3>
+                    <p class="text-gray-400 text-sm">Seu diagnóstico pede execução. Leve o pacote completo com desconto especial.</p>
                 </div>
 
-                <div class="relative z-10 md:w-1/2 p-7 sm:p-10 md:p-12 bg-white/[0.02]">
-                    <div
-                        class="w-full bg-[#111] border border-white/5 rounded-xl p-4 mb-6 flex items-center justify-between shadow-inner">
-                        <div class="text-left">
-                            <span
-                                class="text-xs text-gray-500 uppercase tracking-widest font-bold block mb-1">Upgrade</span>
-                            <span class="text-sm text-gray-500 line-through">De R$ 97,00</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs text-green-500 font-bold uppercase tracking-wide block mb-1">Oferta
-                                única</span>
-                            <span class="text-3xl md:text-4xl font-black text-white tracking-tighter">R$ 19,90</span>
-                        </div>
+                <div class="relative z-10 md:w-1/2 p-6 md:p-10 bg-white/[0.02]">
+                    <div class="w-full bg-[#111] border border-white/5 rounded-xl p-4 mb-6 flex items-center justify-between shadow-inner">
+                        <div class="text-left"><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Oferta Única</span><span class="text-sm text-gray-500 line-through">De R$ 97,00</span></div>
+                        <div class="text-right"><span class="text-3xl md:text-4xl font-black text-white">R$ 19,90</span></div>
                     </div>
 
-                    <a href="cadastro.html?checkout=0hrS0C7" onclick="if(window.fbq){fbq('track','InitiateCheckout');}"
-                        class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(220,0,0,0.3)] transition-all duration-300 transform hover:scale-[1.02] active:scale-95 text-xs sm:text-sm flex items-center justify-center gap-2">
+                    <a href="#" id="ctaDownsell" class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(220,0,0,0.3)] transition-all flex items-center justify-center gap-2 text-sm">
                         Aceitar Evolução <i class="fas fa-arrow-right"></i>
                     </a>
 
-                    <button onclick="goToFreeVersion()"
-                        class="mt-5 text-xs text-gray-600 hover:text-white transition-colors underline underline-offset-4 block mx-auto">
-                        Prefiro continuar limitado
-                    </button>
+                    <button onclick="goToFreeVersion()" class="mt-5 text-xs text-gray-600 hover:text-white transition-colors underline underline-offset-4 block mx-auto">Prefiro continuar limitado</button>
                 </div>
             </div>
         </div>
 
-    </main>
+        <script>
+            // CONFIGURAÇÃO DOS LINKS COM DADOS DO USUÁRIO
+            document.addEventListener('DOMContentLoaded', () => {
+                const userRaw = localStorage.getItem('synapse_user');
+                
+                // Link base do Ultimate (R$ 27,90)
+                let linkUltimate = "https://pay.kiwify.com.br/YzOIskc";
+                // Link base do Downsell (R$ 19,90)
+                let linkDownsell = "https://pay.kiwify.com.br/0hrS0C7";
 
-    <script>
-        // modal
-        function openUpgrade() {
-            const m = document.getElementById('upgradeModal');
-            const b = document.getElementById('modalBackdrop');
-            const c = document.getElementById('modalCard');
+                if(userRaw) {
+                    try {
+                        const user = JSON.parse(userRaw);
+                        const params = `?name=${encodeURIComponent(user.nome || '')}&email=${encodeURIComponent(user.email || '')}`;
+                        
+                        // Atualiza hrefs
+                        document.getElementById('ctaUltimate').href = linkUltimate + params;
+                        document.getElementById('ctaDownsell').href = linkDownsell + params;
+                        
+                        console.log("Links de checkout configurados para: " + user.email);
+                    } catch(e) { console.error("Erro ao ler usuário", e); }
+                } else {
+                    // Fallback sem dados
+                    document.getElementById('ctaUltimate').href = linkUltimate;
+                    document.getElementById('ctaDownsell').href = linkDownsell;
+                }
+            });
 
-            m.classList.remove('hidden');
-            setTimeout(() => {
-                b.classList.remove('opacity-0');
-                c.classList.remove('opacity-0', 'scale-90', 'translate-y-10');
-            }, 10);
-        }
+            function openUpgrade() {
+                const m = document.getElementById('upgradeModal');
+                const b = document.getElementById('modalBackdrop');
+                const c = document.getElementById('modalCard');
+                m.classList.remove('hidden');
+                setTimeout(() => { b.classList.remove('opacity-0'); c.classList.remove('opacity-0', 'scale-90', 'translate-y-10'); }, 10);
+            }
 
-        function closeUpgrade() {
-            const m = document.getElementById('upgradeModal');
-            const b = document.getElementById('modalBackdrop');
-            const c = document.getElementById('modalCard');
+            function closeUpgrade() {
+                const m = document.getElementById('upgradeModal');
+                const b = document.getElementById('modalBackdrop');
+                const c = document.getElementById('modalCard');
+                b.classList.add('opacity-0'); c.classList.add('opacity-0', 'scale-90', 'translate-y-10');
+                setTimeout(() => m.classList.add('hidden'), 500);
+            }
 
-            b.classList.add('opacity-0');
-            c.classList.add('opacity-0', 'scale-90', 'translate-y-10');
-
-            setTimeout(() => m.classList.add('hidden'), 500);
-        }
-
-        function goToFreeVersion() {
-            closeUpgrade();
-            setTimeout(() => window.location.href = "demo.html", 320);
-        }
-
-        // ESC fecha
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeUpgrade();
-        });
-
-        // modal animação
-        // (já está no CSS acima)
-    </script>
-
-</body>
-
-</html>
+            function goToFreeVersion() {
+                closeUpgrade();
+                setTimeout(() => window.location.href = "demo.html", 320);
+            }
+        </script>
+    </body>
+    </html>

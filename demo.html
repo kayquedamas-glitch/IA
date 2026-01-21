@@ -65,9 +65,114 @@
         // Executa a verificação
         verificarAcesso();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+
+    <style>
+        /* Personalização Compacta do Driver.js */
+        .driver-popover.driverjs-theme {
+            background-color: #0f0f0f;
+            color: #e5e5e5;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            font-family: 'Inter', sans-serif;
+
+            /* AJUSTE DE TAMANHO */
+            max-width: 240px !important;
+            /* Força ser pequeno */
+            padding: 12px !important;
+            /* Menos borda interna */
+        }
+
+        .driver-popover.driverjs-theme .driver-popover-title {
+            font-size: 13px;
+            /* Título menor */
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .driver-popover.driverjs-theme .driver-popover-description {
+            font-size: 11px;
+            /* Texto menor */
+            color: #a3a3a3;
+            line-height: 1.4;
+            margin-bottom: 10px !important;
+        }
+
+        /* Botões menores */
+        .driver-popover.driverjs-theme button {
+            background-color: #CC0000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            /* Botão mais fino */
+            font-size: 10px;
+            font-weight: 700;
+            text-shadow: none;
+            text-transform: uppercase;
+        }
+
+        .driver-popover.driverjs-theme button:hover {
+            background-color: #ff1a1a;
+        }
+
+        .driver-popover.driverjs-theme button.driver-popover-prev-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #888;
+        }
+
+        /* Remove a seta gigante padrão se atrapalhar (opcional, mas ajuda na limpeza) */
+        .driver-popover-arrow {
+            border-width: 5px !important;
+            /* Seta menor */
+        }
+    </style>
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
+    <div id="welcomeTourModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="welcomeBackdrop">
+        </div>
+
+        <div id="welcomeCard"
+            class="relative bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl transform scale-95 opacity-0 transition-all duration-500">
+
+            <div
+                class="w-20 h-20 bg-gradient-to-br from-[#1a0505] to-black rounded-full mx-auto mb-6 flex items-center justify-center border border-red-900/30 relative">
+                <div class="absolute inset-0 rounded-full border border-red-500/20 animate-ping"></div>
+                <img src="PRO/icone preto.png" class="w-8 h-8 opacity-80 invert">
+            </div>
+
+            <h2 class="text-2xl font-black text-white uppercase tracking-tighter mb-2">
+                Olá, <span id="welcomeUserName"
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Usuário</span>
+            </h2>
+
+            <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-8 px-4">
+                Bem-vindo ao <b>Synapse Neural OS</b>. Gostaria de fazer um tour rápido para conhecer as ferramentas e
+                funções do seu novo sistema operacional?
+            </p>
+
+            <div class="space-y-3">
+                <button onclick="iniciarTour()"
+                    class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 group">
+                    <span>Iniciar Tour</span>
+                    <i class="fa-solid fa-flag-checkered group-hover:translate-x-1 transition-transform"></i>
+                </button>
+
+                <button onclick="pularTour()"
+                    class="w-full bg-transparent hover:bg-white/5 text-gray-500 hover:text-white font-bold uppercase text-[10px] tracking-widest py-3 rounded-xl transition-colors">
+                    Não, já conheço o sistema
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300">
     </div>
@@ -435,7 +540,7 @@
             </button>
         </nav>
     </div>
-  
+
 
     <script>
         // Define variável global para a demo
@@ -563,7 +668,7 @@
     <script type="module" src="PRO/js/main.js"></script>
     <script>
         // Define a função globalmente para que o botão "onclick" a encontre
-        window.closeDemoModal = function() {
+        window.closeDemoModal = function () {
             console.log("Tentando fechar modal via closeDemoModal()...");
 
             // 1. Tenta achar o modal de bloqueio de recursos (Feature Lock)
@@ -583,10 +688,10 @@
             }
         };
     </script>
-<script>
-        window.closeDemoModal = function() {
+    <script>
+        window.closeDemoModal = function () {
             console.log("Detectando modal para fechar...");
-            
+
             // 1. Pega o elemento exato que recebeu o clique
             const evento = window.event;
             const elementoClicado = evento ? (evento.target || evento.srcElement) : null;
@@ -618,5 +723,111 @@
             });
         };
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        verificarNovoUsuario();
+    });
+
+    function verificarNovoUsuario() {
+        if (!localStorage.getItem('synapse_tour_completed')) {
+            // Personaliza nome
+            const dadosUser = localStorage.getItem('synapse_user');
+            if (dadosUser) {
+                try {
+                    const u = JSON.parse(dadosUser);
+                    if (u.nome) document.getElementById('welcomeUserName').textContent = u.nome.split(' ')[0];
+                } catch(e) {}
+            }
+
+            // Mostra modal
+            const modal = document.getElementById('welcomeTourModal');
+            const backdrop = document.getElementById('welcomeBackdrop');
+            const card = document.getElementById('welcomeCard');
+
+            modal.classList.remove('hidden');
+            // Pequena animação de entrada apenas visual
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                card.classList.remove('opacity-0', 'scale-95');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+    }
+
+    function pularTour() {
+        // Some instantaneamente
+        document.getElementById('welcomeTourModal').style.display = 'none';
+        localStorage.setItem('synapse_tour_completed', 'true');
+    }
+
+    function iniciarTour() {
+        // 1. Some com o modal IMEDIATAMENTE (sem animação de saída para não atrasar)
+        const modal = document.getElementById('welcomeTourModal');
+        modal.style.display = 'none'; // Force hide
+        
+        localStorage.setItem('synapse_tour_completed', 'true');
+
+        // 2. Configura o Driver.js
+        const driver = window.driver.js.driver;
+        const isMobile = window.innerWidth < 768;
+
+        // Tenta achar o título do dashboard para não grifar a tela toda
+        // (Procura H2 dentro da main ou o ID especifico)
+        const dashboardTarget = document.querySelector('#viewProtocolo h2') || document.querySelector('main h2') || '#viewProtocolo';
+
+        const tour = driver({
+            showProgress: true,
+            animate: true,
+            opacity: 0.8, 
+            allowClose: false,
+            doneBtnText: 'OK',
+            nextBtnText: '>',
+            prevBtnText: '<',
+            popoverClass: 'driverjs-theme', // Usa nosso CSS novo
+            steps: [
+                { 
+                    element: '#sidebar', 
+                    popover: { 
+                        title: 'Menu Lateral', 
+                        description: 'Navegue entre o Chat (Comando) e seus Protocolos.', 
+                        side: "right", 
+                        align: 'start' // Fixa no topo para não cobrir tudo
+                    } 
+                },
+                { 
+                    element: '#profileCard', 
+                    popover: { 
+                        title: 'Seu Perfil', 
+                        description: 'Status do plano e configurações.', 
+                        side: "right",
+                        align: 'center'
+                    } 
+                },
+                { 
+                    element: dashboardTarget, // Grifa só o título, muito mais limpo
+                    popover: { 
+                        title: 'Dashboard', 
+                        description: 'Acompanhe Nível, XP e Missões Diárias aqui.', 
+                        side: "bottom", 
+                        align: 'start'
+                    } 
+                },
+                { 
+                    element: '#btn-sos-protocol', 
+                    popover: { 
+                        title: 'SOS', 
+                        description: 'Botão de pânico para momentos de crise.', 
+                        side: "right", 
+                        align: 'center' 
+                    } 
+                }
+            ]
+        });
+
+        // 3. Inicia o tour instantaneamente
+        tour.drive();
+    }
+</script>
 </body>
+
 </html>
