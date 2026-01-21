@@ -7,547 +7,579 @@
 
   <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#CC0000',
+              dark: '#8a0000',
+              light: '#ff1a1a'
+            }
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
     :root{
-      --bg:#050505;
-      --bg2:#0a0a0a;
-      --panel:#0b0b0b;
-      --line:rgba(255,255,255,.10);
-      --soft:rgba(229,231,235,.62);
-      --red:#CC0000;
-      --red2:#ff2a2a;
+      --bg: #030303;
+      --card-bg: rgba(20, 20, 20, 0.6);
+      --border: rgba(255,255,255,0.08);
+      --highlight: rgba(255,255,255,0.12);
     }
 
-    body{
+    body {
       background: var(--bg);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:#e5e7eb;
-      /* Importante para responsividade: permite scroll se necessário, mas esconde horizontal */
+      color: #e5e7eb;
       overflow-x: hidden;
-      overflow-y: auto; 
-    }
-    .font-mono{ font-family: "JetBrains Mono", monospace; }
-
-    /* Fundo grid + glow Synapse */
-    .bg-ambient{
-      position: fixed;
-      inset: 0;
-      z-index: -10;
-      pointer-events: none;
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 42px 42px;
-    }
-    .glow-a{
-      position:absolute; inset:auto;
-      width:50vw; height:50vw; /* Relativo à largura da tela */
-      max-width: 520px; max-height: 520px;
-      border-radius:999px;
-      filter: blur(100px);
-      opacity:.65;
-      background: rgba(204,0,0,.18);
-      top:-10%; right:-20%;
-      animation: pulse 5s ease-in-out infinite;
-    }
-    .glow-b{
-      position:absolute;
-      width:50vw; height:50vw;
-      max-width: 520px; max-height: 520px;
-      border-radius:999px;
-      filter: blur(100px);
-      opacity:.55;
-      background: rgba(204,0,0,.12);
-      bottom:-10%; left:-20%;
-      animation: pulse 6.5s ease-in-out infinite;
-    }
-    @keyframes pulse{
-      0%,100%{ transform: scale(1); opacity:.55; }
-      50%{ transform: scale(1.08); opacity:.75; }
+      -webkit-font-smoothing: antialiased;
     }
 
-    .octo{
-      position:absolute;
-      bottom:-5%;
-      left:-10%;
-      width:min(58vw, 420px);
-      opacity:.08;
-      mix-blend-mode: screen;
-      animation: float 8s ease-in-out infinite;
-    }
-    @keyframes float{
-      0%,100%{ transform: translateY(0) scale(1.03); }
-      50%{ transform: translateY(-14px) scale(1); }
+    /* Background Fundo Gradeado Sutil */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: -10;
+      background-size: 50px 50px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
     }
 
-    /* transição slides */
-    .slide{ display:none; width: 100%; }
-    .slide.active{
-      display:block;
-      animation: in .38s cubic-bezier(.16,1,.3,1) both;
+    /* Glows de Fundo */
+    .ambient-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(204,0,0,0.15) 0%, transparent 70%);
+      filter: blur(80px); opacity: 0.6;
+      animation: pulseGlow 8s ease-in-out infinite alternate;
+      z-index: -5;
     }
-    @keyframes in{
-      from{ opacity:0; transform: translateY(14px); }
-      to{ opacity:1; transform: translateY(0); }
+    @keyframes pulseGlow { 0% { opacity:0.4; transform: scale(0.9); } 100% { opacity:0.7; transform: scale(1.1); } }
+
+    /* Polvo flutuante (marca d'água) */
+    .octo-watermark {
+      position: fixed; bottom: -10vh; left: -10vw;
+      width: 50vw; max-width: 600px;
+      opacity: 0.04; mix-blend-mode: screen;
+      pointer-events: none; z-index: -2;
+      animation: floatOcto 10s ease-in-out infinite;
+    }
+    @keyframes floatOcto { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-20px); } }
+
+    /* Estrutura do Slide */
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+    .slide.active {
+      display: flex; /* Mudado para flex para centralizar */
+      flex-direction: column;
+      animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* título glow clean */
-    .title{
-      text-shadow: 0 12px 50px rgba(0,0,0,.75), 0 1px 0 rgba(255,255,255,.08);
-      letter-spacing: -0.02em;
-    }
-    .soft{ color: var(--soft); }
-
-    /* dots */
-    .dot{
-      width:6px; height:6px; border-radius:999px;
-      background: rgba(255,255,255,.14);
-      transition: all .25s ease;
-    }
-    .dot.active{
-      width:20px;
-      background: rgba(204,0,0,.95);
-      box-shadow: 0 0 22px rgba(204,0,0,.35);
+    /* Layout Responsivo do Conteúdo (O Pulo do Gato) */
+    .slide-grid-layout {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
     }
 
-    /* botões */
-    .btn-red{
-      background: linear-gradient(180deg, rgba(204,0,0,.98), rgba(170,0,0,.98));
-      box-shadow: 0 18px 45px rgba(204,0,0,.26), 0 0 0 1px rgba(255,255,255,.06) inset;
-      transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+    @media (min-width: 1024px) {
+      .slide-grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Dividido ao meio */
+        gap: 4rem;
+        align-items: center;
+        text-align: left;
+      }
+      /* No desktop, inverte a ordem visual: Imagem na Esquerda, Texto na Direita */
+      .desktop-visual-col { order: 1; }
+      .desktop-text-col { order: 2; }
+      
+      .text-center-mobile { text-align: left; }
+      .align-center-mobile { align-items: flex-start; }
     }
-    .btn-red:hover{
-      filter: brightness(1.05);
-      box-shadow: 0 22px 60px rgba(204,0,0,.32), 0 0 0 1px rgba(255,255,255,.08) inset;
-    }
-    .btn-red:active{ transform: scale(.99); }
 
-    .btn-ghost{
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.10);
-      transition: background .2s ease, border-color .2s ease, transform .15s ease;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .btn-ghost:hover{
-      background: rgba(255,255,255,.08);
-      border-color: rgba(255,255,255,.16);
-    }
-    .btn-ghost:active{ transform: scale(.98); }
 
-    /* slots de animação (RESPONSIVO) */
-    .anim-slot{
-      width:100%;
-      /* Altura adaptável: menor no mobile, maior no desktop */
-      min-height: 200px; 
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 24px 60px rgba(0,0,0,.45);
-      overflow:hidden;
+    /* Slot da Imagem (Monitor) */
+    .visual-slot {
       position: relative;
+      width: 100%;
+      aspect-ratio: 4/3; /* Proporção padrão */
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,1), 0 20px 40px -10px rgba(0,0,0,0.5);
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
-    @media (min-width: 640px) {
-        .anim-slot { min-height: 280px; }
+    .visual-slot::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 70%);
+      pointer-events: none;
+    }
+    @media (min-width: 1024px) {
+      .visual-slot { aspect-ratio: 1/1; max-height: 500px; }
     }
 
-    .anim-slot:before{
-      content:"";
-      position:absolute; inset:-1px;
-      background: radial-gradient(500px 240px at 50% 0%, rgba(204,0,0,.14), transparent 55%);
-      pointer-events:none;
+    /* Botões Modernos */
+    .btn-nav {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      transition: 0.2s;
     }
+    .btn-nav:hover { background: var(--highlight); border-color: rgba(255,255,255,0.3); }
 
-    /* cards compromisso */
-    .choice{
-      border-radius: 18px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    .btn-primary {
+      background: linear-gradient(135deg, #CC0000 0%, #990000 100%);
+      box-shadow: 0 4px 20px rgba(204, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative; overflow: hidden;
     }
-    .choice:hover{
+    .btn-primary:hover {
       transform: translateY(-2px);
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.055);
+      box-shadow: 0 8px 30px rgba(204, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.3);
     }
-    .choice.selected{
-      border-color: rgba(204,0,0,.90);
-      box-shadow: 0 0 0 2px rgba(204,0,0,.18) inset, 0 18px 50px rgba(0,0,0,.35);
+    .btn-primary:active { transform: translateY(1px); }
+
+    /* Cards de Escolha */
+    .choice-card {
+      background: linear-gradient(to bottom, rgba(30,30,30,0.5), rgba(20,20,20,0.5));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .choice-card:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(40,40,40,0.6);
+    }
+    .choice-card.selected {
+      border-color: #CC0000;
+      background: linear-gradient(to right, rgba(204,0,0,0.1), transparent);
+      box-shadow: 0 0 0 1px #CC0000;
+    }
+    .check-circle {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: 0.2s;
+    }
+    .choice-card.selected .check-circle {
+      background: #CC0000; border-color: #CC0000;
+      box-shadow: 0 0 10px #CC0000;
     }
 
-    .check{
-      width:24px; height:24px;
-      border-radius: 8px;
-      border: 2px solid rgba(255,255,255,.16);
-      display:flex; align-items:center; justify-content:center;
-      flex-shrink: 0; /* Impede amassar */
+    /* Tipografia de Efeito */
+    .text-glow { text-shadow: 0 0 30px rgba(204,0,0,0.4); }
+    .soft-text { color: #a1a1aa; }
+    
+    /* Indicadores */
+    .dot {
+      width: 6px; height: 6px; background: rgba(255,255,255,0.2);
+      border-radius: 99px; transition: 0.3s;
     }
-    .choice.selected .check{
-      border-color: rgba(204,0,0,.95);
-      background: rgba(204,0,0,.16);
-    }
-    .choice.selected .check:after{
-      content:"";
-      width:8px; height:8px;
-      border-radius: 3px;
-      background: rgba(204,0,0,.95);
-      box-shadow: 0 0 20px rgba(204,0,0,.35);
-    }
+    .dot.active { width: 24px; background: #CC0000; }
 
-    /* safe-area */
-    .safe-bottom{ padding-bottom: env(safe-area-inset-bottom); }
+    /* Ajuste de scroll */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 
-<body class="selection:bg-red-900 selection:text-white">
-  <div class="bg-ambient">
-    <div class="glow-a"></div>
-    <div class="glow-b"></div>
-    <img class="octo" src="assets/polvo_synapse.png" alt="" onerror="this.style.display='none'">
-  </div>
+<body class="selection:bg-red-900 selection:text-white h-[100dvh] flex flex-col">
 
-  <div class="fixed top-0 left-0 w-full z-30 bg-gradient-to-b from-[#050505] to-transparent pb-4">
-    <div class="max-w-md mx-auto px-4 pt-4">
-      <div class="flex items-center justify-between">
-        <button id="btnBack" class="w-10 h-10 rounded-full btn-ghost flex items-center justify-center">
-          <span class="text-lg">←</span>
-        </button>
-        <div class="w-10 h-10"></div>
-      </div>
-    </div>
-  </div>
+  <div class="bg-grid"></div>
+  <div class="ambient-glow" style="top: -20%; right: -20%;"></div>
+  <div class="ambient-glow" style="bottom: -20%; left: -20%; animation-delay: -2s;"></div>
+  <img class="octo-watermark" src="assets/polvo_synapse.png" alt="" onerror="this.style.display='none'">
 
-  <main class="min-h-[100dvh] w-full flex flex-col items-center justify-center py-20">
-    <div class="w-full max-w-md mx-auto px-5 flex-grow flex flex-col justify-center">
-      
+  <header class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center max-w-7xl mx-auto left-0 right-0">
+    <button id="btnBack" class="btn-nav w-10 h-10 rounded-full flex items-center justify-center text-white/70 hover:text-white" aria-label="Voltar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <button id="btnSkip" class="btn-nav px-4 h-9 rounded-full text-xs font-mono tracking-widest text-white/60 hover:text-white uppercase">
+      Pular
+    </button>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center w-full max-w-7xl mx-auto px-6 py-20 lg:py-0 relative z-10">
+    
+    <div class="w-full h-full flex flex-col justify-center">
+
       <section class="slide active" data-slide="0">
-        <div class="text-center mb-6">
-          <span class="inline-flex items-center gap-2 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.25em] text-red-500/90 bg-red-950/20 border border-red-900/30 px-3 py-1 rounded-full">
-            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-            Sistema Online
-          </span>
-        </div>
-
-        <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-          Bem-vindo ao<br/>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700">
-            Synapse
-          </span>
-        </h1>
-
-        <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed max-w-[90%] mx-auto">
-          Sua jornada para uma vida mais forte e focada começa aqui.
-        </p>
-
-        <div class="anim-slot mt-8 sm:mt-10">
-          <img src="assets/slide_bemvindo.png" alt="" class="max-h-[220px] sm:max-h-[340px] w-auto opacity-95 relative z-10 object-contain p-4"
-               onerror="this.style.display='none'; document.getElementById('ph0').classList.remove('hidden');">
-          <div id="ph0" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-            Animação: <span class="text-white/80 font-mono block mt-1">slide_bemvindo.png</span>
+        <div class="slide-grid-layout">
+          
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot group">
+              <img src="onboarding/9.gif" class="w-[70%] h-auto object-contain transition-transform duration-700 group-hover:scale-105" alt="Synapse"
+                   fetchpriority="high" onerror="this.style.display='none'">
+            </div>
           </div>
+
+          <div class="desktop-text-col w-full flex flex-col justify-center text-center-mobile align-center-mobile mt-8 lg:mt-0">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/20 bg-red-500/10 mb-6 self-center lg:self-start">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+              <span class="text-[10px] font-mono text-red-400 uppercase tracking-widest">Sistema Online</span>
+            </div>
+
+            <h1 class="text-4xl lg:text-7xl font-black tracking-tighter text-white leading-[1.1] mb-4 text-glow">
+              Bem-vindo ao <br class="hidden lg:block"/>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Synapse</span>
+            </h1>
+
+            <p class="text-base lg:text-xl soft-text leading-relaxed max-w-md mx-auto lg:mx-0">
+              Sua jornada para uma mente mais forte e focada começa agora. A evolução não é opcional.
+            </p>
+
+            <div id="diagTop" class="hidden mt-6 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-xs text-left inline-block">
+              <span class="text-white/50 block text-[10px] uppercase tracking-wide mb-1">Diagnóstico Inicial</span>
+              <span class="text-white font-mono font-bold text-sm" id="diagTopTxt"></span>
+            </div>
+          </div>
+
         </div>
       </section>
 
       <section class="slide" data-slide="1">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Alcançar<br/>Objetivos
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Veja sua dedicação se transformar em resultados reais.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_objetivos.png" alt="" class="max-h-[220px] sm:max-h-[320px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph1').classList.remove('hidden');">
-            <div id="ph1" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-               Animação: <span class="text-white/80 font-mono block mt-1">slide_objetivos.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/Blue Pink Minimalist Sofa Promotion YouTube Square Ad.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Alcançar<br>Objetivos</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Transforme intenção em ação. Veja sua dedicação se materializar em resultados tangíveis e mensuráveis.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="2">
-          <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-red-500 text-center opacity-80 mb-2">aviso do sistema</div>
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Fadiga Crônica
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Seu potencial energético não utilizado diminui a cada dia inativo.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_fadiga.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph2').classList.remove('hidden');">
-            <div id="ph2" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-               Animação: <span class="text-white/80 font-mono block mt-1">slide_fadiga.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/3.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <div class="text-xs font-mono text-red-500 mb-2 uppercase tracking-widest">Alerta do Sistema</div>
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Fadiga Crônica</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Seu potencial está sendo drenado. Dias sem direção acumulam um custo invisível na sua performance mental.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="3">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Potencial<br/>Perdido
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Seu físico ideal espera por trás da inatividade.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_potencial.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph3').classList.remove('hidden');">
-            <div id="ph3" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_potencial.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/4.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Potencial Perdido</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Existe uma versão sua de elite que está sendo adiada. A cada dia que passa, a distância aumenta.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="4">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Declínio Mental
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Ansiedade prospera na estagnação física.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_declinio.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph4').classList.remove('hidden');">
-            <div id="ph4" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_declinio.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/5.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Declínio Mental</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              A mente enfraquece no conforto. O processo acontece em silêncio, até que seja tarde demais.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="5">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Hora da<br/>Mudança
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Toda jornada começa com um único passo.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_mudanca.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph5').classList.remove('hidden');">
-            <div id="ph5" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_mudanca.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/6.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Hora da<br>Mudança</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Reinicie o sistema. Toda grande jornada começa com a decisão consciente de não aceitar menos.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="6">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Construa sua<br/>Rotina
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Crie hábitos duradouros que se encaixem no seu estilo.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_rotina.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph6').classList.remove('hidden');">
-            <div id="ph6" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_rotina.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/7.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Construa<br>Sua Rotina</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Hábitos não são restrições, são arquitetura. Projete uma estrutura que suporte seus objetivos.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="7">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Mantenha-se<br/>Motivado
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Acompanhamento diário para manter você focado.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_motivado.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph7').classList.remove('hidden');">
-            <div id="ph7" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_motivado.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/8.gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Foco<br>Contínuo</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Motivação é temporária. Disciplina e acompanhamento diário mantêm você no caminho.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="8">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Seu Roteiro
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed">
-            Siga nosso roteiro personalizado criado para você.
-          </p>
-
-          <div class="anim-slot mt-8 sm:mt-10">
-            <img src="assets/slide_roteiro.png" alt="" class="max-h-[220px] sm:max-h-[330px] w-auto opacity-95 relative z-10 object-contain p-4"
-                 onerror="this.style.display='none'; document.getElementById('ph8').classList.remove('hidden');">
-            <div id="ph8" class="hidden relative z-10 text-center text-xs sm:text-sm soft px-6">
-              Animação: <span class="text-white/80 font-mono block mt-1">slide_roteiro.png</span>
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot">
+              <img src="onboarding/Blue Pink Minimalist Sofa Promotion YouTube Square Ad (1).gif" class="w-[60%] object-contain" loading="lazy" onerror="this.style.display='none'">
             </div>
           </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <h2 class="text-3xl lg:text-6xl font-bold text-white tracking-tighter mb-4">Seu Roteiro</h2>
+            <p class="text-base lg:text-lg soft-text leading-relaxed">
+              Geramos um plano de batalha personalizado. Siga o protocolo.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="slide" data-slide="9">
-          <h1 class="text-3xl sm:text-5xl font-black text-white title text-center">
-            Você está pronto?
-          </h1>
-          <p class="mt-4 text-center text-sm sm:text-lg soft leading-relaxed mb-6">
-            Escolha seu comprometimento e faça acontecer.
-          </p>
-
-          <div class="space-y-3 sm:space-y-4">
-            <button class="choice w-full text-left p-4 sm:p-5 flex items-center gap-3 sm:gap-4 group" data-choice="tentar">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-xl sm:text-2xl">🚶</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="text-white font-extrabold text-sm sm:text-lg leading-tight truncate sm:whitespace-normal">Vou tentar</div>
-                <div class="text-[10px] sm:text-sm soft mt-0.5">O primeiro passo é o mais difícil</div>
-              </div>
-              <div class="check"></div>
-            </button>
-
-            <button class="choice w-full text-left p-4 sm:p-5 flex items-center gap-3 sm:gap-4 group" data-choice="objetivos">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-xl sm:text-2xl">📈</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="text-white font-extrabold text-sm sm:text-lg leading-tight">Vou alcançar objetivos</div>
-                <div class="text-[10px] sm:text-sm soft mt-0.5">Este é meu ano de transformação</div>
-              </div>
-              <div class="check"></div>
-            </button>
-
-            <button class="choice w-full text-left p-4 sm:p-5 flex items-center gap-3 sm:gap-4 group" data-choice="destruir">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-xl sm:text-2xl">🔥</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="text-white font-extrabold text-sm sm:text-lg leading-tight">Vou destruir meu eu anterior</div>
-                <div class="text-[10px] sm:text-sm soft mt-0.5">Hoje marca o início do novo eu</div>
-              </div>
-              <div class="check"></div>
-            </button>
+        <div class="w-full max-w-2xl mx-auto flex flex-col justify-center h-full">
+          
+          <div class="text-center mb-10">
+            <h1 class="text-4xl lg:text-6xl font-black text-white tracking-tighter mb-4">Você está pronto?</h1>
+            <p class="text-base soft-text">Essa é sua linha de corte. Defina seu nível de comprometimento.</p>
           </div>
 
-          <button id="btnCommit"
-                  disabled
-                  class="mt-8 w-full btn-red rounded-full py-3.5 sm:py-4 text-white font-extrabold text-base sm:text-lg tracking-wide opacity-40 cursor-not-allowed transition-all">
-            Escolha seu comprometimento
-          </button>
+          <div class="space-y-4">
+            <div class="choice-card flex items-center p-5 gap-5" data-choice="tentar">
+              <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">🚶</div>
+              <div class="flex-1">
+                <div class="text-white font-bold text-lg">Vou tentar</div>
+                <div class="text-sm soft-text">O primeiro passo é sair da inércia.</div>
+              </div>
+              <div class="check-circle"></div>
+            </div>
 
-          <p class="mt-4 text-center text-xs text-gray-500/50">
-            Seu eu anterior é sua única competição
-          </p>
+            <div class="choice-card flex items-center p-5 gap-5" data-choice="objetivos">
+              <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">📈</div>
+              <div class="flex-1">
+                <div class="text-white font-bold text-lg">Vou alcançar meus objetivos</div>
+                <div class="text-sm soft-text">Chega de começar e parar. Consistência.</div>
+              </div>
+              <div class="check-circle"></div>
+            </div>
 
-          <div id="quizHint" class="mt-6 text-center text-[11px] soft hidden"></div>
+            <div class="choice-card flex items-center p-5 gap-5" data-choice="destruir">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-900/40 to-black border border-red-500/30 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(204,0,0,0.2)]">🔥</div>
+              <div class="flex-1">
+                <div class="text-white font-bold text-lg">Vou destruir meu eu anterior</div>
+                <div class="text-sm soft-text text-red-200/70">Reconstrução total. Modo Hardcore.</div>
+              </div>
+              <div class="check-circle"></div>
+            </div>
+          </div>
+
+          <div id="quizHint" class="mt-6 text-center text-xs font-mono text-white/40 hidden bg-white/5 py-2 rounded"></div>
+
+        </div>
       </section>
-
-      <div class="mt-auto pt-8 pb-4 w-full">
-        <div class="flex items-center justify-center gap-2 mb-4" id="dots"></div>
-
-        <button id="btnNext" class="w-full btn-red rounded-full py-3.5 sm:py-4 text-white font-extrabold text-base sm:text-lg tracking-wide shadow-lg">
-          Próximo
-        </button>
-        
-        <footer class="text-center mt-4 text-[9px] text-gray-700 font-mono uppercase tracking-widest opacity-70">
-          Synapse Neural OS &copy; 2026
-        </footer>
-      </div>
 
     </div>
   </main>
+
+  <footer class="fixed bottom-0 left-0 w-full z-50 bg-gradient-to-t from-[#030303] via-[#030303] to-transparent pt-10 pb-8 px-6">
+    <div class="max-w-md mx-auto w-full flex flex-col gap-6">
+      
+      <div class="flex justify-center gap-3" id="dots"></div>
+
+      <div class="relative w-full">
+        <button id="btnNext" class="w-full btn-primary rounded-xl py-4 text-white font-bold text-lg tracking-wide uppercase">
+          Próximo
+        </button>
+
+        <button id="btnCommit" class="hidden w-full btn-primary rounded-xl py-4 text-white font-bold text-lg tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+          Confirmar Destino
+        </button>
+      </div>
+
+      <div class="text-center text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase">
+        Synapse Neural OS © 2026
+      </div>
+    </div>
+  </footer>
 
   <script>
     const slides = Array.from(document.querySelectorAll('.slide'));
     const dotsEl = document.getElementById('dots');
     const btnNext = document.getElementById('btnNext');
     const btnBack = document.getElementById('btnBack');
+    const btnSkip = document.getElementById('btnSkip');
     const btnCommit = document.getElementById('btnCommit');
     const quizHint = document.getElementById('quizHint');
+    const diagTop = document.getElementById('diagTop');
+    const diagTopTxt = document.getElementById('diagTopTxt');
 
     let idx = 0;
     const lastIndex = slides.length - 1;
 
+    // Texto dinâmico do botão
+    const nextLabelBySlide = {
+      0: "INICIAR JORNADA",
+      1: "CONTINUAR",
+      2: "ENTENDI",
+      3: "AVANÇAR",
+      4: "AVANÇAR",
+      5: "VAMOS LÁ",
+      6: "PRÓXIMO",
+      7: "SEGUIR",
+      8: "DECIDIR AGORA"
+    };
+
     function renderDots(){
       dotsEl.innerHTML = '';
-      for(let i=0;i<slides.length;i++){
+      // Mostra dots apenas se não for o último slide (opcional, ou mantém)
+      slides.forEach((_, i) => {
         const d = document.createElement('div');
-        d.className = 'dot' + (i===idx ? ' active' : '');
+        d.className = 'dot' + (i === idx ? ' active' : '');
         dotsEl.appendChild(d);
+      });
+    }
+
+    function updateInterface(){
+      // Texto do botão
+      btnNext.textContent = nextLabelBySlide[idx] || "PRÓXIMO";
+      
+      // Controle de visibilidade dos botões
+      if(idx === lastIndex){
+        btnNext.classList.add('hidden');
+        btnCommit.classList.remove('hidden');
+        btnCommit.disabled = true; // Começa desativado até escolher
+      } else {
+        btnNext.classList.remove('hidden');
+        btnCommit.classList.add('hidden');
       }
+
+      // Esconde dots no último slide para limpar a tela
+      dotsEl.style.opacity = idx === lastIndex ? '0' : '1';
     }
 
     function show(i){
       idx = Math.max(0, Math.min(lastIndex, i));
-      slides.forEach((s, k)=> s.classList.toggle('active', k===idx));
-      renderDots();
-
-      // Scroll para o topo ao mudar de slide em telas pequenas
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // no slide final, some o Próximo (usa botão de compromisso)
-      if(idx === lastIndex){
-        btnNext.classList.add('hidden');
-      }else{
-        btnNext.classList.remove('hidden');
-      }
-    }
-
-    btnNext.addEventListener('click', ()=> show(idx+1));
-    btnBack.addEventListener('click', ()=> {
-      if(idx === 0){
-        window.history.back();
-      }else{
-        show(idx-1);
-      }
-    });
-
-    // ===== compromisso final =====
-    let commitment = null;
-
-    function setCommitment(value){
-      commitment = value;
-
-      document.querySelectorAll('.choice').forEach(el=>{
-        el.classList.toggle('selected', el.dataset.choice === value);
+      
+      slides.forEach((s, k) => {
+        if(k === idx){
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
       });
 
-      btnCommit.disabled = false;
-      btnCommit.classList.remove('opacity-40','cursor-not-allowed');
-      btnCommit.classList.add('opacity-100');
-      btnCommit.textContent = "Continuar";
+      renderDots();
+      updateInterface();
+      
+      // Scroll to top para garantir visualização
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    document.querySelectorAll('.choice').forEach(el=>{
-      el.addEventListener('click', ()=> setCommitment(el.dataset.choice));
+    btnNext.addEventListener('click', () => show(idx + 1));
+    
+    btnBack.addEventListener('click', () => {
+      if(idx === 0) window.history.back();
+      else show(idx - 1);
     });
 
-    btnCommit.addEventListener('click', ()=>{
+    btnSkip.addEventListener('click', () => show(lastIndex));
+
+    // ===== Lógica de Escolha (Slide Final) =====
+    let commitment = null;
+
+    document.querySelectorAll('.choice-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove seleção anterior
+        document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+        // Adiciona nova
+        card.classList.add('selected');
+        
+        commitment = card.dataset.choice;
+        btnCommit.disabled = false;
+        btnCommit.textContent = "CONFIRMAR " + (commitment === 'destruir' ? "PROTOCOLO" : "ESCOLHA");
+      });
+    });
+
+    btnCommit.addEventListener('click', () => {
       if(!commitment) return;
       localStorage.setItem('synapse_commitment', commitment);
-      window.location.href = "plano.html";
+      // Feedback visual antes de ir
+      btnCommit.textContent = "PROCESSANDO...";
+      setTimeout(() => {
+        window.location.href = "plano.html";
+      }, 500);
     });
 
-    // ===== opcional: mostrar resumo do quiz =====
-    try{
+    // ===== Recuperar Dados do Quiz (Se houver) =====
+    try {
       const raw = localStorage.getItem('synapse_quiz_data');
       if(raw){
         const data = JSON.parse(raw);
+        const nivel = (data.nivel || '').replace('NÍVEL:','').trim();
+        
+        if(nivel){
+          diagTop.classList.remove('hidden');
+          diagTopTxt.textContent = nivel;
+        }
+
         if(data.nivel || data.fraqueza) {
-            quizHint.classList.remove('hidden');
-            const nivel = (data.nivel || '').replace('NÍVEL:','').trim();
-            quizHint.innerHTML = `Diagnóstico: <b class="text-white">${nivel || '—'}</b> • Fraqueza: <b class="text-white">${data.fraqueza || '—'}</b>`;
+          quizHint.classList.remove('hidden');
+          quizHint.innerHTML = `ANÁLISE PRÉVIA: <span class="text-white font-bold">${nivel}</span> // FRAQUEZA: <span class="text-white font-bold">${data.fraqueza || 'N/A'}</span>`;
         }
       }
-    }catch(e){}
+    } catch(e) { console.log(e); }
 
-    // init
+    // Init
     renderDots();
     show(0);
+
   </script>
 </body>
 </html>
