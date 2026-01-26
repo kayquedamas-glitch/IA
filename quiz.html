@@ -3,177 +3,151 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Protocolo Neuro-Audit | Synapse</title>
 
     <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#CC0000',
+                            dark: '#8a0000',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         body {
-            background-color: #050505;
+            background-color: #030303; /* Alinhado com onboarding */
             color: #e5e5e5;
-            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
+        /* --- VISUAL IDENTITY (IGUAL AO ONBOARDING) --- */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -10;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        /* Fundo Grid + Polvo (Identidade Synapse) */
-        .bg-ambient {
-            position: fixed;
-            inset: 0;
-            z-index: -10;
+        .ambient-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(204,0,0,0.1) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+            z-index: -5;
             pointer-events: none;
-            background-color: #050505;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
         }
+        @keyframes pulseGlow { 0% { opacity:0.3; transform: scale(0.9); } 100% { opacity:0.6; transform: scale(1.1); } }
 
-        /* Animações do Sistema */
-        .fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .progress-bar {
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Cards de Opção */
+        /* --- CARDS & INTERFACE --- */
         .option-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        .option-card:active { transform: scale(0.98); }
+        
         .option-card:hover {
-            background: rgba(204, 0, 0, 0.1);
-            border-color: rgba(204, 0, 0, 0.5);
-            transform: translateX(4px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .option-card.selected {
-            background: rgba(204, 0, 0, 0.2);
+            background: linear-gradient(90deg, rgba(204, 0, 0, 0.15), rgba(0,0,0,0));
             border-color: #cc0000;
-            box-shadow: 0 0 20px rgba(204, 0, 0, 0.2);
+            box-shadow: 0 0 20px rgba(204, 0, 0, 0.15);
+            transform: translateX(4px);
         }
 
-        /* Efeito Glitch no Título */
-        .glitch-wrapper {
-            position: relative;
-            display: inline-block;
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            position: fixed; top: 0; left: 0; w: 100%; h: 2px; z-index: 50;
+            background: rgba(255,255,255,0.05);
         }
-
-        .glitch-wrapper::before,
-        .glitch-wrapper::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .progress-bar {
             height: 100%;
+            background: linear-gradient(90deg, #CC0000, #ff1a1a);
+            box-shadow: 0 0 10px #CC0000;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .glitch-wrapper::before {
-            left: 2px;
-            text-shadow: -1px 0 #00ffff;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
+        /* --- ANIMATIONS --- */
+        .fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; transform: translateY(15px);
         }
 
-        .glitch-wrapper::after {
-            left: -2px;
-            text-shadow: -1px 0 #ff00ff;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Glitch Effect Simplificado (Performance) */
+        .glitch-text {
+            position: relative;
         }
-
-        @keyframes glitch-anim {
-            0% {
-                clip: rect(14px, 9999px, 122px, 0);
-            }
-
-            100% {
-                clip: rect(89px, 9999px, 92px, 0);
-            }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8;
         }
-
-        @keyframes glitch-anim2 {
-            0% {
-                clip: rect(69px, 9999px, 86px, 0);
-            }
-
-            100% {
-                clip: rect(3px, 9999px, 55px, 0);
-            }
+        .glitch-text::before {
+            color: #0ff; z-index: -1; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
         }
-
-        /* Animação Flutuante do Polvo */
-        .animate-float-slow {
-            animation: float 8s ease-in-out infinite;
+        .glitch-text::after {
+            color: #f0f; z-index: -2; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
         }
+        @keyframes glitch-anim-1 { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        @keyframes glitch-anim-2 { 0% { transform: translate(0); } 20% { transform: translate(2px, -2px); } 40% { transform: translate(2px, 2px); } 60% { transform: translate(-2px, -2px); } 80% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
 
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) scale(1.05);
-            }
-
-            50% {
-                transform: translateY(-15px) scale(1);
-            }
-        }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col selection:bg-red-900 selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-red-900 selection:text-white relative">
 
-    <div class="bg-ambient">
-        <div
-            class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-red-600/10 blur-[120px] rounded-full animate-pulse">
-        </div>
-        <img src="assets/polvo_synapse.png" alt="Synapse AI"
-            class="absolute bottom-[-10%] left-[-10%] w-[50%] md:w-[30%] opacity-10 mix-blend-screen animate-float-slow pointer-events-none">
+    <div class="bg-grid"></div>
+    <div class="ambient-glow" style="top: -20%; right: -20%;"></div>
+    <div class="ambient-glow" style="bottom: -20%; left: -20%; animation-delay: -2s;"></div>
+    
+    <img src="assets/polvo_synapse.png" alt="" 
+         class="fixed bottom-[-5%] left-[-5%] w-[40%] md:w-[25%] opacity-5 mix-blend-screen pointer-events-none z-0 animate-pulse-slow">
+
+    <div class="progress-container w-full">
+        <div id="top-progress" class="progress-bar w-0"></div>
     </div>
 
-    <div class="fixed top-0 left-0 w-full h-1 bg-[#111] z-50">
-        <div id="top-progress"
-            class="h-full bg-gradient-to-r from-red-800 to-red-500 w-0 progress-bar shadow-[0_0_10px_#ef4444]"></div>
-    </div>
-
-    <div class="flex-grow flex items-center justify-center p-6 w-full max-w-2xl mx-auto my-auto relative z-10">
+    <div class="flex-grow flex items-center justify-center p-6 w-full max-w-2xl mx-auto z-10 relative">
         <div id="quiz-area" class="w-full">
-        </div>
+            </div>
     </div>
 
-    <footer
-        class="text-center py-6 text-[10px] text-gray-700 font-mono uppercase tracking-widest fixed bottom-0 w-full pointer-events-none">
-        Synapse Neural OS &copy; 2025
+    <footer class="text-center py-6 text-[9px] text-gray-700 font-mono uppercase tracking-[0.2em] fixed bottom-0 w-full pointer-events-none z-20">
+        Synapse Neural OS &copy; 2026
     </footer>
 
     <script>
-        // --- LÓGICA DO SISTEMA ---
-
-        // Fases e Perguntas (Mantive sua copy que está ótima)
+        // --- DADOS DO QUIZ ---
         const phases = [
             { name: "FASE 1: BIOQUÍMICA", questions: [0, 1] },
             { name: "FASE 2: RESISTÊNCIA", questions: [2, 3, 4] },
@@ -181,67 +155,58 @@
         ];
 
         const questions = [
-            // Fase 1
+            // FASE 1: BIO-RITMO (Sono e Energia)
             {
-                text: "Ao acordar, qual é a primeira coisa que você faz?",
+                text: "Quantas horas de sono REAL você tem tido por noite?",
                 options: [
-                    { label: "Pego o celular e fico rolando redes sociais", score: 0, pain: "Vício em Dopamina" },
-                    { label: "Já acordo pensando nos problemas do dia", score: 5, pain: "Ansiedade" },
-                    { label: "Levanto e começo minhas tarefas", score: 20 }
+                    { label: "Menos de 6h (Acordo destruído)", score: 0, pain: "Privação de Sono" },
+                    { label: "6h a 7h (Sinto cansaço à tarde)", score: 10, pain: "Energia Instável" },
+                    { label: "7h a 8h (Acordo revigorado)", score: 20 }
                 ]
             },
             {
-                text: "Você se sente mentalmente esgotado antes do meio‑dia?",
+                text: "Qual é a primeira coisa que você toca ao abrir os olhos?",
                 options: [
-                    { label: "Sim, parece que minha mente está nublada", score: 0, pain: "Cansaço Mental" },
-                    { label: "Apenas quando tenho tarefas que não gosto", score: 10, pain: "Falta de Interesse" },
-                    { label: "Não, mantenho minha energia constante", score: 20 }
+                    { label: "Meu celular (Notificações/Redes)", score: 0, pain: "Vício em Dopamina" },
+                    { label: "O despertador (com dificuldade)", score: 5, pain: "Inércia Matinal" },
+                    { label: "Um copo d'água ou levanto direto", score: 20 }
                 ]
             },
-            // Fase 2
+            // FASE 2: FOCO PROFUNDO (Trabalho e Estudo)
             {
-                text: "Quando você define uma meta desafiadora, como você se sente?",
+                text: "Quanto tempo você consegue trabalhar sem pegar no celular?",
                 options: [
-                    { label: "Fico paralisado, sei o que quero mas não começo", score: 0, pain: "Paralisia" },
-                    { label: "Planejo demais e não saio do lugar", score: 5, pain: "Overthinking" },
-                    { label: "Divido em etapas pequenas e começo a agir", score: 20 }
-                ]
-            },
-            {
-                text: "Você costuma começar vários projetos ao mesmo tempo ou termina o que começa?",
-                options: [
-                    { label: "Começo várias coisas e concluo poucas", score: 0, pain: "Falta de Foco" },
-                    { label: "Foco em uma tarefa, mas me distraio facilmente", score: 5, pain: "Distrações" },
-                    { label: "Concentro‑me em uma tarefa até terminar", score: 20 }
+                    { label: "Menos de 15 minutos", score: 0, pain: "Foco Fragmentado" },
+                    { label: "Cerca de 30-45 minutos", score: 10, pain: "Distração Moderada" },
+                    { label: "Mais de 1 hora ininterrupta", score: 20 }
                 ]
             },
             {
-                text: "Ontem você passou mais tempo no celular do que produzindo?",
+                text: "Como está sua organização de tarefas hoje?",
                 options: [
-                    { label: "Sim, fiquei bastante tempo distraído no celular", score: 0, pain: "Distração Digital" },
-                    { label: "Foi equilibrado: trabalho e celular empataram", score: 10, pain: "Equilíbrio Precário" },
-                    { label: "Não, usei o celular apenas como ferramenta de apoio", score: 20 }
+                    { label: "Não tenho lista, guardo tudo na cabeça", score: 0, pain: "Sobrecarga Cognitiva" },
+                    { label: "Tenho lista, mas nunca cumpro tudo", score: 5, pain: "Falha de Execução" },
+                    { label: "Sigo um plano claro e priorizado", score: 20 }
                 ]
             },
-            // Fase 3
+            // FASE 3: CONTROLE DOPAMINÉRGICO (Mente)
             {
-                text: "Como você reage quando falha na dieta ou em uma tarefa?",
+                text: "No final do dia, qual é a sensação predominante?",
                 options: [
-                    { label: "Fico me culpando e prometo tentar amanhã", score: 0, pain: "Autocrítica Excessiva" },
-                    { label: "Me justifico dizendo que mereço um descanso", score: 5, pain: "Auto-Sabotagem" },
-                    { label: "Analiso onde errei e ajusto o caminho", score: 20 }
+                    { label: "Fiz muito, mas não avancei nada", score: 0, pain: "Movimento sem Progresso" },
+                    { label: "Culpado pelo tempo que perdi", score: 5, pain: "Autossabotagem" },
+                    { label: "Dever cumprido e progresso real", score: 20 }
                 ]
             },
             {
-                text: "Por que você acha que ainda não atingiu seu potencial?",
+                text: "Se você tivesse que classificar seu nível de disciplina atual:",
                 options: [
-                    { label: "Sei o que devo fazer, mas tenho dificuldade em agir", score: 0, pain: "Gap de Execução" },
-                    { label: "Sinto que me esforço, mas não saio do lugar", score: 5, pain: "Falta de Método" },
-                    { label: "Acredito que estou evoluindo no meu ritmo", score: 20 }
+                    { label: "Dependo de motivação (Oscilante)", score: 0, pain: "Instabilidade Emocional" },
+                    { label: "Começo bem, mas paro no meio", score: 5, pain: "Falta de Constância" },
+                    { label: "Faço o que precisa ser feito", score: 20 }
                 ]
             }
         ];
-
 
         let currentQ = 0;
         let totalScore = 0;
@@ -254,30 +219,29 @@
         function showIntro() {
             const area = document.getElementById('quiz-area');
             area.innerHTML = `
-                <div class="text-center fade-in-up py-4">
-                    <div class="flex justify-center mb-8">
-                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#111] to-black border border-white/10 flex items-center justify-center shadow-2xl relative group">
-                            <div class="absolute inset-0 bg-red-600/20 blur-xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                            <img src="assets/logo_synapse.png" class="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" alt="Logo">
-                        </div>
+                <div class="text-center fade-in-up py-4 flex flex-col items-center">
+                    
+                    <div class="mb-10 relative group">
+                        <div class="absolute inset-0 bg-red-600/20 blur-xl rounded-full opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                        <img src="assets/logo_synapse.png" class="w-16 h-16 object-contain relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" alt="Synapse">
                     </div>
 
-                    <h1 class="glitch-wrapper text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter uppercase" >
+                    <h1 class="glitch-text text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter uppercase leading-none" data-text="Neuro Audit v5.0">
                         Neuro Audit <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">v5.0</span>
                     </h1>
                     
-                    <p class="text-gray-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed mb-10 font-medium">
+                    <p class="text-gray-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed mb-12 font-medium">
                         96% das pessoas não são preguiçosas, elas estão <b class="text-white">quimicamente travadas</b>. 
-                        Este protocolo vai mapear suas falhas executivas em 3 fases para gerar seu plano de resgate.
+                        Este protocolo vai mapear suas falhas executivas em 3 fases.
                     </p>
                     
-                    <button onclick="renderQuestion()" class="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-black font-black uppercase tracking-widest text-sm rounded hover:bg-gray-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-105 hover:shadow-[0_0_50px_rgba(255,255,255,0.3)]">
+                    <button onclick="renderQuestion()" class="group relative inline-flex items-center justify-center px-10 py-5 bg-white text-black font-black uppercase tracking-widest text-xs rounded hover:bg-gray-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:scale-105 hover:shadow-[0_0_50px_rgba(255,255,255,0.2)]">
                         <span>Iniciar Diagnóstico</span>
-                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                     
-                    <div class="mt-8 flex items-center justify-center gap-2 text-[10px] text-gray-600 font-mono uppercase">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Sistema Online
+                    <div class="mt-8 flex items-center justify-center gap-2 text-[10px] text-green-500 font-mono uppercase bg-green-900/10 px-3 py-1 rounded border border-green-900/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Sistema Online
                     </div>
                 </div>
             `;
@@ -287,31 +251,32 @@
             const q = questions[currentQ];
             const area = document.getElementById('quiz-area');
 
-            // Lógica da barra de progresso e fase
+            // Lógica da barra de progresso
             let currentPhase = phases.find(p => p.questions.includes(currentQ)).name;
             const progress = ((currentQ + 1) / questions.length) * 100;
             document.getElementById('top-progress').style.width = `${progress}%`;
 
             area.innerHTML = `
                 <div class="fade-in-up">
-                    <div class="flex justify-between items-end mb-6 border-b border-white/5 pb-4">
-                        <span class="text-[10px] font-mono text-red-500 font-bold uppercase tracking-widest bg-red-950/20 px-3 py-1 rounded border border-red-900/30">
-                            <i class="fa-solid fa-crosshairs mr-1"></i> ${currentPhase}
+                    <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-4">
+                        <span class="text-[10px] font-mono text-red-500 font-bold uppercase tracking-widest bg-red-950/20 px-3 py-1.5 rounded border border-red-900/30 flex items-center gap-2">
+                            <i class="fa-solid fa-crosshairs animate-pulse"></i> ${currentPhase}
                         </span>
-                        <span class="text-[10px] text-gray-500 font-mono">DADO ${currentQ + 1}/${questions.length}</span>
+                        <span class="text-[10px] text-gray-600 font-mono font-bold">DADO ${currentQ + 1}/${questions.length}</span>
                     </div>
 
-                    <h2 class="text-xl md:text-3xl font-bold text-white mb-8 leading-tight min-h-[60px]">
+                    <h2 class="text-xl md:text-2xl font-bold text-white mb-8 leading-tight min-h-[60px]">
                         ${q.text}
                     </h2>
 
                     <div class="space-y-3">
                         ${q.options.map((opt) => `
                             <button onclick="handleOption(this, ${opt.score}, '${opt.pain || ''}')" 
-                                class="option-card w-full text-left p-5 rounded-lg flex items-center justify-between group">
-                                <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">${opt.label}</span>
-                                <div class="w-5 h-5 border border-gray-600 rounded-full flex items-center justify-center group-hover:border-red-500 transition-colors">
-                                    <div class="w-2.5 h-2.5 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                class="option-card w-full text-left p-5 rounded-lg flex items-center justify-between group relative overflow-hidden">
+                                <div class="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                                <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors relative z-10">${opt.label}</span>
+                                <div class="w-5 h-5 border border-white/10 rounded-full flex items-center justify-center group-hover:border-red-500 transition-colors relative z-10 bg-black/50">
+                                    <div class="w-2.5 h-2.5 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_0_10px_#ef4444]"></div>
                                 </div>
                             </button>
                         `).join('')}
@@ -321,7 +286,7 @@
         }
 
         function handleOption(element, score, pain) {
-            // Feedback visual de clique
+            // Feedback visual de clique instantâneo
             element.classList.add('selected');
 
             // Computa dados
@@ -331,7 +296,7 @@
                 dominantPain = pain;
             }
 
-            // Delay para próxima pergunta
+            // Delay para próxima pergunta (UX)
             setTimeout(() => {
                 currentQ++;
                 if (currentQ < questions.length) {
@@ -339,70 +304,83 @@
                 } else {
                     showAnalyzing();
                 }
-            }, 300);
+            }, 400);
         }
 
         function showAnalyzing() {
             document.getElementById('top-progress').style.width = '100%';
             const area = document.getElementById('quiz-area');
 
+            // Interface "Terminal"
             area.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-20 text-center fade-in-up">
-                    <div class="relative mb-8">
+                <div class="flex flex-col items-center justify-center py-20 text-center fade-in-up w-full">
+                    <div class="relative mb-10">
                         <div class="absolute inset-0 bg-red-600/20 blur-xl animate-pulse"></div>
-                        <i class="fa-solid fa-microchip text-6xl text-white relative z-10 animate-bounce"></i>
+                        <i class="fa-solid fa-microchip text-5xl text-white relative z-10 animate-bounce"></i>
                     </div>
                     
-                    <h2 class="text-2xl font-black text-white uppercase tracking-widest mb-2">Compilando Dados</h2>
-                    <div class="font-mono text-xs text-red-500" id="log-output">INICIANDO PROTOCOLO...</div>
+                    <h2 class="text-xl font-black text-white uppercase tracking-widest mb-4">Compilando Dados</h2>
                     
-                    <div class="w-64 h-1 bg-gray-800 rounded-full mt-6 overflow-hidden">
-                        <div class="h-full bg-red-600 animate-[width_3s_ease-out_forwards]" style="width: 0%" id="loading-bar"></div>
+                    <div class="w-full max-w-sm bg-black border border-white/10 rounded p-4 font-mono text-[10px] text-left h-32 overflow-hidden relative shadow-2xl">
+                         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 z-10"></div>
+                         <div id="terminal-log" class="text-green-500 space-y-1"></div>
+                    </div>
+                    
+                    <div class="w-full max-w-sm h-1 bg-gray-900 rounded-full mt-4 overflow-hidden">
+                        <div class="h-full bg-red-600 animate-[width_3.5s_ease-out_forwards]" style="width: 0%"></div>
                     </div>
                 </div>
             `;
 
-            // Animação da barra fake via JS para garantir sync
-            setTimeout(() => document.getElementById('loading-bar').style.width = '100%', 100);
-
             const logs = [
-                "Mapeando resistência dopaminérgica...",
-                "Calculando índice de paralisia...",
-                "Comparando com perfis de elite...",
-                "Gerando estratégia de intervenção..."
+                "> Mapeando resistência dopaminérgica...",
+                "> Analisando padrões de bloqueio...",
+                "> Calculando índice de paralisia...",
+                "> Acessando banco de dados neural...",
+                "> Comparando com perfis de elite...",
+                "> ERRO: PADRÃO DE SABOTAGEM ENCONTRADO",
+                "> Gerando estratégia de intervenção..."
             ];
 
             let i = 0;
+            const logContainer = document.getElementById('terminal-log');
+            
             const interval = setInterval(() => {
                 if (i < logs.length) {
-                    document.getElementById('log-output').innerText = logs[i];
+                    const line = document.createElement('div');
+                    line.innerText = logs[i];
+                    if(logs[i].includes('ERRO')) line.classList.add('text-red-500', 'font-bold');
+                    logContainer.prepend(line);
                     i++;
                 } else {
                     clearInterval(interval);
-                    showSalesArgument();
+                    setTimeout(showResult, 800);
                 }
-            }, 800);
+            }, 450);
         }
 
-        function showSalesArgument() {
+        function showResult() {
             const area = document.getElementById('quiz-area');
 
             let nivel = "NÍVEL: CRÍTICO";
             let titulo = "MODO DE SOBREVIVÊNCIA";
             let cor = "text-red-500";
+            let desc = "Sua mente está operando em modo de defesa, bloqueando o progresso para economizar energia.";
 
             if (totalScore > 40) {
                 nivel = "NÍVEL: CIVIL";
                 titulo = "FALTA MÉTODO";
                 cor = "text-yellow-500";
+                desc = "Você tem potencial e vontade, mas a falta de um sistema claro está dispersando sua energia.";
             }
             if (totalScore > 100) {
                 nivel = "NÍVEL: OPERADOR";
                 titulo = "MENTALIDADE BLINDADA";
                 cor = "text-green-500";
+                desc = "Sua base é sólida, mas pequenos ajustes táticos podem multiplicar seus resultados.";
             }
 
-            // Salva no LocalStorage para usar na Página de Vendas se quiser
+            // Salva dados cruciais para o Onboarding
             localStorage.setItem('synapse_quiz_data', JSON.stringify({
                 nivel: nivel,
                 fraqueza: dominantPain,
@@ -410,53 +388,65 @@
             }));
 
             area.innerHTML = `
-  <div class="fade-in-up max-w-3xl mx-auto pb-10">
-    <div class="text-center mb-10">
-      <span class="inline-block border border-red-900/50 bg-red-950/20 text-red-400 text-[10px] font-bold px-3 py-1 rounded uppercase tracking-[0.2em] mb-4 animate-pulse">
-        Diagnóstico completo
-      </span>
-      <h1 class="text-4xl md:text-5xl font-black text-white uppercase leading-none mb-3">
-        Hora de evoluir
-      </h1>
-      <p class="text-gray-500 text-xs uppercase">Seu nível atual: <b class="${cor}">${nivel}</b></p>
-    </div>
+                <div class="fade-in-up max-w-lg mx-auto pb-10">
+                    <div class="text-center mb-10">
+                        <div class="inline-block border border-red-500/30 bg-red-500/10 text-red-400 text-[9px] font-bold px-3 py-1 rounded uppercase tracking-[0.2em] mb-4 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
+                            Diagnóstico Finalizado
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black text-white uppercase leading-none mb-3 tracking-tighter">
+                            Hora de <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Evoluir</span>
+                        </h1>
+                    </div>
 
-    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-2xl">
-      <div class="absolute top-0 right-0 w-40 h-40 bg-red-600/10 blur-[80px]"></div>
-      <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
-        <i class="fa-solid fa-lightbulb text-red-500"></i> O que descobrimos
-      </h3>
-      <p class="text-sm text-gray-300 leading-relaxed mb-6 relative z-10">
-        Nossa análise mostra que sua motivação está baixa. Forçar a vontade nessa fase causa bloqueio porque as tarefas não parecem recompensadoras.
-      </p>
-      <div class="p-4 bg-red-950/10 border-l-2 border-red-600 rounded-r relative z-10">
-        <p class="text-sm text-white font-medium">
-          Seu cérebro busca conforto. O Synapse te ajuda a buscar evolução. Agora você tem o controle.
-        </p>
-      </div>
-    </div>
+                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 mb-8 relative overflow-hidden shadow-2xl group">
+                        <div class="absolute top-0 right-0 w-60 h-60 bg-red-600/5 blur-[60px] group-hover:bg-red-600/10 transition-colors"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-6 pb-6 border-b border-white/5">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase font-mono">Status Atual</p>
+                                    <p class="${cor} font-black text-xl tracking-wide">${nivel.replace('NÍVEL: ', '')}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-gray-500 uppercase font-mono">Bloqueio Principal</p>
+                                    <p class="text-white font-bold text-sm">${dominantPain}</p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-sm text-gray-300 leading-relaxed mb-6 font-medium">
+                                ${desc}
+                            </p>
+                            
+                            <div class="p-4 bg-white/5 border-l-2 border-red-600 rounded-r">
+                                <p class="text-xs text-gray-400 italic">
+                                    "O Synapse não vai apenas te motivar. Ele vai instalar um novo sistema operacional na sua rotina."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="text-center">
-      <p class="text-xs text-gray-400 mb-6 max-w-sm mx-auto">
-        Seu plano está pronto para superar <b class="text-white">${dominantPain}</b>. Vamos colocá-lo em prática?
-      </p>
-      <button onclick="goToApp()" class="group w-full md:w-auto bg-[#CC0000] text-white font-black uppercase tracking-widest py-4 px-12 rounded-full hover:bg-red-700 transition-all shadow-[0_0_40px_rgba(204,0,0,0.3)] hover:shadow-[0_0_60px_rgba(204,0,0,0.5)] flex items-center justify-center gap-3 mx-auto text-sm">
-        <span>Acessar painel</span>
-        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-      </button>
-      <p class="mt-6 text-[9px] text-gray-600 uppercase opacity-70">
-        <i class="fa-solid fa-check-circle mr-1"></i> Conta criada com sucesso
-      </p>
-    </div>
-  </div>
-`;
-
+                    <div class="text-center space-y-4">
+                        <button onclick="goToApp()" class="w-full bg-white text-black font-black uppercase tracking-widest py-4 rounded-xl hover:bg-gray-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-3 text-xs group relative overflow-hidden">
+                            <span class="relative z-10">Acessar Meu Plano</span>
+                            <i class="fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        
+                        <p class="text-[9px] text-gray-600 uppercase tracking-widest opacity-60">
+                            <i class="fa-solid fa-lock mr-1"></i> Dados Criptografados
+                        </p>
+                    </div>
+                </div>
+            `;
         }
 
         function goToApp() {
-  // leva para os slides pós-quiz (estilo das imagens)
-  window.location.href = "onboarding.html";
-}
+            // Feedback tátil visual antes de ir
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                window.location.href = "onboarding.html";
+            }, 500);
+        }
 
     </script>
 </body>
