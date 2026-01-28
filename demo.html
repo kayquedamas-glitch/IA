@@ -2,7 +2,6 @@
 <html lang="pt-BR" class="h-full">
 
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPT9PTG129"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -36,29 +35,30 @@
         const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co';
         const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
 
-        // Cria a conexão GLOBAL (window._supabase) para todos os arquivos verem
-        window._supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+        // CORREÇÃO 1: Nome da variável padronizado (sem underline) para o sistema reconhecer
+        window.supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
 
-        // Script de Proteção (Segurança)
+        // CORREÇÃO 2: Script de Proteção Adaptado para DEMO
         async function verificarAcesso() {
-            console.log("🔒 Verificando credenciais...");
+            console.log("🔒 Iniciando Demo...");
 
-            // 1. Tenta ler os dados salvos no navegador (Login Direto)
+            // Tenta ler os dados salvos
             const sessaoSalva = localStorage.getItem('synapse_user');
 
             if (!sessaoSalva) {
-                console.log("❌ Sem sessão. Redirecionando...");
-                window.location.href = "login.html"; // Mude para ../login.html se necessário
-                return;
-            }
-
-            try {
-                const usuario = JSON.parse(sessaoSalva);
-                if (!usuario.email) throw new Error("Sessão inválida");
-                console.log("✅ Bem-vindo: " + usuario.email);
-            } catch (e) {
-                localStorage.removeItem('synapse_user');
-                window.location.href = "login.html";
+                console.log("⚠️ Modo Visitante Ativado: Criando sessão temporária...");
+                
+                // Cria um usuário fictício para a Demo funcionar sem login
+                const demoUser = {
+                    nome: "Visitante",
+                    email: "demo@synapse.os",
+                    status: "free",
+                    id: "demo-user-id"
+                };
+                
+                localStorage.setItem('synapse_user', JSON.stringify(demoUser));
+            } else {
+                console.log("✅ Usuário identificado.");
             }
         }
 
@@ -77,17 +77,12 @@
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             font-family: 'Inter', sans-serif;
-
-            /* AJUSTE DE TAMANHO */
             max-width: 240px !important;
-            /* Força ser pequeno */
             padding: 12px !important;
-            /* Menos borda interna */
         }
 
         .driver-popover.driverjs-theme .driver-popover-title {
             font-size: 13px;
-            /* Título menor */
             font-weight: 700;
             margin-bottom: 4px;
             color: #fff;
@@ -97,20 +92,17 @@
 
         .driver-popover.driverjs-theme .driver-popover-description {
             font-size: 11px;
-            /* Texto menor */
             color: #a3a3a3;
             line-height: 1.4;
             margin-bottom: 10px !important;
         }
 
-        /* Botões menores */
         .driver-popover.driverjs-theme button {
             background-color: #CC0000;
             color: white;
             border: none;
             border-radius: 6px;
             padding: 4px 10px;
-            /* Botão mais fino */
             font-size: 10px;
             font-weight: 700;
             text-shadow: none;
@@ -127,10 +119,8 @@
             color: #888;
         }
 
-        /* Remove a seta gigante padrão se atrapalhar (opcional, mas ajuda na limpeza) */
         .driver-popover-arrow {
             border-width: 5px !important;
-            /* Seta menor */
         }
     </style>
 </head>
@@ -139,8 +129,6 @@
     <div id="welcomeTourModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="welcomeBackdrop">
         </div>
-
-        
     </div>
 
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-[60] hidden opacity-0 transition-opacity duration-300">
@@ -170,7 +158,7 @@
                             <span class="uppercase tracking-widest">Base de Comando</span>
                         </div>
                         
-                    </nav>
+                         </nav>
                 </div>
             </div>
 
@@ -289,14 +277,13 @@
 
         <main class="main-content relative flex flex-col h-full bg-black overflow-hidden">
             <div class="md:hidden h-14 bg-black/80 backdrop-blur-md border-b border-white/5 flex items-center justify-center px-4 z-50 shrink-0 sticky top-0 relative">
-    <button onclick="window.toggleSidebar(true)" class="absolute left-4 text-gray-400 hover:text-white p-2">
-        <i class="fa-solid fa-bars-staggered"></i>
-    </button>
-    <span class="text-xs font-black tracking-[0.2em] text-white">SYNAPSE <span class="text-red-600">FREE</span></span>
-</div>
+                <button onclick="window.toggleSidebar(true)" class="absolute left-4 text-gray-400 hover:text-white p-2">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <span class="text-xs font-black tracking-[0.2em] text-white">SYNAPSE <span class="text-red-600">FREE</span></span>
+            </div>
 
             <div id="viewChat" class="view-section h-full flex flex-col hidden bg-black relative">
-
                 <button id="resetChatBtn"
                     class="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/50 border border-white/10 text-gray-500 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all duration-300 backdrop-blur-sm group"
                     title="Reiniciar Protocolo">
@@ -523,7 +510,7 @@
     <script type="module" src="PRO/js/main.js"></script>
 
     <script>
-        // Carregar Perfil do Usuário (LocalStorage)
+        // Carregar Perfil do Usuário
         document.addEventListener('DOMContentLoaded', function () {
             const dadosSalvos = localStorage.getItem('synapse_user');
             if (dadosSalvos) {
@@ -532,7 +519,7 @@
                     const elementoNome = document.querySelector('.user-name');
                     const elementoAvatar = document.querySelector('.user-avatar span');
                     const elementoStatus = document.querySelector('.user-status');
-                    const elementoDashName = document.getElementById('dashName'); // Correção do Visitante
+                    const elementoDashName = document.getElementById('dashName');
 
                     // Elementos PRO
                     const areaUpgrade = document.getElementById('upgradeActionArea');
@@ -575,55 +562,18 @@
                 window.location.href = 'index.html#planos';
             }
         }
-
-        // =================================================================
-        // 4. CORREÇÃO DO BOTÃO UPGRADE (ID CORRETO + PROTEÇÃO DE ERRO)
-        // =================================================================
+        
+        // CORREÇÃO 3: Destrava a tela preta caso o sistema trave
         document.addEventListener('DOMContentLoaded', () => {
-            // O ID correto no seu HTML é 'btnUpgradeSidebar', não 'btnUpgrade'
-            const btn = document.getElementById('btnUpgradeSidebar');
-
-            if (btn) {
-                btn.addEventListener('click', async () => {
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = 'AGUARDE...';
-                    btn.style.opacity = '0.7';
-
-                    try {
-                        // Verifica se o Supabase carregou
-                        if (typeof supabase === 'undefined') {
-                            throw new Error("Sistema de dados offline.");
-                        }
-
-                        const { data: { user } } = await supabase.auth.getUser();
-
-                        if (!user) {
-                            alert("Para fazer upgrade, faça login novamente.");
-                            window.location.href = "PRO/login.html";
-                            return;
-                        }
-
-                        const checkoutUrl = new URL("https://pay.kiwify.com.br/SeuLinkAqui"); // Se tiver a variável SYSTEM_CONFIG, use-a
-
-                        // Passa dados se existirem
-                        if (user.user_metadata) {
-                            checkoutUrl.searchParams.set('name', user.user_metadata.name || "");
-                        }
-                        checkoutUrl.searchParams.set('email', user.email);
-                        checkoutUrl.searchParams.set('custom_id', user.id);
-
-                        localStorage.setItem('synapse_upgrade_pending', 'true');
-                        window.location.href = checkoutUrl.toString();
-
-                    } catch (error) {
-                        console.error("Erro upgrade:", error);
-                        btn.innerHTML = originalText;
-                        btn.style.opacity = '1';
-                        // Fallback simples se der erro
-                        irParaPlanos();
-                    }
-                });
-            }
+            // Se passar 4 segundos e o overlay de boot ainda estiver lá, remove na força bruta
+            setTimeout(() => {
+                const stuckOverlay = document.getElementById('boot-overlay');
+                if(stuckOverlay) {
+                    console.warn("⚠️ Boot demorou demais. Forçando entrada.");
+                    stuckOverlay.style.opacity = '0';
+                    setTimeout(() => stuckOverlay.remove(), 500);
+                }
+            }, 4000);
         });
     </script>
     <script>
@@ -656,13 +606,13 @@
             const backdrop = document.getElementById('welcomeBackdrop');
             const card = document.getElementById('welcomeCard');
 
-            modal.classList.remove('hidden');
-            // Pequena animação de entrada apenas visual
-            setTimeout(() => {
-                backdrop.classList.remove('opacity-0');
-                card.classList.remove('opacity-0', 'scale-95');
-                card.classList.add('scale-100', 'opacity-100');
-            }, 10);
+            if(modal) {
+                modal.classList.remove('hidden');
+                // Pequena animação de entrada apenas visual
+                setTimeout(() => {
+                    if(backdrop) backdrop.classList.remove('opacity-0');
+                }, 10);
+            }
         }
     }
 
@@ -681,7 +631,6 @@
 
         // 2. Configura o Driver.js
         const driver = window.driver.js.driver;
-        const isMobile = window.innerWidth < 768;
 
         // Tenta achar o título do dashboard para não grifar a tela toda
         // (Procura H2 dentro da main ou o ID especifico)
@@ -758,8 +707,26 @@
             setTimeout(() => {
                 modal.remove();
             }, 300);
+        }
+    };
+    
+    // --------------------------------------------------------------------------------------
+    // SCRIPT FINAL: Adiciona seus botões "Relatório" e "Modo Foco" com funcionalidade visual
+    // --------------------------------------------------------------------------------------
+    window.abrirRelatorio = function() {
+        if(window.features && window.features.showWeeklyReport) {
+            window.features.showWeeklyReport();
         } else {
-            console.warn("Modal não encontrado pelo script de segurança.");
+             // Fallback se o módulo features não carregar
+             alert("⚠️ O módulo de IA não respondeu. Tente recarregar.");
+        }
+    };
+
+    window.ativarModoFoco = function() {
+         if(window.features && window.features.startFocusMode) {
+            window.features.startFocusMode();
+        } else {
+             alert("⚠️ O módulo de Foco não respondeu.");
         }
     };
 </script>
