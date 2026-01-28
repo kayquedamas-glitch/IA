@@ -319,9 +319,10 @@
                     <div
                         class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6 animate-fade-in-up">
                         <div>
-                            <h2 id="dashboardTitle" class="text-3xl font-black text-white tracking-tighter uppercase leading-tight md:leading-normal animate-text-alive">
-    QG OPERACIONAL
-</h2>
+                            <h2 id="dashboardTitle"
+                                class="text-3xl font-black text-white tracking-tighter uppercase leading-tight md:leading-normal animate-text-alive">
+                                QG OPERACIONAL
+                            </h2>
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
                                     class="text-white font-bold">VISITANTE</span></p>
                         </div>
@@ -403,23 +404,26 @@
                     </div>
 
                     <div class="w-full mb-8 animate-fade-in-up">
-    <div class="dashboard-card p-6 dopamine-card delay-100 relative overflow-hidden flex flex-col justify-center min-h-[110px]">
-        <div class="absolute -right-3 -bottom-3 text-6xl text-blue-900/10">
-            <i class="fa-solid fa-khanda"></i>
-        </div>
-        
-        <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível Operacional</span>
-        
-        <div class="flex items-end justify-between mt-2 relative z-10">
-            <span class="text-4xl font-black text-white" id="levelDisplay">1</span>
-            <span class="text-xs font-mono text-blue-400 mb-1" id="xpText">0 XP</span>
-        </div>
-        
-        <div class="w-full bg-[#222] rounded-full h-2 mt-3 overflow-hidden relative z-10">
-            <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
-        </div>
-    </div>
-</div>
+                        <div
+                            class="dashboard-card p-6 dopamine-card delay-100 relative overflow-hidden flex flex-col justify-center min-h-[110px]">
+                            <div class="absolute -right-3 -bottom-3 text-6xl text-blue-900/10">
+                                <i class="fa-solid fa-khanda"></i>
+                            </div>
+
+                            <span
+                                class="text-[10px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível
+                                Operacional</span>
+
+                            <div class="flex items-end justify-between mt-2 relative z-10">
+                                <span class="text-4xl font-black text-white" id="levelDisplay">1</span>
+                                <span class="text-xs font-mono text-blue-400 mb-1" id="xpText">0 XP</span>
+                            </div>
+
+                            <div class="w-full bg-[#222] rounded-full h-2 mt-3 overflow-hidden relative z-10">
+                                <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
                         <div class="dashboard-card p-6 lg:col-span-1 min-h-[400px] flex flex-col">
@@ -461,45 +465,90 @@
                             </div>
 
                             <div class="mt-auto pt-4 border-t border-white/5 w-full">
-                                <div
-                                    class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-full border border-white/10 focus-within:border-red-500/50 transition-colors w-full relative">
-                                    <div class="relative group pl-1 shrink-0">
-                                        <input id="newMissionDate" type="date"
-                                            class="absolute inset-0 opacity-0 cursor-pointer w-full z-10">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
-                                            <i class="fa-regular fa-calendar text-sm"></i>
-                                        </div>
-                                    </div>
+                                <div>
+    <div class="flex justify-between items-center mb-4 px-2">
+        <h3 class="text-sm font-black text-white uppercase tracking-widest border-l-4 border-yellow-600 pl-3">Operações em Curso</h3>
+        
+        <button onclick="window.Tactical.openNewMissionModal()" class="text-xs text-yellow-600 hover:text-yellow-400 font-bold uppercase transition-colors">
+            <i class="fa-solid fa-plus mr-1"></i> NOVA MISSÃO
+        </button>
+    </div>
 
-                                    <input id="newMissionInput" type="text"
-                                        class="flex-1 min-w-0 bg-transparent text-sm text-white px-3 outline-none placeholder-gray-600 font-medium h-10"
-                                        placeholder="Nova missão..." autocomplete="off"
-                                        onkeydown="if(event.key === 'Enter') window.addNewMission()">
-
-                                    <button onclick="window.addNewMission()"
-                                        class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-lg shadow-red-900/30 hover:scale-105 active:scale-95 transition-all z-10">
-                                        <i
-                                            class="fa-solid fa-paper-plane text-sm translate-x-[-1px] translate-y-[1px]"></i>
-                                    </button>
-                                </div>
+    <div class="space-y-4" id="activeMissionsList">
+        </div>
+</div>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
+
         </main>
 
-        <nav class="bottom-nav md:hidden z-50">
-            <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')"> <i
-                    class="fa-solid fa-layer-group text-xl"></i>
-                <span>Jornada</span>
-            </button>
-            <button id="tabChat" class="nav-btn active" onclick="window.switchTab('chat')"> <i
-                    class="fa-solid fa-terminal text-xl"></i>
-                <span>Comando</span>
-            </button>
+        <nav class="fixed z-[100] bg-black/95 backdrop-blur-xl border-t border-red-900/30 transition-all duration-300
+    /* MOBILE: Fixa embaixo, compacta */
+    bottom-0 left-0 right-0 py-2 pb-4 md:pb-0
+    /* PC: Lateral Esquerda, Altura Total */
+    md:top-0 md:bottom-0 md:w-20 md:border-t-0 md:border-r md:flex md:flex-col md:justify-center md:bg-[#050505]">
+
+            <div class="flex justify-around items-center w-full h-full max-w-md mx-auto px-2
+        /* PC: Layout Vertical */
+        md:flex-col md:justify-center md:gap-8 md:px-0 md:max-w-none">
+
+                <div
+                    class="hidden md:flex absolute top-6 flex-col items-center opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+                    <img src="PRO/icone preto.png" class="w-6 invert filter drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]">
+                </div>
+
+                <button onclick="Navigation.navigateTo('dashboard')"
+                    class="nav-btn group flex flex-col items-center justify-center gap-1 w-14 md:w-full transition-all"
+                    data-target="dashboard">
+                    <div class="relative p-2 rounded-xl group-hover:bg-red-500/10 transition-all">
+                        <i
+                            class="fa-solid fa-house text-lg md:text-xl mb-0.5 text-gray-500 group-hover:text-red-500 transition-colors"></i>
+                        <div
+                            class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-red-500 rounded-full opacity-0 group-[.text-red-500]:opacity-100 shadow-[0_0_5px_#ef4444]">
+                        </div>
+                    </div>
+                    <span
+                        class="text-[9px] tracking-[0.2em] font-black uppercase text-gray-600 group-hover:text-red-400 opacity-80">QG</span>
+                </button>
+
+                <button onclick="Navigation.navigateTo('tactical')"
+                    class="nav-btn group flex flex-col items-center justify-center gap-1 w-14 md:w-full transition-all"
+                    data-target="tactical">
+                    <div class="relative p-2 rounded-xl group-hover:bg-red-500/10 transition-all">
+                        <i
+                            class="fa-solid fa-layer-group text-lg md:text-xl mb-0.5 text-gray-500 group-hover:text-red-500 transition-colors"></i>
+                    </div>
+                    <span
+                        class="text-[9px] tracking-[0.2em] font-black uppercase text-gray-600 group-hover:text-red-400 opacity-80">Tático</span>
+                </button>
+
+                <button onclick="Navigation.navigateTo('chat')"
+                    class="nav-btn group flex flex-col items-center justify-center gap-1 w-14 md:w-full transition-all"
+                    data-target="chat">
+                    <div class="relative p-2 rounded-xl group-hover:bg-red-500/10 transition-all">
+                        <i
+                            class="fa-solid fa-terminal text-lg md:text-xl mb-0.5 text-gray-500 group-hover:text-red-500 transition-colors"></i>
+                    </div>
+                    <span
+                        class="text-[9px] tracking-[0.2em] font-black uppercase text-gray-600 group-hover:text-red-400 opacity-80">IA</span>
+                </button>
+
+                <button onclick="Navigation.navigateTo('profile')"
+                    class="nav-btn group flex flex-col items-center justify-center gap-1 w-14 md:w-full transition-all"
+                    data-target="profile">
+                    <div class="relative p-2 rounded-xl group-hover:bg-red-500/10 transition-all">
+                        <i
+                            class="fa-solid fa-user-astronaut text-lg md:text-xl mb-0.5 text-gray-500 group-hover:text-red-500 transition-colors"></i>
+                    </div>
+                    <span
+                        class="text-[9px] tracking-[0.2em] font-black uppercase text-gray-600 group-hover:text-red-400 opacity-80">Perfil</span>
+                </button>
+
+            </div>
         </nav>
     </div>
 

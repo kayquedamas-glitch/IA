@@ -6,20 +6,52 @@ import { initChat, loadAgent } from './core/chat.js';
 import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
 import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
+import { initNavigation } from './modules/navigation.js';
+import { Tactical } from './modules/tactical.js';
 
 // --- INICIALIZAÇÃO DO SISTEMA (BOOT) ---
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // -----------------------------------------------------------
+    // 1. INICIALIZAÇÃO DO SISTEMA (NAVIGATION V2)
+    // -----------------------------------------------------------
+    console.log("🚀 Carregando módulos do Synapse...");
+    
+    // Inicia a navegação imediatamente para preparar as views
+    // Isso esconde as telas erradas antes da animação de boot acabar
+    initNavigation();
+    Tactical.init();
+
+
+    // -----------------------------------------------------------
+    // 2. LÓGICA DE BOOT (ANIMAÇÃO DE ENTRADA)
+    // -----------------------------------------------------------
+    
     // Verifica qual foi o último boot e inverte para variar a animação
     const lastBoot = localStorage.getItem('synapse_boot_mode');
     const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
 
     localStorage.setItem('synapse_boot_mode', currentMode);
 
-    if (currentMode === 'BIO') {
+    console.log(`🔒 Boot Sequence Initiated: [${currentMode}]`);
+
+    // Executa a animação visual
+    if (typeof runBootBiometria === 'function' && currentMode === 'BIO') {
         runBootBiometria();
-    } else {
+    } else if (typeof runBootNeural === 'function') {
         runBootNeural();
+    } else {
+        // Fallback caso as funções de boot não existam
+        console.warn("Funções de Boot não encontradas. Iniciando direto.");
+        const overlay = document.getElementById('boot-overlay'); // Se houver ID
+        if(overlay) overlay.style.display = 'none';
     }
+
+    // -----------------------------------------------------------
+    // 3. OUTRAS INICIALIZAÇÕES (PREVENÇÃO DE ERROS)
+    // -----------------------------------------------------------
+    // Se tiver Auth ou Dashboard, inicie aqui também
+    // if(window.Auth) window.Auth.init();
 });
 
 // =================================================================
