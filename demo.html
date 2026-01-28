@@ -35,34 +35,27 @@
         const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co';
         const _SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4';
 
-        // CORREÇÃO 1: Nome da variável padronizado (sem underline) para o sistema reconhecer
+        // CLIENTE SUPABASE
         window.supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
 
-        // CORREÇÃO 2: Script de Proteção Adaptado para DEMO
+        // VERIFICAÇÃO DE ACESSO (MODO DEMO)
         async function verificarAcesso() {
             console.log("🔒 Iniciando Demo...");
-
-            // Tenta ler os dados salvos
             const sessaoSalva = localStorage.getItem('synapse_user');
 
             if (!sessaoSalva) {
                 console.log("⚠️ Modo Visitante Ativado: Criando sessão temporária...");
-                
-                // Cria um usuário fictício para a Demo funcionar sem login
                 const demoUser = {
                     nome: "Visitante",
                     email: "demo@synapse.os",
                     status: "free",
                     id: "demo-user-id"
                 };
-                
                 localStorage.setItem('synapse_user', JSON.stringify(demoUser));
             } else {
                 console.log("✅ Usuário identificado.");
             }
         }
-
-        // Executa a verificação
         verificarAcesso();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
@@ -105,7 +98,6 @@
             padding: 4px 10px;
             font-size: 10px;
             font-weight: 700;
-            text-shadow: none;
             text-transform: uppercase;
         }
 
@@ -126,8 +118,32 @@
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
+    
     <div id="welcomeTourModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="welcomeBackdrop">
+        </div>
+
+        <div class="relative w-full max-w-md transform scale-95 opacity-0 transition-all duration-300 z-10" id="welcomeCard">
+            <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-900"></div>
+                
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                        <img src="PRO/icone preto.png" class="w-8 h-8 opacity-80 invert">
+                    </div>
+                    <h2 class="text-xl font-black text-white uppercase tracking-wider mb-2">Neural OS</h2>
+                    <p class="text-sm text-gray-500">Olá, <span id="welcomeUserName" class="text-white font-bold">Operador</span>. Bem-vindo à sua nova central de comando.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="iniciarTour()" class="w-full py-3 bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-gray-200 transition-colors">
+                        Iniciar Tour Guiado
+                    </button>
+                    <button onclick="pularTour()" class="w-full py-3 bg-transparent border border-white/10 text-gray-500 font-bold text-xs uppercase tracking-widest rounded-lg hover:text-white hover:border-white/30 transition-colors">
+                        Pular Introdução
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -158,21 +174,17 @@
                             <span class="uppercase tracking-widest">Base de Comando</span>
                         </div>
                         
-                         </nav>
+                        </nav>
                 </div>
             </div>
 
             <div class="flex-grow flex flex-col overflow-hidden m-2 mt-2">
-                <div
-                    class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden relative">
-
-                    <div
-                        class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0 flex justify-between items-center">
+                <div class="bg-[#121212] rounded-xl flex flex-col h-full border border-white/5 overflow-hidden relative">
+                    <div class="p-4 bg-[#121212] border-b border-white/5 flex-shrink-0 flex justify-between items-center">
                         <p class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Núcleo Neural</p>
                         <div class="flex items-center gap-1.5">
                             <span class="relative flex h-1.5 w-1.5">
-                                <span
-                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
                             </span>
                             <span class="text-[8px] font-mono text-green-500 uppercase tracking-widest">Online</span>
@@ -181,43 +193,23 @@
 
                     <div class="overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar flex-grow">
                         <div onclick="window.selectTool('MENTOR')" class="relative group cursor-pointer w-full">
-                            <div
-                                class="absolute inset-0 bg-red-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500">
-                            </div>
-
-                            <div
-                                class="relative bg-gradient-to-br from-[#1a0505] to-[#0a0a0a] border border-red-900/30 group-hover:border-red-500/50 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] group-hover:translate-y-[-2px]">
-
+                            <div class="absolute inset-0 bg-red-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                            <div class="relative bg-gradient-to-br from-[#1a0505] to-[#0a0a0a] border border-red-900/30 group-hover:border-red-500/50 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] group-hover:translate-y-[-2px]">
                                 <div class="relative w-14 h-14 flex-shrink-0">
-                                    <div
-                                        class="absolute inset-0 border border-red-500/30 rounded-full animate-[spin_4s_linear_infinite]">
-                                    </div>
-                                    <div
-                                        class="absolute inset-2 border border-red-500/50 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]">
-                                    </div>
-
+                                    <div class="absolute inset-0 border border-red-500/30 rounded-full animate-[spin_4s_linear_infinite]"></div>
+                                    <div class="absolute inset-2 border border-red-500/50 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]"></div>
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <img src="logo_synapse.png"
-                                            class="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                                        <img src="logo_synapse.png" class="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                                     </div>
                                 </div>
-
                                 <div class="flex flex-col">
-                                    <span
-                                        class="text-sm font-black text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Synapse
-                                        Core</span>
-                                    <p class="text-[10px] text-gray-400 font-mono leading-tight mt-0.5">
-                                        Status: <span class="text-green-500">Aguardando Comando</span>
-                                    </p>
+                                    <span class="text-sm font-black text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Synapse Core</span>
+                                    <p class="text-[10px] text-gray-400 font-mono leading-tight mt-0.5">Status: <span class="text-green-500">Aguardando Comando</span></p>
                                     <div class="mt-2 flex items-center gap-2">
-                                        <span
-                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">Mentor</span>
-                                        <span
-                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">IA
-                                            v2.0</span>
+                                        <span class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">Mentor</span>
+                                        <span class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">IA v2.0</span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -225,16 +217,12 @@
             </div>
 
             <div class="flex-shrink-0 px-2 pb-2 space-y-3">
-
                 <button id="btn-sos-protocol"
                     class="group relative w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-950/20 border border-red-900/30 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 rounded-lg overflow-hidden shadow-sm hover:shadow-[0_0_15px_rgba(220,38,38,0.4)]">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out">
-                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
                     <i class="fa-solid fa-tower-broadcast animate-pulse text-sm"></i>
                     <div class="flex flex-col items-start leading-none gap-0.5">
-                        <span
-                            class="text-[9px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100 transition-opacity">Protocolo</span>
+                        <span class="text-[9px] uppercase tracking-[0.2em] font-bold opacity-70 group-hover:opacity-100 transition-opacity">Protocolo</span>
                         <span class="text-[10px] font-black tracking-widest group-hover:text-white">EMERGÊNCIA</span>
                     </div>
                 </button>
@@ -242,7 +230,6 @@
                     <span class="text-[8px] text-gray-600 font-bold uppercase tracking-widest flex items-center gap-1">
                         <i class="fa-solid fa-gear text-[8px]"></i> Sistema
                     </span>
-
                     <button onclick="window.openAudioSettings()"
                         class="group flex items-center gap-1.5 text-[9px] text-gray-500 hover:text-white transition-colors bg-[#151515] hover:bg-[#202020] px-2 py-1 rounded border border-white/5 hover:border-white/10">
                         <i class="fa-solid fa-volume-high text-[9px] group-hover:text-red-500 transition-colors"></i>
@@ -251,23 +238,17 @@
                 </div>
                 <div class="synapse-profile-card w-full" id="profileCard">
                     <div class="user-section">
-                        <div class="user-avatar">
-                            <span>?</span>
-                        </div>
+                        <div class="user-avatar"><span>?</span></div>
                         <div class="user-info">
                             <h4 class="user-name">Carregando...</h4>
                             <span class="user-status" id="userStatus">Plano Free</span>
                         </div>
                     </div>
-
                     <div class="upgrade-action" id="upgradeActionArea">
                         <div class="divider"></div>
                         <p class="upgrade-text">Liberar recursos de IA</p>
-                        <button onclick="irParaPlanos()" class="btn-upgrade-red" id="btnUpgradeSidebar">
-                            Fazer Upgrade
-                        </button>
+                        <button onclick="irParaPlanos()" class="btn-upgrade-red" id="btnUpgradeSidebar">Fazer Upgrade</button>
                     </div>
-
                     <div class="pro-badge-container hidden" id="proBadgeContainer">
                         <div class="pro-tag">PRO MEMBER</div>
                     </div>
@@ -284,25 +265,18 @@
             </div>
 
             <div id="viewChat" class="view-section h-full flex flex-col hidden bg-black relative">
-                <button id="resetChatBtn"
-                    class="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/50 border border-white/10 text-gray-500 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all duration-300 backdrop-blur-sm group"
-                    title="Reiniciar Protocolo">
+                <button id="resetChatBtn" class="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/50 border border-white/10 text-gray-500 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all duration-300 backdrop-blur-sm group" title="Reiniciar Protocolo">
                     <i class="fa-solid fa-trash-can text-xs group-hover:scale-110 transition-transform"></i>
                 </button>
-
                 <div class="chat-area flex-grow flex flex-col relative overflow-hidden">
                     <div class="chat-messages" id="chatContainer">
                         <div id="messagesArea"></div>
                     </div>
-
                     <div class="chat-input-container">
                         <div class="w-full max-w-2xl mx-auto px-4">
                             <div id="textInputWrapper" class="relative">
-                                <textarea id="chatInput" rows="1"
-                                    class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter"
-                                    placeholder="Comando neural..."></textarea>
-                                <button id="sendMessageBtn"
-                                    class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
+                                <textarea id="chatInput" rows="1" class="bg-transparent w-full text-sm text-white outline-none resize-none py-4 pl-5 pr-14 placeholder-gray-600 font-inter" placeholder="Comando neural..."></textarea>
+                                <button id="sendMessageBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-500 transition-all active:scale-90 shadow-lg shadow-red-900/20">
                                     <i data-lucide="arrow-up" class="w-5 h-5 text-white"></i>
                                 </button>
                             </div>
@@ -311,46 +285,30 @@
                 </div>
             </div>
 
-            <div id="viewProtocolo"
-                class="view-section h-full hidden overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
                 <div class="w-full max-w-6xl mx-auto">
-                    <div
-                        class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6 animate-fade-in-up">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6 animate-fade-in-up">
                         <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter uppercase ">Qg Operacional
-                            </h2>
-                            <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
-                                    class="text-white font-bold">VISITANTE</span></p>
+                            <h2 class="text-3xl font-black text-white tracking-tighter uppercase ">Qg Operacional</h2>
+                            <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName" class="text-white font-bold">VISITANTE</span></p>
                         </div>
-
                         <div class="flex gap-4 w-full md:w-auto">
-                            <button onclick="window.features.showWeeklyReport()"
-                                class="flex-1 md:flex-initial relative group overflow-hidden bg-[#1a1a1a] hover:bg-blue-900/20 border border-white/10 hover:border-blue-500/30 px-6 py-4 rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-blue-900/5">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-blue-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000">
-                                </div>
+                            <button onclick="window.features.showWeeklyReport()" class="flex-1 md:flex-initial relative group overflow-hidden bg-[#1a1a1a] hover:bg-blue-900/20 border border-white/10 hover:border-blue-500/30 px-6 py-4 rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-blue-900/5">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-blue-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                                 <div class="flex items-center justify-center gap-3 relative z-10">
-                                    <i
-                                        class="fa-solid fa-chart-pie text-blue-500 text-xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
+                                    <i class="fa-solid fa-chart-pie text-blue-500 text-xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
                                     <div class="flex flex-col items-start">
-                                        <span
-                                            class="text-[9px] uppercase tracking-widest font-bold text-blue-300 opacity-70">Acessar</span>
+                                        <span class="text-[9px] uppercase tracking-widest font-bold text-blue-300 opacity-70">Acessar</span>
                                         <span class="text-sm font-black text-white tracking-tight">RELATÓRIO</span>
                                     </div>
                                 </div>
                             </button>
-
-                            <button onclick="window.features.startFocusMode()"
-                                class="flex-1 md:flex-initial relative group overflow-hidden bg-gradient-to-br from-[#CC0000] to-[#990000] hover:from-red-500 hover:to-red-700 px-6 py-4 rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-red-900/40 border border-red-500/20">
-                                <div
-                                    class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                </div>
+                            <button onclick="window.features.startFocusMode()" class="flex-1 md:flex-initial relative group overflow-hidden bg-gradient-to-br from-[#CC0000] to-[#990000] hover:from-red-500 hover:to-red-700 px-6 py-4 rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-red-900/40 border border-red-500/20">
+                                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 <div class="flex items-center justify-center gap-3 relative z-10">
-                                    <i
-                                        class="fa-solid fa-stopwatch text-white text-xl opacity-90 group-hover:scale-110 transition-all animate-pulse-slow"></i>
+                                    <i class="fa-solid fa-stopwatch text-white text-xl opacity-90 group-hover:scale-110 transition-all animate-pulse-slow"></i>
                                     <div class="flex flex-col items-start">
-                                        <span
-                                            class="text-[9px] uppercase tracking-widest font-bold text-red-200 opacity-80">Ativar</span>
+                                        <span class="text-[9px] uppercase tracking-widest font-bold text-red-200 opacity-80">Ativar</span>
                                         <span class="text-sm font-black text-white tracking-tight">MODO FOCO</span>
                                     </div>
                                 </div>
@@ -360,64 +318,43 @@
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <div class="dashboard-card p-5 dopamine-card delay-100 relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-6xl text-blue-900/20"><i
-                                    class="fa-solid fa-khanda"></i></div>
-                            <span
-                                class="text-[9px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível</span>
-                            <div class="text-3xl font-black text-white  mt-2 relative z-10"><span
-                                    id="levelDisplay">1</span></div>
-                            <div
-                                class="w-full bg-[#222] rounded-full h-1.5 mt-3 overflow-hidden shadow-inner relative z-10">
+                            <div class="absolute -right-4 -bottom-4 text-6xl text-blue-900/20"><i class="fa-solid fa-khanda"></i></div>
+                            <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível</span>
+                            <div class="text-3xl font-black text-white  mt-2 relative z-10"><span id="levelDisplay">1</span></div>
+                            <div class="w-full bg-[#222] rounded-full h-1.5 mt-3 overflow-hidden shadow-inner relative z-10">
                                 <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
                             </div>
-                            <div class="text-[9px] text-gray-500 mt-2 text-right font-mono relative z-10"><span
-                                    id="xpText">0</span> XP</div>
+                            <div class="text-[9px] text-gray-500 mt-2 text-right font-mono relative z-10"><span id="xpText">0</span> XP</div>
                         </div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-200 relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-6xl text-orange-900/20"><i
-                                    class="fa-solid fa-fire"></i></div>
-
+                            <div class="absolute -right-4 -bottom-4 text-6xl text-orange-900/20"><i class="fa-solid fa-fire"></i></div>
                             <div class="flex items-center gap-2 relative z-10">
-                                <span
-                                    class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
-                                <i id="streak-fire"
-                                    class="fa-solid fa-fire text-gray-700 transition-all duration-500"></i>
+                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Sequência</span>
+                                <i id="streak-fire" class="fa-solid fa-fire text-gray-700 transition-all duration-500"></i>
                             </div>
-
                             <div class="text-3xl font-black text-white italic mt-2 relative z-10">
-                                <span id="streakDisplay">0</span> <span
-                                    class="text-xs text-gray-600 font-mono not-italic">DIAS</span>
+                                <span id="streakDisplay">0</span> <span class="text-xs text-gray-600 font-mono not-italic">DIAS</span>
                             </div>
                         </div>
 
                         <div class="dashboard-card p-5 dopamine-card delay-300 relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-6xl text-green-900/20"><i
-                                    class="fa-solid fa-calendar-days"></i></div>
-                            <span
-                                class="text-[9px] text-gray-500 font-black uppercase tracking-widest relative z-10">Dias
-                                na Base</span>
-                            <div
-                                class="text-3xl font-black text-white italic mt-2 relative z-10 flex items-center gap-2">
+                            <div class="absolute -right-4 -bottom-4 text-6xl text-green-900/20"><i class="fa-solid fa-calendar-days"></i></div>
+                            <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest relative z-10">Dias na Base</span>
+                            <div class="text-3xl font-black text-white italic mt-2 relative z-10 flex items-center gap-2">
                                 <span id="daysOnBase">1</span>
-                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]">
-                                </div>
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]"></div>
                             </div>
                         </div>
 
-                        <div
-                            class="dashboard-card p-5 flex items-center justify-between dopamine-card delay-400 relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-6xl text-purple-900/20"><i
-                                    class="fa-solid fa-bullseye"></i></div>
+                        <div class="dashboard-card p-5 flex items-center justify-between dopamine-card delay-400 relative overflow-hidden">
+                            <div class="absolute -right-4 -bottom-4 text-6xl text-purple-900/20"><i class="fa-solid fa-bullseye"></i></div>
                             <div class="relative z-10">
-                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões
-                                </div>
+                                <div class="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Missões</div>
                                 <div class="text-2xl font-black text-white italic" id="dailyMetaText">0/0</div>
                             </div>
-                            <div class="circle-chart relative z-10"
-                                style="width: 55px; height: 55px; --percentage: 0deg;">
-                                <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%
-                                </div>
+                            <div class="circle-chart relative z-10" style="width: 55px; height: 55px; --percentage: 0deg;">
+                                <div class="circle-content text-white font-black text-[10px]" id="dailyPercentage">0%</div>
                             </div>
                         </div>
                     </div>
@@ -425,56 +362,34 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
                         <div class="dashboard-card p-6 lg:col-span-1 min-h-[400px] flex flex-col">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6">Agenda</h3>
-                            <h4 id="calMonthYear"
-                                class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">
-                                ...</h4>
-                            <div
-                                class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3">
-                                <div>D</div>
-                                <div>S</div>
-                                <div>T</div>
-                                <div>Q</div>
-                                <div>Q</div>
-                                <div>S</div>
-                                <div>S</div>
+                            <h4 id="calMonthYear" class="text-white font-black text-center mb-4 uppercase text-[10px] tracking-widest font-mono">...</h4>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[8px] text-gray-600 font-black uppercase mb-3">
+                                <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
                             </div>
                             <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
                             <div class="mt-auto pt-6 border-t border-white/5">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span
-                                        class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
-                                    <button onclick="window.openAddHabitModal()"
-                                        class="text-red-500 hover:text-white transition"><i
-                                            class="fa-solid fa-plus-circle"></i></button>
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-gray-500">Rituais</span>
+                                    <button onclick="window.openAddHabitModal()" class="text-red-500 hover:text-white transition"><i class="fa-solid fa-plus-circle"></i></button>
                                 </div>
-                                <div id="habitList"
-                                    class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
+                                <div id="habitList" class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-1"></div>
                             </div>
                         </div>
 
                         <div class="dashboard-card p-6 lg:col-span-2 flex flex-col min-h-[400px]">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6">Objetivos</h3>
-                            <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar">
-                            </div>
+                            <div id="missionList" class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar"></div>
                             <div class="mt-auto pt-4 border-t border-white/5 w-full">
-                                <div
-                                    class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-full border border-white/10 focus-within:border-red-500/50 transition-colors w-full relative">
+                                <div class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-full border border-white/10 focus-within:border-red-500/50 transition-colors w-full relative">
                                     <div class="relative group pl-1 shrink-0">
-                                        <input id="newMissionDate" type="date"
-                                            class="absolute inset-0 opacity-0 cursor-pointer w-full z-10">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
+                                        <input id="newMissionDate" type="date" class="absolute inset-0 opacity-0 cursor-pointer w-full z-10">
+                                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
                                             <i class="fa-regular fa-calendar text-sm"></i>
                                         </div>
                                     </div>
-                                    <input id="newMissionInput" type="text"
-                                        class="flex-1 min-w-0 bg-transparent text-sm text-white px-3 outline-none placeholder-gray-600 font-medium h-10"
-                                        placeholder="Nova missão..." autocomplete="off"
-                                        onkeydown="if(event.key === 'Enter') window.addNewMission()">
-                                    <button onclick="window.addNewMission()"
-                                        class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-lg shadow-red-900/30 hover:scale-105 active:scale-95 transition-all z-10">
-                                        <i
-                                            class="fa-solid fa-paper-plane text-sm translate-x-[-1px] translate-y-[1px]"></i>
+                                    <input id="newMissionInput" type="text" class="flex-1 min-w-0 bg-transparent text-sm text-white px-3 outline-none placeholder-gray-600 font-medium h-10" placeholder="Nova missão..." autocomplete="off" onkeydown="if(event.key === 'Enter') window.addNewMission()">
+                                    <button onclick="window.addNewMission()" class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-lg shadow-red-900/30 hover:scale-105 active:scale-95 transition-all z-10">
+                                        <i class="fa-solid fa-paper-plane text-sm translate-x-[-1px] translate-y-[1px]"></i>
                                     </button>
                                 </div>
                             </div>
@@ -485,23 +400,13 @@
         </main>
 
         <nav class="bottom-nav md:hidden z-50">
-            <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')"> <i
-                    class="fa-solid fa-layer-group text-xl"></i>
-                <span>Jornada</span>
-            </button>
-            <button id="tabChat" class="nav-btn active" onclick="window.switchTab('chat')"> <i
-                    class="fa-solid fa-terminal text-xl"></i>
-                <span>Comando</span>
-            </button>
+            <button id="tabJornada" class="nav-btn" onclick="window.switchTab('protocolo')"> <i class="fa-solid fa-layer-group text-xl"></i><span>Jornada</span></button>
+            <button id="tabChat" class="nav-btn active" onclick="window.switchTab('chat')"> <i class="fa-solid fa-terminal text-xl"></i><span>Comando</span></button>
         </nav>
     </div>
 
-
     <script>
-        // Define variável global para a demo
         window.IS_DEMO = true;
-
-        // Garante que o lucide carregue ícones
         document.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) lucide.createIcons();
         });
@@ -517,36 +422,11 @@
                 try {
                     const usuario = JSON.parse(dadosSalvos);
                     const elementoNome = document.querySelector('.user-name');
-                    const elementoAvatar = document.querySelector('.user-avatar span');
-                    const elementoStatus = document.querySelector('.user-status');
                     const elementoDashName = document.getElementById('dashName');
-
-                    // Elementos PRO
-                    const areaUpgrade = document.getElementById('upgradeActionArea');
-                    const seloPro = document.getElementById('proBadgeContainer');
-                    const cartaoPerfil = document.getElementById('profileCard');
-
                     if (usuario.nome) {
                         const primeiroNome = usuario.nome.split(' ')[0];
                         if (elementoNome) elementoNome.textContent = primeiroNome;
                         if (elementoDashName) elementoDashName.textContent = primeiroNome.toUpperCase();
-                        if (elementoAvatar) elementoAvatar.textContent = usuario.nome.charAt(0).toUpperCase();
-                    }
-
-                    if (usuario.status === 'pro') {
-                        if (elementoStatus) {
-                            elementoStatus.textContent = "Membro Elite";
-                            elementoStatus.style.color = "#E50914";
-                        }
-                        if (areaUpgrade) areaUpgrade.style.display = 'none';
-                        if (seloPro) seloPro.classList.remove('hidden');
-                        if (cartaoPerfil) cartaoPerfil.style.borderLeft = "3px solid #E50914";
-
-                        const avatarBg = document.querySelector('.user-avatar');
-                        if (avatarBg) {
-                            avatarBg.style.backgroundColor = "#E50914";
-                            avatarBg.style.borderColor = "#E50914";
-                        }
                     }
                 } catch (e) { console.error("Erro perfil:", e); }
             }
@@ -554,18 +434,11 @@
 
         // Função de Navegação para Planos
         function irParaPlanos() {
-            // Tenta achar a seção na página atual ou redireciona
-            const secaoPlanos = document.getElementById('planos');
-            if (secaoPlanos) {
-                secaoPlanos.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                window.location.href = 'index.html#planos';
-            }
+            window.location.href = 'index.html#planos';
         }
         
-        // CORREÇÃO 3: Destrava a tela preta caso o sistema trave
+        // Destrava a tela preta caso o sistema trave (Backup de segurança)
         document.addEventListener('DOMContentLoaded', () => {
-            // Se passar 4 segundos e o overlay de boot ainda estiver lá, remove na força bruta
             setTimeout(() => {
                 const stuckOverlay = document.getElementById('boot-overlay');
                 if(stuckOverlay) {
@@ -575,161 +448,113 @@
                 }
             }, 4000);
         });
-    </script>
-    <script>
-        window.IS_DEMO = true;
+
+        // Scripts do Tour
         document.addEventListener('DOMContentLoaded', () => {
-            if (window.lucide) lucide.createIcons();
+            verificarNovoUsuario();
         });
-    </script>
 
-    <script type="module" src="PRO/js/main.js"></script>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        verificarNovoUsuario();
-    });
-
-    function verificarNovoUsuario() {
-        if (!localStorage.getItem('synapse_tour_completed')) {
-            // Personaliza nome
-            const dadosUser = localStorage.getItem('synapse_user');
-            if (dadosUser) {
-                try {
-                    const u = JSON.parse(dadosUser);
-                    if (u.nome) document.getElementById('welcomeUserName').textContent = u.nome.split(' ')[0];
-                } catch(e) {}
-            }
-
-            // Mostra modal
-            const modal = document.getElementById('welcomeTourModal');
-            const backdrop = document.getElementById('welcomeBackdrop');
-            const card = document.getElementById('welcomeCard');
-
-            if(modal) {
-                modal.classList.remove('hidden');
-                // Pequena animação de entrada apenas visual
-                setTimeout(() => {
-                    if(backdrop) backdrop.classList.remove('opacity-0');
-                }, 10);
-            }
-        }
-    }
-
-    function pularTour() {
-        // Some instantaneamente
-        document.getElementById('welcomeTourModal').style.display = 'none';
-        localStorage.setItem('synapse_tour_completed', 'true');
-    }
-
-    function iniciarTour() {
-        // 1. Some com o modal IMEDIATAMENTE (sem animação de saída para não atrasar)
-        const modal = document.getElementById('welcomeTourModal');
-        modal.style.display = 'none'; // Force hide
-        
-        localStorage.setItem('synapse_tour_completed', 'true');
-
-        // 2. Configura o Driver.js
-        const driver = window.driver.js.driver;
-
-        // Tenta achar o título do dashboard para não grifar a tela toda
-        // (Procura H2 dentro da main ou o ID especifico)
-        const dashboardTarget = document.querySelector('#viewProtocolo h2') || document.querySelector('main h2') || '#viewProtocolo';
-
-        const tour = driver({
-            showProgress: true,
-            animate: true,
-            opacity: 0.8, 
-            allowClose: false,
-            doneBtnText: 'OK',
-            nextBtnText: '>',
-            prevBtnText: '<',
-            popoverClass: 'driverjs-theme', // Usa nosso CSS novo
-            steps: [
-                { 
-                    element: '#sidebar', 
-                    popover: { 
-                        title: 'Menu Lateral', 
-                        description: 'Navegue entre o Chat (Comando) e seus Protocolos.', 
-                        side: "right", 
-                        align: 'start' // Fixa no topo para não cobrir tudo
-                    } 
-                },
-                { 
-                    element: '#profileCard', 
-                    popover: { 
-                        title: 'Seu Perfil', 
-                        description: 'Status do plano e configurações.', 
-                        side: "right",
-                        align: 'center'
-                    } 
-                },
-                { 
-                    element: dashboardTarget, // Grifa só o título, muito mais limpo
-                    popover: { 
-                        title: 'Dashboard', 
-                        description: 'Acompanhe Nível, XP e Missões Diárias aqui.', 
-                        side: "bottom", 
-                        align: 'start'
-                    } 
-                },
-                { 
-                    element: '#btn-sos-protocol', 
-                    popover: { 
-                        title: 'SOS', 
-                        description: 'Botão de pânico para momentos de crise.', 
-                        side: "right", 
-                        align: 'center' 
-                    } 
+        function verificarNovoUsuario() {
+            if (!localStorage.getItem('synapse_tour_completed')) {
+                // Personaliza nome
+                const dadosUser = localStorage.getItem('synapse_user');
+                if (dadosUser) {
+                    try {
+                        const u = JSON.parse(dadosUser);
+                        if (u.nome) document.getElementById('welcomeUserName').textContent = u.nome.split(' ')[0];
+                    } catch(e) {}
                 }
-            ]
-        });
 
-        // 3. Inicia o tour instantaneamente
-        tour.drive();
-    }
-</script>
-<script>
-    // Força bruta para garantir que a função exista globalmente
-    window.closeDemoModal = function() {
-        console.log("Forçando fechamento do modal...");
-        const modal = document.getElementById('demo-modal');
-        
-        if (modal) {
-            // Animação de saída manual
-            const overlay = document.getElementById('demo-overlay');
-            const content = document.getElementById('demo-content');
-            
-            if (overlay) overlay.classList.add('opacity-0');
-            if (content) content.classList.add('scale-90', 'opacity-0');
-            
-            // Remove da tela
-            setTimeout(() => {
-                modal.remove();
-            }, 300);
-        }
-    };
-    
-    // --------------------------------------------------------------------------------------
-    // SCRIPT FINAL: Adiciona seus botões "Relatório" e "Modo Foco" com funcionalidade visual
-    // --------------------------------------------------------------------------------------
-    window.abrirRelatorio = function() {
-        if(window.features && window.features.showWeeklyReport) {
-            window.features.showWeeklyReport();
-        } else {
-             // Fallback se o módulo features não carregar
-             alert("⚠️ O módulo de IA não respondeu. Tente recarregar.");
-        }
-    };
+                // Mostra modal
+                const modal = document.getElementById('welcomeTourModal');
+                const backdrop = document.getElementById('welcomeBackdrop');
+                const card = document.getElementById('welcomeCard');
 
-    window.ativarModoFoco = function() {
-         if(window.features && window.features.startFocusMode) {
-            window.features.startFocusMode();
-        } else {
-             alert("⚠️ O módulo de Foco não respondeu.");
+                if(modal) {
+                    modal.classList.remove('hidden');
+                    // Pequena animação de entrada apenas visual
+                    setTimeout(() => {
+                        if(backdrop) backdrop.classList.remove('opacity-0');
+                        if(card) card.classList.remove('opacity-0', 'scale-95');
+                    }, 10);
+                }
+            }
         }
-    };
-</script>
+
+        function pularTour() {
+            // Some instantaneamente
+            document.getElementById('welcomeTourModal').style.display = 'none';
+            localStorage.setItem('synapse_tour_completed', 'true');
+        }
+
+        function iniciarTour() {
+            // 1. Some com o modal IMEDIATAMENTE
+            const modal = document.getElementById('welcomeTourModal');
+            modal.style.display = 'none'; 
+            localStorage.setItem('synapse_tour_completed', 'true');
+
+            // 2. Configura o Driver.js
+            const driver = window.driver.js.driver;
+            const dashboardTarget = document.querySelector('#viewProtocolo h2') || document.querySelector('main h2') || '#viewProtocolo';
+
+            const tour = driver({
+                showProgress: true,
+                animate: true,
+                opacity: 0.8, 
+                allowClose: false,
+                doneBtnText: 'OK',
+                nextBtnText: '>',
+                prevBtnText: '<',
+                popoverClass: 'driverjs-theme',
+                steps: [
+                    { 
+                        element: '#sidebar', 
+                        popover: { 
+                            title: 'Menu Lateral', 
+                            description: 'Navegue entre o Chat (Comando) e seus Protocolos.', 
+                            side: "right", 
+                            align: 'start'
+                        } 
+                    },
+                    { 
+                        element: dashboardTarget,
+                        popover: { 
+                            title: 'Dashboard', 
+                            description: 'Acompanhe Nível, XP e Missões Diárias aqui.', 
+                            side: "bottom", 
+                            align: 'start'
+                        } 
+                    }
+                ]
+            });
+            tour.drive();
+        }
+
+        // ======================================================
+        // CORREÇÃO DO BOTÃO "VOLTAR" (FECHAR MODAL DE BLOQUEIO)
+        // ======================================================
+        // Esta função garante que o modal de bloqueio (Demo Modal) possa ser fechado
+        // mesmo se o script principal demorar a carregar ou houver conflito de escopo.
+        window.closeDemoModal = function() {
+            console.log("Fechando modal de bloqueio (Demo)...");
+            const modal = document.getElementById('demo-modal');
+            
+            if (modal) {
+                // Animação de saída manual
+                const overlay = document.getElementById('demo-overlay');
+                const content = document.getElementById('demo-content');
+                
+                if (overlay) overlay.classList.add('opacity-0');
+                if (content) content.classList.add('scale-90', 'opacity-0');
+                
+                // Remove da tela após a animação
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            } else {
+                console.warn("Modal não encontrado.");
+            }
+        };
+    </script>
 </body>
-
 </html>
