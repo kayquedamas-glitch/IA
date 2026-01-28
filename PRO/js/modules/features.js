@@ -39,8 +39,16 @@ export function startFocusMode() {
     };
 }
 
+// PRO/js/modules/features.js
+
+// ... (Mantenha o código anterior, startFocusMode, etc.)
+
 function runFocusTimer(durationSeconds) {
     const totalMinutes = durationSeconds / 60;
+    
+    // 1. Define o momento exato no futuro quando o timer deve acabar
+    const endTime = Date.now() + (durationSeconds * 1000);
+
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center animate-fade-in';
     overlay.innerHTML = `
@@ -50,40 +58,66 @@ function runFocusTimer(durationSeconds) {
         <div class="text-center">
             <h2 class="text-red-600 text-xs tracking-[0.5em] uppercase mb-8 animate-pulse">MODO HIPER-FOCO</h2>
             <div id="focusTimer" class="text-[25vw] md:text-9xl font-black text-white font-mono tracking-tighter leading-none mb-4">00:00</div>
-            <div class="w-64 h-1 bg-gray-900 rounded-full mx-auto overflow-hidden"><div id="focusProgress" class="h-full bg-red-600 w-full"></div></div>
+            <div class="w-64 h-1 bg-gray-900 rounded-full mx-auto overflow-hidden"><div id="focusProgress" class="h-full bg-red-600 w-full transition-all duration-1000"></div></div>
         </div>
     `;
     document.body.appendChild(overlay);
 
-    let timeLeft = durationSeconds;
-    const interval = setInterval(() => {
-        let m = Math.floor(timeLeft / 60);
-        let s = timeLeft % 60;
-        document.getElementById('focusTimer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-        document.getElementById('focusProgress').style.width = `${(timeLeft / durationSeconds) * 100}%`;
+    // Função de atualização do timer
+    const updateTimer = () => {
+        // Calcula quanto tempo falta comparando AGORA com o TEMPO FINAL
+        const now = Date.now();
+        const distance = endTime - now;
+        
+        // Converte milissegundos para segundos restantes
+        // Math.ceil garante que não mostre 00:00 enquanto ainda faltam milissegundos
+        let timeLeft = Math.ceil(distance / 1000);
 
         if (timeLeft <= 0) {
+            timeLeft = 0; // Evita números negativos
             clearInterval(interval);
+            
+            // Atualiza visual uma última vez
+            document.getElementById('focusTimer').innerText = "00:00";
+            document.getElementById('focusProgress').style.width = "0%";
+
             const xpGained = totalMinutes * 2;
             
             // --- SUCESSO ---
             addXP(xpGained);
-            playSFX('success'); // <--- SOM DE VITÓRIA AQUI
+            playSFX('success'); 
             logActivity('FOCUS', `Sessão de Foco (${totalMinutes}m)`, xpGained, totalMinutes);
             showToast('DADOS COMPUTADOS', `${totalMinutes}min adicionados ao histórico.`, 'success');
             
             setTimeout(() => overlay.remove(), 3000);
+            return;
         }
-        timeLeft--;
-    }, 1000);
+
+        // Formatação visual
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        document.getElementById('focusTimer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        
+        // Barra de progresso baseada no tempo total original
+        const percentage = (timeLeft / durationSeconds) * 100;
+        document.getElementById('focusProgress').style.width = `${percentage}%`;
+    };
+
+    // Roda uma vez imediatamente para não ter delay de 1s na tela
+    updateTimer();
+
+    // Inicia o intervalo
+    const interval = setInterval(updateTimer, 1000);
 
     document.getElementById('exitFocus').onclick = () => {
         clearInterval(interval);
         overlay.remove();
-        playSFX('error'); // Som de falha
+        playSFX('error'); 
         showToast('FALHA DE DISCIPLINA', 'Sessão não registada.', 'warning');
     };
 }
+
+// ... (O restante do arquivo continua igual)
 
 // --- RELATÓRIO EVOLUTIVO ---
 export function showWeeklyReport() {
