@@ -6,41 +6,19 @@ import { initChat, loadAgent } from './core/chat.js';
 import { showToast } from './modules/ui.js';
 import { initAudio, playSFX } from './modules/audio.js';
 import { startSOSProtocol, startFocusMode, showWeeklyReport } from './modules/features.js';
-import { initNavigation } from './modules/navigation.js';
-import { Tactical } from './modules/tactical.js';
 
 // --- INICIALIZAÇÃO DO SISTEMA (BOOT) ---
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // -----------------------------------------------------------
-    // 1. INICIALIZAÇÃO DO SISTEMA (NAVIGATION V2)
-    // -----------------------------------------------------------
-    console.log("🚀 Carregando módulos do Synapse...");
-    
-    // Inicia a navegação imediatamente para preparar as views
-    // Isso esconde as telas erradas antes da animação de boot acabar
-    initNavigation();
-    Tactical.init();
-
-
-    // -----------------------------------------------------------
-    // 2. LÓGICA DE BOOT (ANIMAÇÃO DE ENTRADA)
-    // -----------------------------------------------------------
-    
     // Verifica qual foi o último boot e inverte para variar a animação
-   const lastBoot = localStorage.getItem('synapse_boot_mode');
+    const lastBoot = localStorage.getItem('synapse_boot_mode');
     const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
+
     localStorage.setItem('synapse_boot_mode', currentMode);
 
-    // Verifica se as funções de boot existem (elas devem estar no HTML ou em outro script global)
-    if (typeof window.runBootBiometria === 'function' && currentMode === 'BIO') {
-        window.runBootBiometria();
-    } else if (typeof window.runBootNeural === 'function') {
-        window.runBootNeural();
+    if (currentMode === 'BIO') {
+        runBootBiometria();
     } else {
-        // Remove overlay se não houver animação
-        const overlay = document.getElementById('boot-overlay');
-        if(overlay) overlay.style.display = 'none';
+        runBootNeural();
     }
 });
 

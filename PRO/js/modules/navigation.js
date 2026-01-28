@@ -1,85 +1,57 @@
 // PRO/js/modules/navigation.js
-
-// PRO/js/modules/navigation.js
-
-export const Navigation = {
-    init: () => {
-        // Tenta recuperar a última tela ou vai para dashboard
-        const lastPage = 'dashboard'; 
-        Navigation.navigateTo(lastPage);
-
-        // Adiciona listeners manuais como backup
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const targetId = btn.getAttribute('data-target');
-                if(targetId) Navigation.navigateTo(targetId);
-            });
-        });
-        
-        console.log("📍 Navegação V2: Online");
-    },
-
-    navigateTo: (targetId) => {
-        // 1. Esconde TODAS as views
-        const views = document.querySelectorAll('.view-section');
-        views.forEach(el => {
-            el.classList.add('hidden');
-            el.classList.remove('animate-fade-in');
-        });
-
-        // 2. Mostra a view ALVO
-        const targetEl = document.getElementById(`view-${targetId}`);
-        if (targetEl) {
-            targetEl.classList.remove('hidden');
-            void targetEl.offsetWidth; // Trigger reflow para reiniciar animação
-            targetEl.classList.add('animate-fade-in');
-            
-            if(targetId !== 'chat') window.scrollTo(0,0);
-        } else {
-            console.error(`View não encontrada: view-${targetId}`);
-        }
-
-        // 3. Atualiza os botões (Estilo Vermelho)
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            const btnTarget = btn.getAttribute('data-target');
-            const icon = btn.querySelector('i');
-            const text = btn.querySelector('span');
-
-            if (btnTarget === targetId) {
-                // ATIVO
-                if(icon) {
-                    icon.classList.remove('text-gray-500');
-                    icon.classList.add('text-red-500', 'drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]', 'scale-110');
-                }
-                if(text) {
-                    text.classList.remove('text-gray-600', 'opacity-80');
-                    text.classList.add('text-white', 'opacity-100', 'font-black');
-                }
-            } else {
-                // INATIVO
-                if(icon) {
-                    icon.classList.remove('text-red-500', 'drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]', 'scale-110');
-                    icon.classList.add('text-gray-500');
-                }
-                if(text) {
-                    text.classList.remove('text-white', 'opacity-100', 'font-black');
-                    text.classList.add('text-gray-600', 'opacity-80');
-                }
-            }
-        });
-        
-        // Renderizações específicas
-       if(targetId === 'tactical' && window.Tactical && typeof window.Tactical.renderCalendarStrip === 'function') {
-            window.Tactical.renderCalendarStrip();
-        }
-    }
-};
-
-// Exporta para o main.js poder iniciar
 export function initNavigation() {
-    Navigation.init();
+    // Expor função globalmente para o HTML poder chamar onclick="toggleSidebar()"
+    window.toggleSidebar = toggleSidebar;
+    window.switchTab = switchTab;
+    
+    // Listeners do Overlay
+    document.getElementById('sidebarOverlay')?.addEventListener('click', toggleSidebar);
 }
 
-// Expõe globalmente para o HTML (onclick="Navigation.navigateTo(...)")
-window.Navigation = Navigation;
-window.Tactical = Tactical;
+export function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (!sidebar || !overlay) return;
+
+    const isOpen = sidebar.style.transform === 'translateX(0px)';
+    sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+    overlay.style.visibility = isOpen ? 'hidden' : 'visible';
+    overlay.style.opacity = isOpen ? '0' : '1';
+}
+
+export function switchTab(tab) {
+    const viewChat = document.getElementById('viewChat');
+    const viewProtocolo = document.getElementById('viewProtocolo');
+    const tabChat = document.getElementById('tabChat');
+    const tabJornada = document.getElementById('tabJornada');
+    
+    const bottomNav = document.querySelector('.bottom-nav');
+    const mobileHeader = document.getElementById('mobileHeader');
+
+    // Reset Visual
+    if(tabChat) { tabChat.classList.remove('active'); tabChat.style.color = '#666'; }
+    if(tabJornada) { tabJornada.classList.remove('active'); tabJornada.style.color = '#666'; }
+    
+    viewChat.classList.add('hidden');
+    viewProtocolo.classList.add('hidden');
+
+    if (tab === 'chat') {
+        viewChat.classList.remove('hidden');
+        if(tabChat) { tabChat.classList.add('active'); tabChat.style.color = '#CC0000'; }
+        
+        // Mostrar Barras (Mobile)
+        if(bottomNav) bottomNav.style.transform = 'translateY(0)';
+        if(mobileHeader) mobileHeader.style.transform = 'translateY(0)';
+        
+    } else {
+        viewProtocolo.classList.remove('hidden');
+        if(tabJornada) { tabJornada.classList.add('active'); tabJornada.style.color = '#CC0000'; }
+        
+        // Esconder Barras para Imersão (Mobile)
+        if(bottomNav) bottomNav.style.transform = 'translateY(100%)';
+        if(mobileHeader) mobileHeader.style.transform = 'translateY(-100%)';
+        
+        // Dispara evento customizado para avisar que a aba mudou (útil para atualizar calendário)
+        document.dispatchEvent(new Event('tabChanged:protocolo'));
+    }
+}
