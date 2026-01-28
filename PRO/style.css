@@ -947,3 +947,20 @@ body {
     border-radius: 4px;
     letter-spacing: 1px;
 }
+@keyframes text-breathe-glow {
+    0%, 100% { 
+        opacity: 0.7; 
+        text-shadow: 0 0 0 transparent;
+        transform: scale(0.995); /* Leve recuo */
+    }
+    50% { 
+        opacity: 1; 
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Brilho suave */
+        transform: scale(1); 
+    }
+}
+
+.animate-text-alive {
+    animation: text-breathe-glow 4s ease-in-out infinite; /* 4s para ser bem lento */
+    will-change: opacity, transform, text-shadow; /* Otimização de performance */
+}

@@ -24,8 +24,14 @@ export function initDashboard() {
 }
 
 // --- LÓGICA DE DIAS NA BASE (Sincronizado na Nuvem) ---a
+// PRO/js/modules/dashboard.js
+
+// ... (código anterior mantém-se igual)
+
 function calculateDaysOnBase() {
     const daysElement = document.getElementById('daysOnBase');
+    const titleElement = document.getElementById('dashboardTitle'); // O novo elemento que criamos
+    
     if (!daysElement) return;
 
     // Tenta pegar a data de criação da conta do estado global
@@ -53,11 +59,44 @@ function calculateDaysOnBase() {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para contar o dia de hoje
 
         daysElement.innerText = diffDays;
+
+        // --- LÓGICA DE TEXTO MOTIVACIONAL (NOVO) ---
+        if (titleElement) {
+            let frase = "QG OPERACIONAL"; // Padrão
+            
+            // Lógica progressiva baseada na sobrevivência do usuário
+            if (diffDays >= 3 && diffDays < 7) {
+                frase = "O INÍCIO É O FILTRO.";
+            } 
+            else if (diffDays >= 7 && diffDays < 15) {
+                frase = "A MAIORIA DESISTE AQUI. VOCÊ NÃO.";
+            } 
+            else if (diffDays >= 15 && diffDays < 30) {
+                frase = "SE PARAR HOJE, VOLTA A SER QUEM ERA.";
+            } 
+            else if (diffDays >= 30) {
+                frase = "VOCÊ NÃO É MAIS A MAIORIA.";
+            }
+
+            // Efeito de digitação ou apenas troca direta (aqui faremos troca direta com fade se quiser)
+            titleElement.innerText = frase;
+            
+            // Se a frase for longa, diminui um pouco a fonte (ajuste visual opcional)
+            if (frase.length > 20) {
+                titleElement.classList.replace('text-3xl', 'text-xl'); 
+                titleElement.classList.add('md:text-2xl'); // Em desktop mantém grande
+            } else {
+                titleElement.classList.replace('text-xl', 'text-3xl');
+            }
+        }
+
     } catch (e) {
         console.warn("Erro data:", e);
         daysElement.innerText = "1";
     }
 }
+
+// ... (resto do arquivo mantém-se igual)
 
 // --- FOGO / STREAK ---
 // Adicione esta variável no TOPO do arquivo (logo após os imports)
