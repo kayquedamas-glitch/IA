@@ -28,30 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     
     // Verifica qual foi o último boot e inverte para variar a animação
-    const lastBoot = localStorage.getItem('synapse_boot_mode');
+   const lastBoot = localStorage.getItem('synapse_boot_mode');
     const currentMode = lastBoot === 'BIO' ? 'NEURAL' : 'BIO';
-
     localStorage.setItem('synapse_boot_mode', currentMode);
 
-    console.log(`🔒 Boot Sequence Initiated: [${currentMode}]`);
-
-    // Executa a animação visual
-    if (typeof runBootBiometria === 'function' && currentMode === 'BIO') {
-        runBootBiometria();
-    } else if (typeof runBootNeural === 'function') {
-        runBootNeural();
+    // Verifica se as funções de boot existem (elas devem estar no HTML ou em outro script global)
+    if (typeof window.runBootBiometria === 'function' && currentMode === 'BIO') {
+        window.runBootBiometria();
+    } else if (typeof window.runBootNeural === 'function') {
+        window.runBootNeural();
     } else {
-        // Fallback caso as funções de boot não existam
-        console.warn("Funções de Boot não encontradas. Iniciando direto.");
-        const overlay = document.getElementById('boot-overlay'); // Se houver ID
+        // Remove overlay se não houver animação
+        const overlay = document.getElementById('boot-overlay');
         if(overlay) overlay.style.display = 'none';
     }
-
-    // -----------------------------------------------------------
-    // 3. OUTRAS INICIALIZAÇÕES (PREVENÇÃO DE ERROS)
-    // -----------------------------------------------------------
-    // Se tiver Auth ou Dashboard, inicie aqui também
-    // if(window.Auth) window.Auth.init();
 });
 
 // =================================================================

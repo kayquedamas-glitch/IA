@@ -322,9 +322,10 @@
                     <div
                         class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6 animate-fade-in-up">
                         <div>
-                            <h2 id="dashboardTitle" class="text-3xl font-black text-white tracking-tighter uppercase leading-tight md:leading-normal animate-text-alive">
-    QG OPERACIONAL
-</h2>
+                            <h2 id="dashboardTitle"
+                                class="text-3xl font-black text-white tracking-tighter uppercase leading-tight md:leading-normal animate-text-alive">
+                                QG OPERACIONAL
+                            </h2>
                             <p class="text-[10px] text-gray-500 font-mono mt-1">OPERADOR: <span id="dashName"
                                     class="text-white font-bold">VISITANTE</span></p>
                         </div>
@@ -404,23 +405,26 @@
                     </div>
 
                     <div class="w-full mb-8 animate-fade-in-up">
-    <div class="dashboard-card p-6 dopamine-card delay-100 relative overflow-hidden flex flex-col justify-center min-h-[110px]">
-        <div class="absolute -right-3 -bottom-3 text-6xl text-blue-900/10">
-            <i class="fa-solid fa-khanda"></i>
-        </div>
-        
-        <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível Operacional</span>
-        
-        <div class="flex items-end justify-between mt-2 relative z-10">
-            <span class="text-4xl font-black text-white" id="levelDisplay">1</span>
-            <span class="text-xs font-mono text-blue-400 mb-1" id="xpText">0 XP</span>
-        </div>
-        
-        <div class="w-full bg-[#222] rounded-full h-2 mt-3 overflow-hidden relative z-10">
-            <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
-        </div>
-    </div>
-</div>
+                        <div
+                            class="dashboard-card p-6 dopamine-card delay-100 relative overflow-hidden flex flex-col justify-center min-h-[110px]">
+                            <div class="absolute -right-3 -bottom-3 text-6xl text-blue-900/10">
+                                <i class="fa-solid fa-khanda"></i>
+                            </div>
+
+                            <span
+                                class="text-[10px] text-gray-500 font-black uppercase tracking-widest relative z-10">Nível
+                                Operacional</span>
+
+                            <div class="flex items-end justify-between mt-2 relative z-10">
+                                <span class="text-4xl font-black text-white" id="levelDisplay">1</span>
+                                <span class="text-xs font-mono text-blue-400 mb-1" id="xpText">0 XP</span>
+                            </div>
+
+                            <div class="w-full bg-[#222] rounded-full h-2 mt-3 overflow-hidden relative z-10">
+                                <div id="xpBar" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 dopamine-card delay-500">
                         <div class="dashboard-card p-6 lg:col-span-1 min-h-[400px] flex flex-col">
@@ -458,17 +462,20 @@
                             </div>
                             <div class="mt-auto pt-4 border-t border-white/5 w-full">
                                 <div>
-    <div class="flex justify-between items-center mb-4 px-2">
-        <h3 class="text-sm font-black text-white uppercase tracking-widest border-l-4 border-yellow-600 pl-3">Operações em Curso</h3>
-        
-        <button onclick="window.Tactical.openNewMissionModal()" class="text-xs text-yellow-600 hover:text-yellow-400 font-bold uppercase transition-colors">
-            <i class="fa-solid fa-plus mr-1"></i> NOVA MISSÃO
-        </button>
-    </div>
+                                    <div class="flex justify-between items-center mb-4 px-2">
+                                        <h3
+                                            class="text-sm font-black text-white uppercase tracking-widest border-l-4 border-yellow-600 pl-3">
+                                            Operações em Curso</h3>
 
-    <div class="space-y-4" id="activeMissionsList">
-        </div>
-</div>
+                                        <button onclick="window.Tactical.openNewMissionModal()"
+                                            class="text-xs text-yellow-600 hover:text-yellow-400 font-bold uppercase transition-colors">
+                                            <i class="fa-solid fa-plus mr-1"></i> NOVA MISSÃO
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-4" id="activeMissionsList">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
