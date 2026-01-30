@@ -1,22 +1,19 @@
 // PRO/js/modules/database.js
 
-// 1. Definição das Chaves Reais (Ponte com config.js)
-const STORAGE_KEYS = {
-    USER: "synapse_user", // Usado no login
-    XP: "synapse_xp_v1",
-    HABITS: "synapse_habits_v3",
-    MISSIONS: "synapse_missions_v3",
-    STREAK: "synapse_streak_v1",
-    EVENTS: "synapse_calendar_events",
-    HISTORY: "synapse_history_v1"
-};
-
+// Estado Global (A Fonte da Verdade)
 window.AppEstado = {
-    gamification: {}, 
-    dashboard: {},    
-    calendar: {},     
-    chatHistory: {},
-    config: {}        
+    gamification: {
+        xp: 0,
+        level: 1,
+        streak: 0,
+        habits: [],     // Rituais
+        missions: [],   // Missões
+        history: [],    // Histórico
+        dailyScores: {}, // Cores do Calendário
+        habitsDate: null // Data do último reset
+    },
+    config: {},
+    chatHistory: {} // <--- O Chat precisa disto aqui
 };
 
 const DB_TABLE = 'progresso_usuario';
@@ -25,30 +22,25 @@ let ultimosDadosSalvos = "";
 
 const Database = {
     async init() {
-        console.log("📥 Iniciando Banco de Dados Inteligente...");
+        console.log("☁️ Conectando ao Núcleo Neural (V9 - Chat Fix)...");
         
         let user = null;
         try {
-            user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER));
+            user = JSON.parse(localStorage.getItem('synapse_user'));
         } catch (e) {}
 
-        // --- MODO DEMO ---
         if (!user || !user.email) {
-            console.warn("⚠️ Modo DEMO/Offline (Sem sincronização)");
-            this.isDemo = true;
-            this.iniciarAutoSave();
+            console.warn("⚠️ Sem login detectado.");
             return;
         }
 
-        // --- MODO PRO (Nuvem) ---
-        this.isDemo = false;
         if (!window._supabase) {
-            console.error("❌ Erro: Supabase não carregou.");
+            console.error("❌ Erro Crítico: Supabase desconectado.");
             return;
         }
 
+        // DOWNLOAD: Baixa TUDO da nuvem
         try {
-            // Busca dados na nuvem
             const { data, error } = await window._supabase
                 .from(DB_TABLE)
                 .select('dados')
@@ -56,117 +48,83 @@ const Database = {
                 .single();
 
             if (data && data.dados) {
-                console.log("☁️ Dados encontrados! Sincronizando...");
-                window.AppEstado = { ...window.AppEstado, ...data.dados };
+                console.log("📥 Dados recebidos da nuvem.");
                 
-                // CRUCIAL: Restaura da Nuvem para o LocalStorage do dispositivo atual
-                this.restaurarParaLocalStorage();
+                // Mescla com cuidado para não perder estruturas
+                window.AppEstado = {
+                    ...window.AppEstado,
+                    ...data.dados,
+                    gamification: {
+                        ...window.AppEstado.gamification,
+                        ...(data.dados.gamification || {})
+                    },
+                    chatHistory: {
+                        ...window.AppEstado.chatHistory,
+                        ...(data.dados.chatHistory || {})
+                    }
+                };
+
+                this.validarEstrutura();
             } else {
-                console.log("💾 Criando registro na nuvem com dados locais...");
-                // Se não tem nada na nuvem, pega o que tem no PC e sobe
-                this.capturarDoLocalStorage(); 
+                console.log("✨ Novo perfil na nuvem. Criando...");
                 await this.forceSave();
             }
         } catch (e) {
-            console.error("Erro conexão:", e);
+            console.error("Erro no download:", e);
         }
 
         this.atualizarInterface();
         this.iniciarAutoSave();
     },
 
-    // --- FUNÇÕES DE PONTE (SYNC) ---
-
-    // Pega os dados soltos do LocalStorage e agrupa no AppEstado para salvar
-    capturarDoLocalStorage() {
-        try {
-            // Gamificação
-            window.AppEstado.gamification = {
-                xp: JSON.parse(localStorage.getItem(STORAGE_KEYS.XP) || '0'),
-                missions: JSON.parse(localStorage.getItem(STORAGE_KEYS.MISSIONS) || '[]'),
-                streak: JSON.parse(localStorage.getItem(STORAGE_KEYS.STREAK) || '{}')
-            };
-
-            // Calendário e Hábitos
-            window.AppEstado.calendar = {
-                habits: JSON.parse(localStorage.getItem(STORAGE_KEYS.HABITS) || '[]'),
-                events: JSON.parse(localStorage.getItem(STORAGE_KEYS.EVENTS) || '[]')
-            };
-
-            // Histórico Geral
-            window.AppEstado.history = JSON.parse(localStorage.getItem(STORAGE_KEYS.HISTORY) || '[]');
-
-        } catch (e) {
-            console.warn("Erro ao ler LocalStorage:", e);
-        }
-    },
-
-    // Pega o AppEstado (vindo da nuvem) e espalha no LocalStorage do celular
-    restaurarParaLocalStorage() {
-        try {
-            const g = window.AppEstado.gamification || {};
-            if(g.xp) localStorage.setItem(STORAGE_KEYS.XP, JSON.stringify(g.xp));
-            if(g.missions) localStorage.setItem(STORAGE_KEYS.MISSIONS, JSON.stringify(g.missions));
-            if(g.streak) localStorage.setItem(STORAGE_KEYS.STREAK, JSON.stringify(g.streak));
-
-            const c = window.AppEstado.calendar || {};
-            if(c.habits) localStorage.setItem(STORAGE_KEYS.HABITS, JSON.stringify(c.habits));
-            if(c.events) localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(c.events));
-
-            if(window.AppEstado.history) {
-                localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(window.AppEstado.history));
-            }
-        } catch (e) {
-            console.warn("Erro ao restaurar LocalStorage:", e);
-        }
+    validarEstrutura() {
+        if (!window.AppEstado.gamification) window.AppEstado.gamification = {};
+        const g = window.AppEstado.gamification;
+        if (!g.habits) g.habits = [];
+        if (!g.missions) g.missions = [];
+        if (!g.history) g.history = [];
+        if (!g.dailyScores) g.dailyScores = {};
+        if (!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
     },
 
     atualizarInterface() {
-        // Reinicia os módulos visuais para pegarem os novos dados
-        if (window.initGamification) window.initGamification();
-        if (window.initCalendar) window.initCalendar();
-        if (window.updateDashboardUI) window.updateDashboardUI();
+        console.log("🔄 Sincronizando interface...");
+        if (window.initGamification) window.initGamification(); 
+        if (window.renderCalendar) window.renderCalendar();
+        if (window.initDashboard) window.initDashboard();
+        if (window.updateStreakUI) window.updateStreakUI();
     },
 
     async forceSave() {
-        // 1. PRIMEIRO: Atualiza o estado com os dados mais recentes do uso atual
-        this.capturarDoLocalStorage();
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
+        if (!user || !user.email || !window._supabase) return;
 
-        const dadosAtuais = JSON.stringify(window.AppEstado);
-        if (dadosAtuais === ultimosDadosSalvos) return;
+        const pacoteDados = JSON.stringify(window.AppEstado);
 
-        // Se for DEMO, só atualiza variavel interna
-        if (this.isDemo) {
-            ultimosDadosSalvos = dadosAtuais;
-            return;
-        }
+        if (pacoteDados === ultimosDadosSalvos) return;
 
-        // Se for PRO, envia para o Supabase
-        const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER));
-        if (user && window._supabase) {
-            const { error } = await window._supabase
-                .from(DB_TABLE)
-                .upsert({ 
-                    email: user.email, 
-                    dados: window.AppEstado,
-                    updated_at: new Date()
-                }, { onConflict: 'email' });
+        console.log("⬆️ Enviando dados para a nuvem...");
 
-            if (error) {
-                console.error("Erro ao salvar nuvem:", error);
-            } else {
-                // console.log("✅ Progresso salvo na nuvem."); // Comente para limpar o console
-                ultimosDadosSalvos = dadosAtuais;
-            }
+        const { error } = await window._supabase
+            .from(DB_TABLE)
+            .upsert({ 
+                email: user.email, 
+                dados: window.AppEstado, 
+                updated_at: new Date()
+            }, { onConflict: 'email' });
+
+        if (error) {
+            console.error("❌ Falha no upload:", error);
+        } else {
+            console.log("✅ Dados salvos com sucesso.");
+            ultimosDadosSalvos = pacoteDados;
         }
     },  
 
     async logEvent(nomeEvento, detalhe = "") {
-        if (this.isDemo) return;
-        const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER));
+        const user = JSON.parse(localStorage.getItem('synapse_user'));
         if (!user) return;
         
-        // Opcional: Log de analytics
         window._supabase.from('analytics_eventos').insert({
             email: user.email, evento: nomeEvento, detalhe: detalhe
         }).then(() => {});
@@ -174,19 +132,20 @@ const Database = {
 
     iniciarAutoSave() {
         if (autoSaveTimer) clearInterval(autoSaveTimer);
-        // Salva a cada 5 segundos para garantir sincronia mais rápida
-        autoSaveTimer = setInterval(() => { this.forceSave(); }, 5000); 
+        autoSaveTimer = setInterval(() => { this.forceSave(); }, 3000); 
         window.addEventListener('beforeunload', () => { this.forceSave(); });
     },
-    
-    // Suporte ao Chat
+
+    // --- FUNÇÕES DE CHAT (RESTAURADAS) ---
     async saveChatHistory(agent, history) {
         if(!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
         window.AppEstado.chatHistory[agent] = history;
         this.forceSave();
     },
+
     async loadChatHistory(agent) {
-        return window.AppEstado.chatHistory?.[agent] || [];
+        if(!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
+        return window.AppEstado.chatHistory[agent] || [];
     }
 };
 

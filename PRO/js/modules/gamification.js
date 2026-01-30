@@ -1,17 +1,16 @@
-import { CONFIG } from '../config.js';
 import { showToast } from './ui.js';
 import { playSFX } from './audio.js'; 
 
-console.log("🎮 Módulo de Gamificação Iniciado (V6 - Final Fix)...");
+console.log("🎮 Módulo de Gamificação Iniciado (V10 - Correção Streak)...");
 
-// --- VARIÁVEIS GLOBAIS (Restauradas) ---
+// --- VARIÁVEIS GLOBAIS ---
 let rpgState = { 
     xp: 0, level: 1, currentRank: "RECRUTA", streak: 0, 
-    lastLoginDate: null, lastActionTime: 0,
+    lastLoginDate: null, lastActionTime: 0, habitsDate: null,
     habits: [], missions: [], history: [], dailyScores: {} 
 };
 
-let previousLevel = 1; // <--- A variável que faltava!
+let previousLevel = 1;
 
 const RANKS = [
     { name: "RECRUTA", minLevel: 1 }, { name: "SOLDADO", minLevel: 5 },
@@ -35,13 +34,15 @@ export async function initGamification() {
     try {
         loadFromGlobalState(); 
         
-        // Inicializa o previousLevel com o nível salvo para não dar erro
         if (rpgState.level) previousLevel = rpgState.level;
 
+        // VERIFICAÇÃO DIÁRIA
         checkDailyReset();
-        updateDailyScore(); 
         
-        // Recalcula ranking inicial sem animar
+        // Verifica a Streak (Sequência)
+        checkStreak();
+
+        updateDailyScore(); 
         calculateRankAndLevel(false);
 
         updateUI(); 
@@ -58,12 +59,26 @@ function checkDailyReset() {
     const today = getLocalDate();
     const lastSavedDate = rpgState.habitsDate; 
     
-    // Se a data salva for diferente de hoje, limpa tudo
-    if (lastSavedDate !== today && rpgState.habits) {
-        console.log("🔄 Novo dia detectado: Resetando rituais...");
-        rpgState.habits = rpgState.habits.map(h => ({ ...h, done: false }));
+    // CASO 1: Primeira vez ou Data Perdida (Salva Hoje e NÃO reseta)
+    if (!lastSavedDate) {
+        console.log("📅 Configurando data inicial para: " + today);
         rpgState.habitsDate = today;
+        saveToGlobalState(); 
+        return;
+    }
+
+    // CASO 2: Virada de Dia Real (Ontem -> Hoje)
+    if (lastSavedDate !== today) {
+        console.log(`🔄 Novo dia detectado. Resetando rituais...`);
+        
+        if (rpgState.habits) {
+            rpgState.habits = rpgState.habits.map(h => ({ ...h, done: false }));
+        }
+        
+        rpgState.habitsDate = today;
+        if (!rpgState.dailyScores) rpgState.dailyScores = {};
         rpgState.dailyScores[today] = 0;
+        
         saveToGlobalState();
     }
 }
@@ -71,13 +86,30 @@ function checkDailyReset() {
 function loadFromGlobalState() {
     if (window.AppEstado && window.AppEstado.gamification) {
         rpgState = { ...rpgState, ...window.AppEstado.gamification };
+        
+        // --- CORREÇÃO DE BUG: STREAK [object Object] ---
+        // Se a streak estiver corrompida (objeto ou texto inválido), reseta para 0
+        if (typeof rpgState.streak === 'object' || isNaN(Number(rpgState.streak))) {
+            console.warn("⚠️ Streak corrompido detectado. Corrigindo...");
+            rpgState.streak = 0;
+            // Salva a correção imediatamente
+            saveToGlobalState();
+        } else {
+            // Garante que é número
+            rpgState.streak = Number(rpgState.streak);
+        }
+        
+        if(!rpgState.habits) rpgState.habits = [];
+        if(!rpgState.missions) rpgState.missions = [];
     }
 }
 
 function saveToGlobalState() {
     if (!window.AppEstado) window.AppEstado = {};
+    
     rpgState.habitsDate = getLocalDate();
     window.AppEstado.gamification = rpgState;
+    
     if (window.Database && window.Database.forceSave) window.Database.forceSave();
 }
 
@@ -110,25 +142,18 @@ function toggleHabit(id) {
 
 function updateDailyScore() {
     const today = getLocalDate();
-    
-    if (!rpgState.habits || rpgState.habits.length === 0) {
-        // Se não tem hábitos, zera o dia ou deixa neutro?
-        // Vamos deixar como 0 para forçar o usuário a criar algo.
-        return;
-    }
+    if (!rpgState.habits || rpgState.habits.length === 0) return;
 
     const doneCount = rpgState.habits.filter(h => h.done).length;
     const total = rpgState.habits.length;
-    
-    let percent = 0;
-    if (total > 0) percent = Math.round((doneCount / total) * 100);
+    const percent = Math.round((doneCount / total) * 100);
     
     if(!rpgState.dailyScores) rpgState.dailyScores = {};
     rpgState.dailyScores[today] = percent;
 }
 
 function deleteHabit(id) {
-    if(confirm("Remover ritual?")) {
+    if(confirm("Remover ritual permanentemente?")) {
         rpgState.habits = rpgState.habits.filter(h => h.id !== id);
         updateDailyScore();
         saveToGlobalState();
@@ -164,8 +189,8 @@ function renderHabits() {
                 </div>
             </div>
             <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-700 hover:text-red-500 p-2 transition">
-    <i class="fa-solid fa-trash text-[10px]"></i>
-</button>
+                <i class="fa-solid fa-trash text-[10px]"></i>
+            </button>
         </div>
     `).join('');
 }
@@ -216,20 +241,16 @@ function openAddHabitModal() {
     input.onkeypress = (e) => { if(e.key === 'Enter') confirm(); };
 }
 
-// --- FUNÇÕES EXPORTADAS ---
-
 export function addXP(amt) {
     const now = Date.now();
     if (amt > 0 && (now - rpgState.lastActionTime < 500)) return;
     rpgState.lastActionTime = now;
     
     rpgState.xp = Math.max(0, rpgState.xp + amt);
-    
     calculateRankAndLevel(true); 
     
     saveToGlobalState();
     updateUI();
-    
     if (amt > 0) safePlaySFX('success'); 
 }
 
@@ -245,17 +266,13 @@ export async function logActivity(type, detail, xpGained, durationMin = 0) {
     } catch (e) {}
 }
 
-// --- FUNÇÕES DE NÍVEL (Agora com previousLevel e RANKS funcionando) ---
-
 function triggerLevelUpPro(newLevel, newRank) {
     const overlay = document.createElement('div');
     overlay.className = 'level-up-overlay';
     const rankText = newRank ? `NOVA PATENTE: ${newRank}` : `PATENTE ATUAL: ${rpgState.currentRank}`;
     overlay.innerHTML = `<div class="level-up-content"><div class="holo-ring-outer"></div><div class="holo-ring-inner"></div><div class="level-number-pro">${newLevel}</div><div class="level-label-pro">${rankText}</div></div>`;
     document.body.appendChild(overlay);
-    
     if(typeof playSFX === 'function') playSFX('level-up');
-
     setTimeout(() => { 
         overlay.style.transition = 'opacity 0.6s ease'; 
         overlay.style.opacity = '0'; 
@@ -270,14 +287,12 @@ function calculateRankAndLevel(animate = false) {
     let xpCost = 100; 
     let totalXpNeeded = 0;
     
-    // Calcula o nível baseado no XP
     while (rpgState.xp >= totalXpNeeded + xpCost) { 
         totalXpNeeded += xpCost; 
         calculatedLevel++; 
         xpCost = Math.floor(xpCost * 1.10); 
     }
     
-    // Verifica se subiu de nível
     if (animate && calculatedLevel > previousLevel) {
         let newRank = "RECRUTA";
         for (let r of RANKS) { if (calculatedLevel >= r.minLevel) newRank = r.name; }
@@ -290,11 +305,9 @@ function calculateRankAndLevel(animate = false) {
              triggerLevelUpPro(calculatedLevel, null);
         }
     }
-
     previousLevel = calculatedLevel;
     rpgState.level = calculatedLevel;
     
-    // Atualiza Rank
     let rank = "RECRUTA";
     for (let r of RANKS) { if (rpgState.level >= r.minLevel) rank = r.name; }
     rpgState.currentRank = rank;
@@ -304,22 +317,43 @@ function checkStreak() {
     try {
         const today = getLocalDate();
         const lastLogin = rpgState.lastLoginDate;
-        if (!lastLogin) { rpgState.streak = 1; rpgState.lastLoginDate = today; } 
+
+        // Se a streak estiver corrompida, reseta
+        if (typeof rpgState.streak === 'object' || isNaN(rpgState.streak)) rpgState.streak = 0;
+
+        if (!lastLogin) { 
+            rpgState.streak = 1; 
+            rpgState.lastLoginDate = today; 
+        } 
         else if (lastLogin !== today) {
-            const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            // Verifica se foi ontem
+            const yesterdayDate = new Date(); 
+            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
             const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth()+1).padStart(2,'0')}-${String(yesterdayDate.getDate()).padStart(2,'0')}`;
             
-            if (lastLogin === yesterday) { rpgState.streak += 1; if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); } 
-            else { if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); rpgState.streak = 1; }
+            if (lastLogin === yesterday) { 
+                rpgState.streak += 1; 
+                if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); 
+            } else { 
+                // Se passou mais de um dia, reseta
+                if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); 
+                rpgState.streak = 1; 
+            }
             rpgState.lastLoginDate = today;
         }
         saveToGlobalState();
-    } catch(e) {}
+    } catch(e) { console.error("Erro Streak", e); }
 }
 
 function updateUI() {
     const l = document.getElementById('levelDisplay'); const b = document.getElementById('xpBar'); const t = document.getElementById('xpText'); const s = document.getElementById('streakDisplay');
-    if (l) l.innerText = rpgState.level; if (t) t.innerText = rpgState.xp; if (s) s.innerText = rpgState.streak;
+    
+    if (l) l.innerText = rpgState.level; 
+    if (t) t.innerText = rpgState.xp; 
+    
+    // ATUALIZA A TELA DA SEQUÊNCIA (CORRIGIDO)
+    if (s) s.innerText = (typeof rpgState.streak === 'number' && !isNaN(rpgState.streak)) ? rpgState.streak : "0";
+
     if (b) {
         let xpCost = 100; let totalNeeded = 0;
         for(let i=1; i < rpgState.level; i++) { totalNeeded += xpCost; xpCost = Math.floor(xpCost * 1.10); }
@@ -337,7 +371,6 @@ function updateUI() {
 
 function safePlaySFX(sound) { if (typeof playSFX === 'function') playSFX(sound); }
 
-// EXPORTS FINAIS
 export function getRPGState() { return { ...rpgState }; }
 export function updateMissionsState(newMissions) { 
     rpgState.missions = newMissions; 
