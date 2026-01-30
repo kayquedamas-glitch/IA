@@ -47,7 +47,7 @@ export const AGENTS = {
         get promptPro() { return this.prompt; },
         
         // Botões de sugestão mais leves
-        initialButtons: ["Me ajude a organizar o dia", "Estou me sentindo cansado", "Criar uma nova meta", "Apenas conversar"],
+        initialButtons: ["Me ajude a organizar o dia", "Me ajude a aprender", "Criar uma nova meta", "Apenas conversar"],
         
         themeClass: "theme-synapse"
     }
