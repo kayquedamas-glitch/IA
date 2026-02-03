@@ -11,6 +11,7 @@ let messageCount = 0;
 const DIAGNOSE_PHASE = 2; // Quantas mensagens para entender o problema
 const PRE_LOCK_PHASE = 4; // Quando começar a prometer a solução
 const DEMO_LIMIT = 5;
+const LOCAL_CHAT_KEY = 'synapse_chat_history';
 
 
 let userStatus = 'DEMO';
@@ -22,6 +23,37 @@ try {
 } catch (e) {}
 
 const IS_DEMO_MODE = userStatus !== 'VIP' && userStatus !== 'PRO';
+
+function readLocalChatHistory() {
+    try {
+        return JSON.parse(localStorage.getItem(LOCAL_CHAT_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function writeLocalChatHistory(data) {
+    try {
+        localStorage.setItem(LOCAL_CHAT_KEY, JSON.stringify(data));
+    } catch (e) {}
+}
+
+function saveLocalChatHistory(agent, history) {
+    const data = readLocalChatHistory();
+    data[agent] = history;
+    writeLocalChatHistory(data);
+    if (window.AppEstado) {
+        window.AppEstado.chatHistory = {
+            ...window.AppEstado.chatHistory,
+            [agent]: history
+        };
+    }
+}
+
+function loadLocalChatHistory(agent) {
+    const data = readLocalChatHistory();
+    return data[agent] || [];
+}
 
 // --- INICIALIZAÇÃO ---
 export async function initChat() {
@@ -61,6 +93,8 @@ async function resetCurrentChat() {
         if (window.Database) {
             await window.Database.saveChatHistory(currentAgentKey, []);
         }
+        saveLocalChatHistory(currentAgentKey, []);
+        renderChatSidebar();
         
         if (area) {
             area.innerHTML = '';
@@ -102,6 +136,12 @@ export async function loadAgent(key) {
     let savedHistory = [];
     if (window.Database) {
         savedHistory = await window.Database.loadChatHistory(key);
+    }
+    if (savedHistory.length === 0) {
+        savedHistory = loadLocalChatHistory(key);
+        if (savedHistory.length > 0 && window.Database) {
+            window.Database.saveChatHistory(key, savedHistory);
+        }
     }
 
     if (savedHistory && savedHistory.length > 0) {
@@ -278,6 +318,8 @@ async function sendMessage(text = null) {
                     window.Database.saveChatHistory(currentAgentKey, chatHistory);
                     renderChatSidebar(); 
                 }
+                saveLocalChatHistory(currentAgentKey, chatHistory);
+                renderChatSidebar();
             }
 
             const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
@@ -506,4 +548,3 @@ function triggerPaywallSequence(diagnosisReason) {
         }, 800);
     }, 3500);
 }
-
