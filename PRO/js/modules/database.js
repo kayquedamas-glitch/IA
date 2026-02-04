@@ -13,7 +13,8 @@ window.AppEstado = {
         habitsDate: null // Data do último reset
     },
     config: {},
-    chatHistory: {} // <--- O Chat precisa disto aqui
+    chatHistory: {}, // Histórico legado (por Agente)
+    chatSessions: {} // <--- NOVO: Histórico tipo ChatGPT (por Sessão)
 };
 
 const DB_TABLE = 'progresso_usuario';
@@ -61,6 +62,10 @@ const Database = {
                     chatHistory: {
                         ...window.AppEstado.chatHistory,
                         ...(data.dados.chatHistory || {})
+                    },
+                    chatSessions: { // Garante que as sessões venham do banco
+                        ...window.AppEstado.chatSessions,
+                        ...(data.dados.chatSessions || {})
                     }
                 };
 
@@ -84,7 +89,10 @@ const Database = {
         if (!g.missions) g.missions = [];
         if (!g.history) g.history = [];
         if (!g.dailyScores) g.dailyScores = {};
+        
+        // Validações de Chat
         if (!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
+        if (!window.AppEstado.chatSessions) window.AppEstado.chatSessions = {}; // <--- IMPORTANTE
     },
 
     atualizarInterface() {
@@ -93,6 +101,8 @@ const Database = {
         if (window.renderCalendar) window.renderCalendar();
         if (window.initDashboard) window.initDashboard();
         if (window.updateStreakUI) window.updateStreakUI();
+        // Se a sidebar já estiver carregada, atualiza ela também
+        if (window.renderChatSidebar) window.renderChatSidebar();
     },
 
     async forceSave() {
@@ -136,7 +146,7 @@ const Database = {
         window.addEventListener('beforeunload', () => { this.forceSave(); });
     },
 
-    // --- FUNÇÕES DE CHAT (RESTAURADAS) ---
+    // --- FUNÇÕES DE CHAT ANTIGO (LEGADO) ---
     async saveChatHistory(agent, history) {
         if(!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
         window.AppEstado.chatHistory[agent] = history;
@@ -146,6 +156,27 @@ const Database = {
     async loadChatHistory(agent) {
         if(!window.AppEstado.chatHistory) window.AppEstado.chatHistory = {};
         return window.AppEstado.chatHistory[agent] || [];
+    }, // <--- A VÍRGULA QUE FALTAVA ESTÁ AQUI!
+
+    // --- FUNÇÕES DE SESSÕES (TIPO CHATGPT) ---
+    async saveSession(sessionId, sessionData) {
+        // sessionData deve conter: { title, agentKey, messages, updatedAt }
+        if (!window.AppEstado.chatSessions) window.AppEstado.chatSessions = {};
+        
+        window.AppEstado.chatSessions[sessionId] = sessionData;
+        
+        this.forceSave(); // Salva no Supabase
+    },
+
+    async loadSessions() {
+        return window.AppEstado.chatSessions || {};
+    },
+
+    async deleteSession(sessionId) {
+        if (window.AppEstado.chatSessions && window.AppEstado.chatSessions[sessionId]) {
+            delete window.AppEstado.chatSessions[sessionId];
+            this.forceSave();
+        }
     }
 };
 

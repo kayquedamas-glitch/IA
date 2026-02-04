@@ -161,6 +161,8 @@
                                 class="fa-solid fa-house text-lg group-hover:text-red-500 transition-colors"></i></div>
                         <span class="uppercase tracking-widest">Base de Comando</span>
                     </div>
+                    
+                    
                 </nav>
             </div>
 
@@ -180,49 +182,44 @@
                             <span class="text-[8px] font-mono text-green-500 uppercase tracking-widest">Online</span>
                         </div>
                     </div>
+                    
 
-                    <div class="overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar flex-grow">
-                        <div onclick="window.selectTool('MENTOR')" class="relative group cursor-pointer w-full">
-                            <div
-                                class="absolute inset-0 bg-red-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500">
-                            </div>
+                    <div class="overflow-y-auto px-3 py-4 custom-scrollbar flex-grow flex flex-col gap-4">
+    
+    <div id="newChatContainer" class="mb-4"> <button onclick="window.startNewChat()" 
+        class="group relative w-full flex items-center justify-center gap-3 px-4 py-4 bg-gradient-to-r from-[#CC0000] to-[#990000] hover:from-red-500 hover:to-red-700 text-white transition-all duration-300 rounded-xl shadow-lg shadow-red-900/20 border border-white/10 active:scale-95">
+        
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        <i class="fa-solid fa-plus text-sm group-hover:rotate-90 transition-transform duration-300"></i>
+        <span class="text-xs font-black uppercase tracking-widest relative z-10">Novo Chat</span>
+    </button>
 
-                            <div
-                                class="relative bg-gradient-to-br from-[#1a0505] to-[#0a0a0a] border border-red-900/30 group-hover:border-red-500/50 p-5 rounded-xl flex items-center gap-4 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] group-hover:translate-y-[-2px]">
+</div>
 
-                                <div class="relative w-14 h-14 flex-shrink-0">
-                                    <div
-                                        class="absolute inset-0 border border-red-500/30 rounded-full animate-[spin_4s_linear_infinite]">
-                                    </div>
-                                    <div
-                                        class="absolute inset-2 border border-red-500/50 rounded-full border-t-transparent animate-[spin_2s_linear_infinite_reverse]">
-                                    </div>
+    <div class="flex items-center gap-2 px-1 opacity-50 mt-2">
+        <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Histórico Neural</span>
+        <div class="h-[1px] bg-white/10 flex-grow"></div>
+    </div>
 
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <img src="logo_synapse.png"
-                                            class="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                                    </div>
-                                </div>
+    <div id="chatHistoryList" class="space-y-2 flex-grow">
+        
+        <div onclick="window.selectTool('MENTOR')" class="relative group cursor-pointer w-full opacity-60 hover:opacity-100 transition-all">
+            <div class="relative bg-[#1a0505] border border-white/5 group-hover:border-red-500/30 p-3 rounded-lg flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-red-900/20 flex items-center justify-center border border-red-500/20 text-red-500">
+                    <i class="fa-solid fa-brain text-xs"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-gray-300 group-hover:text-white uppercase">Synapse MENTOR</span>
+                    <span class="text-[8px] text-gray-600">Acesso Direto</span>
+                </div>
+            </div>
+        </div>
 
-                                <div class="flex flex-col">
-                                    <span
-                                        class="text-sm font-black text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Synapse
-                                        ULTIMATE</span>
-                                    <p class="text-[10px] text-gray-400 font-mono leading-tight mt-0.5">
-                                        Status: <span class="text-green-500">Aguardando Comando</span>
-                                    </p>
-                                    <div class="mt-2 flex items-center gap-2">
-                                        <span
-                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">Mentor</span>
-                                        <span
-                                            class="text-[8px] px-1.5 py-0.5 bg-white/5 rounded border border-white/5 text-gray-500 uppercase group-hover:bg-red-500/20 group-hover:text-red-300 transition-colors">IA
-                                            v2.0</span>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+    </div>
+</div>
+                    
+                    
                 </div>
             </div>
             <div class="mt-8 px-4 mb-4">

@@ -311,13 +311,23 @@ function selectTool(toolName) {
     }
 }
 
+// No arquivo js/main.js
+
 function switchTab(tabName) {
     if (typeof playSFX === 'function') playSFX('click');
+    
+    // 1. Esconde todas as seções
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
-    if (typeof playSFX === 'function') playSFX('click');
+    // 2. Lógica do Botão NOVO CHAT (Correção Solicitada)
+    const newChatBtn = document.getElementById('newChatContainer');
+    if (newChatBtn) {
+        // Só mostra se a aba for 'chat'
+        newChatBtn.style.display = (tabName === 'chat') ? 'block' : 'none';
+    }
 
+    // 3. Ativa a aba correta
     if (tabName === 'protocolo') {
         const view = document.getElementById('viewProtocolo');
         if (view) view.classList.remove('hidden');
