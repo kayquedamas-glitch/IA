@@ -1045,6 +1045,16 @@ body {
 .heatmap-cell:hover::after {
     opacity: 1;
 }
+html, body {
+        max-width: 100vw;
+        overflow-x: hidden;
+        overscroll-behavior-y: none; /* Evita o efeito "elástico" no iOS */
+    }
+    
+    .view-section {
+        max-width: 100vw;
+        overflow-x: hidden !important;
+    }
 
 /* Barra de rolagem fina */
 .heatmap-scroll-container::-webkit-scrollbar { height: 6px; }

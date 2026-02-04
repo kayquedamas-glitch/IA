@@ -313,6 +313,8 @@ function selectTool(toolName) {
 
 // No arquivo js/main.js
 
+// APP/PRO/js/main.js
+
 function switchTab(tabName) {
     if (typeof playSFX === 'function') playSFX('click');
     
@@ -320,10 +322,9 @@ function switchTab(tabName) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
-    // 2. Lógica do Botão NOVO CHAT (Correção Solicitada)
+    // 2. Lógica do Botão NOVO CHAT
     const newChatBtn = document.getElementById('newChatContainer');
     if (newChatBtn) {
-        // Só mostra se a aba for 'chat'
         newChatBtn.style.display = (tabName === 'chat') ? 'block' : 'none';
     }
 
@@ -348,6 +349,19 @@ function switchTab(tabName) {
             setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
         }
     }
+    // --- ADICIONE ESTE BLOCO ABAIXO ---
+    else if (tabName === 'tatico') {
+        const view = document.getElementById('viewTatico');
+        if (view) view.classList.remove('hidden');
+
+        const btn = document.getElementById('tabTatico');
+        if (btn) btn.classList.add('active');
+
+        // Chama a renderização manual do módulo tático (exposto pelo tactical.js)
+        if (window.initTacticalModule) window.initTacticalModule();
+    }
+    // ----------------------------------
+
     toggleSidebar(false);
 }
 

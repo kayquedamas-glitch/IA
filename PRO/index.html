@@ -5,11 +5,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // SISTEMA DE SEGURANÇA E LOGIN
         function verificarAcessoDireto() {
             console.log("🔒 Verificando credenciais...");
             let sessaoSalva = localStorage.getItem('synapse_user');
 
             if (!sessaoSalva) {
+                // Modo Preview (Evita erro de redirecionamento no editor)
                 const isPreview = window.location.protocol === 'blob:' || window.location.href.includes('usercontent');
                 
                 if (isPreview) {
@@ -233,7 +235,7 @@
             </div>
 
             <!-- VIEW 2: DASHBOARD (JORNADA) -->
-            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
+            <div id="viewProtocolo" class="view-section h-full hidden overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
                 <div class="w-full max-w-6xl mx-auto">
 
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6 animate-fade-in-up">
@@ -344,8 +346,8 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: TÁTICO (CORRIGIDO) -->
-            <div id="viewTatico" class="view-section h-full hidden overflow-y-auto p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
+            <!-- VIEW 3: TÁTICO (CORRIGIDO E ESTILIZADO) -->
+            <div id="viewTatico" class="view-section h-full hidden overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
                 <div class="w-full max-w-6xl mx-auto">
                     
                     <h2 class="text-3xl font-black text-white tracking-tighter uppercase mb-6 animate-fade-in-up">
@@ -354,7 +356,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up">
                         
-                        <!-- RITUAIS (ID CORRIGIDO: habitListTactical) -->
+                        <!-- RITUAIS -->
                         <div class="bg-[#0a0a0a] border border-white/10 p-6 lg:col-span-1 min-h-[400px] flex flex-col rounded-xl relative shadow-lg">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6 flex items-center gap-2">
                                 <i class="fa-solid fa-list-check text-red-500"></i> Protocolos Diários
@@ -370,7 +372,7 @@
                             <div id="habitListTactical" class="space-y-2 flex-grow overflow-y-auto custom-scrollbar pr-1"></div>
                         </div>
 
-                        <!-- MISSÕES (ID CORRIGIDO: missionListTactical) -->
+                        <!-- MISSÕES -->
                         <div class="bg-[#0a0a0a] border border-white/10 p-6 lg:col-span-2 flex flex-col min-h-[400px] rounded-xl relative shadow-lg">
                             <h3 class="text-xs font-black text-white uppercase italic mb-6 flex items-center gap-2">
                                 <i class="fa-solid fa-crosshairs text-blue-500"></i> Missões Estratégicas
@@ -401,7 +403,7 @@
 
         </main>
 
-        <!-- MENU INFERIOR -->
+        <!-- MENU INFERIOR MOBILE -->
         <nav class="bottom-nav md:hidden z-50 grid grid-cols-3">
             <button id="tabJornada" class="nav-btn active flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-white transition-colors" onclick="window.switchTab('protocolo')"> 
                 <i class="fa-solid fa-chart-line text-lg"></i>
@@ -452,8 +454,9 @@
                     showProgress: true, animate: true, allowClose: false,
                     doneBtnText: 'OK', nextBtnText: '>', prevBtnText: '<', popoverClass: 'driverjs-theme',
                     steps: [
-                        { element: '#sidebar', popover: { title: 'Menu Lateral', description: 'Navegue entre Jornada, Tático e Comando.', side: "right", align: 'start' } },
-                        { element: '#viewTatico', popover: { title: 'Tático', description: 'Gerencie suas tarefas aqui.', side: "top", align: 'center' } }
+                        { element: '#sidebar', popover: { title: 'Menu Lateral', description: 'Navegue entre Jornada (Dados), Tático (Ação) e Comando (IA).', side: "right", align: 'start' } },
+                        { element: '#viewProtocolo h2', popover: { title: 'Jornada', description: 'Seu QG. Veja gráficos e seu nível aqui.', side: "bottom", align: 'start' } },
+                        { element: '#viewTatico', popover: { title: 'Tático (Operações)', description: 'Aqui você gerencia seus Rituais e Missões.', side: "top", align: 'center' } }
                     ]
                 });
                 tour.drive();
@@ -461,6 +464,7 @@
             }
         });
 
+        // --- FUNÇÃO DE NAVEGAÇÃO ---
         window.switchTab = function(tabName) {
             document.getElementById('viewChat').classList.add('hidden');
             document.getElementById('viewProtocolo').classList.add('hidden');
@@ -484,7 +488,7 @@
                 document.getElementById('tabTatico')?.classList.add('active', 'text-white');
                 document.querySelector('.nav-item-desktop[data-target="tatico"]')?.classList.add('bg-[#1a1a1a]', 'text-white');
                 
-                // Força renderização para não mostrar vazio
+                // Força renderização do módulo tático ao abrir a aba
                 if(window.initTacticalModule) window.initTacticalModule();
                 
             } else {
