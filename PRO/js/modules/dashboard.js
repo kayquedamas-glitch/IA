@@ -409,3 +409,88 @@ function checkStreakIntegrity() {
         if (window.Database) window.Database.forceSave();
     }
 }
+// Adicione esta função no final do dashboard.js e chame-a no initDashboard()
+
+export function renderDisciplineGraph() {
+    // Procura o container onde ficava a "streak" (Sequência)
+    // Sugestão: Crie uma div com id="disciplineChartContainer" no seu HTML onde deseja exibir
+    const container = document.getElementById('streakDisplay')?.parentElement; 
+    
+    if (!container) return;
+    
+    // Limpa o container para desenhar o gráfico novo (mantendo o título se quiser)
+    // Vamos substituir o número simples pelo gráfico
+    
+    const scores = window.AppEstado?.gamification?.dailyScores || {};
+    const history = [];
+    const today = new Date();
+    const DAYS_TO_SHOW = 14; // Últimas 2 semanas
+
+    // Coleta dados dos últimos X dias
+    for (let i = DAYS_TO_SHOW - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        // Se não tiver dado, assume 0 para o gráfico não quebrar
+        history.push(scores[dateStr] !== undefined ? scores[dateStr] : 0);
+    }
+
+    // Configuração do SVG
+    const width = 200; // Largura interna do SVG
+    const height = 50; // Altura interna
+    const maxVal = 100;
+    const stepX = width / (DAYS_TO_SHOW - 1);
+
+    // Cria os pontos da linha (Polilinha)
+    let points = history.map((val, index) => {
+        const x = index * stepX;
+        const y = height - ((val / maxVal) * height); // Inverte Y pois SVG começa em cima
+        return `${x},${y}`;
+    }).join(' ');
+
+    // Cria os pontos para o preenchimento (Area Chart) - fecha o loop embaixo
+    const areaPoints = `${points} ${width},${height} 0,${height}`;
+
+    // Cor dinâmica baseada na média recente
+    const avg = history.reduce((a,b)=>a+b,0) / history.length;
+    const color = avg > 80 ? '#39d353' : (avg > 40 ? '#eab308' : '#ef4444');
+
+    const html = `
+    <div class="flex flex-col w-full h-full justify-between relative group overflow-hidden rounded-lg bg-[#0a0a0a] border border-white/5 p-3">
+        <div class="flex justify-between items-center z-10 mb-2">
+            <span class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">DISCIPLINA (14 DIAS)</span>
+            <span class="text-xs font-mono font-bold" style="color:${color}">${Math.round(avg)}%</span>
+        </div>
+        
+        <div class="relative w-full h-12">
+            <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible drop-shadow-[0_0_5px_${color}40]">
+                <line x1="0" y1="${height/2}" x2="${width}" y2="${height/2}" stroke="#333" stroke-width="0.5" stroke-dasharray="2,2" />
+                
+                <defs>
+                    <linearGradient id="gradGraph" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:${color};stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:${color};stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+                <polygon points="${areaPoints}" fill="url(#gradGraph)" />
+                
+                <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+                
+                <circle cx="${width}" cy="${height - ((history[history.length-1]/100)*height)}" r="3" fill="white" class="animate-pulse" />
+            </svg>
+        </div>
+        
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-white/10 animate-scan-vertical pointer-events-none"></div>
+    </div>
+    `;
+
+    // Substitui o conteúdo antigo pelo gráfico
+    // IMPORTANTE: Certifique-se que no HTML existe um elemento pai adequado
+    if(document.getElementById('streakDisplay')) {
+         // Substitui o pai do streakDisplay (o card inteiro)
+         const card = document.getElementById('streakDisplay').closest('.dopamine-card') || document.getElementById('streakDisplay').parentElement;
+         if(card) {
+             card.outerHTML = html;
+         }
+    }
+}

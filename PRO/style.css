@@ -14,11 +14,20 @@ body {
 }
 
 /* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #CC0000; }
-
+/* Custom Scrollbar para o Grid Horizontal */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0d0d0d;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 /* --- APP LAYOUT --- */
 .app-layout { 
     display: grid; 
@@ -964,3 +973,80 @@ body {
     animation: text-breathe-glow 4s ease-in-out infinite; /* 4s para ser bem lento */
     will-change: opacity, transform, text-shadow; /* Otimização de performance */
 }
+/* --- CALENDÁRIO HEATMAP (ESTILO GITHUB) --- */
+
+/* Container com rolagem horizontal suave */
+.heatmap-scroll-container {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    justify-content: flex-end; /* Começa da direita (hoje) */
+    align-items: flex-end;
+    height: 100%;
+}
+
+/* Coluna de uma semana (7 dias verticais) */
+.heatmap-week {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0; /* Impede de amassar */
+}
+
+/* O Quadradinho (Célula) */
+.heatmap-cell {
+    width: 14px;  /* Tamanho fixo perfeito */
+    height: 14px;
+    border-radius: 2px; /* Cantos levemente arredondados */
+    background-color: #161b22; /* Cor padrão (Vazio/Sem dados) */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Hover simples */
+.heatmap-cell:hover {
+    transform: scale(1.2);
+    z-index: 10;
+    border-color: #fff;
+}
+
+/* --- CORES DE INTENSIDADE --- */
+.h-level-0 { background-color: #2c0a0a; border-color: #5c0000; } /* Falha (Vermelho escuro) */
+.h-level-1 { background-color: #0e4429; } /* Pouco */
+.h-level-2 { background-color: #006d32; } /* Médio */
+.h-level-3 { background-color: #26a641; } /* Bom */
+.h-level-4 { 
+    background-color: #39d353; /* Perfeito */
+    box-shadow: 0 0 6px #39d353; /* Brilho Neon */
+}
+
+/* Tooltip simples (aparece ao passar o mouse) */
+.heatmap-cell::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    border: 1px solid #333;
+    z-index: 20;
+}
+.heatmap-cell:hover::after {
+    opacity: 1;
+}
+
+/* Barra de rolagem fina */
+.heatmap-scroll-container::-webkit-scrollbar { height: 6px; }
+.heatmap-scroll-container::-webkit-scrollbar-track { background: #0d0d0d; }
+.heatmap-scroll-container::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
