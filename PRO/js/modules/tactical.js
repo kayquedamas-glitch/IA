@@ -1,303 +1,362 @@
-// PRO/js/modules/tactical.js
+// APP/PRO/js/modules/tactical.js
 
+// --- CONFIGURAÇÃO E INICIALIZAÇÃO ---
 export function initTactical() {
-    console.log("⚔️ Módulo Tático: Inicializando (Vertical Timeline)...");
+    console.log("⚔️ Módulo Tático: Inicializando (Layout Responsivo V3)...");
     
-    if (!window.AppEstado) {
-        window.AppEstado = { 
-            gamification: { habits: [], missions: [] } 
-        };
+    // 1. Carrega Estado Seguro
+    try {
+        const backup = localStorage.getItem('synapse_data_backup');
+        if (backup) {
+            window.AppEstado = JSON.parse(backup);
+        } else {
+            const userSession = localStorage.getItem('synapse_user');
+            window.AppEstado = userSession ? { user: JSON.parse(userSession) } : {};
+        }
+    } catch (e) {
+        console.error("Erro crítico ao carregar:", e);
+        window.AppEstado = {};
     }
 
-    window.initTacticalModule = renderTacticalView; 
-    setupGlobalActions();
+    // 2. Garante Estrutura de Dados
+    if (!window.AppEstado.gamification) window.AppEstado.gamification = {};
+    if (!window.AppEstado.gamification.habits) window.AppEstado.gamification.habits = [];
+    if (!window.AppEstado.gamification.metas) window.AppEstado.gamification.metas = [];
+
+    // 3. AUTO-CORREÇÃO DE DADOS
+    window.AppEstado.gamification.habits = window.AppEstado.gamification.habits.map(h => ({
+        ...h,
+        id: h.id || generateUUID(),
+        title: h.title || h.text || h.name || "Protocolo Sem Nome", 
+        text: h.title || h.text || h.name || "Protocolo Sem Nome",
+        history: Array.isArray(h.history) ? h.history : [],
+        frequency: h.frequency || 'Diário'
+    }));
+
+    // 4. Salva a correção
+    localStorage.setItem('synapse_data_backup', JSON.stringify(window.AppEstado));
+
+    // 5. Configura Ações e Injeta Modais
+    injectMetasModal();
+    setupTacticalActions(); 
+    
+    // 6. Renderiza a tela
     renderTacticalView();
 }
 
 // --- UTILITÁRIOS ---
-function getTodayDate() {
-    return new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+function generateUUID() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx'.replace(/[xy]/g, c => (Math.random()*16|0).toString(16));
 }
 
-function getLastDays(count) {
-    const dates = [];
-    for (let i = 0; i < count; i++) { // Ordem: Hoje (0) até Passado (count)
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        dates.push(d.toLocaleDateString('en-CA'));
-    }
-    return dates; // [ "Hoje", "Ontem", "Anteontem"... ]
+function getTodayDate() { return new Date().toLocaleDateString('en-CA'); }
+
+function getDaysRemaining(deadline) {
+    if (!deadline) return "∞";
+    const diff = new Date(deadline) - new Date();
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    return days > 0 ? `${days} dias` : (days === 0 ? "Hoje" : "Atrasado");
 }
 
-function formatDateDay(dateString) {
-    // Retorna apenas o dia (ex: 25)
-    return dateString.split('-')[2];
+function getCategoryIcon(cat) {
+    const map = { 'financeiro': 'fa-sack-dollar', 'carreira': 'fa-briefcase', 'saude': 'fa-heart-pulse', 'pessoal': 'fa-user-astronaut' };
+    return map[cat] || 'fa-star';
 }
 
-function getWeekDay(dateString) {
-    // Retorna dia da semana (S, T, Q...)
-    const d = new Date(dateString + 'T12:00:00'); // Compensar fuso
-    const days = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-    return days[d.getDay()];
+function getCategoryColor(cat) {
+    const map = { 'financeiro': 'text-green-400', 'carreira': 'text-blue-400', 'saude': 'text-red-400', 'pessoal': 'text-purple-400' };
+    return map[cat] || 'text-white';
 }
 
-// --- VERIFICAÇÃO DE LIMITES ---
-function checkLimit(type) {
-    const isFree = window.IS_DEMO || (window.AppEstado?.user?.status === 'free') || (localStorage.getItem('synapse_user')?.includes('"status":"free"'));
+// --- MODAL HTML (CORRIGIDO - RESPONSIVO) ---
+function injectMetasModal() {
+    const oldModal = document.getElementById('modalNovaMeta');
+    if (oldModal) oldModal.remove();
+
+    // MUDANÇA PRINCIPAL AQUI:
+    // 1. Usamos 'fixed inset-0 flex items-center justify-center' para centralizar perfeitamente.
+    // 2. 'max-h-[85vh]' e 'overflow-y-auto' garantem que o modal role se for grande demais.
+    // 3. 'z-[99999]' garante que fique acima de tudo.
     
-    if (isFree) {
-        const habits = window.AppEstado.gamification?.habits || window.AppEstado.habits || [];
-        const missions = window.AppEstado.gamification?.missions || window.AppEstado.missions || [];
+    const modalHTML = `
+    <div id="modalNovaMeta" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 hidden">
         
-        const limit = 3;
-        const current = type === 'habit' ? habits.length : missions.length;
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity cursor-pointer" onclick="window.closeMetaModalTactical()"></div>
         
-        if (current >= limit) {
-            if (window.showDemoModal) window.showDemoModal(type === 'habit' ? 'Rituais' : 'Missões');
-            else alert(`⚠️ VERSÃO FREE\n\nLimite de ${limit} atingido.`);
-            return false;
-        }
-    }
-    return true;
+        <div class="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(204,0,0,0.3)] p-6 animate-fade-in-up max-h-[85vh] overflow-y-auto custom-scrollbar flex flex-col">
+            
+            <div class="flex justify-between items-start mb-1">
+                <h3 class="text-xl font-black text-white uppercase tracking-tighter">Nova Meta</h3>
+                <button onclick="window.closeMetaModalTactical()" class="text-gray-500 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <p class="text-[10px] text-gray-500 font-mono mb-6">DEFINA SEU OBJETIVO ESTRATÉGICO</p>
+
+            <div class="space-y-4 flex-grow">
+                <div>
+                    <label class="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Nome da Meta</label>
+                    <input type="text" id="inputMetaTitulo" class="w-full bg-[#151515] border border-white/10 rounded-lg p-3 text-white text-sm focus:border-red-500 outline-none transition-colors placeholder-gray-700" placeholder="Ex: Comprar Macbook">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Categoria</label>
+                        <div class="relative">
+                            <select id="selectMetaCategoria" class="w-full bg-[#151515] border border-white/10 rounded-lg p-3 text-white text-xs focus:border-red-500 outline-none appearance-none cursor-pointer">
+                                <option value="financeiro">Financeiro</option>
+                                <option value="carreira">Carreira</option>
+                                <option value="saude">Saúde</option>
+                                <option value="pessoal">Pessoal</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 pointer-events-none"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Prazo</label>
+                        <input type="date" id="inputMetaPrazo" class="w-full bg-[#151515] border border-white/10 rounded-lg p-3 text-white text-xs focus:border-red-500 outline-none cursor-pointer text-gray-300">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6 pt-4 border-t border-white/5 shrink-0">
+                    <button onclick="window.closeMetaModalTactical()" class="flex-1 py-3 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 text-xs font-bold uppercase transition">Cancelar</button>
+                    <button onclick="window.saveNewMetaTactical()" type="button" class="flex-1 py-3 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-red-900/40 transition active:scale-95">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
 // --- AÇÕES GLOBAIS ---
-function setupGlobalActions() {
+function setupTacticalActions() {
     
-    const getArrays = () => {
-        if (!window.AppEstado.gamification) window.AppEstado.gamification = {};
-        let habits = window.AppEstado.gamification.habits || window.AppEstado.habits || [];
-        let missions = window.AppEstado.gamification.missions || window.AppEstado.missions || [];
-        return { habits, missions };
+    const forceUpdate = () => {
+        localStorage.setItem('synapse_data_backup', JSON.stringify(window.AppEstado));
+        requestAnimationFrame(() => renderTacticalView());
     };
 
-    const saveChanges = (newHabits, newMissions) => {
-        if (window.AppEstado.gamification) {
-            if (newHabits) window.AppEstado.gamification.habits = newHabits;
-            if (newMissions) window.AppEstado.gamification.missions = newMissions;
-        }
-        if (newHabits) window.AppEstado.habits = newHabits;
-        if (newMissions) window.AppEstado.missions = newMissions;
-
-        if (window.Database && window.Database.forceSave) window.Database.forceSave();
-        else localStorage.setItem('synapse_data_backup', JSON.stringify(window.AppEstado));
-
-        renderTacticalView();
-        if (window.renderDashboard) window.renderDashboard();
+    // 1. ADICIONAR HÁBITO
+    window.openAddHabitModal = () => {
+        // Pequeno delay para evitar conflito de UI
+        setTimeout(() => {
+            const title = prompt("NOME DO NOVO PROTOCOLO:");
+            if (title && title.trim()) {
+                const newHabit = {
+                    id: generateUUID(),
+                    title: title.trim(),
+                    text: title.trim(),
+                    history: [],
+                    frequency: 'Diário',
+                    done: false
+                };
+                window.AppEstado.gamification.habits.unshift(newHabit);
+                forceUpdate();
+                try { if(window.playSFX) window.playSFX('success'); } catch(e){}
+            }
+        }, 50);
     };
 
-    window.toggleHabitDate = (id, dateString) => {
-        const { habits } = getArrays();
-        const habit = habits.find(h => h.id === id);
-        
+    // 2. TOGGLE HÁBITO
+    window.toggleHabitDateTactical = (id, dateString) => {
+        const habit = window.AppEstado.gamification.habits.find(h => h.id === id);
         if (habit) {
             if (!habit.history) habit.history = [];
-            const index = habit.history.indexOf(dateString);
-            
-            if (index > -1) habit.history.splice(index, 1);
-            else {
-                habit.history.push(dateString);
-                if(window.playSFX) window.playSFX('click');
-            }
-            // Atualiza status de hoje para compatibilidade
-            habit.completed = habit.history.includes(getTodayDate());
-            saveChanges(habits, null);
+            const idx = habit.history.indexOf(dateString);
+            idx > -1 ? habit.history.splice(idx, 1) : habit.history.push(dateString);
+            forceUpdate();
+        }
+    };
+    
+    // 3. DELETAR HÁBITO
+    window.deleteHabitTactical = (id) => {
+        if(!confirm("Remover este protocolo?")) return;
+        window.AppEstado.gamification.habits = window.AppEstado.gamification.habits.filter(h => h.id !== id);
+        forceUpdate();
+        try { if(window.playSFX) window.playSFX('delete'); } catch(e){}
+    };
+
+    // 4. SISTEMA DE METAS (VISUALIZAÇÃO)
+    window.openNewMetaModalTactical = () => {
+        const modal = document.getElementById('modalNovaMeta');
+        if(modal) { 
+            modal.classList.remove('hidden'); 
+            // Bloqueia scroll do fundo para evitar rolagem dupla
+            document.body.style.overflow = 'hidden';
+        } else { 
+            injectMetasModal(); 
+            document.getElementById('modalNovaMeta').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
     };
 
-    window.deleteHabit = (id) => {
-        if(!confirm("Remover este ritual?")) return;
-        const { habits } = getArrays();
-        const newHabits = habits.filter(h => h.id !== id);
-        saveChanges(newHabits, null);
-    };
-
-    window.completeMission = (id) => {
-        const { missions } = getArrays();
-        const mission = missions.find(m => m.id === id);
-        if (mission) {
-            mission.completed = !mission.completed;
-            saveChanges(null, missions);
+    window.closeMetaModalTactical = () => {
+        const modal = document.getElementById('modalNovaMeta');
+        if(modal) { 
+            modal.classList.add('hidden'); 
+            // Libera scroll do fundo
+            document.body.style.overflow = '';
         }
     };
 
-    window.deleteMission = (id) => {
-        if(!confirm("Abortar missão?")) return;
-        const { missions } = getArrays();
-        const newMissions = missions.filter(m => m.id !== id);
-        saveChanges(null, newMissions);
-    };
+    // 5. SALVAR META
+    window.saveNewMetaTactical = () => {
+        const inputTitulo = document.getElementById('inputMetaTitulo');
+        const inputCategoria = document.getElementById('selectMetaCategoria');
+        const inputPrazo = document.getElementById('inputMetaPrazo');
 
-    window.openAddHabitModal = () => {
-        if (!checkLimit('habit')) return;
-        const title = prompt("Nome do novo Ritual:");
-        if (title && title.trim()) {
-            const { habits } = getArrays();
-            habits.push({
-                id: crypto.randomUUID(),
-                title: title.trim(),
-                completed: false,
-                history: [],
-                frequency: 'Diário'
-            });
-            saveChanges(habits, null);
+        if (!inputTitulo || !inputTitulo.value.trim()) {
+            alert("Digite o nome da meta!");
+            return;
         }
-    };
 
-    window.addNewMission = () => {
-        if (!checkLimit('mission')) return;
-        const input = document.getElementById('newMissionInputTactical') || document.getElementById('newMissionInput');
-        const dateInput = document.getElementById('newMissionDateTactical') || document.getElementById('newMissionDate');
+        const novaMeta = {
+            id: generateUUID(),
+            title: inputTitulo.value,
+            category: inputCategoria.value,
+            deadline: inputPrazo.value || getTodayDate(),
+            progress: 0,
+            status: 'active'
+        };
+
+        window.AppEstado.gamification.metas.push(novaMeta);
+        forceUpdate();
+        window.closeMetaModalTactical();
         
-        if (input && input.value.trim()) {
-            const { missions } = getArrays();
-            missions.push({
-                id: crypto.randomUUID(),
-                title: input.value.trim(),
-                deadline: dateInput?.value || getTodayDate(),
-                completed: false
-            });
-            input.value = ''; 
-            saveChanges(null, missions);
+        // Limpa
+        inputTitulo.value = ''; 
+    };
+
+    window.updateMetaProgressTactical = (id, newProgress) => {
+        const meta = window.AppEstado.gamification.metas.find(m => m.id === id);
+        if (meta) {
+            meta.progress = parseInt(newProgress);
+            meta.status = meta.progress >= 100 ? 'completed' : 'active';
+            forceUpdate();
         }
     };
+
+    window.deleteMetaTactical = (id) => {
+        if(!confirm("Excluir meta?")) return;
+        window.AppEstado.gamification.metas = window.AppEstado.gamification.metas.filter(m => m.id !== id);
+        forceUpdate();
+    };
+    
+    window.initTacticalModule = renderTacticalView;
 }
 
 // --- RENDERIZAÇÃO ---
-
 function renderTacticalView() {
-    let habits = window.AppEstado?.gamification?.habits || window.AppEstado?.habits || [];
-    let missions = window.AppEstado?.gamification?.missions || window.AppEstado?.missions || [];
-
     const habitContainer = document.getElementById('habitListTactical');
-    const missionContainer = document.getElementById('missionListTactical');
+    const metaContainer = document.getElementById('missionListTactical');
 
-    if (habitContainer) renderHabitListInContainer(habitContainer, habits);
-    if (missionContainer) renderMissionListInContainer(missionContainer, missions);
+    if (habitContainer) renderHabits(habitContainer, window.AppEstado.gamification.habits || []);
+    if (metaContainer) renderMetas(metaContainer, window.AppEstado.gamification.metas || []);
 }
 
-function renderHabitListInContainer(container, habits) {
+function renderHabits(container, habits) {
     if (!habits || habits.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full min-h-[100px] border-2 border-dashed border-white/5 rounded-lg p-4 select-none opacity-50">
-                <i class="fa-solid fa-list-check text-xl text-gray-400 mb-2"></i>
-                <span class="text-[10px] text-gray-500 text-center">Nenhum ritual ativo</span>
-            </div>`;
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-6 opacity-40 border border-dashed border-white/10 rounded-lg"><i class="fa-solid fa-seedling text-xl mb-2 text-gray-500"></i><span class="text-[10px] uppercase tracking-widest text-gray-500">Sem protocolos ativos</span></div>`; 
         return;
     }
+    
+    const dates = [];
+    for(let i=0; i<5; i++) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        dates.push(d.toLocaleDateString('en-CA'));
+    }
 
-    // Mostra os últimos 5 dias na vertical (para caber bem na tela)
-    const displayDays = getLastDays(5); 
+    container.innerHTML = habits.map(h => {
+        const displayTitle = h.title || h.text || h.name || "Sem Nome";
+        const safeHistory = Array.isArray(h.history) ? h.history : [];
 
-    container.innerHTML = habits.map(habit => {
-        const history = habit.history || [];
-        
-        // Gera as bolinhas VERTICAIS
-        const dotsHTML = displayDays.map((dayDate, index) => {
-            const isDone = history.includes(dayDate);
-            const isToday = index === 0; // O primeiro do array é Hoje
-            
-            // Lógica de Opacidade: Hoje = 100%, Ontem = 80%, etc.
-            const opacity = Math.max(0.3, 1 - (index * 0.15));
-            
-            // Estilos
-            let dotClass = isDone 
-                ? 'bg-green-500 border-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]' 
-                : 'bg-[#0a0a0a] border-white/10 hover:border-white/40';
-            
-            if (isToday) dotClass += ' w-5 h-5 ring-2 ring-white/20 z-10'; // Hoje é maior
-            else dotClass += ' w-3 h-3'; // Passado é menor
-
-            return `
-                <div class="relative flex items-center justify-end w-full group/dot" 
-                     style="opacity: ${opacity}">
-                    
-                    <span class="mr-3 text-[9px] font-mono text-gray-500 ${isToday ? 'opacity-100 text-green-400 font-bold' : 'opacity-0 group-hover/dot:opacity-100'} transition-opacity">
-                        ${getWeekDay(dayDate)} ${formatDateDay(dayDate)}
-                    </span>
-
-                    ${index !== displayDays.length - 1 ? 
-                        `<div class="absolute right-[calc(50%-1px)] top-full w-[2px] h-4 bg-white/5 -z-0"></div>` 
-                        : ''}
-
-                    <div class="rounded-full border transition-all duration-300 cursor-pointer ${dotClass} relative z-10"
-                         onclick="event.stopPropagation(); window.toggleHabitDate('${habit.id}', '${dayDate}')"
-                         title="${dayDate}">
-                         
-                         ${isDone ? '<i class="fa-solid fa-check text-[8px] text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>' : ''}
-                    </div>
-                </div>
-            `;
-        }).join(''); // Junta as bolinhas (sem reverse, pois getLastDays já vem na ordem Hoje -> Passado)
+        const dots = dates.map((date, i) => {
+            const done = safeHistory.includes(date);
+            const isToday = i === 0;
+            return `<div onclick="event.stopPropagation(); window.toggleHabitDateTactical('${h.id}', '${date}')" 
+                class="w-${isToday?4:2} h-${isToday?4:2} rounded-full ${done ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-[#222]'} cursor-pointer transition-all border border-white/5 hover:border-white/50"></div>`;
+        }).join('');
 
         return `
-        <div class="group relative flex items-stretch justify-between p-0 bg-[#121212] border border-white/5 rounded-2xl overflow-hidden mb-4 shadow-lg min-h-[140px]">
-            
-            <div class="flex-1 p-5 flex flex-col justify-center border-r border-white/5 bg-gradient-to-r from-transparent to-black/20">
-                <div class="mb-2">
-                    <span class="text-[9px] text-blue-500 font-bold uppercase tracking-widest mb-1 block">Protocolo</span>
-                    <h3 class="text-xl font-black text-white leading-tight">${habit.title}</h3>
-                </div>
-                <div class="mt-auto flex items-center gap-3">
-                     <span class="text-[8px] text-gray-600 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">
-                        ${habit.frequency || 'Diário'}
-                     </span>
-                     <button onclick="window.deleteHabit('${habit.id}')" class="text-gray-600 hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                </div>
+        <div class="flex items-center justify-between p-3 bg-[#111] border border-white/5 rounded-xl mb-2 hover:border-white/20 transition-all group animate-fade-in-up">
+            <div>
+                <h4 class="text-xs font-bold text-white uppercase tracking-tight">${displayTitle}</h4>
+                <div class="flex gap-2 mt-1.5 items-center">${dots}</div>
             </div>
-
-            <div class="w-16 bg-[#050505] flex flex-col items-center justify-center gap-3 py-4 px-1 relative">
-                <div class="absolute top-4 bottom-4 right-[19px] w-[1px] bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
-                
-                ${dotsHTML}
-            </div>
-        </div>
-        `;
+            <button onclick="window.deleteHabitTactical('${h.id}')" class="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-500 transition px-2 py-2">
+                <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+        </div>`;
     }).join('');
 }
 
-function renderMissionListInContainer(container, missions) {
-    if (!missions || missions.length === 0) {
+function renderMetas(container, metas) {
+    if (!document.getElementById('metasHeaderControl')) {
         container.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full min-h-[100px] border-2 border-dashed border-white/5 rounded-lg p-4 select-none opacity-50">
-                <i class="fa-solid fa-crosshairs text-xl text-gray-400 mb-2"></i>
-                <span class="text-[10px] text-gray-500 text-center">Sem missões ativas</span>
-            </div>`;
+            <div id="metasHeaderControl" class="flex justify-between items-center mb-6">
+                <h3 class="text-xs font-black text-white uppercase italic flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-blue-500"></i> Metas
+                </h3>
+                <button onclick="window.openNewMetaModalTactical()" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600 border border-blue-500/30 text-blue-400 hover:text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-900/20">
+                    <i class="fa-solid fa-plus"></i> Nova
+                </button>
+            </div>
+            <div id="metasGrid" class="space-y-3 pb-20"></div>
+        `;
+    }
+
+    const grid = document.getElementById('metasGrid');
+    if (!grid) return; 
+
+    if (metas.length === 0) {
+        grid.innerHTML = `<div class="flex flex-col items-center justify-center py-10 opacity-40"><i class="fa-solid fa-mountain text-4xl text-gray-600 mb-3"></i><span class="text-[10px] uppercase tracking-widest">Nenhuma meta</span></div>`;
         return;
     }
 
-    container.innerHTML = missions.map(mission => {
-        const isDone = mission.completed;
+    grid.innerHTML = metas.map(meta => {
+        const percent = meta.progress || 0;
+        const isDone = percent >= 100;
+        const icon = getCategoryIcon(meta.category || 'pessoal');
+        const colorClass = getCategoryColor(meta.category || 'pessoal');
+        const metaTitle = meta.title || "Meta Sem Nome";
+
         return `
-        <div class="relative group p-4 bg-[#151515] border-l-[4px] ${isDone ? 'border-l-blue-500 bg-blue-950/10' : 'border-l-gray-700 hover:border-l-white'} border-y border-r border-white/5 rounded-r-xl transition-all mb-3 hover:bg-[#1a1a1a]">
-            <div class="flex justify-between items-start gap-3">
-                <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-bold ${isDone ? 'text-blue-400 line-through opacity-70' : 'text-white'} truncate">${mission.title}</h4>
-                    <div class="flex items-center gap-2 mt-2">
-                        <span class="text-[9px] text-gray-500 flex items-center gap-1 bg-black/40 px-2 py-1 rounded border border-white/5 font-mono">
-                            <i class="fa-regular fa-calendar text-[8px]"></i> ${mission.deadline || 'Hoje'}
-                        </span>
+        <div class="group relative bg-[#121212] border border-white/5 hover:border-white/10 rounded-xl p-4 transition-all overflow-hidden animate-fade-in-up">
+            <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-900 to-blue-500 transition-all duration-700" style="width: ${percent}%"></div>
+            
+            <div class="flex justify-between items-start mb-3 relative z-10">
+                <div class="flex gap-3 items-center">
+                    <div class="w-10 h-10 rounded-lg bg-[#1a1a1a] flex items-center justify-center border border-white/5 shadow-inner">
+                        <i class="fa-solid ${icon} ${isDone ? 'text-green-500' : colorClass} text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="text-[8px] font-bold uppercase tracking-widest text-gray-500 block mb-0.5">${meta.category || 'Geral'}</span>
+                        <h4 class="text-sm font-bold text-white leading-tight ${isDone ? 'line-through opacity-50' : ''}">${metaTitle}</h4>
                     </div>
                 </div>
-                
-                <div class="flex flex-col gap-2 shrink-0">
-                    <button onclick="window.completeMission('${mission.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-blue-600 hover:text-white flex items-center justify-center text-gray-400 transition-all border border-white/5 shadow-lg" title="${isDone ? 'Reabrir' : 'Concluir'}">
-                        <i class="fa-solid ${isDone ? 'fa-rotate-left' : 'fa-check'} text-xs"></i>
-                    </button>
-                    <button onclick="window.deleteMission('${mission.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-600 hover:text-white flex items-center justify-center text-gray-400 transition-all border border-white/5" title="Remover">
-                        <i class="fa-solid fa-xmark text-xs"></i>
-                    </button>
+                <div class="text-right">
+                    <span class="text-[9px] font-mono text-gray-400 block">Prazo</span>
+                    <span class="text-[10px] font-bold ${getDaysRemaining(meta.deadline) === 'Atrasado' ? 'text-red-500' : 'text-white'}">${getDaysRemaining(meta.deadline)}</span>
                 </div>
             </div>
-        </div>
-        `;
+
+            <div class="flex items-center gap-3 relative z-10 bg-[#0a0a0a] rounded-lg p-2 border border-white/5">
+                <span class="text-[10px] font-mono font-bold w-8 text-right text-blue-400">${percent}%</span>
+                <input type="range" min="0" max="100" value="${percent}" 
+                    oninput="window.updateMetaProgressTactical('${meta.id}', this.value)"
+                    class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-400 transition-all">
+                
+                <button onclick="window.deleteMetaTactical('${meta.id}')" class="text-gray-600 hover:text-red-500 px-2 transition-colors">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+            </div>
+            
+            ${isDone ? '<div class="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-none"><span class="text-green-500 font-black border-2 border-green-500 px-4 py-2 rounded uppercase tracking-widest transform -rotate-12 text-xs">Concluída</span></div>' : ''}
+        </div>`;
     }).join('');
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTactical);
-} else {
-    setTimeout(initTactical, 100);
-}
+initTactical();
