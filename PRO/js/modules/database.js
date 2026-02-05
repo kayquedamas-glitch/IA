@@ -24,6 +24,14 @@ let ultimosDadosSalvos = "";
 const Database = {
     async init() {
         console.log("☁️ Conectando ao Núcleo Neural (V9 - Chat Fix)...");
+        if (window.IS_DEMO) {
+        const localData = localStorage.getItem('synapse_demo_state');
+        if (localData) {
+             window.AppEstado = { ...window.AppEstado, ...JSON.parse(localData) };
+        }
+        this.atualizarInterface();
+        return;
+    }
         
         let user = null;
         try {
@@ -106,7 +114,15 @@ const Database = {
     },
 
     async forceSave() {
-        const user = JSON.parse(localStorage.getItem('synapse_user'));
+    // --- LÓGICA DE DEMO (SALVAR LOCALMENTE APENAS) ---
+    if (window.IS_DEMO) {
+        console.log("🔒 Demo Mode: Salvando localmente...");
+        localStorage.setItem('synapse_demo_state', JSON.stringify(window.AppEstado));
+        return;
+    }
+    // -------------------------------------------------
+
+    const user = JSON.parse(localStorage.getItem('synapse_user'));
         if (!user || !user.email || !window._supabase) return;
 
         const pacoteDados = JSON.stringify(window.AppEstado);

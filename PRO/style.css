@@ -1060,3 +1060,21 @@ html, body {
 .heatmap-scroll-container::-webkit-scrollbar { height: 6px; }
 .heatmap-scroll-container::-webkit-scrollbar-track { background: #0d0d0d; }
 .heatmap-scroll-container::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+/* Adicione dentro da tag <style> */
+
+/* Melhora a rolagem vertical nos cards */
+#habitListTactical {
+    padding-bottom: 80px; /* Espaço para não cortar o último card */
+}
+
+/* Remove a barra de rolagem feia mas mantém a funcionalidade */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}
