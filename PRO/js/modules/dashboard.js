@@ -11,6 +11,7 @@ export function initDashboard() {
     renderMissions();
     updateStreakUI();
     calculateDaysOnBase();
+    setTimeout(() => initSciFiCharts(), 500);
 
     // 3. Conecta botão HTML ao JS
     window.addNewMission = () => {
@@ -21,6 +22,7 @@ export function initDashboard() {
 
     // 4. Registra métrica de acesso
     if (window.Database) window.Database.logEvent('DASHBOARD_VIEW', 'Acessou Painel');
+    
 }
 
 // --- LÓGICA DE DIAS NA BASE (Sincronizado na Nuvem) ---a
@@ -538,4 +540,138 @@ export function renderDisciplineGraph() {
              card.outerHTML = html;
          }
     }
+}
+// --- NOVOS GRÁFICOS SCI-FI (ApexCharts) ---
+
+export function initSciFiCharts() {
+    if (typeof ApexCharts === 'undefined') return;
+
+    // Coleta dados reais do Estado Global
+    const gamification = window.AppEstado?.gamification || {};
+    const xp = gamification.xp || 0;
+    const level = gamification.level || 1;
+    const streak = gamification.streak || 0;
+    
+    // Calcula atributos baseados no comportamento (Lógica de Gamificação)
+    // Ex: Streak alto = Foco | Muitas missões = Disciplina | XP alto = Inteligência
+    const stats = {
+        foco: Math.min(100, streak * 5), // 20 dias de streak = 100% foco
+        disciplina: Math.min(100, (gamification.missions?.filter(m => m.done).length || 0) * 2),
+        inteligencia: Math.min(100, level * 5),
+        vigor: Math.min(100, (gamification.habits?.length || 0) * 10),
+        agilidade: 75 // Valor fixo ou calculado por tempo de resposta
+    };
+
+    renderRadarChart(stats);
+    renderRadialChart(level, xp);
+    renderAreaChart();
+}
+
+// 1. GRÁFICO DE RADAR (Igual ao canto inferior esquerdo da sua imagem)
+function renderRadarChart(stats) {
+    const options = {
+        series: [{
+            name: 'Atributos',
+            data: [stats.foco, stats.disciplina, stats.inteligencia, stats.vigor, stats.agilidade],
+        }],
+        chart: {
+            height: 250,
+            type: 'radar',
+            toolbar: { show: false },
+            fontFamily: 'Inter, sans-serif'
+        },
+        stroke: { width: 2, colors: ['#00E396'] }, // Verde Neon
+        fill: { opacity: 0.2, colors: ['#00E396'] },
+        markers: { size: 0 },
+        xaxis: {
+            categories: ['Foco', 'Disciplina', 'Inteligência', 'Vigor', 'Agilidade'],
+            labels: {
+                style: {
+                    colors: ['#a3a3a3', '#a3a3a3', '#a3a3a3', '#a3a3a3', '#a3a3a3'],
+                    fontSize: '10px',
+                    fontFamily: 'JetBrains Mono'
+                }
+            }
+        },
+        yaxis: { show: false },
+        plotOptions: {
+            radar: {
+                polygons: {
+                    strokeColors: '#333',
+                    connectorColors: '#333',
+                    fill: { colors: ['transparent', 'transparent'] }
+                }
+            }
+        },
+        tooltip: { theme: 'dark' }
+    };
+
+    const chart = new ApexCharts(document.querySelector("#chart-radar"), options);
+    chart.render();
+}
+
+// 2. GRÁFICO RADIAL (Igual ao canto superior esquerdo da imagem)
+function renderRadialChart(level, xp) {
+    // Calcula quanto falta para o próximo nível (lógica simplificada)
+    let xpCost = 100;
+    for(let i=1; i < level; i++) xpCost = Math.floor(xpCost * 1.10);
+    const progress = Math.min(100, Math.floor((xp % xpCost) / xpCost * 100)) || 45; // 45 é fallback
+
+    const options = {
+        series: [progress, Math.min(100, level * 2)], // Série 1: XP Atual, Série 2: Nível Global
+        chart: {
+            height: 250,
+            type: 'radialBar',
+            fontFamily: 'Inter'
+        },
+        plotOptions: {
+            radialBar: {
+                hollow: { size: '50%', background: 'transparent' },
+                track: { background: '#1a1a1a', strokeWidth: '100%' },
+                dataLabels: {
+                    name: { show: false },
+                    value: {
+                        color: '#fff', fontSize: '22px', fontWeight: '900', show: true,
+                        formatter: function (val) { return val + "%" }
+                    },
+                    total: {
+                        show: true, label: 'NÍVEL', color: '#666',
+                        formatter: function () { return level }
+                    }
+                }
+            }
+        },
+        colors: ['#8b5cf6', '#ec4899'], // Roxo e Rosa (Cyberpunk)
+        stroke: { lineCap: 'round' },
+        labels: ['XP Próx. Nível', 'Nível Total'],
+    };
+
+    const chart = new ApexCharts(document.querySelector("#chart-radial"), options);
+    chart.render();
+}
+
+// 3. AREA CHART (Timeline de atividade)
+function renderAreaChart() {
+    // Simula dados dos últimos 7 dias (já que não temos histórico complexo ainda)
+    const dataMock = [30, 40, 35, 50, 49, 60, 70];
+    
+    const options = {
+        series: [{ name: 'Produtividade', data: dataMock }],
+        chart: {
+            type: 'area', height: 180, sparkline: { enabled: true }, // Sparkline remove eixos para ficar limpo
+            animations: { enabled: true }
+        },
+        stroke: { curve: 'smooth', width: 2 },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100]
+            }
+        },
+        colors: ['#CC0000'], // Vermelho Synapse
+        tooltip: { theme: 'dark', x: { show: false } }
+    };
+
+    const chart = new ApexCharts(document.querySelector("#chart-area"), options);
+    chart.render();
 }

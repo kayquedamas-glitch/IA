@@ -97,6 +97,7 @@
         }
         .driver-popover-arrow { border-width: 5px !important; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 
 <body class="bg-black text-white font-inter overflow-hidden selection:bg-red-600/30 h-full">
@@ -272,21 +273,32 @@
                     </div>
 
                     <!-- HEATMAP -->
-                    <div class="w-full mb-6 animate-fade-in-up">
-                        <div class="bg-[#0a0a0a] border border-white/10 rounded-xl p-4 md:p-5 shadow-2xl shadow-black">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 flex items-center gap-2">
-                                    <i class="fa-solid fa-calendar-check text-green-500"></i> Consistência Tática
-                                </h3>
-                                <div class="flex gap-3 text-[8px] text-gray-600 uppercase font-mono">
-                                    <span class="flex items-center gap-1"><div class="w-2 h-2 bg-[#161b22] border border-white/5 rounded-sm"></div> Off</span>
-                                    <span class="flex items-center gap-1"><div class="w-2 h-2 bg-[#39d353] rounded-sm shadow-[0_0_5px_#39d353]"></div> Máximo</span>
-                                </div>
-                            </div>
-                            <div id="heatmapContainer" class="w-full h-28 md:h-32 bg-[#050505] rounded-lg border border-white/5 p-2"></div>
-                        </div>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up">
+    
+    <div class="bg-[#0a0a0a] border border-white/10 rounded-xl p-5 shadow-lg relative overflow-hidden group">
+        <div class="absolute inset-0 bg-blue-900/5 group-hover:bg-blue-900/10 transition-colors"></div>
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2 relative z-10">
+            <i class="fa-solid fa-dna mr-1"></i> Perfil Neural
+        </h3>
+        <div id="chart-radar" class="relative z-10 -ml-4"></div>
+    </div>
 
+    <div class="bg-[#0a0a0a] border border-white/10 rounded-xl p-5 shadow-lg relative overflow-hidden group">
+        <div class="absolute inset-0 bg-purple-900/5 group-hover:bg-purple-900/10 transition-colors"></div>
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-2 relative z-10">
+            <i class="fa-solid fa-circle-nodes mr-1"></i> Progresso de Patente
+        </h3>
+        <div id="chart-radial" class="relative z-10 flex justify-center"></div>
+    </div>
+
+    <div class="bg-[#0a0a0a] border border-white/10 rounded-xl p-5 shadow-lg relative overflow-hidden group md:col-span-1">
+        <div class="absolute inset-0 bg-red-900/5 group-hover:bg-red-900/10 transition-colors"></div>
+        <h3 class="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-2 relative z-10">
+            <i class="fa-solid fa-wave-square mr-1"></i> Fluxo de Dopamina
+        </h3>
+        <div id="chart-area" class="relative z-10"></div>
+    </div>
+</div>
                     <div class="w-full mb-6 animate-fade-in-up">
                         <div class="relative w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-4 md:p-5 flex items-center justify-between gap-4 overflow-hidden group shadow-lg">
                             <div class="absolute inset-0 bg-gradient-to-r from-red-900/5 to-transparent"></div>
