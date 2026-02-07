@@ -234,6 +234,51 @@ export function addMissionFromAI(text) {
     saveMissions(missions);
     return true;
 }
+export function renderHeatmap() {
+    const container = document.getElementById('heatmapContainer');
+    if (!container) return;
+
+    const state = getRPGState();
+    const scores = state.dailyScores || {};
+    
+    // Configuração
+    const daysToShow = 28; // 4 semanas
+    const today = new Date();
+    
+    let html = '<div class="grid grid-cols-7 gap-1.5 w-full h-full">';
+    
+    // Loop reverso (do dia mais antigo para hoje)
+    for (let i = daysToShow - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        
+        // Formata data igual ao gamification.js (YYYY-MM-DD)
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        
+        const score = scores[dateStr] || 0;
+        
+        // Define a cor baseada no score (Mapa de Calor Verde)
+        let colorClass = 'bg-[#161b22]'; // Vazio (Cinza escuro)
+        if (score > 0) colorClass = 'bg-green-900/40'; // Pouco (Verde Escuro)
+        if (score >= 50) colorClass = 'bg-green-600/60'; // Médio
+        if (score >= 80) colorClass = 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.6)]'; // Perfeito (Verde Neon)
+
+        // Tooltip simples (Title)
+        const displayDate = `${day}/${month}`;
+        
+        html += `
+            <div title="${displayDate}: ${score}%" 
+                 class="${colorClass} w-full aspect-square rounded-sm transition-all duration-300 hover:scale-110 border border-white/5">
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
 
 window.completeMission = (id) => {
     const missions = getMissions();

@@ -166,14 +166,28 @@ async function initializeSystemCore() {
 
     // 2. INICIALIZAÇÃO DO BANCO E VERIFICAÇÃO AUTOMÁTICA
     try {
+        // Pequena espera para garantir que o Supabase (CDN) carregou no HTML
+        if (!window._supabase && window.supabase) {
+             // Tenta recriar se a variável global falhou mas a lib existe
+             const _SUPABASE_URL = 'https://gexnzquhqbszqjqwowix.supabase.co';
+             const _SUPABASE_KEY = 'SEU_KEY_AQUI...'; // (Opcional, melhor confiar no HTML)
+             // Melhor: Apenas espere
+        }
+
         if (window.Database) {
-            await window.Database.init();
-
-            // >>> CHECA SE VIROU PRO <<<
-            await checkRealUserStatus();
-
-        } else {
-            console.warn("⚠️ Banco de dados não carregado.");
+            // Loop de segurança: Aguarda até 3 segundos pelo Supabase
+            let attempts = 0;
+            while (!window._supabase && attempts < 10) {
+                await new Promise(r => setTimeout(r, 300));
+                attempts++;
+            }
+            
+            if (window._supabase) {
+                await window.Database.init();
+                await checkRealUserStatus();
+            } else {
+                console.warn("⚠️ Supabase não detectado. Modo Offline ativado.");
+            }
         }
     } catch (e) {
         console.error("Erro ao iniciar banco:", e);

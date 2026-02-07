@@ -7,12 +7,13 @@ import { getRPGState, addHabitFromAI } from '../modules/gamification.js';
 let currentSessionId = null;
 let chatHistory = [];
 let currentAgentKey = 'MENTOR'; 
-let messageCount = 0;
 const DIAGNOSE_PHASE = 2; 
 const PRE_LOCK_PHASE = 4; 
-const DEMO_LIMIT = 5;
 
-// --- VERIFICAÇÃO DE STATUS (CORREÇÃO DE ERRO DE CONEXÃO) ---
+// --- CONFIGURAÇÃO DEMO (LIMITES) ---
+const DEMO_MSG_LIMIT = 10; // Limite total de mensagens para usuários Free
+
+// --- VERIFICAÇÃO DE STATUS ---
 let userStatus = 'DEMO';
 try {
     const session = JSON.parse(localStorage.getItem('synapse_user'));
@@ -22,6 +23,18 @@ try {
 } catch (e) {}
 
 const IS_DEMO_MODE = userStatus !== 'VIP' && userStatus !== 'PRO';
+
+// --- FUNÇÕES DE CONTROLE DEMO ---
+function getDemoUsage() {
+    return parseInt(localStorage.getItem('synapse_demo_count') || '0');
+}
+
+function incDemoUsage() {
+    const current = getDemoUsage();
+    localStorage.setItem('synapse_demo_count', current + 1);
+    return current + 1;
+}
+
 // -----------------------------------------------------------
 
 // --- INICIALIZAÇÃO ---
@@ -51,29 +64,34 @@ export async function initChat() {
 window.startNewChat = async function() {
     console.log("✨ Iniciando Nova Sessão...");
     
-    // 1. Gera ID e Reseta Variáveis
+    // Verifica se já estourou o limite antes mesmo de carregar
+    if (IS_DEMO_MODE && getDemoUsage() >= DEMO_MSG_LIMIT) {
+        // Permite carregar a interface, mas já prepara o bloqueio ou aviso visual
+        console.warn("⚠️ Limite Demo já atingido.");
+    }
+
+    // 1. Gera ID e Reseta Variáveis (SEM RESETAR O USO DEMO)
     currentSessionId = 'sessao_' + Date.now();
     chatHistory = [];
     currentAgentKey = 'MENTOR'; 
-    messageCount = 0; 
     
     enableInput(); 
     
     const area = document.getElementById('messagesArea');
     
-    // 2. Transição Suave Corrigida
+    // 2. Transição Suave
     if (area) {
-        // Apaga a tela (Fade Out)
         area.style.transition = 'opacity 0.2s';
         area.style.opacity = '0';
         
-        // AGUARDA a tela apagar antes de carregar o novo conteúdo
         setTimeout(async () => {
-            // O loadAgent já limpa o HTML, então chamamos ele aqui dentro
             await loadAgent('MENTOR');
-            
-            // Acende a tela (Fade In) com o conteúdo novo e a LOGO já carregados
             area.style.opacity = '1';
+            
+            // Se já estourou o limite, avisa logo no início
+            if (IS_DEMO_MODE && getDemoUsage() >= DEMO_MSG_LIMIT) {
+                setTimeout(() => triggerPaywallSequence("Limite Demo Expirado"), 1000);
+            }
         }, 200);
     } else {
         await loadAgent('MENTOR');
@@ -93,11 +111,15 @@ window.loadSession = async function(sessionId) {
     currentAgentKey = session.agentKey || 'MENTOR';
     chatHistory = session.messages || [];
 
-    // Limpa e prepara
     const area = document.getElementById('messagesArea');
     if (area) area.innerHTML = '';
     
-    enableInput(); // Garante que ao carregar um chat antigo, o input funcione
+    // Verifica bloqueio ao carregar sessão antiga
+    if (IS_DEMO_MODE && getDemoUsage() >= DEMO_MSG_LIMIT) {
+        disableInput();
+    } else {
+        enableInput();
+    }
 
     // Renderiza Header
     const headerHTML = `
@@ -177,11 +199,17 @@ async function sendMessage(text = null) {
 
     if (!val) return;
 
-    // Bloqueio Demo
-    if (typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE && currentAgentKey === 'MENTOR' && messageCount >= DEMO_LIMIT) {
-        if (typeof triggerPaywallSequence === 'function') triggerPaywallSequence("Limite Demo Atingido");
-        return;
+    // --- BLOQUEIO ROBUSTO (DEMO) ---
+    if (IS_DEMO_MODE) {
+        const currentUsage = getDemoUsage();
+        
+        // Bloqueia se já passou do limite
+        if (currentUsage >= DEMO_MSG_LIMIT) {
+            triggerPaywallSequence("Limite de Comandos Atingido");
+            return;
+        }
     }
+    // --------------------------------
 
     addMessageUI('user', val, false);
     if (!text) input.value = '';
@@ -189,20 +217,24 @@ async function sendMessage(text = null) {
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
-    if (currentAgentKey === 'MENTOR') messageCount++;
+    // Incrementa uso APÓS enviar a mensagem do usuário
+    let messageCount = 0; // Local context counter (opcional para lógicas internas de fase)
+    if (IS_DEMO_MODE) {
+        messageCount = incDemoUsage(); // Atualiza contador persistente e pega novo valor
+    }
 
-    // Injeção de Contexto (Mantida)
+    // Injeção de Contexto
     let systemInjection = "";
-    if (currentAgentKey === 'MENTOR' && typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE) {
+    if (currentAgentKey === 'MENTOR' && IS_DEMO_MODE) {
+        // Lógica de fases baseada no uso total
         if (messageCount <= DIAGNOSE_PHASE) {
             systemInjection = `(INSTRUÇÃO: Acolha. Pergunte a rotina.)`;
         } else if (messageCount < PRE_LOCK_PHASE) {
             systemInjection = `(INSTRUÇÃO: Sugira um método, mas faça suspense.)`;
         } else if (messageCount === PRE_LOCK_PHASE) {
             systemInjection = `(INSTRUÇÃO: Diga sobre o protocolo de 3 passos. Não entregue ainda.)`;
-        } else {
-            systemInjection = `(INSTRUÇÃO: Use tag [[LOCKED_DIAGNOSIS: Falta de Método]].)`;
-        }
+        } 
+        // Nota: O bloqueio final agora é feito pelo contador, mas podemos reforçar via IA
     }
 
     const loadingId = showLoading();
@@ -236,7 +268,7 @@ async function sendMessage(text = null) {
             let forceBlock = false;
             let diagnosisReason = "Plano Pro";
 
-            // Checa bloqueio
+            // Checa bloqueio vindo da IA (Tags)
             const lockMatch = aiText.match(/(\[\[|\()LOCKED_.*?:?(.*?)(\]\]|\))/i);
             if (lockMatch) {
                 forceBlock = true;
@@ -270,13 +302,10 @@ async function sendMessage(text = null) {
                     if (userMsg) sessionTitle = userMsg.content.substring(0, 30) + "...";
                 }
 
-                // --- MODIFICAÇÃO DE SALVAMENTO (REGRA DAS 3 MENSAGENS) ---
+                // Salva Sessão
                 const userMsgCount = chatHistory.filter(m => m.role === 'user').length;
                 const sessionExists = !!window.AppEstado?.chatSessions?.[currentSessionId];
 
-                // Só salva se:
-                // 1. O usuário enviou 3 ou mais mensagens AGORA
-                // 2. OU se a sessão já existia no banco (para continuar salvando sessões antigas que você reabriu)
                 if (window.Database && (userMsgCount >= 3 || sessionExists)) {
                     window.Database.saveSession(currentSessionId, {
                         id: currentSessionId,
@@ -286,19 +315,18 @@ async function sendMessage(text = null) {
                         updatedAt: new Date().toISOString()
                     });
                     if (window.renderChatSidebar) window.renderChatSidebar();
-                } else {
-                    console.log(`⏳ Chat em buffer: ${userMsgCount}/3 mensagens para salvar.`);
                 }
             }
 
-            const isDemo = typeof IS_DEMO_MODE !== 'undefined' && IS_DEMO_MODE;
-            const shouldBlockNow = (isDemo && currentAgentKey === 'MENTOR' && messageCount >= DEMO_LIMIT) || forceBlock;
+            // Verifica bloqueio duplo: Pela IA ou pelo Limite Numérico
+            const usageNow = getDemoUsage();
+            const shouldBlockNow = (IS_DEMO_MODE && currentAgentKey === 'MENTOR' && usageNow >= DEMO_MSG_LIMIT) || forceBlock;
 
             if(dynamicButtons.length > 0 && !shouldBlockNow) renderReplies(dynamicButtons);
 
             if (shouldBlockNow) {
                 setTimeout(() => { 
-                    if (typeof triggerPaywallSequence === 'function') triggerPaywallSequence(diagnosisReason);
+                    triggerPaywallSequence(diagnosisReason);
                 }, 2000);
             }
         }
@@ -511,6 +539,7 @@ function triggerPaywallSequence(diagnosisReason) {
         }, 800);
     }, 3500);
 }
+
 // --- RENDERIZAR SIDEBAR (HISTÓRICO) ---
 export function renderChatSidebar() {
     const container = document.getElementById('chatHistoryList');

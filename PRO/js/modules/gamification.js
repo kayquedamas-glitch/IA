@@ -1,9 +1,10 @@
 import { showToast } from './ui.js';
 import { playSFX } from './audio.js'; 
 
-console.log("🎮 Módulo de Gamificação Iniciado (V10 - Correção Streak)...");
+console.log("🎮 Módulo de Gamificação Iniciado (V12 - Bolinhas & Heatmap)...");
 
 // --- VARIÁVEIS GLOBAIS ---
+
 let rpgState = { 
     xp: 0, level: 1, currentRank: "RECRUTA", streak: 0, 
     lastLoginDate: null, lastActionTime: 0, habitsDate: null,
@@ -21,7 +22,14 @@ const RANKS = [
     { name: "MARECHAL", minLevel: 100 }
 ];
 
-// --- DATA LOCAL ---
+function isDemoUser() {
+    try {
+        const u = JSON.parse(localStorage.getItem('synapse_user'));
+        return u && u.status !== 'PRO' && u.status !== 'VIP';
+    } catch(e) { return true; }
+}
+
+// --- DATA LOCAL (AAA-MM-DD) ---
 function getLocalDate() {
     const d = new Date();
     const year = d.getFullYear();
@@ -36,7 +44,7 @@ export async function initGamification() {
         
         if (rpgState.level) previousLevel = rpgState.level;
 
-        // VERIFICAÇÃO DIÁRIA
+        // VERIFICAÇÃO DIÁRIA (O Reset acontece aqui)
         checkDailyReset();
         
         // Verifica a Streak (Sequência)
@@ -46,9 +54,12 @@ export async function initGamification() {
         calculateRankAndLevel(false);
 
         updateUI(); 
-        renderHabits();
-        safeRenderCalendar(); 
+        renderHabits(); 
         
+        // Atualiza o Dashboard se ele já estiver carregado (para o Heatmap pegar a cor de hoje)
+        if (window.initDashboard) window.initDashboard();
+
+        // Expõe funções globais para o HTML
         window.openAddHabitModal = openAddHabitModal;
         window.toggleHabit = toggleHabit;
         window.deleteHabit = deleteHabit;
@@ -59,9 +70,8 @@ function checkDailyReset() {
     const today = getLocalDate();
     const lastSavedDate = rpgState.habitsDate; 
     
-    // CASO 1: Primeira vez ou Data Perdida (Salva Hoje e NÃO reseta)
+    // CASO 1: Primeira vez (Salva Hoje e NÃO reseta)
     if (!lastSavedDate) {
-        console.log("📅 Configurando data inicial para: " + today);
         rpgState.habitsDate = today;
         saveToGlobalState(); 
         return;
@@ -69,17 +79,21 @@ function checkDailyReset() {
 
     // CASO 2: Virada de Dia Real (Ontem -> Hoje)
     if (lastSavedDate !== today) {
-        console.log(`🔄 Novo dia detectado. Resetando rituais...`);
+        console.log(`🔄 Novo dia detectado (${today}). Resetando bolinhas...`);
         
+        // Desmarca todos os hábitos
         if (rpgState.habits) {
             rpgState.habits = rpgState.habits.map(h => ({ ...h, done: false }));
         }
         
         rpgState.habitsDate = today;
+        
+        // Inicia o score de hoje como 0
         if (!rpgState.dailyScores) rpgState.dailyScores = {};
         rpgState.dailyScores[today] = 0;
         
         saveToGlobalState();
+        renderHabits(); 
     }
 }
 
@@ -87,34 +101,27 @@ function loadFromGlobalState() {
     if (window.AppEstado && window.AppEstado.gamification) {
         rpgState = { ...rpgState, ...window.AppEstado.gamification };
         
-        // --- CORREÇÃO DE BUG: STREAK [object Object] ---
-        // Se a streak estiver corrompida (objeto ou texto inválido), reseta para 0
+        // Correção de bug antigo de streak
         if (typeof rpgState.streak === 'object' || isNaN(Number(rpgState.streak))) {
-            console.warn("⚠️ Streak corrompido detectado. Corrigindo...");
             rpgState.streak = 0;
-            // Salva a correção imediatamente
-            saveToGlobalState();
         } else {
-            // Garante que é número
             rpgState.streak = Number(rpgState.streak);
         }
         
         if(!rpgState.habits) rpgState.habits = [];
         if(!rpgState.missions) rpgState.missions = [];
+        if(!rpgState.dailyScores) rpgState.dailyScores = {};
     }
 }
 
 function saveToGlobalState() {
     if (!window.AppEstado) window.AppEstado = {};
     
+    // Garante que a data está atualizada
     rpgState.habitsDate = getLocalDate();
     window.AppEstado.gamification = rpgState;
     
     if (window.Database && window.Database.forceSave) window.Database.forceSave();
-}
-
-function safeRenderCalendar() {
-    if (typeof window.renderCalendar === 'function') window.renderCalendar();
 }
 
 // --- INTERAÇÃO ---
@@ -127,7 +134,6 @@ function toggleHabit(id) {
         if(h.done) { 
             safePlaySFX('success'); 
             addXP(25); 
-            logActivity('HABIT', h.text, 25);
         } else { 
             safePlaySFX('click'); 
             addXP(-25); 
@@ -135,30 +141,41 @@ function toggleHabit(id) {
         
         updateDailyScore(); 
         saveToGlobalState(); 
-        renderHabits();
-        safeRenderCalendar(); 
+        renderHabits(); 
+        
+        // Atualiza o Heatmap visualmente na hora
+        if (window.features && window.features.renderHeatmap) window.features.renderHeatmap(); 
     }
 }
 
 function updateDailyScore() {
     const today = getLocalDate();
-    if (!rpgState.habits || rpgState.habits.length === 0) return;
+    
+    // Se não tem hábitos, não tem score
+    if (!rpgState.habits || rpgState.habits.length === 0) {
+        if(!rpgState.dailyScores) rpgState.dailyScores = {};
+        rpgState.dailyScores[today] = 0;
+        return;
+    }
 
+    // Calcula porcentagem (Ex: 2 de 4 = 50%)
     const doneCount = rpgState.habits.filter(h => h.done).length;
     const total = rpgState.habits.length;
     const percent = Math.round((doneCount / total) * 100);
     
     if(!rpgState.dailyScores) rpgState.dailyScores = {};
     rpgState.dailyScores[today] = percent;
+    
+    console.log(`📊 Consistência de hoje (${today}): ${percent}%`);
 }
 
 function deleteHabit(id) {
-    if(confirm("Remover ritual permanentemente?")) {
+    if(confirm("Remover este ritual?")) {
         rpgState.habits = rpgState.habits.filter(h => h.id !== id);
-        updateDailyScore();
+        updateDailyScore(); // Recalcula o score do dia sem esse hábito
         saveToGlobalState();
         renderHabits();
-        safeRenderCalendar();
+        if (window.initDashboard) window.initDashboard();
         safePlaySFX('click');
     }
 }
@@ -168,34 +185,51 @@ export function addCustomHabit(text) {
     updateDailyScore(); 
     saveToGlobalState(); 
     renderHabits();
-    safeRenderCalendar();
+    if (window.initDashboard) window.initDashboard();
 }
 
+// --- RENDERIZAÇÃO VISUAL (Bolinhas) ---
 function renderHabits() {
-    const list = document.getElementById('habitList');
-    if (!list) return;
+    const list = document.getElementById('habitListTactical') || document.getElementById('habitList');
+    if (!list) return; 
 
     if (!rpgState.habits || rpgState.habits.length === 0) {
-        list.innerHTML = `<div class="flex flex-col items-center justify-center py-6 opacity-40 border border-dashed border-white/10 rounded-xl"><i class="fa-solid fa-seedling text-xl mb-2 text-gray-500"></i><p class="text-[9px] uppercase tracking-widest text-gray-500">Nenhum ritual ativo</p><p class="text-[8px] text-gray-600 mt-1">Clique em "+" para instalar</p></div>`;
+        list.innerHTML = `<div class="flex flex-col items-center justify-center py-6 opacity-40 border border-dashed border-white/10 rounded-xl"><i class="fa-solid fa-seedling text-xl mb-2 text-gray-500"></i><p class="text-[9px] uppercase tracking-widest text-gray-500">Sem Rituais</p><p class="text-[8px] text-gray-600 mt-1">Adicione com "+"</p></div>`;
         return;
     }
 
     list.innerHTML = rpgState.habits.map(h => `
-        <div class="flex items-center gap-2 p-3 rounded-xl bg-[#0d0d0d] border border-white/5 cursor-pointer hover:border-white/10 transition group" onclick="window.toggleHabit('${h.id}')">
-            <div class="flex-grow flex items-center justify-between">
-                <span class="text-[10px] font-bold uppercase tracking-wider transition-colors ${h.done ? 'text-gray-600 line-through' : 'text-gray-300 group-hover:text-white'}">${h.text}</span>
-                <div class="w-4 h-4 rounded border flex items-center justify-center transition-all ${h.done ? 'bg-red-900 border-red-600 shadow-[0_0_10px_rgba(200,0,0,0.4)]' : 'border-gray-800 group-hover:border-gray-600'}">
-                    <i class="fa-solid fa-check text-[8px] text-white ${h.done ? '' : 'hidden'}"></i>
+        <div class="flex items-center justify-between p-4 mb-2 rounded-xl bg-[#0d0d0d] border border-white/5 hover:bg-[#151515] transition group select-none relative overflow-hidden">
+            
+            <div class="absolute bottom-0 left-0 h-[2px] bg-green-500/50 transition-all duration-500" style="width: ${h.done ? '100%' : '0%'}"></div>
+
+            <div class="flex flex-col cursor-pointer flex-grow" onclick="window.toggleHabit('${h.id}')">
+                <span class="text-xs font-bold uppercase tracking-wider transition-colors ${h.done ? 'text-gray-500 line-through' : 'text-gray-200'}">
+                    ${h.text}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-800 hover:text-red-900 transition p-1">
+                    <i class="fa-solid fa-times text-[10px]"></i>
+                </button>
+
+                <div onclick="window.toggleHabit('${h.id}')" 
+                     class="w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 shadow-lg 
+                     ${h.done ? 'bg-green-600 border-green-600 shadow-green-900/50 scale-110' : 'border-gray-600 bg-transparent hover:border-gray-400'}">
+                    <i class="fa-solid fa-check text-[10px] text-white transition-transform duration-300 ${h.done ? 'scale-100' : 'scale-0'}"></i>
                 </div>
             </div>
-            <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-700 hover:text-red-500 p-2 transition">
-                <i class="fa-solid fa-trash text-[10px]"></i>
-            </button>
+
         </div>
     `).join('');
 }
 
 function openAddHabitModal() {
+    if (isDemoUser() && rpgState.habits.length >= 3) {
+        if(typeof showToast === 'function') showToast('LIMITE FREE', 'Máximo de 3 rituais na versão gratuita.', 'warning');
+        return;
+    }
     safePlaySFX('click');
     const existing = document.getElementById('habit-modal');
     if (existing) existing.remove();
@@ -203,39 +237,28 @@ function openAddHabitModal() {
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-6 animate-fade-in';
     overlay.id = 'habit-modal';
-    
     overlay.innerHTML = `
         <div class="bg-[#0a0a0a] border border-[#333] w-full max-w-sm rounded-2xl p-6 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative">
-            <h3 class="text-red-500 font-bold text-xs tracking-[0.2em] uppercase mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-code-commit"></i> Novo Protocolo
+            <h3 class="text-green-500 font-bold text-xs tracking-[0.2em] uppercase mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-circle"></i> Novo Ritual
             </h3>
-            <input type="text" id="newHabitInput" placeholder="Ex: Leitura Tática (20min)" 
-                class="w-full bg-[#111] border border-[#333] text-white p-4 rounded-xl text-sm focus:border-red-500 outline-none transition-all mb-6 placeholder-gray-700">
+            <input type="text" id="newHabitInput" placeholder="Nome da tarefa..." 
+                class="w-full bg-[#111] border border-[#333] text-white p-4 rounded-xl text-sm focus:border-green-500 outline-none transition-all mb-6">
             <div class="flex justify-end gap-3">
                 <button id="cancelHabitBtn" class="text-gray-500 text-[10px] font-bold uppercase hover:text-white px-4 py-3 tracking-wider">Cancelar</button>
-                <button id="confirmHabitBtn" class="bg-red-900/20 text-red-500 border border-red-900/50 hover:bg-red-600 hover:text-white hover:border-red-500 px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(220,38,38,0.1)]">Confirmar</button>
+                <button id="confirmHabitBtn" class="bg-green-900/20 text-green-500 border border-green-900/50 hover:bg-green-600 hover:text-white hover:border-green-500 px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all">Criar</button>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
-    
     const input = document.getElementById('newHabitInput');
     setTimeout(() => input.focus(), 50);
-    
     const close = () => overlay.remove();
     const confirm = () => {
         const text = input.value.trim();
-        if(text) {
-            addCustomHabit(text);
-            safePlaySFX('success');
-            if(typeof showToast === 'function') showToast('PROTOCOLO INICIADO', 'Novo hábito registrado.', 'success');
-            close();
-        } else {
-            input.classList.add('border-red-500', 'animate-pulse');
-            safePlaySFX('error');
-        }
+        if(text) { addCustomHabit(text); safePlaySFX('success'); close(); } 
+        else { input.classList.add('border-red-500'); }
     };
-    
     document.getElementById('cancelHabitBtn').onclick = close;
     document.getElementById('confirmHabitBtn').onclick = confirm;
     input.onkeypress = (e) => { if(e.key === 'Enter') confirm(); };
@@ -244,8 +267,15 @@ function openAddHabitModal() {
 export function addXP(amt) {
     const now = Date.now();
     if (amt > 0 && (now - rpgState.lastActionTime < 500)) return;
-    rpgState.lastActionTime = now;
     
+    if (isDemoUser() && rpgState.level >= 3) {
+        if(Math.random() > 0.7) { 
+             if(typeof showToast === 'function') showToast('NÍVEL MÁXIMO', 'Desbloqueie o PRO para evoluir sua patente.', 'warning');
+        }
+        return; 
+    }
+
+    rpgState.lastActionTime = now;
     rpgState.xp = Math.max(0, rpgState.xp + amt);
     calculateRankAndLevel(true); 
     
@@ -318,7 +348,6 @@ function checkStreak() {
         const today = getLocalDate();
         const lastLogin = rpgState.lastLoginDate;
 
-        // Se a streak estiver corrompida, reseta
         if (typeof rpgState.streak === 'object' || isNaN(rpgState.streak)) rpgState.streak = 0;
 
         if (!lastLogin) { 
@@ -326,7 +355,6 @@ function checkStreak() {
             rpgState.lastLoginDate = today; 
         } 
         else if (lastLogin !== today) {
-            // Verifica se foi ontem
             const yesterdayDate = new Date(); 
             yesterdayDate.setDate(yesterdayDate.getDate() - 1);
             const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth()+1).padStart(2,'0')}-${String(yesterdayDate.getDate()).padStart(2,'0')}`;
@@ -335,7 +363,6 @@ function checkStreak() {
                 rpgState.streak += 1; 
                 if(typeof showToast === 'function') showToast('SEQUÊNCIA AUMENTADA', `${rpgState.streak} dias de disciplina.`, 'success'); 
             } else { 
-                // Se passou mais de um dia, reseta
                 if (rpgState.streak > 0 && typeof showToast === 'function') showToast('SEQUÊNCIA PERDIDA', 'Disciplina quebrada.', 'warning'); 
                 rpgState.streak = 1; 
             }
@@ -351,7 +378,6 @@ function updateUI() {
     if (l) l.innerText = rpgState.level; 
     if (t) t.innerText = rpgState.xp; 
     
-    // ATUALIZA A TELA DA SEQUÊNCIA (CORRIGIDO)
     if (s) s.innerText = (typeof rpgState.streak === 'number' && !isNaN(rpgState.streak)) ? rpgState.streak : "0";
 
     if (b) {
