@@ -1,33 +1,25 @@
 // APP/PRO/js/modules/tactical.js
 
-console.log("⚔️ Módulo Tático: Protocolo Blindado (Red Theme + Fix)...");
+console.log("⚔️ Módulo Tático: Protocolo Visual Corrigido (Sem Duplicidade)...");
 
 // --- INICIALIZAÇÃO ---
 export function initTactical() {
     cleanupLegacyUI();
-    ensureGlobalState(); // Garante a estrutura ao carregar
+    ensureGlobalState(); 
     injectMetasModal();
     setupTacticalActions(); 
     renderTacticalView();
 }
 
-// --- GARANTIA DE ESTRUTURA (CRÍTICO) ---
+// --- GARANTIA DE ESTRUTURA ---
 function ensureGlobalState() {
-    // Se o AppEstado não existir, cria
     if (!window.AppEstado) window.AppEstado = {};
-    
-    // Tenta recuperar backup se estiver vazio
     if (Object.keys(window.AppEstado).length === 0) {
         try {
             const backup = localStorage.getItem('synapse_data_backup');
-            if (backup) {
-                const parsed = JSON.parse(backup);
-                window.AppEstado = { ...window.AppEstado, ...parsed };
-            }
+            if (backup) window.AppEstado = { ...window.AppEstado, ...JSON.parse(backup) };
         } catch(e) {}
     }
-
-    // Garante o caminho exato das metas
     if (!window.AppEstado.gamification) window.AppEstado.gamification = {};
     if (!window.AppEstado.gamification.metas || !Array.isArray(window.AppEstado.gamification.metas)) {
         window.AppEstado.gamification.metas = [];
@@ -39,45 +31,35 @@ function cleanupLegacyUI() {
     const legacyInput = document.getElementById('newMissionInputTactical');
     if (legacyInput) {
         let footer = legacyInput.parentElement;
-        while (footer && !footer.classList.contains('border-t')) {
-            footer = footer.parentElement;
-        }
+        while (footer && !footer.classList.contains('border-t')) footer = footer.parentElement;
         if (footer) footer.style.display = 'none';
     }
 }
 
 // --- UTILITÁRIOS ---
-function generateUUID() {
-    return 'xxxxxxxx-xxxx'.replace(/[xy]/g, c => (Math.random()*16|0).toString(16));
-}
-
+function generateUUID() { return 'xxxxxxxx-xxxx'.replace(/[xy]/g, c => (Math.random()*16|0).toString(16)); }
 function getTodayDate() { return new Date().toLocaleDateString('en-CA'); }
-
-function getDaysRemaining(deadline) {
-    if (!deadline) return "∞";
-    const diff = new Date(deadline) - new Date();
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+function getDaysRemaining(d) {
+    if (!d) return "∞";
+    const days = Math.ceil((new Date(d) - new Date()) / (86400000));
     return days > 0 ? `${days} dias` : (days === 0 ? "Hoje" : "Atrasado");
 }
-
-function getCategoryIcon(cat) {
+function getCategoryIcon(c) {
     const map = { 'financeiro': 'fa-sack-dollar', 'carreira': 'fa-briefcase', 'saude': 'fa-heart-pulse', 'pessoal': 'fa-user-astronaut' };
-    return map[cat] || 'fa-star';
+    return map[c] || 'fa-star';
 }
-
-function getCategoryColor(cat) {
+function getCategoryColor(c) {
     const map = { 'financeiro': 'text-green-500', 'carreira': 'text-gray-300', 'saude': 'text-red-500', 'pessoal': 'text-white' };
-    return map[cat] || 'text-white';
+    return map[c] || 'text-white';
 }
-
 function forceUpdate() {
-    ensureGlobalState(); // Garante antes de salvar
+    ensureGlobalState();
     localStorage.setItem('synapse_data_backup', JSON.stringify(window.AppEstado));
     if(window.Database && window.Database.forceSave) window.Database.forceSave();
     renderTacticalView();
 }
 
-// --- MODAL (TEMA VERMELHO) ---
+// --- MODAL ---
 function injectMetasModal() {
     const oldModal = document.getElementById('modalNovaMeta');
     if (oldModal) oldModal.remove();
@@ -85,24 +67,19 @@ function injectMetasModal() {
     const modalHTML = `
     <div id="modalNovaMeta" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 hidden">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm transition-opacity cursor-pointer" onclick="window.closeMetaModalTactical()"></div>
-        
         <div class="relative w-full max-w-md bg-[#0a0a0a] border border-red-900/30 rounded-2xl shadow-[0_0_50px_rgba(220,38,38,0.15)] p-6 animate-fade-in-up flex flex-col">
-            
             <div class="flex justify-between items-start mb-2">
                 <h3 class="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-2">
                     <i class="fa-solid fa-crosshairs text-red-600"></i> Nova Missão
                 </h3>
                 <button onclick="window.closeMetaModalTactical()" class="text-gray-500 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            
             <p class="text-[10px] text-gray-500 font-mono mb-6">DEFINA SEU OBJETIVO ESTRATÉGICO</p>
-
             <div class="space-y-5">
                 <div>
                     <label class="text-[10px] text-red-500/80 uppercase font-bold tracking-widest block mb-1">Nome da Missão</label>
                     <input type="text" id="inputMetaTitulo" class="w-full bg-[#111] border border-white/10 rounded-lg p-3 text-white text-sm focus:border-red-600 outline-none placeholder-gray-700 transition-colors">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] text-red-500/80 uppercase font-bold tracking-widest block mb-1">Categoria</label>
@@ -118,126 +95,74 @@ function injectMetasModal() {
                         <input type="date" id="inputMetaPrazo" class="w-full bg-[#111] border border-white/10 rounded-lg p-3 text-white text-xs focus:border-red-600 outline-none text-gray-300">
                     </div>
                 </div>
-
                 <div class="flex gap-3 mt-6 pt-4 border-t border-white/5">
-                    <button onclick="window.closeMetaModalTactical()" class="flex-1 py-3 rounded-lg border border-white/10 text-gray-500 hover:text-white hover:bg-white/5 text-xs font-bold uppercase transition">
-                        Cancelar
-                    </button>
-                    <button onclick="window.saveNewMetaTactical()" type="button" class="flex-1 py-3 rounded-lg bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-red-900/30 active:scale-95 transition-all">
-                        Confirmar
-                    </button>
+                    <button onclick="window.closeMetaModalTactical()" class="flex-1 py-3 rounded-lg border border-white/10 text-gray-500 hover:text-white hover:bg-white/5 text-xs font-bold uppercase transition">Cancelar</button>
+                    <button onclick="window.saveNewMetaTactical()" type="button" class="flex-1 py-3 rounded-lg bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-red-900/30 active:scale-95 transition-all">Confirmar</button>
                 </div>
             </div>
         </div>
     </div>`;
-    
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
-// --- AÇÕES DO SISTEMA ---
+// --- AÇÕES ---
 function setupTacticalActions() {
-    
     window.openNewMetaModalTactical = () => {
         const modal = document.getElementById('modalNovaMeta');
-        if(modal) {
-            modal.classList.remove('hidden');
-            setTimeout(() => document.getElementById('inputMetaTitulo')?.focus(), 100);
-        } else {
-            injectMetasModal();
-            document.getElementById('modalNovaMeta').classList.remove('hidden');
-        }
+        if(modal) { modal.classList.remove('hidden'); setTimeout(() => document.getElementById('inputMetaTitulo')?.focus(), 100); }
+        else { injectMetasModal(); document.getElementById('modalNovaMeta').classList.remove('hidden'); }
     };
+    window.closeMetaModalTactical = () => { document.getElementById('modalNovaMeta')?.classList.add('hidden'); };
 
-    window.closeMetaModalTactical = () => {
-        const modal = document.getElementById('modalNovaMeta');
-        if(modal) modal.classList.add('hidden');
-    };
-
-    // --- AQUI ESTAVA O ERRO (CORRIGIDO) ---
     window.saveNewMetaTactical = () => {
         try {
-            // 1. REPARAÇÃO AUTOMÁTICA DA ESTRUTURA (BLINDAGEM)
-            ensureGlobalState(); 
-
-            const tituloEl = document.getElementById('inputMetaTitulo');
-            const catEl = document.getElementById('selectMetaCategoria');
-            const prazoEl = document.getElementById('inputMetaPrazo');
-
-            if (!tituloEl || !catEl) return;
-
-            const titulo = tituloEl.value.trim();
-            const cat = catEl.value;
-            const prazo = prazoEl.value || getTodayDate();
-
-            if (!titulo) {
-                tituloEl.classList.add('border-red-500', 'animate-pulse');
-                setTimeout(() => tituloEl.classList.remove('border-red-500', 'animate-pulse'), 1000);
-                return;
-            }
+            ensureGlobalState();
+            const tEl = document.getElementById('inputMetaTitulo');
+            const cEl = document.getElementById('selectMetaCategoria');
+            const pEl = document.getElementById('inputMetaPrazo');
             
-            const novaMeta = {
-                id: generateUUID(), 
-                title: titulo, 
-                category: cat, 
-                deadline: prazo, 
-                progress: 0, 
-                status: 'active'
-            };
-
-            // AGORA É SEGURO FAZER O PUSH
-            window.AppEstado.gamification.metas.push(novaMeta);
+            if (!tEl || !cEl) return;
+            const titulo = tEl.value.trim();
+            if (!titulo) { tEl.classList.add('border-red-500', 'animate-pulse'); setTimeout(() => tEl.classList.remove('border-red-500', 'animate-pulse'), 1000); return; }
+            
+            window.AppEstado.gamification.metas.push({
+                id: generateUUID(), title: titulo, category: cEl.value, deadline: pEl.value || getTodayDate(), progress: 0, status: 'active'
+            });
             
             forceUpdate();
             window.closeMetaModalTactical();
-            tituloEl.value = '';
-            
+            tEl.value = '';
             if(window.playSFX) window.playSFX('success');
-
-        } catch (e) {
-            console.error("Erro recuperado ao salvar meta:", e);
-            // Tenta forçar reload silencioso se algo muito grave acontecer
-            if(window.location.protocol !== 'blob:') { // Evita loop em preview
-                // window.location.reload(); 
-            }
-        }
+        } catch (e) { console.error("Erro salvo:", e); }
     };
 
     window.updateMetaProgressTactical = (id, val) => {
         ensureGlobalState();
         const m = window.AppEstado.gamification.metas.find(x => x.id === id);
-        if (m) { 
-            m.progress = parseInt(val); 
-            m.status = m.progress >= 100 ? 'completed' : 'active'; 
-            forceUpdate(); 
-        }
+        if (m) { m.progress = parseInt(val); m.status = m.progress >= 100 ? 'completed' : 'active'; forceUpdate(); }
     };
 
     window.deleteMetaTactical = (id) => {
-        if(confirm("Deseja abortar esta missão estratégica?")) {
+        if(confirm("Deseja abortar esta missão?")) {
             ensureGlobalState();
             window.AppEstado.gamification.metas = window.AppEstado.gamification.metas.filter(x => x.id !== id);
             forceUpdate();
             if(window.playSFX) window.playSFX('delete');
         }
     };
-
     window.initTacticalModule = renderTacticalView;
 }
 
-// --- RENDERIZAÇÃO (VERMELHO E PRETO) ---
+// --- RENDERIZAÇÃO CORRIGIDA (SEM TÍTULO DUPLICADO) ---
 function renderTacticalView() {
     const container = document.getElementById('missionListTactical');
     if (!container) return;
-
-    // Garante estado antes de ler
     ensureGlobalState();
 
+    // HEADER: Removido o <h3> duplicado. Agora só tem o botão alinhado à direita.
     if (!document.getElementById('metasHeaderControl')) {
         container.innerHTML = `
-            <div id="metasHeaderControl" class="flex justify-between items-center mb-6 animate-fade-in">
-                <h3 class="text-xs font-black text-white uppercase italic flex items-center gap-2">
-                    <i class="fa-solid fa-bullseye text-red-600"></i> Operações Táticas
-                </h3>
+            <div id="metasHeaderControl" class="flex justify-end items-center mb-4 animate-fade-in">
                 <button onclick="window.openNewMetaModalTactical()" class="group flex items-center gap-2 bg-red-900/10 hover:bg-red-600 border border-red-900/40 text-red-500 hover:text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all shadow-[0_0_10px_rgba(220,38,38,0.1)] hover:shadow-[0_0_15px_rgba(220,38,38,0.4)]">
                     <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i> Nova Missão
                 </button>
@@ -268,7 +193,6 @@ function renderTacticalView() {
         
         return `
         <div class="relative bg-[#0d0d0d] border ${done ? 'border-green-900/30' : 'border-white/5'} hover:border-red-500/20 rounded-xl p-4 overflow-hidden group transition-all duration-300">
-            
             <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-900 via-red-600 to-orange-500 transition-all duration-700 shadow-[0_0_10px_rgba(220,38,38,0.3)]" style="width: ${p}%"></div>
             
             <div class="flex justify-between items-start mb-4 relative z-10">
@@ -290,20 +214,16 @@ function renderTacticalView() {
 
             <div class="flex items-center gap-3 relative z-10 bg-[#050505] rounded-lg p-2 border border-white/5">
                 <span class="text-[9px] font-mono font-bold w-9 text-right ${done ? 'text-green-500' : 'text-red-500'}">${p}%</span>
-                
                 <input type="range" min="0" max="100" value="${p}" 
                     oninput="window.updateMetaProgressTactical('${m.id}', this.value)"
                     class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-red-600 hover:accent-red-500 transition-all">
-                
                 <button onclick="window.deleteMetaTactical('${m.id}')" class="text-gray-700 hover:text-red-600 px-1.5 transition-colors" title="Abortar">
                     <i class="fa-solid fa-trash text-[10px]"></i>
                 </button>
             </div>
-            
             ${done ? '<div class="absolute top-2 right-2 pointer-events-none"><i class="fa-solid fa-check-circle text-green-500/20 text-4xl"></i></div>' : ''}
         </div>`;
     }).join('');
 }
 
-// Inicia
 initTactical();
