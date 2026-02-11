@@ -458,57 +458,6 @@
     <script type="module" src="js/modules/tactical.js"></script>
     
     <script>lucide.createIcons();</script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('synapse_tour_completed')) {
-                const driver = window.driver.js.driver;
-                const tour = driver({
-                    showProgress: true, animate: true, allowClose: false,
-                    doneBtnText: 'OK', nextBtnText: '>', prevBtnText: '<', popoverClass: 'driverjs-theme',
-                    steps: [
-                        { element: '#sidebar', popover: { title: 'Menu Lateral', description: 'Navegue entre Jornada (Dados), Tático (Ação) e Comando (IA).', side: "right", align: 'start' } },
-                        { element: '#viewProtocolo h2', popover: { title: 'Jornada', description: 'Seu QG. Veja gráficos e seu nível aqui.', side: "bottom", align: 'start' } },
-                        { element: '#viewTatico', popover: { title: 'Tático (Operações)', description: 'Aqui você gerencia seus Rituais e Missões.', side: "top", align: 'center' } }
-                    ]
-                });
-                tour.drive();
-                localStorage.setItem('synapse_tour_completed', 'true');
-            }
-        });
-
-        // --- FUNÇÃO DE NAVEGAÇÃO ---
-        window.switchTab = function(tabName) {
-            document.getElementById('viewChat').classList.add('hidden');
-            document.getElementById('viewProtocolo').classList.add('hidden');
-            document.getElementById('viewTatico').classList.add('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('active', 'text-white');
-                b.classList.add('text-gray-500');
-            });
-            document.querySelectorAll('.nav-item-desktop').forEach(b => {
-                b.classList.remove('bg-[#1a1a1a]', 'text-white');
-                b.classList.add('text-gray-400');
-            });
-
-            if (tabName === 'chat') {
-                document.getElementById('viewChat').classList.remove('hidden');
-                document.getElementById('tabChat')?.classList.add('active', 'text-white');
-                document.querySelector('.nav-item-desktop[data-target="chat"]')?.classList.add('bg-[#1a1a1a]', 'text-white');
-            } else if (tabName === 'tatico') {
-                document.getElementById('viewTatico').classList.remove('hidden');
-                document.getElementById('tabTatico')?.classList.add('active', 'text-white');
-                document.querySelector('.nav-item-desktop[data-target="tatico"]')?.classList.add('bg-[#1a1a1a]', 'text-white');
-                
-                // Força renderização do módulo tático ao abrir a aba
-                if(window.initTacticalModule) window.initTacticalModule();
-                
-            } else {
-                document.getElementById('viewProtocolo').classList.remove('hidden');
-                document.getElementById('tabJornada')?.classList.add('active', 'text-white');
-                document.querySelector('.nav-item-desktop[data-target="protocolo"]')?.classList.add('bg-[#1a1a1a]', 'text-white');
-            }
-        };
-    </script>
+    
 </body>
 </html>

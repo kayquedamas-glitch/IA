@@ -528,9 +528,11 @@ function showDemoModal(featureName) {
                             <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform text-red-600 relative z-10"></i>
                         </button>
                         
-                        <button onclick="window.closeDemoModal()" class="py-2 text-xs text-gray-600 hover:text-white transition-colors uppercase tracking-wider font-bold cursor-pointer">
-                            Voltar para Synapse Free <i class="fa-solid fa-arrow-left ml-1"></i>
-                        </button>
+                        <button id="btnCloseDemo"
+    class="py-2 text-xs text-gray-600 hover:text-white transition-colors uppercase tracking-wider font-bold cursor-pointer">
+    Voltar para Synapse Free <i class="fa-solid fa-arrow-left ml-1"></i>
+</button>
+
                     </div>
                 </div>
             </div>
@@ -540,7 +542,10 @@ function showDemoModal(featureName) {
     const existingModal = document.getElementById('demo-modal');
     if (existingModal) existingModal.remove();
 
-    document.body.insertAdjacentHTML('beforeend', modalBaseHTML);
+    document.getElementById('btnCloseDemo')?.addEventListener('click', () => {
+    closeDemoModal();
+});
+
 
     // Pequeno delay para a animação CSS funcionar
     requestAnimationFrame(() => {
