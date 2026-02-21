@@ -1,220 +1,671 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Seu próximo passo | Synapse</title>
+    <title>Synapse PRO | Acesso Vitalício</title>
     <link rel="shortcut icon" href="assets/icone preto.png" type="image/png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
-        :root { --syn-red: #CC0000; --bg: #f7f6f3; --ink: #0b0b0b; }
-        
-        /* --- CORREÇÃO DEFINITIVA DE SCROLL LATERAL --- */
-        html, body {
+        :root {
+            --red: #CC0000;
+            --bg: #f7f6f3;
+            --ink: #0b0b0b;
+        }
+
+        html,
+        body {
             width: 100%;
-            max-width: 100vw;       /* Garante que não passe da largura da tela */
-            overflow-x: hidden;     /* Corta impiedosamente o que vazar */
+            max-width: 100vw;
+            overflow-x: hidden;
             margin: 0;
             padding: 0;
-            position: relative;     /* Ajuda a conter elementos absolutos */
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
             color: var(--ink);
-            overflow-y: auto;       /* Permite rolagem vertical */
-            -webkit-overflow-scrolling: touch; /* Suavidade no iOS */
+            overflow-y: auto;
         }
 
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Cards */
-        .card { background: #fff; border: 1px solid rgba(0, 0, 0, .08); border-radius: 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, .08); }
-        .card-strong { border: 1px solid rgba(0, 0, 0, .12); box-shadow: 0 25px 70px rgba(0, 0, 0, .12); }
-        
-        /* Botões */
-        .btn-ultimate { background: #0b0b0b; color: #fff; transition: .2s; }
-        .btn-ultimate:hover { background: #111; transform: translateY(-1px); }
-        .btn-outline { border: 1px solid rgba(0, 0, 0, .15); border-radius: 16px; font-weight: 800; transition: .2s; }
-        .btn-outline:hover { background: rgba(0, 0, 0, .03); transform: translateY(-1px); }
-        
-        /* Elementos Decorativos - Agora com Z-Index negativo para garantir que fiquem atrás */
-        .octo { 
-            position: absolute; 
-            pointer-events: none; 
-            user-select: none; 
-            opacity: .12; 
-            filter: saturate(1.05) contrast(1.05);
-            z-index: -1; 
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
-        @media (max-width:768px) { .octo { opacity: .07; } }
-        
-        @keyframes spin-slow { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+
+        @keyframes spin-slow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(204, 0, 0, 0);
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 20s linear infinite;
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .animate-pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+
+        .octo {
+            position: absolute;
+            pointer-events: none;
+            user-select: none;
+            opacity: .09;
+            filter: saturate(1.05);
+            z-index: 0;
+        }
+
+        /* CARD PRINCIPAL */
+        .plan-card {
+            background: #fff;
+            border: 2px solid rgba(0, 0, 0, .1);
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .12);
+        }
+
+        /* BADGE de destaque */
+        .badge-popular {
+            background: var(--red);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 100px;
+        }
+
+        /* BOTÃO CTA */
+        .btn-cta {
+            background: #0b0b0b;
+            color: #fff;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 15px;
+            padding: 18px 32px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-cta:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-cta:active {
+            transform: scale(0.98);
+        }
+
+        /* REVIEWS */
+        .review-card {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, .08);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .05);
+        }
+
+        /* EXIT MODAL */
+        .exit-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .exit-modal-overlay.visible {
+            opacity: 1;
+        }
+
+        .exit-modal-card {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            transform: scale(0.92) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .exit-modal-overlay.visible .exit-modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        /* TIMER */
+        .timer-digit {
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        /* GUARANTEE BADGE */
+        .guarantee {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1px solid #86efac;
+            border-radius: 16px;
+            padding: 16px 20px;
+        }
+
+        /* LISTA DE FEATURES */
+        .feature-check {
+            color: var(--red);
+            font-size: 13px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        /* BARRA SOCIAL PROOF */
+        .social-bar {
+            background: #0b0b0b;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 
 <body class="min-h-screen relative flex flex-col overflow-x-hidden">
 
-    <div class="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <img src="assets/polvo_synapse.png" class="octo -top-24 -left-24 w-[360px] md:w-[520px]" alt="" />
-        <img src="assets/polvo.chat.png" class="octo -bottom-24 -right-24 w-[360px] md:w-[520px]" alt="" />
+    <!-- BARRA TOPO: SOCIAL PROOF -->
+    <div class="social-bar">
+        <i class="fas fa-fire text-red-500 mr-2"></i>
+        <span class="text-red-400">179 pessoas</span> compraram nas últimas 24h &nbsp;·&nbsp; Oferta por tempo limitado
     </div>
 
-    <header class="max-w-6xl mx-auto px-4 pt-8 w-full relative z-10">
+    <!-- BG DECORATIVO -->
+    <div class="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <img src="assets/polvo_synapse.png" class="octo -top-32 -left-32 w-[480px] md:w-[640px]" alt="" />
+        <img src="assets/polvo.chat.png" class="octo -bottom-32 -right-32 w-[480px] md:w-[640px]" alt="" />
+    </div>
+
+    <!-- HEADER -->
+    <header class="max-w-5xl mx-auto px-4 pt-8 w-full relative z-10">
         <div class="flex items-center gap-3">
-            <img src="assets/icone preto.png" class="w-10 h-10" alt="Synapse">
+            <img src="assets/icone preto.png" class="w-9 h-9" alt="Synapse">
             <div>
-                <div class="text-sm font-semibold">Synapse</div>
-                <div class="text-[11px] text-black/50">Resultado do Neuro-Audit</div>
+                <div class="text-sm font-black tracking-tight">Synapse<span style="color:var(--red)"> PRO</span></div>
+                <div class="text-[10px] text-black/40 font-mono uppercase tracking-widest">Neural OS</div>
             </div>
         </div>
     </header>
 
-    <section class="relative max-w-6xl mx-auto px-4 pt-12 pb-10 w-full flex-grow z-10">
-        <div class="relative z-10 text-center max-w-3xl mx-auto">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">Plano que cresce com você</h1>
+    <!-- MAIN -->
+    <main class="relative max-w-5xl mx-auto px-4 pt-10 pb-20 w-full flex-grow z-10">
+
+        <!-- HERO -->
+        <div class="text-center max-w-2xl mx-auto mb-12 animate-fade-up">
+            <span
+                class="inline-flex items-center gap-2 bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+                <i class="fas fa-bolt"></i> Acesso Vitalício · Pagamento Único
+            </span>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-4">
+                O sistema que te mantém <br><span style="color:var(--red)">consistente todos os dias</span>
+            </h1>
+            <p class="text-base text-black/60 leading-relaxed max-w-xl mx-auto">
+                IA treinada para sua mente. Gamificação que cria hábitos reais. Dashboard que mostra onde você está
+                falhando — e o que fazer agora.
+            </p>
         </div>
 
-        <div class="relative z-10 mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-            
-            <div class="card card-strong p-7 md:p-10 flex flex-col relative">
-                <span class="text-[10px] font-mono uppercase text-black/50">Ultimate Vitalício</span>
-                <h2 class="text-2xl font-semibold mt-2">Synapse <span style="color:var(--syn-red);" class="font-black">ULTIMATE</span></h2>
-                <p class="text-black/60 text-sm mt-3">Libere o sistema completo e aplique o protocolo do seu diagnóstico sem travar no meio do processo.</p>
-                <div class="mt-6">
-                    <div class="text-5xl font-black">R$ 27,90</div>
-                    <div class="text-xs text-black/50">Pagamento único • acesso vitalício</div>
+        <!-- AVALIAÇÕES RÁPIDAS -->
+        <div class="flex flex-wrap justify-center gap-6 mb-12 text-center animate-fade-up">
+            <div>
+                <div class="text-2xl font-black">4.9 <span class="text-yellow-400">★</span></div>
+                <div class="text-[11px] text-black/50 font-medium">Avaliação média</div>
+            </div>
+            <div class="w-px bg-black/10 hidden sm:block"></div>
+            <div>
+                <div class="text-2xl font-black">1.800+</div>
+                <div class="text-[11px] text-black/50 font-medium">Usuários ativos</div>
+            </div>
+            <div class="w-px bg-black/10 hidden sm:block"></div>
+            <div>
+                <div class="text-2xl font-black">97%</div>
+                <div class="text-[11px] text-black/50 font-medium">Recomendariam</div>
+            </div>
+        </div>
+
+        <!-- CARD DO PLANO -->
+        <div class="plan-card max-w-xl mx-auto p-8 md:p-10 mb-12 relative overflow-hidden animate-fade-up">
+            <!-- Badge -->
+            <div class="flex items-center justify-between mb-6">
+                <span class="badge-popular"><i class="fas fa-crown mr-1"></i> Mais escolhido</span>
+                <span class="text-[11px] text-black/40 font-mono uppercase">Vitalício</span>
+            </div>
+
+            <!-- Preço -->
+            <div class="mb-2">
+                <span class="text-[13px] text-black/40 font-medium line-through">De R$ 97,00</span>
+            </div>
+            <div class="flex items-end gap-2 mb-1">
+                <span class="text-6xl font-black tracking-tighter">R$ 27</span>
+                <span class="text-3xl font-black text-black/70 mb-1">,90</span>
+            </div>
+            <p class="text-[12px] text-black/50 mb-8 font-medium">Pagamento único · Sem mensalidade · Acesso para sempre
+            </p>
+
+            <!-- Features -->
+            <ul class="space-y-3 mb-8">
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>IA Neural Treinada</strong> — Agente adaptado ao seu perfil de TDAH/foco</span>
+                </li>
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>Dashboard Operacional</strong> — Veja sua produtividade em tempo real</span>
+                </li>
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>Sistema de Rituais</strong> — Gamificação que cria hábitos duradouros</span>
+                </li>
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>Protocolo SOS</strong> — Intervenção de IA em momentos de crise</span>
+                </li>
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>Modo Foco Extremo</strong> — Timer e bloqueio mental para deep work</span>
+                </li>
+                <li class="flex items-start text-sm font-medium">
+                    <i class="fas fa-check-circle feature-check mt-0.5"></i>
+                    <span><strong>Missões &amp; XP</strong> — Progresso visível que mantém você engajado</span>
+                </li>
+            </ul>
+
+            <!-- CTA -->
+            <a href="#" id="ctaUltimate" class="btn-cta animate-pulse-red mb-4 text-decoration-none">
+
+                Quero Acesso vitalício
+
+            </a>
+
+
+        </div>
+
+        <!-- DEPOIMENTOS -->
+        <div class="mb-10 animate-fade-up">
+            <h2 class="text-center text-xl font-black tracking-tighter mb-2">O que estão falando</h2>
+            <p class="text-center text-sm text-black/50 mb-8">Usuários reais, resultados reais</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Review 1 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            R</div>
+                        <div>
+                            <p class="text-sm font-bold">Rafael M.</p>
+                            <p class="text-[10px] text-black/40">São Paulo · SP</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"Eu sempre soube que tinha TDAH mas nunca conseguia
+                        me organizar. O Synapse foi a primeira coisa que realmente <strong>encaixou</strong> na minha
+                        mente. Em 2 semanas já sentia diferença."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 3 semanas · Verificado</p>
                 </div>
-                
-                <a href="#" id="ctaUltimate" class="btn-ultimate mt-6 inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition">
-                    Desbloquear Ultimate <i class="fas fa-arrow-right ml-2" style="color:var(--syn-red);"></i>
+
+                <!-- Review 2 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            A</div>
+                        <div>
+                            <p class="text-sm font-bold">Amanda C.</p>
+                            <p class="text-[10px] text-black/40">Curitiba · PR</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"Achei que era mais um app de produtividade
+                        qualquer. Estava errada. A IA entende como eu penso e me dá direção quando eu travo. Melhor R$
+                        27 que gastei na vida."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 5 dias · Verificado</p>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            L</div>
+                        <div>
+                            <p class="text-sm font-bold">Lucas T.</p>
+                            <p class="text-[10px] text-black/40">Belo Horizonte · MG</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"O protocolo SOS salvou minha semana duas vezes.
+                        Quando bate aquela travada mental, o sistema me coloca de volta nos trilhos em minutos.
+                        Impossível viver sem."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 2 meses · Verificado</p>
+                </div>
+
+                <!-- Review 4 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            J</div>
+                        <div>
+                            <p class="text-sm font-bold">Juliana F.</p>
+                            <p class="text-[10px] text-black/40">Rio de Janeiro · RJ</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"Comecei com ceticismo. Depois de 10 dias já tinha
+                        completado mais tarefas do que no mês inteiro anterior. A gamificação é viciante no bom sentido
+                        — você quer manter a sequência."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 1 mês · Verificado</p>
+                </div>
+
+                <!-- Review 5 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            G</div>
+                        <div>
+                            <p class="text-sm font-bold">Gustavo N.</p>
+                            <p class="text-[10px] text-black/40">Fortaleza · CE</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"Sou empreendedor e vivia apagando incêndio o dia
+                        todo. O painel tático me ajudou a ver o que era urgente de verdade. Voltei a ter foco
+                        estratégico. Vale muito mais do que custa."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 6 semanas · Verificado</p>
+                </div>
+
+                <!-- Review 6 -->
+                <div class="review-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            M</div>
+                        <div>
+                            <p class="text-sm font-bold">Mariana K.</p>
+                            <p class="text-[10px] text-black/40">Porto Alegre · RS</p>
+                        </div>
+                        <div class="ml-auto text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                    <p class="text-sm text-black/70 leading-relaxed">"Nunca consegui manter um hábito por mais de 1
+                        semana. Com o Synapse são 47 dias de sequência. A IA me manda um relatório semanal e eu fico
+                        animada para bater o recorde."</p>
+                    <p class="text-[10px] text-black/30 mt-3 font-mono">Comprou há 2 meses · Verificado</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CTA FINAL -->
+        <div class="text-center animate-fade-up">
+            <a href="#" id="ctaUltimate2" class="btn-cta inline-flex max-w-lg mx-auto animate-pulse-red"
+                style="text-decoration:none;">
+                <i class="fas fa-bolt text-yellow-400"></i>
+                Garantir Acesso por R$ 27,90
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <p class="text-xs text-black/40 mt-3"><i class="fas fa-lock mr-1"></i> Pagamento seguro via Kiwify ·
+                Garantia de 7 dias</p>
+        </div>
+
+    </main>
+
+    <!-- ===================== EXIT-INTENT MODAL ===================== -->
+    <div id="exitModal" class="exit-modal-overlay hidden" aria-modal="true">
+        <div class="exit-modal-card">
+
+            <!-- Faixa vermelha topo -->
+            <div class="h-1.5 w-full" style="background: linear-gradient(90deg, #CC0000, #ff4444, #CC0000)"></div>
+
+            <div class="p-7 md:p-9 text-white">
+
+                <!-- Header -->
+                <div class="flex items-center gap-2 mb-5">
+                    <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-red-400">Oferta Especial de
+                        Saída</span>
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-black leading-tight mb-2">
+                    Espera. Temos uma <br><span class="text-red-500">oferta só para você.</span>
+                </h2>
+                <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                    Antes de ir… o plano completo por <span class="text-white font-bold">menos ainda</span>. Esta oferta
+                    desaparece se você fechar.
+                </p>
+
+                <!-- TIMER -->
+                <div class="flex items-center gap-2 mb-7">
+                    <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">Expira em</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="timer-digit" id="timerMin">10</span>
+                        <span class="text-gray-500 font-black text-lg">:</span>
+                        <span class="timer-digit" id="timerSec">00</span>
+                    </div>
+                </div>
+
+                <!-- Preço de oferta -->
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
+                        <div>
+                            <p class="text-[11px] text-gray-500 uppercase tracking-widest font-bold mb-1">Plano Ultimate
+                                Vitalício</p>
+                            <div class="flex items-end gap-2">
+                                <span class="text-4xl font-black text-white">R$ 19,90</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 line-through">De R$ 27,90</p>
+                            <p class="text-xs text-green-400 font-bold mt-0.5">Você economiza R$ 8,00 agora</p>
+                        </div>
+                        <div class="text-right">
+                            <span
+                                class="inline-flex items-center gap-1 bg-red-600 text-white text-xs font-black px-3 py-1.5 rounded-full">
+                                <i class="fas fa-tag"></i> −29% OFF
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features rápidas -->
+                <ul class="space-y-2 mb-7">
+                    <li class="flex items-center gap-2 text-sm text-gray-300"><i
+                            class="fas fa-check text-red-500 text-xs flex-shrink-0"></i> IA Neural + Dashboard Completo
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-gray-300"><i
+                            class="fas fa-check text-red-500 text-xs flex-shrink-0"></i> Rituais + Gamificação
+                        ilimitados</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-300"><i
+                            class="fas fa-check text-red-500 text-xs flex-shrink-0"></i> Protocolo SOS + Modo Foco</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-300"><i
+                            class="fas fa-check text-red-500 text-xs flex-shrink-0"></i> Acesso vitalício · Garantia de
+                        7 dias</li>
+                </ul>
+
+                <!-- Botões -->
+                <a href="#" id="ctaDownsell"
+                    class="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-black uppercase tracking-widest text-sm transition-all mb-3"
+                    style="background: #CC0000; color: white;">
+
+                    Quero agora
+                    <i class="fas fa-arrow-right"></i>
                 </a>
 
-                <div class="mt-8 pt-6 border-t border-black/10">
-                    <div class="text-sm font-semibold text-black/70 mb-3">Você desbloqueia:</div>
-                    <ul class="text-sm text-black/65 space-y-2">
-                        <li>✓ Agente + Dashboard (direção diária)</li>
-                        <li>✓ Protocolo SOS (anti-crise)</li>
-                        <li>✓ Gamificação e XP (consistência)</li>
-                        <li>✓ Foco extremo </li>
-                    </ul>
-                </div>
-            </div>
+                <button onclick="closeExitModal()"
+                    class="w-full py-3 text-xs text-gray-600 hover:text-gray-400 transition-colors uppercase tracking-widest font-bold">
+                    Não quero economizar — Fechar
+                </button>
 
-            <div class="card p-7 md:p-10 flex flex-col">
-                <span class="text-[10px] font-mono uppercase text-black/50">Free Vitalício</span>
-                <h2 class="text-2xl font-bold mt-2">Synapse Free</h2>
-                <p class="text-black/60 text-sm mt-3">Se você preferir ir devagar, pode começar no essencial.</p>
-                <div class="mt-6 text-4xl font-black">R$ 0</div>
-                
-                <button onclick="openUpgrade()" class="btn-outline mt-6 py-4 w-full">Testar sistema</button>
-                
-                <div class="mt-8 pt-6 border-t border-black/10">
-                    <div class="text-sm font-semibold text-black/70 mb-3">Inclui:</div>
-                    <ul class="text-sm text-black/65 space-y-2">
-                        <li>✓ Acesso básico</li>
-                        <li>✓ Organização essencial</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="relative z-10 mt-8 text-center opacity-50 text-xs">
-            <i class="fas fa-lock mr-1"></i> Pagamento seguro via Kiwify
-        </div>
-    </section>
-
-    <div id="upgradeModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center px-4 overflow-hidden">
-        <div id="modalBackdrop" class="absolute inset-0 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-500" onclick="closeUpgrade()"></div>
-        
-        <div id="modalCard" class="relative w-full max-w-4xl max-h-[85vh] overflow-y-auto overflow-x-hidden bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl opacity-0 scale-90 translate-y-10 transition-all duration-500 flex flex-col md:flex-row">
-            
-            <div class="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-[conic-gradient(from_0deg,transparent,rgba(255,255,255,.03),transparent)] animate-spin-slow -translate-x-1/2 -translate-y-1/2 -z-0 pointer-events-none"></div>
-            
-            <div class="relative z-10 md:w-1/2 p-6 md:p-10 text-white">
-                <div class="w-14 h-14 rounded-2xl bg-[#111] border border-white/10 flex items-center justify-center mb-4 shadow-xl">
-                    <i class="fas fa-rocket text-2xl text-white"></i>
-                </div>
-                <h3 class="text-3xl font-bold mb-3">Antes de ir no Free…</h3>
-                <p class="text-gray-400 text-sm">Seu diagnóstico pede execução. Leve o pacote completo com desconto especial.</p>
-            </div>
-
-            <div class="relative z-10 md:w-1/2 p-6 md:p-10 bg-white/[0.02]">
-                <div class="w-full bg-[#111] border border-white/5 rounded-xl p-4 mb-6 flex items-center justify-between shadow-inner">
-                    <div class="text-left"><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Oferta Única</span><span class="text-sm text-gray-500 line-through">De R$ 97,00</span></div>
-                    <div class="text-right"><span class="text-3xl md:text-4xl font-black text-white">R$ 19,90</span></div>
-                </div>
-
-                <a href="#" id="ctaDownsell" class="w-full bg-[#CC0000] hover:bg-red-600 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(220,0,0,0.3)] transition-all flex items-center justify-center gap-2 text-sm">
-                    Aceitar Evolução <i class="fas fa-arrow-right"></i>
-                </a>
-
-                <button onclick="goToFreeVersion()" class="mt-5 text-xs text-gray-600 hover:text-white transition-colors underline underline-offset-4 block mx-auto">Prefiro continuar limitado</button>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURAÇÃO DOS LINKS COM DADOS DO USUÁRIO
-        document.addEventListener('DOMContentLoaded', () => {
+        // ——— LINKS COM DADOS DO USUÁRIO ———
+        (function () {
             const userRaw = localStorage.getItem('synapse_user');
-            
-            // Link base do Ultimate (R$ 27,90)
             let linkUltimate = "https://pay.kiwify.com.br/YzOIskc";
-            // Link base do Downsell (R$ 19,90)
             let linkDownsell = "https://pay.kiwify.com.br/0hrS0C7";
 
-            if(userRaw) {
+            if (userRaw) {
                 try {
                     const user = JSON.parse(userRaw);
                     const params = `?name=${encodeURIComponent(user.nome || '')}&email=${encodeURIComponent(user.email || '')}`;
-                    
-                    // Atualiza hrefs
-                    document.getElementById('ctaUltimate').href = linkUltimate + params;
-                    document.getElementById('ctaDownsell').href = linkDownsell + params;
-                    
-                    console.log("Links de checkout configurados para: " + user.email);
-                } catch(e) { console.error("Erro ao ler usuário", e); }
-            } else {
-                // Fallback sem dados
-                document.getElementById('ctaUltimate').href = linkUltimate;
-                document.getElementById('ctaDownsell').href = linkDownsell;
+                    linkUltimate += params;
+                    linkDownsell += params;
+                } catch (e) { }
             }
+
+            document.getElementById('ctaUltimate').href = linkUltimate;
+            document.getElementById('ctaUltimate2').href = linkUltimate;
+            document.getElementById('ctaDownsell').href = linkDownsell;
+        })();
+
+        // ——— EXIT INTENT ———
+        let exitShown = false;
+        let timerInterval = null;
+
+        function showExitModal() {
+            if (exitShown) return;
+            exitShown = true;
+            const modal = document.getElementById('exitModal');
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.add('visible');
+                });
+            });
+            startTimer();
+        }
+
+        function closeExitModal() {
+            const modal = document.getElementById('exitModal');
+            modal.classList.remove('visible');
+            if (timerInterval) clearInterval(timerInterval);
+            setTimeout(() => modal.classList.add('hidden'), 400);
+        }
+
+        function startTimer() {
+            let total = 10 * 60; // 10 minutos
+            const minEl = document.getElementById('timerMin');
+            const secEl = document.getElementById('timerSec');
+
+            function update() {
+                if (total <= 0) {
+                    clearInterval(timerInterval);
+                    closeExitModal();
+                    return;
+                }
+                const m = Math.floor(total / 60);
+                const s = total % 60;
+                minEl.textContent = String(m).padStart(2, '0');
+                secEl.textContent = String(s).padStart(2, '0');
+                total--;
+            }
+
+            update();
+            timerInterval = setInterval(update, 1000);
+        }
+
+        // Desktop: mouse sai pela parte superior
+        document.addEventListener('mouseleave', function (e) {
+            if (e.clientY <= 0) showExitModal();
         });
 
-        // LÓGICA DO MODAL
-        function openUpgrade() {
-            const m = document.getElementById('upgradeModal');
-            const b = document.getElementById('modalBackdrop');
-            const c = document.getElementById('modalCard');
-            m.classList.remove('hidden');
-            setTimeout(() => { 
-                b.classList.remove('opacity-0'); 
-                c.classList.remove('opacity-0', 'scale-90', 'translate-y-10'); 
-            }, 10);
-        }
+        // Mobile: botão voltar / visibilidade
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) showExitModal();
+        });
 
-        function closeUpgrade() {
-            const m = document.getElementById('upgradeModal');
-            const b = document.getElementById('modalBackdrop');
-            const c = document.getElementById('modalCard');
-            b.classList.add('opacity-0'); 
-            c.classList.add('opacity-0', 'scale-90', 'translate-y-10');
-            setTimeout(() => m.classList.add('hidden'), 500);
-        }
+        // Fechar modal clicando no fundo
+        document.getElementById('exitModal').addEventListener('click', function (e) {
+            if (e.target === this) closeExitModal();
+        });
 
-        // CORREÇÃO DO LINK DE REDIRECIONAMENTO (Adeus erro 404!)
-        function goToFreeVersion() {
-            closeUpgrade();
-            // Redireciona para demo.html que está na mesma pasta raiz
-            setTimeout(() => window.location.href = "demo.html", 320);
-        }
+        // Esc para fechar
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeExitModal();
+        });
     </script>
+
 </body>
+
 </html>

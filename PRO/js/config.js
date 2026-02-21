@@ -1,24 +1,23 @@
-export const CONFIG = {
-    // --- BANCO DE DADOS (Google Sheets / SheetDB) ---
-    // Usado pelo database.js para salvar histórico e login
-    API_URL: "https://gexnzquhqbszqjqwowix.supabase.co",
+// PRO/js/config.js
 
-    // --- INTELIGÊNCIA ARTIFICIAL (Worker) ---
-    // Usado pelo chat.js (IMPORTANTE: Verifica a nota abaixo)
-    AI_WORKER: "https://long-block-7f38.kayquedamas.workers.dev",
-    API_MODEL: "llama-3.1-8b-instant",
-
-    // --- ARMAZENAMENTO LOCAL (LocalStorage) ---
-    STORAGE_KEYS: {
-        // Dados do Utilizador
-        USER: "synapse_session_v2",
-        XP: "synapse_xp_v1",
-        HABITS: "synapse_habits_v3",
-        HISTORY: "synapse_history_v1", // Novo (Log de atividades)
-        
-        // Mantidos do antigo (Para não quebrar o Calendário e Missões)
-        MISSIONS: "synapse_missions_v3",
-        STREAK: "synapse_streak_v1",
-        EVENTS: "synapse_calendar_events"
+const CONFIG = {
+    SUPABASE: {
+        URL: 'https://gexnzquhqbszqjqwowix.supabase.co',
+        KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4'
+    },
+    AI: {
+        WORKER_URL: 'https://synapse-ai-worker.kayque-f-soares.workers.dev', // Exemplo / Placeholder se necessário
+        MODEL: 'gpt-4o-mini' // ou o modelo que estiver usando
+    },
+    STORAGE: {
+        DB_NAME: 'synapse_db',
+        DB_VERSION: 1,
+        STORES: {
+            KV: 'kv_store',
+            QUEUE: 'sync_queue'
+        }
     }
 };
+
+window.APP_CONFIG = CONFIG;
+export { CONFIG };

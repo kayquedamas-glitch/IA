@@ -5,7 +5,7 @@ import { playSFX } from './audio.js';
 
 export function initDashboard() {
     // 1. Verifica se a sequência quebrou (Reset se passou de 24h do último dia completo)
-    checkStreakIntegrity(); 
+    checkStreakIntegrity();
 
     // 2. Carrega dados visuais
     renderMissions();
@@ -22,7 +22,7 @@ export function initDashboard() {
 
     // 4. Registra métrica de acesso
     if (window.Database) window.Database.logEvent('DASHBOARD_VIEW', 'Acessou Painel');
-    
+
 }
 
 // --- LÓGICA DE DIAS NA BASE (Sincronizado na Nuvem) ---a
@@ -33,7 +33,7 @@ export function initDashboard() {
 function calculateDaysOnBase() {
     const daysElement = document.getElementById('daysOnBase');
     const titleElement = document.getElementById('dashboardTitle'); // O novo elemento que criamos
-    
+
     if (!daysElement) return;
 
     // Tenta pegar a data de criação da conta do estado global
@@ -65,27 +65,27 @@ function calculateDaysOnBase() {
         // --- LÓGICA DE TEXTO MOTIVACIONAL (NOVO) ---
         if (titleElement) {
             let frase = "QG OPERACIONAL"; // Padrão
-            
+
             // Lógica progressiva baseada na sobrevivência do usuário
             if (diffDays >= 3 && diffDays < 7) {
                 frase = "O INÍCIO É O FILTRO.";
-            } 
+            }
             else if (diffDays >= 7 && diffDays < 15) {
                 frase = "A MAIORIA DESISTE AQUI. VOCÊ NÃO.";
-            } 
+            }
             else if (diffDays >= 15 && diffDays < 30) {
                 frase = "SE PARAR HOJE, VOLTA A SER QUEM ERA.";
-            } 
+            }
             else if (diffDays >= 30) {
                 frase = "VOCÊ NÃO É MAIS A MAIORIA.";
             }
 
             // Efeito de digitação ou apenas troca direta (aqui faremos troca direta com fade se quiser)
             titleElement.innerText = frase;
-            
+
             // Se a frase for longa, diminui um pouco a fonte (ajuste visual opcional)
             if (frase.length > 20) {
-                titleElement.classList.replace('text-3xl', 'text-xl'); 
+                titleElement.classList.replace('text-3xl', 'text-xl');
                 titleElement.classList.add('md:text-2xl'); // Em desktop mantém grande
             } else {
                 titleElement.classList.replace('text-xl', 'text-3xl');
@@ -111,7 +111,7 @@ let streakInterval = null;
 
 export function updateStreakUI() {
     const streak = window.AppEstado?.gamification?.streak || 0;
-    
+
     // Atualiza o número de DIAS na nova barra
     const daysValue = document.getElementById('streakDaysValue');
     if (daysValue) daysValue.innerText = streak;
@@ -124,7 +124,7 @@ export function updateStreakUI() {
     if (!fireIcon) return;
 
     fireIcon.className = 'fa-solid fa-fire transition-all duration-500';
-    
+
     if (streak > 0) {
         fireIcon.classList.add('animate-flicker');
         if (streak < 7) {
@@ -155,7 +155,7 @@ function iniciarContagemRegressiva() {
 
         if (diff <= 0) {
             display.innerText = "00:00:00";
-            if(bar) bar.style.width = "0%";
+            if (bar) bar.style.width = "0%";
             return;
         }
 
@@ -164,7 +164,7 @@ function iniciarContagemRegressiva() {
         const s = Math.floor((diff / 1000) % 60);
 
         // Formata: 04:30:15
-        const timerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        const timerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         display.innerText = timerText;
 
         // Barra de "Vida" do dia (diminui com o tempo)
@@ -242,26 +242,26 @@ export function renderHeatmap() {
 
     const state = getRPGState();
     const scores = state.dailyScores || {};
-    
+
     // Configuração
     const daysToShow = 28; // 4 semanas
     const today = new Date();
-    
+
     let html = '<div class="grid grid-cols-7 gap-1.5 w-full h-full">';
-    
+
     // Loop reverso (do dia mais antigo para hoje)
     for (let i = daysToShow - 1; i >= 0; i--) {
         const d = new Date();
         d.setDate(today.getDate() - i);
-        
+
         // Formata data igual ao gamification.js (YYYY-MM-DD)
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
-        
+
         const score = scores[dateStr] || 0;
-        
+
         // Define a cor baseada no score (Mapa de Calor Verde)
         let colorClass = 'bg-[#161b22]'; // Vazio (Cinza escuro)
         if (score > 0) colorClass = 'bg-green-900/40'; // Pouco (Verde Escuro)
@@ -270,14 +270,14 @@ export function renderHeatmap() {
 
         // Tooltip simples (Title)
         const displayDate = `${day}/${month}`;
-        
+
         html += `
             <div title="${displayDate}: ${score}%" 
                  class="${colorClass} w-full aspect-square rounded-sm transition-all duration-300 hover:scale-110 border border-white/5">
             </div>
         `;
     }
-    
+
     html += '</div>';
     container.innerHTML = html;
 }
@@ -293,14 +293,14 @@ window.completeMission = (id) => {
         if (m.done) {
             playSFX('success');
             // XP por missão individual (opcional, pode manter ou tirar)
-            addXP(20); 
+            addXP(20);
             logActivity('MISSION', m.text, 20);
-            
+
             if (window.Database) window.Database.logEvent('MISSAO_COMPLETA', m.text);
         } else {
             playSFX('click');
         }
-        
+
         // 1. Salva o estado atual da missão
         saveMissions(missions);
 
@@ -386,7 +386,7 @@ function renderMissions() {
 
 function checkDailyAllDone() {
     const missions = getMissions();
-    
+
     // Se não houver missões, não faz nada
     if (missions.length === 0) return;
 
@@ -420,7 +420,7 @@ function incrementStreak() {
     updateStreakUI();
     showToast('DIA CONQUISTADO!', 'Sequência Aumentada +1', 'success');
     playSFX('level-up'); // Ou outro som de vitória
-    
+
     // Opcional: XP Bônus por fechar o dia
     addXP(100);
 }
@@ -428,15 +428,15 @@ function incrementStreak() {
 function checkStreakIntegrity() {
     const gamification = window.AppEstado.gamification || {};
     const lastDateStr = gamification.lastStreakDate;
-    
+
     if (!lastDateStr) return; // Nunca começou uma sequência
 
     const lastDate = new Date(lastDateStr);
     const today = new Date();
-    
+
     // Zera as horas para comparar apenas os dias
-    lastDate.setHours(0,0,0,0);
-    today.setHours(0,0,0,0);
+    lastDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
     // Diferença em milissegundos
     const diffTime = Math.abs(today - lastDate);
@@ -451,7 +451,7 @@ function checkStreakIntegrity() {
         gamification.streak = 0;
         // Não resetamos o lastStreakDate para não bugar lógicas futuras, 
         // apenas o contador visual.
-        
+
         window.AppEstado.gamification = gamification;
         if (window.Database) window.Database.forceSave();
     }
@@ -461,13 +461,13 @@ function checkStreakIntegrity() {
 export function renderDisciplineGraph() {
     // Procura o container onde ficava a "streak" (Sequência)
     // Sugestão: Crie uma div com id="disciplineChartContainer" no seu HTML onde deseja exibir
-    const container = document.getElementById('streakDisplay')?.parentElement; 
-    
+    const container = document.getElementById('streakDisplay')?.parentElement;
+
     if (!container) return;
-    
+
     // Limpa o container para desenhar o gráfico novo (mantendo o título se quiser)
     // Vamos substituir o número simples pelo gráfico
-    
+
     const scores = window.AppEstado?.gamification?.dailyScores || {};
     const history = [];
     const today = new Date();
@@ -499,7 +499,7 @@ export function renderDisciplineGraph() {
     const areaPoints = `${points} ${width},${height} 0,${height}`;
 
     // Cor dinâmica baseada na média recente
-    const avg = history.reduce((a,b)=>a+b,0) / history.length;
+    const avg = history.reduce((a, b) => a + b, 0) / history.length;
     const color = avg > 80 ? '#39d353' : (avg > 40 ? '#eab308' : '#ef4444');
 
     const html = `
@@ -511,7 +511,7 @@ export function renderDisciplineGraph() {
         
         <div class="relative w-full h-12">
             <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible drop-shadow-[0_0_5px_${color}40]">
-                <line x1="0" y1="${height/2}" x2="${width}" y2="${height/2}" stroke="#333" stroke-width="0.5" stroke-dasharray="2,2" />
+                <line x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}" stroke="#333" stroke-width="0.5" stroke-dasharray="2,2" />
                 
                 <defs>
                     <linearGradient id="gradGraph" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -523,7 +523,7 @@ export function renderDisciplineGraph() {
                 
                 <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke" />
                 
-                <circle cx="${width}" cy="${height - ((history[history.length-1]/100)*height)}" r="3" fill="white" class="animate-pulse" />
+                <circle cx="${width}" cy="${height - ((history[history.length - 1] / 100) * height)}" r="3" fill="white" class="animate-pulse" />
             </svg>
         </div>
         
@@ -533,12 +533,12 @@ export function renderDisciplineGraph() {
 
     // Substitui o conteúdo antigo pelo gráfico
     // IMPORTANTE: Certifique-se que no HTML existe um elemento pai adequado
-    if(document.getElementById('streakDisplay')) {
-         // Substitui o pai do streakDisplay (o card inteiro)
-         const card = document.getElementById('streakDisplay').closest('.dopamine-card') || document.getElementById('streakDisplay').parentElement;
-         if(card) {
-             card.outerHTML = html;
-         }
+    if (document.getElementById('streakDisplay')) {
+        // Substitui o pai do streakDisplay (o card inteiro)
+        const card = document.getElementById('streakDisplay').closest('.dopamine-card') || document.getElementById('streakDisplay').parentElement;
+        if (card) {
+            card.outerHTML = html;
+        }
     }
 }
 // --- NOVOS GRÁFICOS SCI-FI (ApexCharts) ---
@@ -551,7 +551,7 @@ export function initSciFiCharts() {
     const xp = gamification.xp || 0;
     const level = gamification.level || 1;
     const streak = gamification.streak || 0;
-    
+
     // Calcula atributos baseados no comportamento (Lógica de Gamificação)
     // Ex: Streak alto = Foco | Muitas missões = Disciplina | XP alto = Inteligência
     const stats = {
@@ -614,7 +614,7 @@ function renderRadarChart(stats) {
 function renderRadialChart(level, xp) {
     // Calcula quanto falta para o próximo nível (lógica simplificada)
     let xpCost = 100;
-    for(let i=1; i < level; i++) xpCost = Math.floor(xpCost * 1.10);
+    for (let i = 1; i < level; i++) xpCost = Math.floor(xpCost * 1.10);
     const progress = Math.min(100, Math.floor((xp % xpCost) / xpCost * 100)) || 45; // 45 é fallback
 
     const options = {
@@ -654,7 +654,7 @@ function renderRadialChart(level, xp) {
 function renderAreaChart() {
     // Simula dados dos últimos 7 dias (já que não temos histórico complexo ainda)
     const dataMock = [30, 40, 35, 50, 49, 60, 70];
-    
+
     const options = {
         series: [{ name: 'Produtividade', data: dataMock }],
         chart: {
