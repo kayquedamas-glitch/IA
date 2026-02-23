@@ -8,7 +8,7 @@ export function startFocusMode() {
     const overlay = document.createElement('div');
     overlay.id = 'focus-setup-overlay';
     overlay.className = 'fixed inset-0 bg-black/95 backdrop-blur-md z-[9999] flex flex-col items-center justify-center p-6 animate-fade-in';
-    
+
     overlay.innerHTML = `
         <h2 class="text-gray-400 text-xs tracking-[0.3em] uppercase mb-8">CONFIGURAR SESSÃO</h2>
         <div class="flex items-center gap-4 mb-12">
@@ -45,7 +45,7 @@ export function startFocusMode() {
 
 function runFocusTimer(durationSeconds) {
     const totalMinutes = durationSeconds / 60;
-    
+
     // 1. Define o momento exato no futuro quando o timer deve acabar
     const endTime = Date.now() + (durationSeconds * 1000);
 
@@ -68,7 +68,7 @@ function runFocusTimer(durationSeconds) {
         // Calcula quanto tempo falta comparando AGORA com o TEMPO FINAL
         const now = Date.now();
         const distance = endTime - now;
-        
+
         // Converte milissegundos para segundos restantes
         // Math.ceil garante que não mostre 00:00 enquanto ainda faltam milissegundos
         let timeLeft = Math.ceil(distance / 1000);
@@ -76,19 +76,19 @@ function runFocusTimer(durationSeconds) {
         if (timeLeft <= 0) {
             timeLeft = 0; // Evita números negativos
             clearInterval(interval);
-            
+
             // Atualiza visual uma última vez
             document.getElementById('focusTimer').innerText = "00:00";
             document.getElementById('focusProgress').style.width = "0%";
 
             const xpGained = totalMinutes * 2;
-            
+
             // --- SUCESSO ---
             addXP(xpGained);
-            playSFX('success'); 
+            playSFX('success');
             logActivity('FOCUS', `Sessão de Foco (${totalMinutes}m)`, xpGained, totalMinutes);
             showToast('DADOS COMPUTADOS', `${totalMinutes}min adicionados ao histórico.`, 'success');
-            
+
             setTimeout(() => overlay.remove(), 3000);
             return;
         }
@@ -96,8 +96,8 @@ function runFocusTimer(durationSeconds) {
         // Formatação visual
         let m = Math.floor(timeLeft / 60);
         let s = timeLeft % 60;
-        document.getElementById('focusTimer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-        
+        document.getElementById('focusTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+
         // Barra de progresso baseada no tempo total original
         const percentage = (timeLeft / durationSeconds) * 100;
         document.getElementById('focusProgress').style.width = `${percentage}%`;
@@ -112,7 +112,7 @@ function runFocusTimer(durationSeconds) {
     document.getElementById('exitFocus').onclick = () => {
         clearInterval(interval);
         overlay.remove();
-        playSFX('error'); 
+        playSFX('error');
         showToast('FALHA DE DISCIPLINA', 'Sessão não registada.', 'warning');
     };
 }
@@ -124,8 +124,8 @@ export function showWeeklyReport() {
     const state = getRPGState();
     const history = state.history || [];
     let totalFocusMinutes = 0;
-    history.forEach(h => { if(h.type === 'FOCUS') totalFocusMinutes += (h.duration || 0); });
-    
+    history.forEach(h => { if (h.type === 'FOCUS') totalFocusMinutes += (h.duration || 0); });
+
     const historyHTML = history.length > 0 ? history.map(h => `
         <div class="flex justify-between items-center py-3 border-b border-white/5 last:border-0">
             <div>
@@ -139,7 +139,7 @@ export function showWeeklyReport() {
     const modal = document.createElement('div');
     modal.id = 'report-modal';
     modal.className = 'fixed inset-0 bg-black/95 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in';
-    
+
     modal.innerHTML = `
         <div class="bg-[#0a0a0a] border border-[#222] w-full max-w-md rounded-2xl p-6 relative shadow-2xl h-[80vh] flex flex-col">
             <button onclick="this.closest('#report-modal').remove()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
@@ -198,7 +198,7 @@ export function startSOSProtocol() {
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black z-[10000] flex flex-col items-center justify-center text-center p-6 animate-fade-in';
     overlay.id = 'sos-overlay';
-    
+
     overlay.innerHTML = `
         <h1 class="text-3xl md:text-4xl font-black text-red-600 mb-2 tracking-widest animate-pulse pointer-events-none">ALERTA DE CONTROLE</h1>
         <p class="text-gray-500 text-xs md:text-sm mb-8 uppercase tracking-widest pointer-events-none">Recalibrando Córtex Pré-Frontal...</p>
@@ -223,23 +223,22 @@ export function startSOSProtocol() {
 
     document.body.appendChild(overlay);
 
-    // Lógica do botão
-    const closeBtn = document.getElementById('close-sos');
-    closeBtn.onclick = () => {
-        isActive = false; 
-        clearInterval(breathInterval); 
-        overlay.remove();
-        
-        addXP(100); 
-        playSFX('success'); 
-        showToast('NEUROPLASTICIDADE ATIVADA', 'Impulso vencido. Você ficou mais forte.', 'success');
-    };
-
-    // ... (O restante da lógica de respiração permanece igual) ...
     const circle = document.getElementById('breath-circle');
     const text = document.getElementById('breath-text');
     const quoteDisplay = document.getElementById('sos-quote-display');
     let isActive = true;
+
+    // Lógica do botão fechar
+    const closeBtn = document.getElementById('close-sos');
+    closeBtn.onclick = () => {
+        isActive = false;
+        clearInterval(breathInterval);
+        overlay.remove();
+
+        addXP(100);
+        playSFX('success');
+        showToast('NEUROPLASTICIDADE ATIVADA', 'Impulso vencido. Você ficou mais forte.', 'success');
+    };
 
     const rotateQuote = () => {
         if (!isActive) return;
@@ -254,31 +253,31 @@ export function startSOSProtocol() {
 
     const runCycle = () => {
         if (!isActive) return;
-        rotateQuote(); 
-        text.innerText = "INSPIRE"; 
-        circle.style.transform = "scale(1.3)"; 
-        circle.style.borderColor = "#ffffff"; 
+        rotateQuote();
+        text.innerText = "INSPIRE";
+        circle.style.transform = "scale(1.3)";
+        circle.style.borderColor = "#ffffff";
         circle.style.boxShadow = "0 0 50px rgba(255,255,255,0.2)";
         circle.style.transition = "all 4s ease-in-out";
-        
+
         setTimeout(() => {
             if (!isActive) return;
-            text.innerText = "SEGURE"; 
-            circle.style.borderColor = "#cc0000"; 
+            text.innerText = "SEGURE";
+            circle.style.borderColor = "#cc0000";
             circle.style.boxShadow = "0 0 20px rgba(200,0,0,0.5)";
-            
+
             setTimeout(() => {
                 if (!isActive) return;
-                text.innerText = "EXPIRE"; 
-                circle.style.transform = "scale(1.0)"; 
+                text.innerText = "EXPIRE";
+                circle.style.transform = "scale(1.0)";
                 circle.style.transition = "all 4s ease-in-out";
-                
+
                 setTimeout(() => {
                     if (!isActive) return;
                     text.innerText = "MANTENHA";
-                }, 4000); 
-            }, 4000); 
-        }, 4000); 
+                }, 4000);
+            }, 4000);
+        }, 4000);
     };
 
     runCycle();
@@ -290,7 +289,7 @@ export function showPaywallModal() {
     // 1. Cria o Overlay Escuro
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black/90 z-[99999] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm';
-    
+
     // 2. O Conteúdo do Modal (Estilo "Relatório Confidencial")
     overlay.innerHTML = `
         <div class="bg-[#0a0a0a] border border-red-900/50 w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(204,0,0,0.2)] relative">

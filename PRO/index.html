@@ -465,75 +465,102 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: TÁTICO (CORRIGIDO E ESTILIZADO) -->
+            <!-- VIEW 3: TÁTICO REDESENHADO -->
             <div id="viewTatico"
-                class="view-section h-full hidden overflow-y-auto overflow-x-hidden p-4 md:p-8 pb-32 pt-10 relative z-10 custom-scrollbar">
-                <div class="w-full max-w-6xl mx-auto">
+                class="view-section h-full hidden overflow-y-auto overflow-x-hidden pb-32 relative z-10 custom-scrollbar">
 
-                    <h2 class="text-3xl font-black text-white tracking-tighter uppercase mb-6 animate-fade-in-up">
-                        OPERAÇÕES TÁTICAS
-                    </h2>
+                <!-- HEADER COM CALENDÁRIO -->
+                <div class="sticky top-0 z-30 bg-[#030303]/95 backdrop-blur-xl border-b border-white/5 px-4 pt-4 pb-3">
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up">
-
-                        <!-- RITUAIS -->
-                        <div
-                            class="bg-[#0a0a0a] border border-white/10 p-6 lg:col-span-1 min-h-[400px] flex flex-col rounded-xl relative shadow-lg">
-                            <h3 class="text-xs font-black text-white uppercase italic mb-6 flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-red-500"></i> Protocolos Diários
-                            </h3>
-
-                            <div class="flex justify-between items-center mb-4 p-2 bg-white/5 rounded-lg">
-                                <span
-                                    class="text-[9px] font-black uppercase tracking-widest text-gray-500">Checklist</span>
-                                <button onclick="window.openAddHabitModal()"
-                                    class="text-gray-400 hover:text-white transition hover:scale-110">
-                                    <i class="fa-solid fa-plus-circle text-lg"></i>
-                                </button>
-                            </div>
-
-                            <div id="habitListTactical"
-                                class="space-y-2 flex-grow overflow-y-auto custom-scrollbar pr-1"></div>
+                    <!-- Linha 1: Título "Hoje" + data -->
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <h2 id="tacticDateHeader" class="text-xl font-black text-white tracking-tight">
+                                Hoje
+                            </h2>
+                            <i class="fa-solid fa-chevron-down text-gray-500 text-xs"></i>
                         </div>
-
-                        <!-- MISSÕES -->
-                        <div
-                            class="bg-[#0a0a0a] border border-white/10 p-6 lg:col-span-2 flex flex-col min-h-[400px] rounded-xl relative shadow-lg">
-                            <h3 class="text-xs font-black text-white uppercase italic mb-6 flex items-center gap-2">
-                                <i class="fa-solid fa-crosshairs text-blue-500"></i> Missões Estratégicas
-                            </h3>
-
-                            <div id="missionListTactical"
-                                class="space-y-3 flex-grow overflow-y-auto pr-1 custom-scrollbar"></div>
-
-                            <div class="mt-auto pt-4 border-t border-white/5 w-full">
-                                <div
-                                    class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-full border border-white/10 focus-within:border-blue-500/50 transition-colors w-full relative">
-                                    <div class="relative group pl-1 shrink-0">
-                                        <input id="newMissionDateTactical" type="date"
-                                            class="absolute inset-0 opacity-0 cursor-pointer w-full z-10">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
-                                            <i class="fa-regular fa-calendar text-sm"></i>
-                                        </div>
-                                    </div>
-
-                                    <input id="newMissionInputTactical" type="text"
-                                        class="flex-1 min-w-0 bg-transparent text-sm text-white px-3 outline-none placeholder-gray-600 font-medium h-10"
-                                        placeholder="Nova missão..." autocomplete="off"
-                                        onkeydown="if(event.key === 'Enter') window.addNewMission()">
-
-                                    <button onclick="window.addNewMission()"
-                                        class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white shadow-lg shadow-blue-900/30 hover:scale-105 active:scale-95 transition-all z-10">
-                                        <i
-                                            class="fa-solid fa-paper-plane text-sm translate-x-[-1px] translate-y-[1px]"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="flex items-center gap-2">
+                            <span id="tacticMonthLabel"
+                                class="text-[10px] text-gray-500 font-mono uppercase tracking-widest"></span>
                         </div>
                     </div>
+
+                    <!-- CALENDÁRIO SEMANAL -->
+                    <div id="weekCalendar" class="flex items-center justify-between gap-1 mb-3"></div>
+
+                    <!-- TABS: Hábitos / Missões -->
+                    <div class="flex items-center gap-2 mt-1">
+                        <button id="tabHabits" onclick="window.switchTacticTab('habits')"
+                            class="tactic-tab-btn active flex-1 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200">
+                            <i class="fa-solid fa-list-check mr-1.5"></i>Hábitos
+                        </button>
+                        <button id="tabMissions" onclick="window.switchTacticTab('missions')"
+                            class="tactic-tab-btn flex-1 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 relative">
+                            <i class="fa-solid fa-crosshairs mr-1.5"></i>Missões
+                            <span id="missionCountBadge" class="ml-1 text-[8px] opacity-60 font-mono"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO DAS TABS -->
+                <div class="p-4 md:p-6">
+
+                    <!-- PAINEL: HÁBITOS -->
+                    <div id="panelHabits" class="">
+                        <!-- Barra de Progresso Diário -->
+                        <div id="dailyProgressContainer" class="mb-4"></div>
+
+                        <!-- Lista de Hábitos -->
+                        <div id="habitListTactical" class="space-y-2"></div>
+
+                        <!-- Botão Adicionar Hábito -->
+                        <button onclick="window.openAddHabitModal()"
+                            class="group mt-4 w-full flex items-center gap-2 py-3 px-4 rounded-xl border border-dashed border-white/10 hover:border-green-700/40 hover:bg-green-900/5 text-gray-600 hover:text-green-400 transition-all duration-200">
+                            <i
+                                class="fa-solid fa-plus text-xs group-hover:rotate-90 transition-transform duration-200"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Adicionar protocolo</span>
+                        </button>
+                    </div>
+
+                    <!-- PAINEL: MISSÕES (oculto por padrão no mobile) -->
+                    <div id="panelMissions" class="hidden lg:block">
+
+                        <!-- Lista de Missões -->
+                        <div id="missionListTactical" class="space-y-3 mb-4"></div>
+
+                        <!-- Input nova missão -->
+                        <div
+                            class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-full border border-white/10 focus-within:border-blue-500/50 transition-colors w-full relative mt-4">
+                            <div class="relative group pl-1 shrink-0">
+                                <input id="newMissionDateTactical" type="date"
+                                    class="absolute inset-0 opacity-0 cursor-pointer w-full z-10">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
+                                    <i class="fa-regular fa-calendar text-sm"></i>
+                                </div>
+                            </div>
+
+                            <input id="newMissionInputTactical" type="text"
+                                class="flex-1 min-w-0 bg-transparent text-sm text-white px-3 outline-none placeholder-gray-600 font-medium h-10"
+                                placeholder="Nova missão..." autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') window.addNewMission()">
+
+                            <button onclick="window.addNewMission()"
+                                class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white shadow-lg shadow-blue-900/30 hover:scale-105 active:scale-95 transition-all z-10">
+                                <i class="fa-solid fa-paper-plane text-sm translate-x-[-1px] translate-y-[1px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP: GRID LADO A LADO (lg+) -->
+                    <div class="hidden lg:grid lg:grid-cols-3 lg:gap-6 lg:mt-0 -mt-4">
+                        <!-- (vazio — painéis acima já ficam visíveis no desktop via CSS) -->
+                    </div>
+
                 </div>
             </div>
+
 
         </main>
 

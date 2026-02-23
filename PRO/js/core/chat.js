@@ -167,55 +167,87 @@ async function sendMessage(text = null) {
     const old = document.querySelector('.quick-reply-container');
     if (old) old.remove();
 
-    // Injeção de Contexto
-    let systemInjection = "";
-
     const loadingId = showLoading();
     const rpg = getRPGState();
 
     try {
+        // Pega o system prompt do primeiro item do histórico
+        const systemPrompt = chatHistory[0]?.content || '';
+        const levelContext = `Usuário está no Nível ${rpg.level}. Streak atual: ${rpg.streak} dias.`;
+
+        // Monta histórico no formato Gemini (role: user | model)
         const MAX_CONTEXT = 12;
         const recentHistory = chatHistory.slice(1).slice(-MAX_CONTEXT);
-        const apiMessages = [
-            chatHistory[0],
-            { role: 'system', content: systemInjection },
-            { role: 'system', content: `[User Lvl ${rpg.level}]` },
-            ...recentHistory,
-            { role: 'user', content: val }
-        ];
+
+        const geminiContents = [];
+
+        for (const msg of recentHistory) {
+            if (msg.role === 'system') continue; // Gemini não aceita system no contents
+            geminiContents.push({
+                role: msg.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: msg.content }]
+            });
+        }
+
+        // Adiciona a mensagem atual
+        geminiContents.push({
+            role: 'user',
+            parts: [{ text: val }]
+        });
+
+        const geminiKey = CONFIG.AI.GEMINI_KEY;
+        const geminiModel = CONFIG.AI.MODEL || 'gemini-2.0-flash';
+        const geminiUrl = `${CONFIG.AI.GEMINI_URL}/${geminiModel}:generateContent?key=${geminiKey}`;
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 Segundos Timeout
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
-        const res = await fetch(CONFIG.AI.WORKER_URL || CONFIG.AI_WORKER, { // Fallback para config antiga se necessario
+        const res = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: CONFIG.AI.MODEL || CONFIG.API_MODEL,
-                messages: apiMessages
+                system_instruction: {
+                    parts: [{ text: `${systemPrompt}\n\n${levelContext}` }]
+                },
+                contents: geminiContents,
+                generationConfig: {
+                    temperature: 0.85,
+                    maxOutputTokens: 800,
+                    topP: 0.95
+                },
+                safetySettings: [
+                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+                ]
             }),
             signal: controller.signal
         });
         clearTimeout(timeoutId);
 
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData?.error?.message || `HTTP ${res.status}`);
+        }
+
         const data = await res.json();
         removeLoading(loadingId);
 
-        if (data.choices && data.choices[0]) {
-            let aiText = data.choices[0].message.content;
-            let forceBlock = false;
-            let diagnosisReason = "Plano Pro";
+        // Extrai texto da resposta Gemini
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-            // Checa bloqueio vindo da IA (Tags)
+        if (rawText) {
+            let aiText = rawText;
+            let dynamicButtons = [];
+
+            // Checa tag de bloqueio (compatibilidade)
             const lockMatch = aiText.match(/(\[\[|\()LOCKED_.*?:?(.*?)(\]\]|\))/i);
             if (lockMatch) {
-                forceBlock = true;
-                if (lockMatch[2] && lockMatch[2].trim().length > 2) diagnosisReason = lockMatch[2].trim();
                 aiText = aiText.replace(lockMatch[0], '').trim();
             }
 
-            // Botões
-            let dynamicButtons = [];
+            // Botões dinâmicos {{btn1|btn2}}
             const btnMatch = aiText.match(/\{\{(.*?)\}\}/);
             if (btnMatch) {
                 dynamicButtons = btnMatch[1].split('|');
@@ -224,23 +256,23 @@ async function sendMessage(text = null) {
 
             aiText = handleCommands(aiText);
 
-            if (aiText.trim() !== "") {
+            if (aiText.trim() !== '') {
                 addMessageUI('ai', aiText, true);
 
                 chatHistory.push({ role: 'user', content: val });
                 chatHistory.push({ role: 'assistant', content: aiText });
 
-                // --- DEFINIR TÍTULO ---
-                let sessionTitle = "Nova Conversa";
+                // Define título da sessão
+                let sessionTitle = 'Nova Conversa';
                 const existing = window.AppEstado?.chatSessions?.[currentSessionId];
-                if (existing && existing.title && existing.title !== "Nova Conversa") {
+                if (existing && existing.title && existing.title !== 'Nova Conversa') {
                     sessionTitle = existing.title;
                 } else {
                     const userMsg = chatHistory.find(m => m.role === 'user');
-                    if (userMsg) sessionTitle = userMsg.content.substring(0, 30) + "...";
+                    if (userMsg) sessionTitle = userMsg.content.substring(0, 30) + '...';
                 }
 
-                // Salva Sessão
+                // Salva sessão
                 const userMsgCount = chatHistory.filter(m => m.role === 'user').length;
                 const sessionExists = !!window.AppEstado?.chatSessions?.[currentSessionId];
 
@@ -257,19 +289,25 @@ async function sendMessage(text = null) {
             }
 
             if (dynamicButtons.length > 0) renderReplies(dynamicButtons);
+        } else {
+            throw new Error('Resposta vazia do Gemini.');
         }
+
     } catch (e) {
         removeLoading(loadingId);
-        console.error("AI Error:", e);
+        console.error('Gemini Error:', e);
 
-        let msg = "ERRO DE CONEXÃO NEURAL.";
+        let msg = 'ERRO DE CONEXÃO NEURAL.';
         if (e.name === 'AbortError') {
-            msg = "TEMPO LIMITE EXCEDIDO. TENTE NOVAMENTE.";
+            msg = 'TEMPO LIMITE EXCEDIDO. TENTE NOVAMENTE.';
+        } else if (e.message) {
+            msg = `FALHA NA IA: ${e.message}`;
         }
 
         addMessageUI('system', msg, false);
     }
 }
+
 
 // --- UTILITÁRIOS ---
 function handleCommands(text) {

@@ -48,6 +48,7 @@ export async function initGamification() {
 
         updateUI();
         renderHabits();
+        renderDailyProgress();
 
         // Atualiza o Dashboard se ele já estiver carregado (para o Heatmap pegar a cor de hoje)
         if (window.initDashboard) window.initDashboard();
@@ -56,6 +57,7 @@ export async function initGamification() {
         window.openAddHabitModal = openAddHabitModal;
         window.toggleHabit = toggleHabit;
         window.deleteHabit = deleteHabit;
+        window.renderDailyProgress = renderDailyProgress;
     } catch (e) { console.error("Erro Gamificação:", e); }
 }
 
@@ -122,11 +124,26 @@ function saveToGlobalState() {
 function toggleHabit(id) {
     const h = rpgState.habits.find(x => x.id === id);
     if (h) {
+        const today = getLocalDate();
         h.done = !h.done;
 
         if (h.done) {
             safePlaySFX('success');
             addXP(25);
+
+            // Streak individual do hábito
+            const yesterday = (() => {
+                const d = new Date();
+                d.setDate(d.getDate() - 1);
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            })();
+
+            if (h.lastDoneDate === yesterday) {
+                h.habitStreak = (h.habitStreak || 0) + 1;
+            } else if (h.lastDoneDate !== today) {
+                h.habitStreak = 1; // reset
+            }
+            h.lastDoneDate = today;
         } else {
             safePlaySFX('click');
             addXP(-25);
@@ -135,6 +152,7 @@ function toggleHabit(id) {
         updateDailyScore();
         saveToGlobalState();
         renderHabits();
+        renderDailyProgress();
 
         // Atualiza o Heatmap visualmente na hora
         if (window.features && window.features.renderHeatmap) window.features.renderHeatmap();
@@ -173,49 +191,138 @@ function deleteHabit(id) {
     }
 }
 
-export function addCustomHabit(text) {
-    rpgState.habits.push({ id: 'h' + Date.now(), text, done: false });
+export function addCustomHabit(text, emoji = '🎯', time = null) {
+    const today = getLocalDate();
+    rpgState.habits.push({
+        id: 'h' + Date.now(),
+        text,
+        emoji,
+        time,
+        done: false,
+        habitStreak: 0,
+        lastDoneDate: null
+    });
     updateDailyScore();
     saveToGlobalState();
     renderHabits();
+    renderDailyProgress();
     if (window.initDashboard) window.initDashboard();
 }
 
-// --- RENDERIZAÇÃO VISUAL (Bolinhas) ---
+// --- BARRA DE PROGRESSO DIÁRIA ---
+export function renderDailyProgress() {
+    const container = document.getElementById('dailyProgressContainer');
+    if (!container) return;
+
+    const total = rpgState.habits?.length || 0;
+    const done = rpgState.habits?.filter(h => h.done).length || 0;
+    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+    const color = pct === 100 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#CC0000';
+    const label = pct === 100 ? '🔥 Dia Perfeito!' : pct >= 50 ? '🚀 Metade concluída' : done === 0 ? '⚡ Comece agora' : `🎯 ${done}/${total} feitos`;
+
+    container.innerHTML = `
+        <div class="mb-5">
+            <div class="flex justify-between items-center mb-1.5">
+                <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Progresso de Hoje</span>
+                <span class="text-[10px] font-mono font-bold" style="color: ${color}">${label}</span>
+            </div>
+            <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-700" 
+                     style="width: ${pct}%; background: ${color}; box-shadow: 0 0 8px ${color}60"></div>
+            </div>
+        </div>
+    `;
+}
+
+// --- RENDERIZAÇÃO VISUAL (Cards de Hábito) ---
 function renderHabits() {
     const list = document.getElementById('habitListTactical') || document.getElementById('habitList');
     if (!list) return;
 
+    renderDailyProgress();
+
     if (!rpgState.habits || rpgState.habits.length === 0) {
-        list.innerHTML = `<div class="flex flex-col items-center justify-center py-6 opacity-40 border border-dashed border-white/10 rounded-xl"><i class="fa-solid fa-seedling text-xl mb-2 text-gray-500"></i><p class="text-[9px] uppercase tracking-widest text-gray-500">Sem Rituais</p><p class="text-[8px] text-gray-600 mt-1">Adicione com "+"</p></div>`;
+        list.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-10 opacity-40 border border-dashed border-white/10 rounded-2xl">
+                <div class="text-4xl mb-3">🌱</div>
+                <p class="text-[9px] uppercase tracking-widest text-gray-500 font-bold">Nenhum protocolo ainda</p>
+                <p class="text-[8px] text-gray-600 mt-1">Adicione seu primeiro ritual abaixo</p>
+            </div>`;
         return;
     }
 
-    list.innerHTML = rpgState.habits.map(h => `
-        <div class="flex items-center justify-between p-4 mb-2 rounded-xl bg-[#0d0d0d] border border-white/5 hover:bg-[#151515] transition group select-none relative overflow-hidden">
-            
-            <div class="absolute bottom-0 left-0 h-[2px] bg-green-500/50 transition-all duration-500" style="width: ${h.done ? '100%' : '0%'}"></div>
+    // Ordena: não feitos primeiro, depois feitos
+    const sorted = [...rpgState.habits].sort((a, b) => {
+        if (a.done === b.done) return 0;
+        return a.done ? 1 : -1;
+    });
 
-            <div class="flex flex-col cursor-pointer flex-grow" onclick="window.toggleHabit('${h.id}')">
-                <span class="text-xs font-bold uppercase tracking-wider transition-colors ${h.done ? 'text-gray-500 line-through' : 'text-gray-200'}">
-                    ${h.text}
-                </span>
+    list.innerHTML = sorted.map(h => {
+        const emoji = h.emoji || '🎯';
+        const streak = h.habitStreak || 0;
+        const timeLabel = h.time ? `<span class="text-[8px] text-gray-600 font-mono">${h.time}</span>` : '';
+        const streakBadge = streak > 1
+            ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-orange-900/20 border border-orange-700/30 text-orange-400 text-[8px] font-bold">🔥 ${streak}d</span>`
+            : '';
+
+        // Anel SVG de progresso (baseado em 7 dias = destaque)
+        const streakPct = Math.min(100, (streak / 7) * 100);
+        const r = 10;
+        const circ = 2 * Math.PI * r;
+        const offset = circ - (streakPct / 100) * circ;
+        const ringColor = h.done ? '#22c55e' : '#374151';
+        const ringFill = h.done ? '#22c55e' : '#CC0000';
+
+        return `
+        <div class="group flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 select-none relative overflow-hidden cursor-pointer
+                    ${h.done
+                ? 'bg-green-950/20 border-green-900/30 opacity-75'
+                : 'bg-[#0d0d0d] border-white/5 hover:border-white/15 hover:bg-[#141414]'}"
+             onclick="window.toggleHabit('${h.id}')">
+
+            <!-- Linha de progresso no fundo -->
+            <div class="absolute bottom-0 left-0 h-[1px] transition-all duration-700 ${h.done ? 'bg-green-500/40 w-full' : 'bg-transparent w-0'}"></div>
+
+            <!-- Emoji + anel SVG -->
+            <div class="relative flex-shrink-0 w-10 h-10 flex items-center justify-center">
+                <svg class="absolute inset-0" width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="${r + 8}" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="2"/>
+                    <circle cx="20" cy="20" r="${r + 8}" fill="none" stroke="${ringFill}" stroke-width="2"
+                            stroke-dasharray="${(circ * (r + 8) / r).toFixed(1)}"
+                            stroke-dashoffset="${(circ * (r + 8) / r - (streakPct / 100) * circ * (r + 8) / r).toFixed(1)}"
+                            stroke-linecap="round"
+                            transform="rotate(-90 20 20)"
+                            style="transition: stroke-dashoffset 0.6s ease; opacity: ${h.done ? 1 : 0.5}"/>
+                </svg>
+                <span class="text-lg z-10">${emoji}</span>
             </div>
 
-            <div class="flex items-center gap-4">
-                <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" class="text-gray-800 hover:text-red-900 transition p-1">
-                    <i class="fa-solid fa-times text-[10px]"></i>
-                </button>
-
-                <div onclick="window.toggleHabit('${h.id}')" 
-                     class="w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-300 shadow-lg 
-                     ${h.done ? 'bg-green-600 border-green-600 shadow-green-900/50 scale-110' : 'border-gray-600 bg-transparent hover:border-gray-400'}">
-                    <i class="fa-solid fa-check text-[10px] text-white transition-transform duration-300 ${h.done ? 'scale-100' : 'scale-0'}"></i>
+            <!-- Texto e badges -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-bold uppercase tracking-wide transition-colors ${h.done ? 'text-gray-500 line-through' : 'text-gray-200'}">${h.text}</span>
+                    ${streakBadge}
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
+                    ${timeLabel}
+                    ${streak > 0 ? `<span class="text-[8px] text-gray-600">${streak === 1 ? '1 dia seguido' : streak + ' dias seguidos'}</span>` : ''}
                 </div>
             </div>
 
-        </div>
-    `).join('');
+            <!-- Checkbox e delete -->
+            <div class="flex items-center gap-2">
+                <button onclick="event.stopPropagation(); window.deleteHabit('${h.id}')" 
+                        class="text-gray-800 hover:text-red-600 transition p-1 opacity-0 group-hover:opacity-100">
+                    <i class="fa-solid fa-times text-[10px]"></i>
+                </button>
+                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 shadow-lg
+                            ${h.done ? 'bg-green-600 border-green-500 shadow-green-900/50 scale-110' : 'border-gray-600 bg-transparent hover:border-green-500'}">
+                    <i class="fa-solid fa-check text-[9px] text-white transition-transform duration-200 ${h.done ? 'scale-100' : 'scale-0'}"></i>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
 }
 
 function openAddHabitModal() {
@@ -223,34 +330,108 @@ function openAddHabitModal() {
     const existing = document.getElementById('habit-modal');
     if (existing) existing.remove();
 
+    const presets = [
+        { emoji: '🏃', text: 'Exercício' }, { emoji: '🧘', text: 'Meditação' },
+        { emoji: '📚', text: 'Leitura' }, { emoji: '💧', text: 'Hidratação' },
+        { emoji: '😴', text: 'Sono 8h' }, { emoji: '🌿', text: 'Sem redes sociais' }
+    ];
+
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-6 animate-fade-in';
     overlay.id = 'habit-modal';
     overlay.innerHTML = `
-        <div class="bg-[#0a0a0a] border border-[#333] w-full max-w-sm rounded-2xl p-6 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative">
-            <h3 class="text-green-500 font-bold text-xs tracking-[0.2em] uppercase mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-circle"></i> Novo Ritual
-            </h3>
-            <input type="text" id="newHabitInput" placeholder="Nome da tarefa..." 
-                class="w-full bg-[#111] border border-[#333] text-white p-4 rounded-xl text-sm focus:border-green-500 outline-none transition-all mb-6">
-            <div class="flex justify-end gap-3">
-                <button id="cancelHabitBtn" class="text-gray-500 text-[10px] font-bold uppercase hover:text-white px-4 py-3 tracking-wider">Cancelar</button>
-                <button id="confirmHabitBtn" class="bg-green-900/20 text-green-500 border border-green-900/50 hover:bg-green-600 hover:text-white hover:border-green-500 px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all">Criar</button>
+        <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-sm rounded-2xl p-6 shadow-[0_0_60px_rgba(0,0,0,0.9)] relative">
+            <div class="flex justify-between items-center mb-1">
+                <h3 class="text-white font-black text-sm tracking-widest uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus text-green-500"></i> Novo Protocolo
+                </h3>
+                <button id="cancelHabitBtn" class="text-gray-600 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
+            <p class="text-[9px] text-gray-600 font-mono uppercase tracking-widest mb-5">Adicione ao seu ritual diário</p>
+
+            <!-- Presets rápidos -->
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-2">Sugestões</p>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                ${presets.map(p => `
+                    <button type="button" onclick="document.getElementById('newHabitInput').value='${p.text}'; document.getElementById('selectedEmoji').value='${p.emoji}'; document.getElementById('emojiDisplay').innerText='${p.emoji}'"
+                        class="py-2.5 px-1 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/15 text-center transition-all active:scale-95">
+                        <div class="text-xl mb-1">${p.emoji}</div>
+                        <div class="text-[8px] text-gray-400 font-bold uppercase">${p.text}</div>
+                    </button>
+                `).join('')}
+            </div>
+
+            <!-- Input customizado -->
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-2">Ou personalize</p>
+            <div class="flex gap-2 mb-3">
+                <button type="button" id="emojiPickerBtn"
+                    class="w-12 h-12 bg-white/5 border border-white/10 rounded-xl text-2xl flex items-center justify-center hover:bg-white/10 transition flex-shrink-0">
+                    <span id="emojiDisplay">🎯</span>
+                </button>
+                <input type="hidden" id="selectedEmoji" value="🎯">
+                <input type="text" id="newHabitInput" placeholder="Nome do protocolo..."
+                    class="flex-1 bg-white/5 border border-white/10 text-white p-3 rounded-xl text-sm focus:border-green-500/50 outline-none transition-all placeholder-gray-700">
+            </div>
+
+            <!-- Horário (opcional) -->
+            <div class="flex gap-2 mb-5">
+                <select id="habitTimeSelect" class="flex-1 bg-white/5 border border-white/10 text-gray-400 p-3 rounded-xl text-xs focus:border-green-500/50 outline-none appearance-none">
+                    <option value="">Sem horário específico</option>
+                    <option value="🌅 Manhã">🌅 Manhã</option>
+                    <option value="☀️ Tarde">☀️ Tarde</option>
+                    <option value="🌙 Noite">🌙 Noite</option>
+                    <option value="🌃 Antes de dormir">🌃 Antes de dormir</option>
+                </select>
+            </div>
+
+            <!-- Emoji picker simples -->
+            <div id="emojiPickerPanel" class="hidden mb-3 p-3 bg-black/50 rounded-xl border border-white/5">
+                <div class="grid grid-cols-8 gap-1.5 text-xl">
+                    ${'🎯🏃🧘📚💧😴🌿🏋️💪🎵🖊️🧠☕🥗🚿🌅'.split('').join(' ').split(' ').map(e => `
+                        <button type="button" onclick="document.getElementById('selectedEmoji').value='${e}'; document.getElementById('emojiDisplay').innerText='${e}'; document.getElementById('emojiPickerPanel').classList.add('hidden')" 
+                            class="hover:bg-white/10 rounded-lg p-1 transition">${e}</button>
+                    `).join('')}
+                </div>
+            </div>
+
+            <button id="confirmHabitBtn"
+                class="w-full py-3 bg-green-900/20 text-green-400 border border-green-900/40 hover:bg-green-600 hover:text-white hover:border-green-500 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95">
+                <i class="fa-solid fa-plus mr-2"></i>Adicionar Protocolo
+            </button>
         </div>
     `;
     document.body.appendChild(overlay);
+
     const input = document.getElementById('newHabitInput');
     setTimeout(() => input.focus(), 50);
-    const close = () => overlay.remove();
-    const confirm = () => {
-        const text = input.value.trim();
-        if (text) { addCustomHabit(text); safePlaySFX('success'); close(); }
-        else { input.classList.add('border-red-500'); }
+
+    document.getElementById('emojiPickerBtn').onclick = () => {
+        document.getElementById('emojiPickerPanel').classList.toggle('hidden');
     };
+
+    const close = () => overlay.remove();
+    const confirmAdd = () => {
+        const text = input.value.trim();
+        const emoji = document.getElementById('selectedEmoji').value || '🎯';
+        const time = document.getElementById('habitTimeSelect').value || null;
+        if (text) {
+            addCustomHabit(text, emoji, time);
+            safePlaySFX('success');
+            close();
+        } else {
+            input.classList.add('border-red-500', 'animate-pulse');
+            setTimeout(() => input.classList.remove('border-red-500', 'animate-pulse'), 1000);
+        }
+    };
+
     document.getElementById('cancelHabitBtn').onclick = close;
-    document.getElementById('confirmHabitBtn').onclick = confirm;
-    input.onkeypress = (e) => { if (e.key === 'Enter') confirm(); };
+    document.getElementById('confirmHabitBtn').onclick = confirmAdd;
+    input.onkeypress = (e) => { if (e.key === 'Enter') confirmAdd(); };
+
+    // Fechar ao clicar no overlay
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 }
 
 export function addXP(amt) {

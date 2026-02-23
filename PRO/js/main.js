@@ -305,7 +305,7 @@ function switchTab(tabName) {
             setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
         }
     }
-    // --- ADICIONE ESTE BLOCO ABAIXO ---
+    // --- TÁTICO ---
     else if (tabName === 'tatico') {
         const view = document.getElementById('viewTatico');
         if (view) view.classList.remove('hidden');
@@ -313,7 +313,11 @@ function switchTab(tabName) {
         const btn = document.getElementById('tabTatico');
         if (btn) btn.classList.add('active');
 
-        // Chama a renderização manual do módulo tático (exposto pelo tactical.js)
+        // Renderiza calendário semanal e badge de missões
+        if (window.renderWeekCalendar) window.renderWeekCalendar();
+        if (window.updateMissionBadge) window.updateMissionBadge();
+
+        // Inicializa o módulo tático (missões + hábitos)
         if (window.initTacticalModule) window.initTacticalModule();
     }
     // ----------------------------------

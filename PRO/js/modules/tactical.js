@@ -401,4 +401,92 @@ function renderTacticalView() {
     }).join('');
 }
 
+// =====================================================
+// CALENDÁRIO SEMANAL + TABS (NOVO DESIGN)
+// =====================================================
+
+function renderWeekCalendar() {
+    const container = document.getElementById('weekCalendar');
+    const monthLabel = document.getElementById('tacticMonthLabel');
+    if (!container) return;
+
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Dom, 1=Seg..
+    const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    // Obtém dados de atividade para marcar dots
+    const dailyScores = window.AppEstado?.gamification?.dailyScores || {};
+
+    // Calcula os 7 dias da semana atual (segunda a domingo)
+    // Ajusta para começar na segunda-feira
+    const startDiff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    container.innerHTML = '';
+
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + startDiff + i);
+
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateKey = `${year}-${month}-${day}`;
+
+        const isToday = d.toDateString() === today.toDateString();
+        const hasActivity = dailyScores[dateKey] > 0;
+        const isFuture = d > today && !isToday;
+
+        const cell = document.createElement('div');
+        cell.className = `week-day-cell${isToday ? ' today' : ''}${hasActivity ? ' has-activity' : ''}`;
+        cell.innerHTML = `
+            <span class="week-day-name">${dayNames[d.getDay()]}</span>
+            <div class="week-day-number" style="${isFuture ? 'opacity: 0.3' : ''}">${d.getDate()}</div>
+        `;
+        container.appendChild(cell);
+    }
+
+    // Atualiza label do mês
+    if (monthLabel) {
+        monthLabel.textContent = `${monthNames[today.getMonth()]} ${today.getFullYear()}`;
+    }
+}
+
+// Alterna entre os painéis Hábitos e Missões (mobile)
+function switchTacticTab(tab) {
+    const panelHabits = document.getElementById('panelHabits');
+    const panelMissions = document.getElementById('panelMissions');
+    const tabHabits = document.getElementById('tabHabits');
+    const tabMissions = document.getElementById('tabMissions');
+
+    if (tab === 'habits') {
+        panelHabits?.classList.remove('hide-mobile');
+        panelMissions?.classList.remove('show-mobile');
+        tabHabits?.classList.add('active');
+        tabMissions?.classList.remove('active');
+    } else {
+        panelHabits?.classList.add('hide-mobile');
+        panelMissions?.classList.add('show-mobile');
+        tabMissions?.classList.add('active');
+        tabHabits?.classList.remove('active');
+    }
+
+    // Atualiza badge de contagem de missões
+    updateMissionBadge();
+}
+
+function updateMissionBadge() {
+    const badge = document.getElementById('missionCountBadge');
+    if (!badge) return;
+    const metas = window.AppEstado?.gamification?.metas || [];
+    const active = metas.filter(m => m.status !== 'completed').length;
+    const total = metas.length;
+    badge.textContent = total > 0 ? `${active}/${total}` : '';
+}
+
+// Expõe globalmente
+window.switchTacticTab = switchTacticTab;
+window.renderWeekCalendar = renderWeekCalendar;
+window.updateMissionBadge = updateMissionBadge;
+
 initTactical();

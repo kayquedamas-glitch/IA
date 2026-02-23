@@ -3,26 +3,22 @@ import { addXP, logActivity } from './gamification.js';
 import { showToast } from './ui.js';
 import { playSFX } from './audio.js';
 
+// Instâncias de charts para evitar duplicação
+if (!window._synapseCharts) window._synapseCharts = [];
+
 export function initDashboard() {
-    // 1. Verifica se a sequência quebrou (Reset se passou de 24h do último dia completo)
+    // 1. Verifica se a sequência quebrou
     checkStreakIntegrity();
 
     // 2. Carrega dados visuais
-    renderMissions();
     updateStreakUI();
     calculateDaysOnBase();
-    setTimeout(() => initSciFiCharts(), 500);
 
-    // 3. Conecta botão HTML ao JS
-    window.addNewMission = () => {
-        const input = document.getElementById('newMissionInput');
-        const dateInput = document.getElementById('newMissionDate');
-        createMission(input, dateInput);
-    };
+    // 3. Gráficos com cleanup para evitar duplicação
+    setTimeout(() => initSciFiCharts(), 500);
 
     // 4. Registra métrica de acesso
     if (window.Database) window.Database.logEvent('DASHBOARD_VIEW', 'Acessou Painel');
-
 }
 
 // --- LÓGICA DE DIAS NA BASE (Sincronizado na Nuvem) ---a
@@ -546,20 +542,35 @@ export function renderDisciplineGraph() {
 export function initSciFiCharts() {
     if (typeof ApexCharts === 'undefined') return;
 
+    // Destroi instâncias anteriores para evitar duplicação
+    if (window._synapseCharts && window._synapseCharts.length > 0) {
+        window._synapseCharts.forEach(c => { try { c.destroy(); } catch (e) { } });
+        window._synapseCharts = [];
+    }
+
     // Coleta dados reais do Estado Global
     const gamification = window.AppEstado?.gamification || {};
     const xp = gamification.xp || 0;
     const level = gamification.level || 1;
     const streak = gamification.streak || 0;
 
-    // Calcula atributos baseados no comportamento (Lógica de Gamificação)
-    // Ex: Streak alto = Foco | Muitas missões = Disciplina | XP alto = Inteligência
+    // Zera containers antes de re-renderizar
+    ['chart-radar', 'chart-radial', 'chart-area'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+
+    // Atributos baseados no comportamento real
+    const completedMissions = (gamification.metas || []).filter(m => m.status === 'completed').length;
+    const totalHabits = (gamification.habits || []).length;
+    const doneHabits = (gamification.habits || []).filter(h => h.done).length;
+
     const stats = {
-        foco: Math.min(100, streak * 5), // 20 dias de streak = 100% foco
-        disciplina: Math.min(100, (gamification.missions?.filter(m => m.done).length || 0) * 2),
+        foco: Math.min(100, streak * 5),
+        disciplina: Math.min(100, completedMissions * 5),
         inteligencia: Math.min(100, level * 5),
-        vigor: Math.min(100, (gamification.habits?.length || 0) * 10),
-        agilidade: 75 // Valor fixo ou calculado por tempo de resposta
+        vigor: totalHabits > 0 ? Math.round((doneHabits / totalHabits) * 100) : 0,
+        agilidade: Math.min(100, xp / 10)
     };
 
     renderRadarChart(stats);
@@ -606,8 +617,11 @@ function renderRadarChart(stats) {
         tooltip: { theme: 'dark' }
     };
 
-    const chart = new ApexCharts(document.querySelector("#chart-radar"), options);
+    const el = document.querySelector('#chart-radar');
+    if (!el) return;
+    const chart = new ApexCharts(el, options);
     chart.render();
+    window._synapseCharts.push(chart);
 }
 
 // 2. GRÁFICO RADIAL (Igual ao canto superior esquerdo da imagem)
@@ -646,32 +660,58 @@ function renderRadialChart(level, xp) {
         labels: ['XP Próx. Nível', 'Nível Total'],
     };
 
-    const chart = new ApexCharts(document.querySelector("#chart-radial"), options);
+    const el = document.querySelector('#chart-radial');
+    if (!el) return;
+    const chart = new ApexCharts(el, options);
     chart.render();
+    window._synapseCharts.push(chart);
 }
 
-// 3. AREA CHART (Timeline de atividade)
+// 3. AREA CHART (Timeline de atividade — dados reais dos últimos 7 dias)
 function renderAreaChart() {
-    // Simula dados dos últimos 7 dias (já que não temos histórico complexo ainda)
-    const dataMock = [30, 40, 35, 50, 49, 60, 70];
+    const el = document.querySelector('#chart-area');
+    if (!el) return;
+
+    // Coleta dados reais de dailyScores
+    const scores = window.AppEstado?.gamification?.dailyScores || {};
+    const labels = [];
+    const data = [];
+
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        const dayLabel = `${day}/${month}`;
+        labels.push(dayLabel);
+        data.push(scores[dateStr] ?? 0);
+    }
 
     const options = {
-        series: [{ name: 'Produtividade', data: dataMock }],
+        series: [{ name: 'Consistência', data }],
         chart: {
-            type: 'area', height: 180, sparkline: { enabled: true }, // Sparkline remove eixos para ficar limpo
-            animations: { enabled: true }
+            type: 'area',
+            height: 180,
+            sparkline: { enabled: true },
+            animations: { enabled: true, speed: 800 }
         },
         stroke: { curve: 'smooth', width: 2 },
         fill: {
             type: 'gradient',
-            gradient: {
-                shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100]
-            }
+            gradient: { shadeIntensity: 1, opacityFrom: 0.6, opacityTo: 0.05, stops: [0, 90, 100] }
         },
-        colors: ['#CC0000'], // Vermelho Synapse
-        tooltip: { theme: 'dark', x: { show: false } }
+        colors: ['#CC0000'],
+        tooltip: {
+            theme: 'dark',
+            x: { show: true, formatter: (_, opts) => labels[opts.dataPointIndex] || '' },
+            y: { formatter: val => `${val}%` }
+        },
+        yaxis: { min: 0, max: 100 }
     };
 
-    const chart = new ApexCharts(document.querySelector("#chart-area"), options);
+    const chart = new ApexCharts(el, options);
     chart.render();
+    window._synapseCharts.push(chart);
 }

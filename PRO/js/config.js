@@ -6,8 +6,10 @@ const CONFIG = {
         KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdleG56cXVocWJzenFqcXdvd2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MTI0MzgsImV4cCI6MjA4MzI4ODQzOH0.uykP2vUDmIDibgrLT-ISgxjQc4566M_em413jWxDGd4'
     },
     AI: {
-        WORKER_URL: 'https://synapse-ai-worker.kayque-f-soares.workers.dev', // Exemplo / Placeholder se necessário
-        MODEL: 'gpt-4o-mini' // ou o modelo que estiver usando
+        PROVIDER: 'gemini',
+        GEMINI_KEY: 'AIzaSyBSiYIDFYz4b5i9ZtShwNKLkCWKvRYJiGg',
+        MODEL: 'gemini-2.5-flash',
+        GEMINI_URL: 'https://generativelanguage.googleapis.com/v1beta/models'
     },
     STORAGE: {
         DB_NAME: 'synapse_db',
