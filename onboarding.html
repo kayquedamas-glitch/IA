@@ -383,12 +383,55 @@
         </div>
       </section>
 
+      <!-- SLIDE 9: VISÃO 30 DIAS (NOVO) -->
       <section class="slide" data-slide="9">
+        <div class="slide-grid-layout">
+          <div class="desktop-visual-col w-full flex justify-center">
+            <div class="visual-slot" style="background:linear-gradient(180deg,rgba(204,0,0,0.08),rgba(0,0,0,0.2)); border-color:rgba(204,0,0,0.2);">
+              <div style="padding:32px; width:100%; text-align:center;">
+                <div style="font-size:48px; margin-bottom:20px;">🚀</div>
+                <div style="font-size:42px; font-weight:900; color:#fff; letter-spacing:-2px; line-height:1;">30</div>
+                <div style="font-size:12px; color:#CC0000; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; margin-top:4px;">dias de transformação</div>
+              </div>
+            </div>
+          </div>
+          <div class="desktop-text-col w-full text-center-mobile mt-6 lg:mt-0">
+            <div class="text-xs font-mono text-red-500 mb-3 uppercase tracking-widest">Visualização do Futuro</div>
+            <h2 class="text-3xl lg:text-5xl font-black text-white tracking-tighter mb-5 leading-tight">Seu Eu<br>Daqui a 30 Dias</h2>
+            <p class="text-sm soft-text mb-6">Imagina acordar assim:</p>
+            <div id="vision-list" style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+              <div class="vision-item" style="opacity:0; transform:translateX(-10px); transition:all 0.4s ease; display:flex; align-items:flex-start; gap:10px;">
+                <span style="color:#22c55e; font-weight:900; flex-shrink:0; margin-top:1px;">→</span>
+                <span style="color:#d1d5db; font-size:14px;">47 dias de streak mantidos consecutivamente</span>
+              </div>
+              <div class="vision-item" style="opacity:0; transform:translateX(-10px); transition:all 0.4s ease 0.1s; display:flex; align-items:flex-start; gap:10px;">
+                <span style="color:#22c55e; font-weight:900; flex-shrink:0; margin-top:1px;">→</span>
+                <span style="color:#d1d5db; font-size:14px;">Seu projeto principal avançado 3 etapas</span>
+              </div>
+              <div class="vision-item" style="opacity:0; transform:translateX(-10px); transition:all 0.4s ease 0.2s; display:flex; align-items:flex-start; gap:10px;">
+                <span style="color:#22c55e; font-weight:900; flex-shrink:0; margin-top:1px;">→</span>
+                <span style="color:#d1d5db; font-size:14px;">Mentor IA adaptado à sua rotina única</span>
+              </div>
+              <div class="vision-item" style="opacity:0; transform:translateX(-10px); transition:all 0.4s ease 0.3s; display:flex; align-items:flex-start; gap:10px;">
+                <span style="color:#22c55e; font-weight:900; flex-shrink:0; margin-top:1px;">→</span>
+                <span style="color:#d1d5db; font-size:14px;">Foco de 90+ minutos sem distrações</span>
+              </div>
+              <div class="vision-item" style="opacity:0; transform:translateX(-10px); transition:all 0.4s ease 0.4s; display:flex; align-items:flex-start; gap:10px;">
+                <span style="color:#22c55e; font-weight:900; flex-shrink:0; margin-top:1px;">→</span>
+                <span style="color:#d1d5db; font-size:14px;">Zero culpa ao fechar o dia</span>
+              </div>
+            </div>
+            <p style="color:#fff; font-weight:900; font-size:16px; margin-top:20px; opacity:0; transition:opacity 0.5s ease 0.6s;" id="vision-footer">Isso começa hoje.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="10">
         <div class="w-full max-w-2xl mx-auto flex flex-col justify-center h-full">
-          
+
           <div class="text-center mb-10">
             <h1 class="text-4xl lg:text-6xl font-black text-white tracking-tighter mb-4">Você está pronto?</h1>
-            <p class="text-base soft-text">Essa é sua linha de corte. Defina seu nível de comprometimento.</p>
+            <p class="text-base soft-text" id="commitment-sub">Essa é sua linha de corte. Defina seu nível de comprometimento.</p>
           </div>
 
           <div class="space-y-4">
@@ -473,7 +516,8 @@
       5: "VAMOS LÁ",
       6: "PRÓXIMO",
       7: "SEGUIR",
-      8: "DECIDIR AGORA"
+      8: "VER MEU FUTURO",
+      9: "DECIDIR AGORA"
     };
 
     function renderDots(){
@@ -506,7 +550,7 @@
 
     function show(i){
       idx = Math.max(0, Math.min(lastIndex, i));
-      
+
       slides.forEach((s, k) => {
         if(k === idx){
           s.classList.add('active');
@@ -517,9 +561,20 @@
 
       renderDots();
       updateInterface();
-      
+
       // Scroll to top para garantir visualização
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Animação dos itens do slide "Visão 30 dias" (slide 9)
+      if(idx === 9) {
+        setTimeout(() => {
+          document.querySelectorAll('.vision-item').forEach((el, i) => {
+            setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, i * 120);
+          });
+          const footer = document.getElementById('vision-footer');
+          if(footer) setTimeout(() => { footer.style.opacity = '1'; }, 700);
+        }, 300);
+      }
     }
 
     btnNext.addEventListener('click', () => show(idx + 1));
@@ -557,21 +612,53 @@
       }, 500);
     });
 
-    // ===== Recuperar Dados do Quiz (Se houver) =====
+    // ===== Recuperar Dados do Quiz e Usuário (Personalização) =====
     try {
       const raw = localStorage.getItem('synapse_quiz_data');
+      const userRaw = localStorage.getItem('synapse_user');
+
+      // Personalizar boas-vindas com nome
+      if(userRaw) {
+        const userData = JSON.parse(userRaw);
+        const nome = userData.nome || userData.name || '';
+        if(nome) {
+          const h1Slide0 = document.querySelector('[data-slide="0"] h1');
+          if(h1Slide0) {
+            h1Slide0.innerHTML = `Bem-vindo, <br class="hidden lg:block"/><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">${nome.split(' ')[0]}</span>`;
+          }
+        }
+      }
+
       if(raw){
         const data = JSON.parse(raw);
         const nivel = (data.nivel || '').replace('NÍVEL:','').trim();
-        
+        const fraqueza = data.fraqueza || '';
+        const diagTitulo = data.diagTitulo || '';
+
         if(nivel){
           diagTop.classList.remove('hidden');
           diagTopTxt.textContent = nivel;
         }
 
-        if(data.nivel || data.fraqueza) {
+        if(data.nivel || fraqueza) {
           quizHint.classList.remove('hidden');
-          quizHint.innerHTML = `ANÁLISE PRÉVIA: <span class="text-white font-bold">${nivel}</span> // FRAQUEZA: <span class="text-white font-bold">${data.fraqueza || 'N/A'}</span>`;
+          quizHint.innerHTML = `ANÁLISE PRÉVIA: <span class="text-white font-bold">${nivel}</span> // FRAQUEZA: <span class="text-white font-bold">${fraqueza || 'N/A'}</span>`;
+        }
+
+        // Personalizar o slide de compromisso com o diagnóstico
+        if(diagTitulo || fraqueza) {
+          const commitSub = document.getElementById('commitment-sub');
+          if(commitSub && diagTitulo) {
+            commitSub.innerHTML = `<span style="color:#CC0000;font-weight:700;">${diagTitulo}</span><br>Defina seu nível de comprometimento.`;
+          }
+        }
+
+        // Personalizar slide de problema (slide 2) com a fraqueza identificada
+        if(fraqueza) {
+          const slide2p = document.querySelector('[data-slide="2"] p');
+          if(slide2p) {
+            slide2p.innerHTML = `Seu bloqueio principal identificado: <strong style="color:#fff;">${fraqueza}</strong>. Dias sem direção acumulam um custo invisível na sua performance mental.`;
+          }
         }
       }
     } catch(e) { console.log(e); }

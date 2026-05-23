@@ -363,33 +363,91 @@
             const area = document.getElementById('quiz-area');
 
             let nivel = "NÍVEL: CRÍTICO";
-            let titulo = "MODO DE SOBREVIVÊNCIA";
             let cor = "text-red-500";
             let desc = "Sua mente está operando em modo de defesa, bloqueando o progresso para economizar energia.";
+            let riscoPct = 90;
+            let riscoLabel = "CRÍTICO";
+            let riscoColor = "#CC0000";
 
             if (totalScore > 40) {
                 nivel = "NÍVEL: CIVIL";
-                titulo = "FALTA MÉTODO";
                 cor = "text-yellow-500";
                 desc = "Você tem potencial e vontade, mas a falta de um sistema claro está dispersando sua energia.";
+                riscoPct = 55;
+                riscoLabel = "MODERADO";
+                riscoColor = "#eab308";
             }
             if (totalScore > 100) {
                 nivel = "NÍVEL: OPERADOR";
-                titulo = "MENTALIDADE BLINDADA";
                 cor = "text-green-500";
                 desc = "Sua base é sólida, mas pequenos ajustes táticos podem multiplicar seus resultados.";
+                riscoPct = 25;
+                riscoLabel = "BAIXO";
+                riscoColor = "#22c55e";
             }
+
+            // Diagnóstico personalizado por fraqueza dominante
+            let diagTitulo = "Diagnóstico: Performance Abaixo do Potencial";
+            let diagFeatures = [
+                { icon: "fa-brain", name: "Mentor IA", desc: "Coaching diário adaptado ao seu padrão" },
+                { icon: "fa-fire", name: "Sistema de Streak", desc: "Consistência diária gamificada" },
+                { icon: "fa-tachometer-alt", name: "Dashboard Neural", desc: "Visão clara do seu progresso" }
+            ];
+
+            const pain = dominantPain.toLowerCase();
+            if (pain.includes('procrastin') || pain.includes('paralisia') || pain.includes('execu') || pain.includes('sabotagem') || pain.includes('movimento')) {
+                diagTitulo = "Diagnóstico: Bloqueio de Ação Crônico";
+                diagFeatures = [
+                    { icon: "fa-shield-alt", name: "Protocolo S.O.S.", desc: "Intervenção de emergência — seu caso mais urgente" },
+                    { icon: "fa-hourglass-half", name: "Modo Deep Work", desc: "Bloqueio de distrações por 25–90 min" },
+                    { icon: "fa-robot", name: "Mentor IA", desc: "Coaching de ação imediata adaptado a você" }
+                ];
+            } else if (pain.includes('foco') || pain.includes('dispers') || pain.includes('fragmen') || pain.includes('distra')) {
+                diagTitulo = "Diagnóstico: Dispersão Mental";
+                diagFeatures = [
+                    { icon: "fa-hourglass-half", name: "Modo Deep Work", desc: "Timer de foco e bloqueio de distrações" },
+                    { icon: "fa-list-ul", name: "Sistema de Rituais", desc: "Checklists que constroem foco progressivo" },
+                    { icon: "fa-tachometer-alt", name: "Dashboard Neural", desc: "Veja exatamente onde você perde tempo" }
+                ];
+            } else if (pain.includes('motiv') || pain.includes('emocion') || pain.includes('constan') || pain.includes('dopamin') || pain.includes('vício')) {
+                diagTitulo = "Diagnóstico: Dependência de Motivação";
+                diagFeatures = [
+                    { icon: "fa-medal", name: "Gamificação + XP", desc: "Sistema que substitui a motivação por recompensas" },
+                    { icon: "fa-fire", name: "Streak System", desc: "Momentum diário que não depende de humor" },
+                    { icon: "fa-robot", name: "Mentor IA", desc: "Ativa você nos dias difíceis" }
+                ];
+            } else if (pain.includes('sono') || pain.includes('energia') || pain.includes('cansaço') || pain.includes('bio')) {
+                diagTitulo = "Diagnóstico: Colapso de Energia";
+                diagFeatures = [
+                    { icon: "fa-list-ul", name: "Sistema de Rituais", desc: "Rotina matinal e noturna automatizada" },
+                    { icon: "fa-tachometer-alt", name: "Dashboard Neural", desc: "Mapeamento de energia ao longo do dia" },
+                    { icon: "fa-robot", name: "Mentor IA", desc: "Plano adaptado ao seu ritmo biológico" }
+                ];
+            }
+
+            const featuresHTML = diagFeatures.map(f => `
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:rgba(204,0,0,0.15);border:1px solid rgba(204,0,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fa-solid ${f.icon}" style="color:#CC0000;font-size:13px;"></i>
+                    </div>
+                    <div>
+                        <p style="color:#fff;font-weight:700;font-size:13px;margin:0 0 2px 0;">${f.name}</p>
+                        <p style="color:#9ca3af;font-size:11px;margin:0;">${f.desc}</p>
+                    </div>
+                </div>
+            `).join('');
 
             // Salva dados cruciais para o Onboarding
             localStorage.setItem('synapse_quiz_data', JSON.stringify({
                 nivel: nivel,
                 fraqueza: dominantPain,
-                score: totalScore
+                score: totalScore,
+                diagTitulo: diagTitulo
             }));
 
             area.innerHTML = `
                 <div class="fade-in-up max-w-lg mx-auto pb-10">
-                    <div class="text-center mb-10">
+                    <div class="text-center mb-8">
                         <div class="inline-block border border-red-500/30 bg-red-500/10 text-red-400 text-[9px] font-bold px-3 py-1 rounded uppercase tracking-[0.2em] mb-4 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
                             Diagnóstico Finalizado
                         </div>
@@ -398,39 +456,52 @@
                         </h1>
                     </div>
 
-                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 mb-8 relative overflow-hidden shadow-2xl group">
-                        <div class="absolute top-0 right-0 w-60 h-60 bg-red-600/5 blur-[60px] group-hover:bg-red-600/10 transition-colors"></div>
-                        
+                    <!-- CARD DE DIAGNÓSTICO -->
+                    <div class="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 mb-6 relative overflow-hidden shadow-2xl">
+                        <div class="absolute top-0 right-0 w-60 h-60 bg-red-600/5 blur-[60px]"></div>
                         <div class="relative z-10">
-                            <div class="flex items-center justify-between mb-6 pb-6 border-b border-white/5">
+                            <!-- Status + Bloqueio -->
+                            <div class="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
                                 <div>
-                                    <p class="text-[10px] text-gray-500 uppercase font-mono">Status Atual</p>
-                                    <p class="${cor} font-black text-xl tracking-wide">${nivel.replace('NÍVEL: ', '')}</p>
+                                    <p class="text-[10px] text-gray-500 uppercase font-mono mb-1">Status Atual</p>
+                                    <p class="${cor} font-black text-lg tracking-wide">${nivel.replace('NÍVEL: ', '')}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-[10px] text-gray-500 uppercase font-mono">Bloqueio Principal</p>
+                                    <p class="text-[10px] text-gray-500 uppercase font-mono mb-1">Bloqueio Principal</p>
                                     <p class="text-white font-bold text-sm">${dominantPain}</p>
                                 </div>
                             </div>
-                            
-                            <p class="text-sm text-gray-300 leading-relaxed mb-6 font-medium">
-                                ${desc}
-                            </p>
-                            
-                            <div class="p-4 bg-white/5 border-l-2 border-red-600 rounded-r">
-                                <p class="text-xs text-gray-400 italic">
-                                    "O Synapse não vai apenas te motivar. Ele vai instalar um novo sistema operacional na sua rotina."
-                                </p>
+
+                            <!-- BARRA DE RISCO -->
+                            <div class="mb-5">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                                    <span style="color:#9ca3af;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Risco de Perda de Potencial</span>
+                                    <span style="color:${riscoColor};font-size:10px;font-weight:900;text-transform:uppercase;">${riscoLabel}</span>
+                                </div>
+                                <div style="background:rgba(255,255,255,0.05);border-radius:100px;height:8px;overflow:hidden;">
+                                    <div style="height:100%;width:${riscoPct}%;background:${riscoColor};border-radius:100px;box-shadow:0 0 10px ${riscoColor};transition:width 1s ease;"></div>
+                                </div>
+                            </div>
+
+                            <!-- DIAGNÓSTICO TÍTULO -->
+                            <div style="background:rgba(204,0,0,0.08);border-left:3px solid #CC0000;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;">
+                                <p style="color:#e5e5e5;font-weight:700;font-size:13px;margin:0;">${diagTitulo}</p>
+                            </div>
+
+                            <!-- FEATURES ATIVADAS -->
+                            <p class="text-[10px] text-gray-500 uppercase font-mono mb-3">O Synapse vai ativar para você:</p>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                ${featuresHTML}
                             </div>
                         </div>
                     </div>
 
-                    <div class="text-center space-y-4">
+                    <div class="text-center space-y-3">
                         <button onclick="goToApp()" class="w-full bg-white text-black font-black uppercase tracking-widest py-4 rounded-xl hover:bg-gray-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-3 text-xs group relative overflow-hidden">
-                            <span class="relative z-10">Acessar Ferramenta</span>
+                            <span class="relative z-10">Ver Meu Plano Personalizado de Recuperação</span>
                             <i class="fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform"></i>
                         </button>
-                        
+
                         <p class="text-[9px] text-gray-600 uppercase tracking-widest opacity-60">
                             <i class="fa-solid fa-lock mr-1"></i> Dados Criptografados
                         </p>
